@@ -104,3 +104,9 @@ examples. The workflow suite passed 22 checks and skipped two requiring XcodeGen
 This includes traced/untraced output equality, task isolation, bounded storage,
 failure reporting and fresh source-note decisions after font/content changes.
 App-hosted tests and the native Mac bitmap probe remain unrun.
+
+Subsequent evidence: the user supplied a successful 28-slide native Mac probe
+at `e35bf24`. It identifies full-SVG cache work on the repeated operation; the
+[thumbnail cache continuation](THUMBNAIL-CACHE-20261015.md) records that baseline,
+the resulting bounded cache change and its portable measurements. Broader
+native profiling and the optimized Mac rerun remain pending.

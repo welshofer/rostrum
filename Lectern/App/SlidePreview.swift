@@ -155,7 +155,7 @@ struct SlideContactSheet: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 14) {
                 ForEach(records) { record in
-                    SlideTile(svg: record.displaySVG)
+                    SlideTile(content: record.content)
                         .aspectRatio(record.geometry.aspectRatio, contentMode: .fit)
                         .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
@@ -187,7 +187,7 @@ struct SlideFilmstrip: View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 12) {
                 ForEach(records) { record in
-                    SlideTile(svg: record.displaySVG)
+                    SlideTile(content: record.content)
                         .frame(width: 135 * record.geometry.aspectRatio, height: 135)
                         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .overlay(

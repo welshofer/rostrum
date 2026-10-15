@@ -19,6 +19,29 @@ import LecternCore
         #expect(trace.report.samples.filter { $0.stage == "thumbnail.queue" }.count == 1)
     }
 
+    @Test func preparedContentIsReusedAndByteBudgetDeclinesOversizedImages() async throws {
+        let trace = PipelineTrace()
+        let content = PreviewContent(svg: "<svg viewBox=\"0 0 4 3\"/>")
+        var renders = 0
+        let cost = content.byteCount + 320 * 240 * 4
+        let rasterizer = SlideRasterizer(byteLimit: cost, snapshot: { _, _ in
+            renders += 1
+            return Image(systemName: "square")
+        })
+        await PipelineTrace.$current.withValue(trace) {
+            #expect(await rasterizer.image(for: content, pixelWidth: 320) != nil)
+            #expect(await rasterizer.image(for: content, pixelWidth: 320) != nil)
+            #expect(await rasterizer.image(for: content, pixelWidth: 640) != nil)
+            #expect(await rasterizer.image(for: content, pixelWidth: 320) != nil)
+        }
+        #expect(renders == 2)
+        #expect(rasterizer.cacheCount == 1)
+        #expect(rasterizer.cacheCostBytes == cost)
+        #expect(trace.report.samples.filter { $0.stage == "preview.identity" }.isEmpty)
+        #expect(trace.report.samples.filter { $0.stage == "thumbnail.cacheInsert" }.map(\.outcome) == ["admitted", "overBudget"])
+        #expect(SlideRasterizer.bitmapCost(width: Int.max, height: 2) == Int.max)
+    }
+
 }
 
 @MainActor
@@ -53,7 +76,7 @@ import LecternCore
             for record in inspection.previewRecords {
                 try #require(record.svg != nil, "A failed SVG slot is not a usable thumbnail")
                 let image = await PipelineTrace.$current.withValue(trace) {
-                    await rasterizer.image(for: record.displaySVG)
+                    await rasterizer.image(for: record.content)
                 }
                 try #require(image != nil, "WebKit must produce an actual bitmap")
                 if firstBitmapSeconds == nil, let sample = trace.report.samples.last(where: { $0.stage == "thumbnail.request" }) {
@@ -69,6 +92,9 @@ import LecternCore
             profiles.append(["operationInProcess": operation,
                 "firstBitmapAvailableSeconds": firstBitmapSeconds as Any? ?? NSNull(),
                 "appProcessLifetimePeakRSSBytes": usage.ru_maxrss,
+                "thumbnailCacheEntries": rasterizer.cacheCount,
+                "thumbnailCacheAccountedBytes": rasterizer.cacheCostBytes,
+                "thumbnailCacheByteLimit": rasterizer.cacheByteLimit,
                 "stages": try JSONSerialization.jsonObject(with: JSONEncoder().encode(trace.report))])
         }
         #expect(try Data(contentsOf: input) == original)
@@ -77,7 +103,7 @@ import LecternCore
         #else
         let mode = "release"
         #endif
-        let report: [String: Any] = ["schemaVersion": 1, "buildMode": mode, "platform": ProcessInfo.processInfo.operatingSystemVersionString,
+        let report: [String: Any] = ["schemaVersion": 2, "buildMode": mode, "platform": ProcessInfo.processInfo.operatingSystemVersionString,
             "samples": profiles, "nativeVisualAcceptance": "pending",
             "measurementScope": "Production inspection then sequential production raster requests, first-use and repeated on the same bounded cache. First bitmap availability is not first visible frame. Process CPU excludes WebKit helper processes. RSS is the app process lifetime peak, includes test-host startup, and is not per-operation or total WebKit memory. SVG evidence writes are outside stage timings but within first-bitmap wall offsets on later slides. Input hashing/reads may warm filesystem caches."]
         try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])

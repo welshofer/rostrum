@@ -56,7 +56,7 @@ struct RecoveryView: View {
                         }
                     }
                 }
-                SlideContactSheet(previews: candidate.previews, titles: candidate.previewTitles)
+                SlideContactSheet(records: candidate.previewRecords, total: candidate.slideCount)
                     .frame(minHeight: 280)
             }
             if let problem { Text(problem).foregroundStyle(.red).textSelection(.enabled) }

@@ -57,7 +57,7 @@ examples. Apple CI and live native acceptance are separate gates.
 
 ## Second milestone: end-to-end Mac performance baseline
 
-Status: **measurement tooling in progress; native Mac baseline pending**.
+Status: **one native Mac baseline received; broader corpus and optimized native rerun pending**.
 
 The pack's optional `InspectionRegression` runner now calls production
 `DeckInspector` and `DeckExporter` with their normal embedded/installed-font
@@ -70,7 +70,8 @@ opening, font discovery/registration, layout, composition, saving/reopening and
 per-slide SVG CPU/elapsed time. It retains paired, alternating fresh processes
 and repeated inspections, process peak RSS and exact artifact comparisons.
 A local Release app-hosted probe instruments production WebKit navigation, font
-readiness, queue wait and bitmap capture; execution on a Mac remains pending.
+readiness, queue wait and bitmap capture. The user supplied one successful
+28-slide Mac run; see the cache continuation below.
 First-bitmap availability is separate from actual first visible display latency;
 WebKit helper-process CPU/memory and compositor presentation need native traces. External faces unavailable to the host remain missing
 font diagnostics; supplying manifest files does not inject them into Lectern.
@@ -112,6 +113,20 @@ The full portable gate passed: 1,363 Rostrum tests, 339 LecternCore tests,
 workflow checks and README examples. Mac bitmap execution, app-hosted tests,
 actual first-visible-frame latency, helper-process resource measurements and
 native visual acceptance remain unchecked above.
+
+Native cache continuation (2026-10-15): the supplied Mac Release trace at
+`e35bf24` has 28 successful renders followed by 28 bitmap cache hits and no
+dropped samples. The user confirmed its dirty checkout flag reflects generated
+or untracked output only. Repeat cache hits consumed 287 ms despite no WebKit
+work. Prepare exact UTF-8 content identity once per preview record, retain it
+through generation/recovery/Inspect views, and replace SVG-bearing recency scans
+with constant-time promotion. Limit retained cache entries by both count and
+accounted SVG/bitmap bytes. The [cache decision record](docs/THUMBNAIL-CACHE-20261015.md)
+contains paired Release cache-only evidence on the supplied SVGs, adverse small
+controls, unchanged-input checks and memory limits. Native app tests, a paired
+Mac rerun, first-visible-frame latency and helper-process memory remain pending.
+Sharing repeated embedded-font resources is a separate follow-up; standalone
+SVG bytes and caller-selected fonts remain intact in this change.
 
 Recent Linux results include about 10% lower long-source CPU and 6–8% lower dense
 text CPU. They establish neither a current native Mac speedup nor a general memory

@@ -1,5 +1,6 @@
 import SwiftUI
 import Testing
+import LecternCore
 #if os(macOS)
 import AppKit
 #endif
@@ -67,6 +68,25 @@ import AppKit
         #expect(sizes == [CGSize(width: 320, height: 240), CGSize(width: 640, height: 480), CGSize(width: 320, height: 240)])
         #expect(rasterizer.cacheCount == 3)
         #expect(SlideRasterizer.key(for: svg, size: sizes[0]).svg == svg)
+    }
+
+    @Test func independentlyPreparedDuplicateRequestsShareOneRender() async throws {
+        let active = SlideSnapshotRequest<Image>()
+        var renders = 0
+        let rasterizer = SlideRasterizer(snapshot: { _, _ in
+            renders += 1
+            return await active.value(timeout: .seconds(2), start: {}, stop: {})
+        })
+        let firstContent = PreviewContent(svg: svg)
+        let secondContent = PreviewContent(svg: String(decoding: Array(svg.utf8), as: UTF8.self))
+        let first = Task { await rasterizer.image(for: firstContent) }
+        try await until { renders == 1 }
+        let second = Task { await rasterizer.image(for: secondContent) }
+        try await until { rasterizer.pendingCount == 1 }
+        active.finish(Image(systemName: "square"))
+        #expect(await first.value != nil)
+        #expect(await second.value != nil)
+        #expect(renders == 1 && rasterizer.cacheCount == 1)
     }
 
     @Test func cancelledWaiterDoesNotRenderAndActiveCancellationReleasesQueue() async throws {
