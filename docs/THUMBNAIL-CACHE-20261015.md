@@ -75,23 +75,23 @@ Values are integers: **no actual bitmaps, WebKit or UI are exercised**.
 
 | Uploaded 28 SVGs, median CPU | Original | Candidate |
 | --- | ---: | ---: |
-| First identity preparation + insertion | 1,449.0 ms | 26.9 ms |
+| First identity preparation + insertion | 1,428.6 ms | 25.6 ms |
 | Fresh-record identity preparation | Included in lookup | 25.6 ms |
-| Repeated lookup alone | 505.9 ms | 9.2 ms |
-| Preparation + repeated lookup | 505.9 ms | 35.9 ms |
-| Reverse-order shared-content lookup | 595.8 ms | 0.060 ms |
-| Whole-process CPU, including file reads | 2.760 s | 0.279 s |
+| Repeated lookup alone | 503.8 ms | 9.9 ms |
+| Preparation + repeated lookup | 503.8 ms | 35.4 ms |
+| Reverse-order shared-content lookup | 581.7 ms | 0.058 ms |
+| Whole-process CPU, including file reads | 2.731 s | 0.270 s |
 | Lifetime peak RSS | 264.77 MiB | 264.89 MiB |
 
-Combined repeat preparation/lookup improves median paired CPU by 92.99% in this
-isolation. Elapsed medians closely match CPU (505.9 ms versus 35.9 ms combined).
+Combined repeat preparation/lookup improves median paired CPU by 92.94% in this
+isolation. Elapsed medians closely match CPU (503.8 ms versus 35.4 ms combined).
 The candidate accounts 134.27 MiB including hypothetical 640×360 RGBA bitmaps;
 that figure is not observed resident bitmap memory. Peak RSS is essentially
 unchanged because both processes retain two SVG copies. No general memory
 reduction or native Mac speedup is established.
 
 The adverse control uses 28 tiny, unique SVGs. Repeat lookup CPU increases from
-4 µs to 10 µs plus 2 µs preparation; whole-process CPU is 7.45 versus 7.64 ms,
+4 µs to 10 µs plus 3 µs preparation; whole-process CPU is 6.83 versus 7.27 ms,
 with 11.125 MiB peak RSS in both. Microsecond stage measurements include clock
 overhead and should not be interpreted as precise ratios.
 

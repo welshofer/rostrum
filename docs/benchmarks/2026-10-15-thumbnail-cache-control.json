@@ -1,5 +1,5 @@
 {
-  "executableSHA256": "38e3c285ac6573922904d3d783bc11986f4226802844b909d8560c345a4df3d3",
+  "executableSHA256": "0d99377417a53af8eea02a261ccb4be696ebab12a963b7867ef2372adfe57fe4",
   "inputs": [
     {
       "bytes": 111,
@@ -147,24 +147,24 @@
     {
       "pair": 0,
       "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.012734,
-      "processElapsedSeconds": 0.013195856008678675,
+      "processCPUSeconds": 0.009111000000000313,
+      "processElapsedSeconds": 0.009472826030105352,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 0.00012000000000000031,
-          "elapsedSeconds": 9.495997801423073e-05,
+          "cpuSeconds": 0.00010600000000000019,
+          "elapsedSeconds": 8.379301289096475e-05,
           "stage": "insert"
         },
         {
           "cpuSeconds": 4.000000000000531e-06,
-          "elapsedSeconds": 3.635010216385126e-06,
+          "elapsedSeconds": 3.795023076236248e-06,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 1.6999999999999654e-05,
-          "elapsedSeconds": 1.589301973581314e-05,
+          "cpuSeconds": 1.4999999999999389e-05,
+          "elapsedSeconds": 1.4802033547312021e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -176,34 +176,34 @@
       "accountedCacheBytes": 25807927,
       "pair": 0,
       "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.011111999999999999,
-      "processElapsedSeconds": 0.01146743498975411,
+      "processCPUSeconds": 0.00800100000000148,
+      "processElapsedSeconds": 0.008327720977831632,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 5.6000000000000494e-05,
-          "elapsedSeconds": 3.3168995287269354e-05,
+          "cpuSeconds": 4.799999999999943e-05,
+          "elapsedSeconds": 3.08050075545907e-05,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 8.599999999999927e-05,
-          "elapsedSeconds": 8.533598156645894e-05,
+          "cpuSeconds": 4.80000000000003e-05,
+          "elapsedSeconds": 4.7831039410084486e-05,
           "stage": "insert"
         },
         {
           "cpuSeconds": 2.0000000000002655e-06,
-          "elapsedSeconds": 2.0430306904017925e-06,
+          "elapsedSeconds": 2.0230072550475597e-06,
           "stage": "repeatPreparation"
         },
         {
           "cpuSeconds": 9.999999999999593e-06,
-          "elapsedSeconds": 9.5540308393538e-06,
+          "elapsedSeconds": 9.844021406024694e-06,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 1.4999999999999389e-05,
-          "elapsedSeconds": 1.5043013263493776e-05,
+          "cpuSeconds": 1.4000000000000123e-05,
+          "elapsedSeconds": 1.3739976566284895e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -215,34 +215,34 @@
       "accountedCacheBytes": 25807927,
       "pair": 1,
       "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.009292999999999994,
-      "processElapsedSeconds": 0.009552389034070075,
+      "processCPUSeconds": 0.00687599999999966,
+      "processElapsedSeconds": 0.007199075014796108,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 5.4999999999999494e-05,
-          "elapsedSeconds": 3.60840349458158e-05,
+          "cpuSeconds": 4.19999999999995e-05,
+          "elapsedSeconds": 2.5487039238214493e-05,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 0.00040399999999999985,
-          "elapsedSeconds": 0.00040292501216754317,
+          "cpuSeconds": 4.700000000000017e-05,
+          "elapsedSeconds": 4.616798833012581e-05,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 3.0000000000012655e-06,
-          "elapsedSeconds": 2.7339556254446507e-06,
+          "cpuSeconds": 2.999999999999531e-06,
+          "elapsedSeconds": 2.002983819693327e-06,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 9.999999999999593e-06,
-          "elapsedSeconds": 9.34401759877801e-06,
+          "cpuSeconds": 9.000000000000327e-06,
+          "elapsedSeconds": 8.952978532761335e-06,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 1.6999999999999654e-05,
-          "elapsedSeconds": 1.668499317020178e-05,
+          "cpuSeconds": 1.4999999999999389e-05,
+          "elapsedSeconds": 1.4421006198972464e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -253,158 +253,158 @@
     {
       "pair": 1,
       "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.007799999999999998,
-      "processElapsedSeconds": 0.008134495990816504,
+      "processCPUSeconds": 0.006658000000002051,
+      "processElapsedSeconds": 0.006929316034074873,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 9.099999999999994e-05,
-          "elapsedSeconds": 7.169600576162338e-05,
+          "cpuSeconds": 8.400000000000074e-05,
+          "elapsedSeconds": 6.73389877192676e-05,
           "stage": "insert"
         },
         {
           "cpuSeconds": 3.9999999999996635e-06,
-          "elapsedSeconds": 3.564986400306225e-06,
-          "stage": "repeatLookup"
-        },
-        {
-          "cpuSeconds": 1.5000000000000256e-05,
-          "elapsedSeconds": 1.4260993339121342e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 3127,
-      "variant": "baseline",
-      "warmup": false
-    },
-    {
-      "pair": 2,
-      "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.007446999999999992,
-      "processElapsedSeconds": 0.007691581966355443,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 0.00013899999999999937,
-          "elapsedSeconds": 0.0001210490008816123,
-          "stage": "insert"
-        },
-        {
-          "cpuSeconds": 3.9999999999996635e-06,
-          "elapsedSeconds": 3.5149860195815563e-06,
-          "stage": "repeatLookup"
-        },
-        {
-          "cpuSeconds": 1.5000000000000256e-05,
-          "elapsedSeconds": 1.485203392803669e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 3127,
-      "variant": "baseline",
-      "warmup": false
-    },
-    {
-      "accountedCacheBytes": 25807927,
-      "pair": 2,
-      "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.006822000000000002,
-      "processElapsedSeconds": 0.007316798961255699,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 4.6000000000000034e-05,
-          "elapsedSeconds": 2.738996408879757e-05,
-          "stage": "initialPreparation"
-        },
-        {
-          "cpuSeconds": 4.80000000000003e-05,
-          "elapsedSeconds": 4.804099444299936e-05,
-          "stage": "insert"
-        },
-        {
-          "cpuSeconds": 2.999999999999531e-06,
-          "elapsedSeconds": 1.9830185920000076e-06,
-          "stage": "repeatPreparation"
-        },
-        {
-          "cpuSeconds": 9.000000000000327e-06,
-          "elapsedSeconds": 9.443960152566433e-06,
+          "elapsedSeconds": 3.735010977834463e-06,
           "stage": "repeatLookup"
         },
         {
           "cpuSeconds": 1.4000000000000123e-05,
-          "elapsedSeconds": 1.4131015632301569e-05,
+          "elapsedSeconds": 1.4031014870852232e-05,
           "stage": "sharedLookup"
         }
       ],
       "svgBytes": 3127,
-      "variant": "candidate",
+      "variant": "baseline",
       "warmup": false
     },
     {
-      "accountedCacheBytes": 25807927,
-      "pair": 3,
+      "pair": 2,
       "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.006253999999999996,
-      "processElapsedSeconds": 0.006447947002016008,
+      "processCPUSeconds": 0.007970000000000699,
+      "processElapsedSeconds": 0.008222375006880611,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 4.200000000000037e-05,
-          "elapsedSeconds": 2.5246990844607353e-05,
-          "stage": "initialPreparation"
-        },
-        {
-          "cpuSeconds": 4.69999999999993e-05,
-          "elapsedSeconds": 4.693999653682113e-05,
-          "stage": "insert"
-        },
-        {
-          "cpuSeconds": 2.0000000000002655e-06,
-          "elapsedSeconds": 2.1040323190391064e-06,
-          "stage": "repeatPreparation"
-        },
-        {
-          "cpuSeconds": 9.999999999999593e-06,
-          "elapsedSeconds": 9.1140391305089e-06,
-          "stage": "repeatLookup"
-        },
-        {
-          "cpuSeconds": 1.5000000000000256e-05,
-          "elapsedSeconds": 1.422100467607379e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 3127,
-      "variant": "candidate",
-      "warmup": false
-    },
-    {
-      "pair": 3,
-      "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.007290999999999999,
-      "processElapsedSeconds": 0.00747477199183777,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 0.00015200000000000023,
-          "elapsedSeconds": 0.0001272779772989452,
+          "cpuSeconds": 9.49999999999996e-05,
+          "elapsedSeconds": 7.279700366780162e-05,
           "stage": "insert"
         },
         {
           "cpuSeconds": 4.999999999999796e-06,
-          "elapsedSeconds": 3.8060243241488934e-06,
+          "elapsedSeconds": 3.966037184000015e-06,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 9.000000000000067e-05,
-          "elapsedSeconds": 8.859101217240095e-05,
+          "cpuSeconds": 1.4000000000000123e-05,
+          "elapsedSeconds": 1.443101791664958e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 3127,
+      "variant": "baseline",
+      "warmup": false
+    },
+    {
+      "accountedCacheBytes": 25807927,
+      "pair": 2,
+      "peakRSSBytes": 11665408,
+      "processCPUSeconds": 0.009374999999999467,
+      "processElapsedSeconds": 0.009663311997428536,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
+        {
+          "cpuSeconds": 5.9000000000000025e-05,
+          "elapsedSeconds": 3.643298987299204e-05,
+          "stage": "initialPreparation"
+        },
+        {
+          "cpuSeconds": 6.0999999999998555e-05,
+          "elapsedSeconds": 6.010895594954491e-05,
+          "stage": "insert"
+        },
+        {
+          "cpuSeconds": 2.0000000000002655e-06,
+          "elapsedSeconds": 2.093031071126461e-06,
+          "stage": "repeatPreparation"
+        },
+        {
+          "cpuSeconds": 1.1000000000000593e-05,
+          "elapsedSeconds": 1.0285002645105124e-05,
+          "stage": "repeatLookup"
+        },
+        {
+          "cpuSeconds": 1.5000000000001124e-05,
+          "elapsedSeconds": 1.4701043255627155e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 3127,
+      "variant": "candidate",
+      "warmup": false
+    },
+    {
+      "accountedCacheBytes": 25807927,
+      "pair": 3,
+      "peakRSSBytes": 11665408,
+      "processCPUSeconds": 0.007268000000000718,
+      "processElapsedSeconds": 0.007631093030795455,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
+        {
+          "cpuSeconds": 4.8999999999999565e-05,
+          "elapsedSeconds": 3.127596573904157e-05,
+          "stage": "initialPreparation"
+        },
+        {
+          "cpuSeconds": 4.99999999999997e-05,
+          "elapsedSeconds": 4.953297320753336e-05,
+          "stage": "insert"
+        },
+        {
+          "cpuSeconds": 2.0000000000002655e-06,
+          "elapsedSeconds": 2.0730076357722282e-06,
+          "stage": "repeatPreparation"
+        },
+        {
+          "cpuSeconds": 9.999999999999593e-06,
+          "elapsedSeconds": 9.184004738926888e-06,
+          "stage": "repeatLookup"
+        },
+        {
+          "cpuSeconds": 1.5000000000000256e-05,
+          "elapsedSeconds": 1.4792021829634905e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 3127,
+      "variant": "candidate",
+      "warmup": false
+    },
+    {
+      "pair": 3,
+      "peakRSSBytes": 11665408,
+      "processCPUSeconds": 0.00683200000000328,
+      "processElapsedSeconds": 0.007071400992572308,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
+        {
+          "cpuSeconds": 8.799999999999954e-05,
+          "elapsedSeconds": 6.876204861328006e-05,
+          "stage": "insert"
+        },
+        {
+          "cpuSeconds": 3.9999999999996635e-06,
+          "elapsedSeconds": 3.8050347939133644e-06,
+          "stage": "repeatLookup"
+        },
+        {
+          "cpuSeconds": 1.4000000000000123e-05,
+          "elapsedSeconds": 1.3800978194922209e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -415,24 +415,24 @@
     {
       "pair": 4,
       "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.008889999999999995,
-      "processElapsedSeconds": 0.009163694980088621,
+      "processCPUSeconds": 0.008718000000000004,
+      "processElapsedSeconds": 0.008996016986202449,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 9.800000000000086e-05,
-          "elapsedSeconds": 7.875601295381784e-05,
+          "cpuSeconds": 0.00010299999999999893,
+          "elapsedSeconds": 8.233200060203671e-05,
           "stage": "insert"
         },
         {
           "cpuSeconds": 5.000000000001531e-06,
-          "elapsedSeconds": 3.7659774534404278e-06,
+          "elapsedSeconds": 4.065979737788439e-06,
           "stage": "repeatLookup"
         },
         {
           "cpuSeconds": 1.4999999999999389e-05,
-          "elapsedSeconds": 1.470197457820177e-05,
+          "elapsedSeconds": 1.454097218811512e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -444,34 +444,168 @@
       "accountedCacheBytes": 25807927,
       "pair": 4,
       "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.007721000000000006,
-      "processElapsedSeconds": 0.008013427024707198,
+      "processCPUSeconds": 0.008100999999999914,
+      "processElapsedSeconds": 0.008323970017954707,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
+        {
+          "cpuSeconds": 5.199999999999996e-05,
+          "elapsedSeconds": 3.095500869676471e-05,
+          "stage": "initialPreparation"
+        },
+        {
+          "cpuSeconds": 5.400000000000023e-05,
+          "elapsedSeconds": 5.335896275937557e-05,
+          "stage": "insert"
+        },
+        {
+          "cpuSeconds": 2.999999999999531e-06,
+          "elapsedSeconds": 2.0030420273542404e-06,
+          "stage": "repeatPreparation"
+        },
+        {
+          "cpuSeconds": 1.000000000000046e-05,
+          "elapsedSeconds": 9.845010936260223e-06,
+          "stage": "repeatLookup"
+        },
+        {
+          "cpuSeconds": 1.5000000000000256e-05,
+          "elapsedSeconds": 1.4780962374061346e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 3127,
+      "variant": "candidate",
+      "warmup": false
+    },
+    {
+      "accountedCacheBytes": 25807927,
+      "pair": 5,
+      "peakRSSBytes": 11665408,
+      "processCPUSeconds": 0.00793499999999936,
+      "processElapsedSeconds": 0.008187965024262667,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
+        {
+          "cpuSeconds": 4.4000000000000636e-05,
+          "elapsedSeconds": 2.698996104300022e-05,
+          "stage": "initialPreparation"
+        },
+        {
+          "cpuSeconds": 4.700000000000017e-05,
+          "elapsedSeconds": 4.685897147282958e-05,
+          "stage": "insert"
+        },
+        {
+          "cpuSeconds": 2.999999999999531e-06,
+          "elapsedSeconds": 2.1129962988197803e-06,
+          "stage": "repeatPreparation"
+        },
+        {
+          "cpuSeconds": 9.000000000000327e-06,
+          "elapsedSeconds": 9.27300425246358e-06,
+          "stage": "repeatLookup"
+        },
+        {
+          "cpuSeconds": 1.4999999999999389e-05,
+          "elapsedSeconds": 1.4531018678098917e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 3127,
+      "variant": "candidate",
+      "warmup": false
+    },
+    {
+      "pair": 5,
+      "peakRSSBytes": 11665408,
+      "processCPUSeconds": 0.006720999999998867,
+      "processElapsedSeconds": 0.007001772988587618,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
+        {
+          "cpuSeconds": 9.299999999999933e-05,
+          "elapsedSeconds": 7.100502261891961e-05,
+          "stage": "insert"
+        },
+        {
+          "cpuSeconds": 3.9999999999996635e-06,
+          "elapsedSeconds": 3.865978214889765e-06,
+          "stage": "repeatLookup"
+        },
+        {
+          "cpuSeconds": 1.5000000000000256e-05,
+          "elapsedSeconds": 1.4941964764147997e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 3127,
+      "variant": "baseline",
+      "warmup": false
+    },
+    {
+      "pair": 6,
+      "peakRSSBytes": 11665408,
+      "processCPUSeconds": 0.00682300000000069,
+      "processElapsedSeconds": 0.007096028013620526,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
+        {
+          "cpuSeconds": 8.799999999999954e-05,
+          "elapsedSeconds": 6.966304499655962e-05,
+          "stage": "insert"
+        },
+        {
+          "cpuSeconds": 2.999999999999531e-06,
+          "elapsedSeconds": 3.635010216385126e-06,
+          "stage": "repeatLookup"
+        },
+        {
+          "cpuSeconds": 1.4000000000000123e-05,
+          "elapsedSeconds": 1.4271005056798458e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 3127,
+      "variant": "baseline",
+      "warmup": false
+    },
+    {
+      "accountedCacheBytes": 25807927,
+      "pair": 6,
+      "peakRSSBytes": 11665408,
+      "processCPUSeconds": 0.006920000000001814,
+      "processElapsedSeconds": 0.007135380001273006,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
           "cpuSeconds": 4.2999999999999636e-05,
-          "elapsedSeconds": 2.6509049348533154e-05,
+          "elapsedSeconds": 2.669903915375471e-05,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 4.8999999999999565e-05,
-          "elapsedSeconds": 4.849198739975691e-05,
+          "cpuSeconds": 4.80000000000003e-05,
+          "elapsedSeconds": 4.761002492159605e-05,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 2.0000000000002655e-06,
-          "elapsedSeconds": 2.102984581142664e-06,
+          "cpuSeconds": 3.000000000000398e-06,
+          "elapsedSeconds": 2.0730076357722282e-06,
           "stage": "repeatPreparation"
         },
         {
           "cpuSeconds": 9.999999999999593e-06,
-          "elapsedSeconds": 9.323994163423777e-06,
+          "elapsedSeconds": 1.0035000741481781e-05,
           "stage": "repeatLookup"
         },
         {
           "cpuSeconds": 1.5000000000000256e-05,
-          "elapsedSeconds": 1.4401040971279144e-05,
+          "elapsedSeconds": 1.4471006579697132e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -481,198 +615,64 @@
     },
     {
       "accountedCacheBytes": 25807927,
-      "pair": 5,
+      "pair": 7,
       "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.007638000000000006,
-      "processElapsedSeconds": 0.007836706005036831,
+      "processCPUSeconds": 0.007103000000001636,
+      "processElapsedSeconds": 0.007327178958803415,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 4.900000000000043e-05,
-          "elapsedSeconds": 2.9011978767812252e-05,
+          "cpuSeconds": 4.30000000000005e-05,
+          "elapsedSeconds": 2.620898885652423e-05,
           "stage": "initialPreparation"
         },
         {
           "cpuSeconds": 4.900000000000043e-05,
-          "elapsedSeconds": 4.8411020543426275e-05,
+          "elapsedSeconds": 4.7960958909243345e-05,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 2.0000000000002655e-06,
-          "elapsedSeconds": 2.0129955373704433e-06,
+          "cpuSeconds": 1.999999999999398e-06,
+          "elapsedSeconds": 2.2529857233166695e-06,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 9.999999999999593e-06,
-          "elapsedSeconds": 9.112991392612457e-06,
+          "cpuSeconds": 1.000000000000046e-05,
+          "elapsedSeconds": 9.384006261825562e-06,
           "stage": "repeatLookup"
         },
+        {
+          "cpuSeconds": 1.4000000000000123e-05,
+          "elapsedSeconds": 1.3860000763088465e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 3127,
+      "variant": "candidate",
+      "warmup": false
+    },
+    {
+      "pair": 7,
+      "peakRSSBytes": 11665408,
+      "processCPUSeconds": 0.007237000000000382,
+      "processElapsedSeconds": 0.007528080954216421,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
         {
           "cpuSeconds": 0.00010000000000000026,
-          "elapsedSeconds": 9.655201574787498e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 3127,
-      "variant": "candidate",
-      "warmup": false
-    },
-    {
-      "pair": 5,
-      "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.007084999999999987,
-      "processElapsedSeconds": 0.007502152002416551,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 9.19999999999992e-05,
-          "elapsedSeconds": 7.476104656234384e-05,
-          "stage": "insert"
-        },
-        {
-          "cpuSeconds": 4.999999999999796e-06,
-          "elapsedSeconds": 3.8060243241488934e-06,
-          "stage": "repeatLookup"
-        },
-        {
-          "cpuSeconds": 1.4000000000000123e-05,
-          "elapsedSeconds": 1.38899777084589e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 3127,
-      "variant": "baseline",
-      "warmup": false
-    },
-    {
-      "pair": 6,
-      "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.007929999999999979,
-      "processElapsedSeconds": 0.008297546009998769,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 9.699999999999986e-05,
-          "elapsedSeconds": 7.742398884147406e-05,
+          "elapsedSeconds": 7.444998482242227e-05,
           "stage": "insert"
         },
         {
           "cpuSeconds": 3.9999999999996635e-06,
-          "elapsedSeconds": 3.6659766919910908e-06,
+          "elapsedSeconds": 3.855035174638033e-06,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 1.5000000000000256e-05,
-          "elapsedSeconds": 1.4512042980641127e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 3127,
-      "variant": "baseline",
-      "warmup": false
-    },
-    {
-      "accountedCacheBytes": 25807927,
-      "pair": 6,
-      "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.006995999999999988,
-      "processElapsedSeconds": 0.007200547028332949,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 4.49999999999999e-05,
-          "elapsedSeconds": 2.89019662886858e-05,
-          "stage": "initialPreparation"
-        },
-        {
-          "cpuSeconds": 4.8999999999999565e-05,
-          "elapsedSeconds": 4.8431975301355124e-05,
-          "stage": "insert"
-        },
-        {
-          "cpuSeconds": 2.0000000000002655e-06,
-          "elapsedSeconds": 1.9830185920000076e-06,
-          "stage": "repeatPreparation"
-        },
-        {
-          "cpuSeconds": 9.999999999999593e-06,
-          "elapsedSeconds": 9.20402817428112e-06,
-          "stage": "repeatLookup"
-        },
-        {
-          "cpuSeconds": 1.4000000000000123e-05,
-          "elapsedSeconds": 1.3810989912599325e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 3127,
-      "variant": "candidate",
-      "warmup": false
-    },
-    {
-      "accountedCacheBytes": 25807927,
-      "pair": 7,
-      "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.007651999999999978,
-      "processElapsedSeconds": 0.007841964019462466,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 4.399999999999977e-05,
-          "elapsedSeconds": 2.5958986952900887e-05,
-          "stage": "initialPreparation"
-        },
-        {
-          "cpuSeconds": 4.49999999999999e-05,
-          "elapsedSeconds": 4.502601223066449e-05,
-          "stage": "insert"
-        },
-        {
-          "cpuSeconds": 2.0000000000002655e-06,
-          "elapsedSeconds": 2.0230072550475597e-06,
-          "stage": "repeatPreparation"
-        },
-        {
-          "cpuSeconds": 9.999999999999593e-06,
-          "elapsedSeconds": 9.534007403999567e-06,
-          "stage": "repeatLookup"
-        },
-        {
-          "cpuSeconds": 1.5000000000000256e-05,
-          "elapsedSeconds": 1.4782010111957788e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 3127,
-      "variant": "candidate",
-      "warmup": false
-    },
-    {
-      "pair": 7,
-      "peakRSSBytes": 11665408,
-      "processCPUSeconds": 0.006653999999999979,
-      "processElapsedSeconds": 0.007009164022747427,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 8.69999999999994e-05,
-          "elapsedSeconds": 7.092399755492806e-05,
-          "stage": "insert"
-        },
-        {
-          "cpuSeconds": 3.9999999999996635e-06,
-          "elapsedSeconds": 3.5050325095653534e-06,
-          "stage": "repeatLookup"
-        },
-        {
-          "cpuSeconds": 1.4000000000000123e-05,
-          "elapsedSeconds": 1.3760989531874657e-05,
+          "cpuSeconds": 1.599999999999952e-05,
+          "elapsedSeconds": 1.5223049558699131e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -684,12 +684,12 @@
   "schemaVersion": 1,
   "scope": "Cache-only Swift -O probe (build mode supplied by caller). No bitmap allocations, WebKit, UI or deck generation. Input reads/decoding are outside stage timings, inside process CPU/elapsed and lifetime peak RSS. Both copies of all SVGs remain live. Hashing inputs can warm filesystem caches. Preparation and lookup are separate, nonoverlapping stages. Native Mac performance requires remeasurement.",
   "sourceDirty": true,
-  "sourceRevision": "e35bf241724775d17af43c9026c4eb335505ea49",
+  "sourceRevision": "c0e9cb025d84b8e75ab68b987a1b6a9d67d1d56b",
   "sourceSHA256": {
     "Lectern/Sources/LecternCore/Inspection/CostLimitedCache.swift": "43e229d9ac543607a74bd6abdc09127d92fa8fcd33710d5359d16c0742febda7",
     "Lectern/Sources/LecternCore/Inspection/PreviewContent.swift": "181ff3e42e7bf93f358cfdc5599c993926d0f2fc8efa72380c80767a55d7e33e",
     "Lectern/Sources/LecternCore/Rendering/PipelineTrace.swift": "bdd6be8067da8698beae35ff4c33b250b97ba92e04df3b75cac89256ad3ef309",
-    "Tools/preview-profile/cache-probe.swift": "bc282606adfd9e55a01d619bb4203f39d117e2620fd80f402a6f5b81bc85a814"
+    "Tools/preview-profile/cache-probe.swift": "d5cf797e1c9417200d0ae41bb7ff72ede81b8050e9376d71226402e655a6385e"
   },
   "swift": "Swift version 6.1.3 (swift-6.1.3-RELEASE)\nTarget: x86_64-unknown-linux-gnu"
 }

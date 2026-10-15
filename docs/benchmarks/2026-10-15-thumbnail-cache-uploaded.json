@@ -1,5 +1,5 @@
 {
-  "executableSHA256": "38e3c285ac6573922904d3d783bc11986f4226802844b909d8560c345a4df3d3",
+  "executableSHA256": "0d99377417a53af8eea02a261ccb4be696ebab12a963b7867ef2372adfe57fe4",
   "inputs": [
     {
       "bytes": 7030484,
@@ -146,25 +146,25 @@
   "samples": [
     {
       "pair": 0,
-      "peakRSSBytes": 277630976,
-      "processCPUSeconds": 2.837921,
-      "processElapsedSeconds": 2.838716910977382,
+      "peakRSSBytes": 277626880,
+      "processCPUSeconds": 2.697244,
+      "processElapsedSeconds": 2.7000620390172116,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 1.4571070000000002,
-          "elapsedSeconds": 1.4572080579819158,
+          "cpuSeconds": 1.4093289999999998,
+          "elapsedSeconds": 1.4092697959858924,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.5333079999999999,
-          "elapsedSeconds": 0.5332932779565454,
+          "cpuSeconds": 0.49673600000000007,
+          "elapsedSeconds": 0.49674790003336966,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 0.6233560000000002,
-          "elapsedSeconds": 0.6232593950117007,
+          "cpuSeconds": 0.5746480000000003,
+          "elapsedSeconds": 0.5746628289925866,
           "stage": "sharedLookup"
         }
       ],
@@ -175,35 +175,35 @@
     {
       "accountedCacheBytes": 140797337,
       "pair": 0,
-      "peakRSSBytes": 277753856,
-      "processCPUSeconds": 0.2942760000000002,
-      "processElapsedSeconds": 0.29497518501011655,
+      "peakRSSBytes": 277745664,
+      "processCPUSeconds": 0.27189499999999955,
+      "processElapsedSeconds": 0.2722929369774647,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 0.02507200000000001,
-          "elapsedSeconds": 0.02502042701235041,
+          "cpuSeconds": 0.025350999999999985,
+          "elapsedSeconds": 0.025302855006884784,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 0.00015100000000001224,
-          "elapsedSeconds": 0.00015001097926869988,
+          "cpuSeconds": 0.00014799999999998148,
+          "elapsedSeconds": 0.0001469670096412301,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.025144,
-          "elapsedSeconds": 0.025138741999398917,
+          "cpuSeconds": 0.025304999999999994,
+          "elapsedSeconds": 0.025306880997959524,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 0.009006999999999987,
-          "elapsedSeconds": 0.008996347023639828,
+          "cpuSeconds": 0.008987000000000023,
+          "elapsedSeconds": 0.008981655992101878,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 6.40000000000085e-05,
-          "elapsedSeconds": 6.12309668213129e-05,
+          "cpuSeconds": 5.6000000000000494e-05,
+          "elapsedSeconds": 5.426100688055158e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -214,35 +214,35 @@
     {
       "accountedCacheBytes": 140797337,
       "pair": 1,
-      "peakRSSBytes": 277757952,
-      "processCPUSeconds": 0.27942100000000036,
-      "processElapsedSeconds": 0.28035302000353113,
+      "peakRSSBytes": 277749760,
+      "processCPUSeconds": 0.26849199999999995,
+      "processElapsedSeconds": 0.26897473505232483,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 0.025342000000000003,
-          "elapsedSeconds": 0.025292036996688694,
+          "cpuSeconds": 0.02512500000000001,
+          "elapsedSeconds": 0.025078328035306185,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 0.000135000000000024,
-          "elapsedSeconds": 0.00013398798182606697,
+          "cpuSeconds": 0.00012899999999999023,
+          "elapsedSeconds": 0.00012753898045048118,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.025605000000000017,
-          "elapsedSeconds": 0.025599160988349468,
+          "cpuSeconds": 0.025478,
+          "elapsedSeconds": 0.025472706009168178,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 0.009201000000000015,
-          "elapsedSeconds": 0.009195221995469183,
+          "cpuSeconds": 0.009971000000000035,
+          "elapsedSeconds": 0.009962642972823232,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 5.899999999997574e-05,
-          "elapsedSeconds": 5.722400965169072e-05,
+          "cpuSeconds": 5.900000000003125e-05,
+          "elapsedSeconds": 5.5771961342543364e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -253,24 +253,24 @@
     {
       "pair": 1,
       "peakRSSBytes": 277626880,
-      "processCPUSeconds": 2.749885,
-      "processElapsedSeconds": 2.750624603999313,
+      "processCPUSeconds": 2.671427,
+      "processElapsedSeconds": 2.6721328050480224,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 1.4357490000000002,
-          "elapsedSeconds": 1.435848894994706,
+          "cpuSeconds": 1.402566,
+          "elapsedSeconds": 1.4025361469830386,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.5038850000000001,
-          "elapsedSeconds": 0.5038899790379219,
+          "cpuSeconds": 0.5024470000000001,
+          "elapsedSeconds": 0.5024831229820848,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 0.6030340000000001,
-          "elapsedSeconds": 0.6031695950077847,
+          "cpuSeconds": 0.5661829999999997,
+          "elapsedSeconds": 0.5661710920394398,
           "stage": "sharedLookup"
         }
       ],
@@ -280,25 +280,25 @@
     },
     {
       "pair": 2,
-      "peakRSSBytes": 277630976,
-      "processCPUSeconds": 2.772519,
-      "processElapsedSeconds": 2.7764842080068775,
+      "peakRSSBytes": 277626880,
+      "processCPUSeconds": 2.773935,
+      "processElapsedSeconds": 2.774390808015596,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 1.4490020000000001,
-          "elapsedSeconds": 1.449212702049408,
+          "cpuSeconds": 1.471298,
+          "elapsedSeconds": 1.471232628042344,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.5111439999999998,
-          "elapsedSeconds": 0.5112143619917333,
+          "cpuSeconds": 0.5084030000000002,
+          "elapsedSeconds": 0.5084228530176915,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 0.6092279999999999,
-          "elapsedSeconds": 0.610292780038435,
+          "cpuSeconds": 0.5758719999999999,
+          "elapsedSeconds": 0.5758774660062045,
           "stage": "sharedLookup"
         }
       ],
@@ -310,34 +310,34 @@
       "accountedCacheBytes": 140797337,
       "pair": 2,
       "peakRSSBytes": 277745664,
-      "processCPUSeconds": 0.2863930000000006,
-      "processElapsedSeconds": 0.2873136420384981,
+      "processCPUSeconds": 0.27046799999999876,
+      "processElapsedSeconds": 0.27092614001594484,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 0.027777999999999997,
-          "elapsedSeconds": 0.027737186988815665,
+          "cpuSeconds": 0.025698,
+          "elapsedSeconds": 0.025649745017290115,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 0.00012999999999999123,
-          "elapsedSeconds": 0.00012902100570499897,
+          "cpuSeconds": 0.00012799999999998923,
+          "elapsedSeconds": 0.00012641598004847765,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.028566000000000008,
-          "elapsedSeconds": 0.02856086299289018,
+          "cpuSeconds": 0.02620599999999998,
+          "elapsedSeconds": 0.026201188971754164,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 0.010176000000000018,
-          "elapsedSeconds": 0.010165884043090045,
+          "cpuSeconds": 0.009184999999999999,
+          "elapsedSeconds": 0.009175480983685702,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 5.8000000000002494e-05,
-          "elapsedSeconds": 5.610298831015825e-05,
+          "cpuSeconds": 5.700000000002925e-05,
+          "elapsedSeconds": 5.501095438376069e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -349,34 +349,34 @@
       "accountedCacheBytes": 140797337,
       "pair": 3,
       "peakRSSBytes": 277757952,
-      "processCPUSeconds": 0.26987100000000075,
-      "processElapsedSeconds": 0.2705880160210654,
+      "processCPUSeconds": 0.27135600000000004,
+      "processElapsedSeconds": 0.27178932999959216,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 0.02674500000000002,
-          "elapsedSeconds": 0.0266972619574517,
+          "cpuSeconds": 0.02609900000000001,
+          "elapsedSeconds": 0.026053380977828056,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 0.000130000000000019,
-          "elapsedSeconds": 0.00012946099741384387,
+          "cpuSeconds": 0.00012799999999998923,
+          "elapsedSeconds": 0.00012701802188530564,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.027539000000000008,
-          "elapsedSeconds": 0.027534177992492914,
+          "cpuSeconds": 0.02669100000000002,
+          "elapsedSeconds": 0.026686523982789367,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 0.008335000000000037,
-          "elapsedSeconds": 0.008327661023940891,
+          "cpuSeconds": 0.00988699999999998,
+          "elapsedSeconds": 0.009879821038339287,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 6.0000000000004494e-05,
-          "elapsedSeconds": 5.757500184699893e-05,
+          "cpuSeconds": 5.8000000000002494e-05,
+          "elapsedSeconds": 5.556200630962849e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -386,25 +386,25 @@
     },
     {
       "pair": 3,
-      "peakRSSBytes": 277741568,
-      "processCPUSeconds": 2.8642100000000004,
-      "processElapsedSeconds": 2.864996831980534,
+      "peakRSSBytes": 277630976,
+      "processCPUSeconds": 2.731035999999999,
+      "processElapsedSeconds": 2.73259202495683,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 1.482092,
-          "elapsedSeconds": 1.4822467810008675,
+          "cpuSeconds": 1.428594,
+          "elapsedSeconds": 1.4285645879572257,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.5115069999999999,
-          "elapsedSeconds": 0.5115004350082017,
+          "cpuSeconds": 0.5037880000000001,
+          "elapsedSeconds": 0.5038201439892873,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 0.6134390000000001,
-          "elapsedSeconds": 0.6134883670019917,
+          "cpuSeconds": 0.584848,
+          "elapsedSeconds": 0.5848360590171069,
           "stage": "sharedLookup"
         }
       ],
@@ -415,24 +415,24 @@
     {
       "pair": 4,
       "peakRSSBytes": 277614592,
-      "processCPUSeconds": 2.6864149999999993,
-      "processElapsedSeconds": 2.6869270330062136,
+      "processCPUSeconds": 2.720587,
+      "processElapsedSeconds": 2.7216336079873145,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 1.408251,
-          "elapsedSeconds": 1.4081473590340465,
+          "cpuSeconds": 1.426219,
+          "elapsedSeconds": 1.4261569409864023,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.5037129999999999,
-          "elapsedSeconds": 0.5037138379993849,
+          "cpuSeconds": 0.49924199999999996,
+          "elapsedSeconds": 0.4992576270014979,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 0.5745260000000001,
-          "elapsedSeconds": 0.5745581800001673,
+          "cpuSeconds": 0.584527,
+          "elapsedSeconds": 0.5845274279708974,
           "stage": "sharedLookup"
         }
       ],
@@ -443,74 +443,74 @@
     {
       "accountedCacheBytes": 140797337,
       "pair": 4,
+      "peakRSSBytes": 277749760,
+      "processCPUSeconds": 0.27024400000000093,
+      "processElapsedSeconds": 0.2706418290035799,
+      "receipt": 756,
+      "slides": 28,
+      "stages": [
+        {
+          "cpuSeconds": 0.024975999999999998,
+          "elapsedSeconds": 0.024926378042437136,
+          "stage": "initialPreparation"
+        },
+        {
+          "cpuSeconds": 0.00014599999999997948,
+          "elapsedSeconds": 0.0001448539551347494,
+          "stage": "insert"
+        },
+        {
+          "cpuSeconds": 0.025146,
+          "elapsedSeconds": 0.02514162502484396,
+          "stage": "repeatPreparation"
+        },
+        {
+          "cpuSeconds": 0.008487999999999996,
+          "elapsedSeconds": 0.008478712989017367,
+          "stage": "repeatLookup"
+        },
+        {
+          "cpuSeconds": 5.8000000000002494e-05,
+          "elapsedSeconds": 5.5962998885661364e-05,
+          "stage": "sharedLookup"
+        }
+      ],
+      "svgBytes": 114992537,
+      "variant": "candidate",
+      "warmup": false
+    },
+    {
+      "accountedCacheBytes": 140797337,
+      "pair": 5,
       "peakRSSBytes": 277757952,
-      "processCPUSeconds": 0.29188999999999987,
-      "processElapsedSeconds": 0.2922887400491163,
+      "processCPUSeconds": 0.2699959999999998,
+      "processElapsedSeconds": 0.2704487530281767,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 0.02698600000000001,
-          "elapsedSeconds": 0.026916757982689887,
+          "cpuSeconds": 0.025756,
+          "elapsedSeconds": 0.025707471009809524,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 0.000128000000000017,
-          "elapsedSeconds": 0.0001274279784411192,
+          "cpuSeconds": 0.00012899999999999023,
+          "elapsedSeconds": 0.00012831896310672164,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.025002999999999997,
-          "elapsedSeconds": 0.025012396974489093,
+          "cpuSeconds": 0.025389999999999996,
+          "elapsedSeconds": 0.02538603695575148,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 0.009033000000000013,
-          "elapsedSeconds": 0.009027173975482583,
+          "cpuSeconds": 0.01190800000000003,
+          "elapsedSeconds": 0.011911608977243304,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 5.899999999997574e-05,
-          "elapsedSeconds": 5.6653982028365135e-05,
-          "stage": "sharedLookup"
-        }
-      ],
-      "svgBytes": 114992537,
-      "variant": "candidate",
-      "warmup": false
-    },
-    {
-      "accountedCacheBytes": 140797337,
-      "pair": 5,
-      "peakRSSBytes": 277733376,
-      "processCPUSeconds": 0.2596369999999999,
-      "processElapsedSeconds": 0.26004948100307956,
-      "receipt": 756,
-      "slides": 28,
-      "stages": [
-        {
-          "cpuSeconds": 0.025196999999999997,
-          "elapsedSeconds": 0.02514784794766456,
-          "stage": "initialPreparation"
-        },
-        {
-          "cpuSeconds": 0.00013099999999999223,
-          "elapsedSeconds": 0.000130551983602345,
-          "stage": "insert"
-        },
-        {
-          "cpuSeconds": 0.02523399999999998,
-          "elapsedSeconds": 0.025229769002180547,
-          "stage": "repeatPreparation"
-        },
-        {
-          "cpuSeconds": 0.007803999999999978,
-          "elapsedSeconds": 0.00779710803180933,
-          "stage": "repeatLookup"
-        },
-        {
-          "cpuSeconds": 6.099999999997774e-05,
-          "elapsedSeconds": 5.89670380577445e-05,
+          "cpuSeconds": 5.6000000000000494e-05,
+          "elapsedSeconds": 5.4119969718158245e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -520,25 +520,25 @@
     },
     {
       "pair": 5,
-      "peakRSSBytes": 277626880,
-      "processCPUSeconds": 2.8013610000000035,
-      "processElapsedSeconds": 2.805715586990118,
+      "peakRSSBytes": 277581824,
+      "processCPUSeconds": 2.7603480000000005,
+      "processElapsedSeconds": 2.760799622046761,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 1.472919,
-          "elapsedSeconds": 1.476725984015502,
+          "cpuSeconds": 1.450725,
+          "elapsedSeconds": 1.4506452479981817,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.511652,
-          "elapsedSeconds": 0.5116650789859705,
+          "cpuSeconds": 0.517007,
+          "elapsedSeconds": 0.5170109730097465,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 0.595758,
-          "elapsedSeconds": 0.5958076220122166,
+          "cpuSeconds": 0.5827439999999999,
+          "elapsedSeconds": 0.5827329449821264,
           "stage": "sharedLookup"
         }
       ],
@@ -549,24 +549,24 @@
     {
       "pair": 6,
       "peakRSSBytes": 277626880,
-      "processCPUSeconds": 2.7503199999999994,
-      "processElapsedSeconds": 2.7508540980052203,
+      "processCPUSeconds": 2.730042000000002,
+      "processElapsedSeconds": 2.7304876390262507,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 1.462736,
-          "elapsedSeconds": 1.4626766000292264,
+          "cpuSeconds": 1.424607,
+          "elapsedSeconds": 1.4245511760236695,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.5016640000000001,
-          "elapsedSeconds": 0.5016795910196379,
+          "cpuSeconds": 0.5136940000000001,
+          "elapsedSeconds": 0.5137036539963447,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 0.5796040000000002,
-          "elapsedSeconds": 0.5796097659622319,
+          "cpuSeconds": 0.5816599999999998,
+          "elapsedSeconds": 0.5816686860052869,
           "stage": "sharedLookup"
         }
       ],
@@ -577,35 +577,35 @@
     {
       "accountedCacheBytes": 140797337,
       "pair": 6,
-      "peakRSSBytes": 277704704,
-      "processCPUSeconds": 0.3026059999999986,
-      "processElapsedSeconds": 0.30299372802255675,
+      "peakRSSBytes": 277757952,
+      "processCPUSeconds": 0.26971199999999906,
+      "processElapsedSeconds": 0.27026811899850145,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 0.02815899999999999,
-          "elapsedSeconds": 0.028095555026084185,
+          "cpuSeconds": 0.025288999999999978,
+          "elapsedSeconds": 0.025241283990908414,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 0.00012799999999996148,
-          "elapsedSeconds": 0.00012690696166828275,
+          "cpuSeconds": 0.00019600000000000173,
+          "elapsedSeconds": 0.0001952989841811359,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.026277999999999968,
-          "elapsedSeconds": 0.026273375959135592,
+          "cpuSeconds": 0.025550999999999963,
+          "elapsedSeconds": 0.025546093995217234,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 0.009838000000000013,
-          "elapsedSeconds": 0.009834263997618109,
+          "cpuSeconds": 0.00921700000000003,
+          "elapsedSeconds": 0.009208651026710868,
           "stage": "repeatLookup"
         },
         {
           "cpuSeconds": 6.0000000000004494e-05,
-          "elapsedSeconds": 5.7604978792369366e-05,
+          "elapsedSeconds": 5.7464989367872477e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -617,34 +617,34 @@
       "accountedCacheBytes": 140797337,
       "pair": 7,
       "peakRSSBytes": 277757952,
-      "processCPUSeconds": 0.27277299999999927,
-      "processElapsedSeconds": 0.2732393209589645,
+      "processCPUSeconds": 0.27024300000000223,
+      "processElapsedSeconds": 0.2706602370017208,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 0.02577199999999999,
-          "elapsedSeconds": 0.02572828298434615,
+          "cpuSeconds": 0.025470999999999994,
+          "elapsedSeconds": 0.025423393992241472,
           "stage": "initialPreparation"
         },
         {
-          "cpuSeconds": 0.000137000000000026,
-          "elapsedSeconds": 0.0001353599946014583,
+          "cpuSeconds": 0.00012699999999998823,
+          "elapsedSeconds": 0.00012616603635251522,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.02533200000000002,
-          "elapsedSeconds": 0.025326950999442488,
+          "cpuSeconds": 0.025968999999999992,
+          "elapsedSeconds": 0.02596422197530046,
           "stage": "repeatPreparation"
         },
         {
-          "cpuSeconds": 0.014211000000000001,
-          "elapsedSeconds": 0.01420676801353693,
+          "cpuSeconds": 0.010229000000000044,
+          "elapsedSeconds": 0.010219603951554745,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 6.299999999997974e-05,
-          "elapsedSeconds": 6.073899567127228e-05,
+          "cpuSeconds": 5.6000000000000494e-05,
+          "elapsedSeconds": 5.37199666723609e-05,
           "stage": "sharedLookup"
         }
       ],
@@ -654,25 +654,25 @@
     },
     {
       "pair": 7,
-      "peakRSSBytes": 277626880,
-      "processCPUSeconds": 2.760059000000001,
-      "processElapsedSeconds": 2.761192797042895,
+      "peakRSSBytes": 277622784,
+      "processCPUSeconds": 2.763723999999998,
+      "processElapsedSeconds": 2.7642526240088046,
       "receipt": 756,
       "slides": 28,
       "stages": [
         {
-          "cpuSeconds": 1.442964,
-          "elapsedSeconds": 1.4432834640028886,
+          "cpuSeconds": 1.4816529999999999,
+          "elapsedSeconds": 1.4815759919583797,
           "stage": "insert"
         },
         {
-          "cpuSeconds": 0.5058719999999999,
-          "elapsedSeconds": 0.505876442999579,
+          "cpuSeconds": 0.498418,
+          "elapsedSeconds": 0.49842433200683445,
           "stage": "repeatLookup"
         },
         {
-          "cpuSeconds": 0.5845229999999999,
-          "elapsedSeconds": 0.5845744580146857,
+          "cpuSeconds": 0.5637720000000002,
+          "elapsedSeconds": 0.5637598940520547,
           "stage": "sharedLookup"
         }
       ],
@@ -684,12 +684,12 @@
   "schemaVersion": 1,
   "scope": "Cache-only Swift -O probe (build mode supplied by caller). No bitmap allocations, WebKit, UI or deck generation. Input reads/decoding are outside stage timings, inside process CPU/elapsed and lifetime peak RSS. Both copies of all SVGs remain live. Hashing inputs can warm filesystem caches. Preparation and lookup are separate, nonoverlapping stages. Native Mac performance requires remeasurement.",
   "sourceDirty": true,
-  "sourceRevision": "e35bf241724775d17af43c9026c4eb335505ea49",
+  "sourceRevision": "c0e9cb025d84b8e75ab68b987a1b6a9d67d1d56b",
   "sourceSHA256": {
     "Lectern/Sources/LecternCore/Inspection/CostLimitedCache.swift": "43e229d9ac543607a74bd6abdc09127d92fa8fcd33710d5359d16c0742febda7",
     "Lectern/Sources/LecternCore/Inspection/PreviewContent.swift": "181ff3e42e7bf93f358cfdc5599c993926d0f2fc8efa72380c80767a55d7e33e",
     "Lectern/Sources/LecternCore/Rendering/PipelineTrace.swift": "bdd6be8067da8698beae35ff4c33b250b97ba92e04df3b75cac89256ad3ef309",
-    "Tools/preview-profile/cache-probe.swift": "bc282606adfd9e55a01d619bb4203f39d117e2620fd80f402a6f5b81bc85a814"
+    "Tools/preview-profile/cache-probe.swift": "d5cf797e1c9417200d0ae41bb7ff72ede81b8050e9376d71226402e655a6385e"
   },
   "swift": "Swift version 6.1.3 (swift-6.1.3-RELEASE)\nTarget: x86_64-unknown-linux-gnu"
 }
