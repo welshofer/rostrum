@@ -6,6 +6,11 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- `Lectern/scripts/test-preview.sh` runs a saved deck through the isolated Mac
+  Release preview profiler and native thumbnail regressions, then bundles SVG
+  hashes, timing/provenance records and test logs for comparison after pulling
+  updates. Full SVGs remain local to avoid uploading repeated image/font data.
+
 - `PreparedFont` snapshots bind exact font bytes and collection index to parsed
   metrics. Reuse them across explicit `FontLibrary.register` calls without
   reparsing; raw-byte registration keeps its existing behavior. Lectern uses

@@ -314,6 +314,20 @@ reproducible snapshots and timing measurements.
 The [pipeline profiler](../Tools/preview-profile/README.md) also records prepared
 identity, geometry, lookup and admission costs and cache byte accounting.
 
+After pulling, quit Lectern and run this from the **repository root**, using the
+same saved deck as your previous profile:
+
+```sh
+bash Lectern/scripts/test-preview.sh "/path/to/your-deck.pptx"
+```
+
+It builds an isolated Release test host, profiles first and repeated thumbnails,
+runs native thumbnail regressions, and prints the path to a results ZIP under
+`.build/`. The ZIP contains SVG hashes, timings, provenance and test logs; full
+SVGs stay in the results folder for review. See the
+[runner details](../Tools/preview-profile/README.md#native-mac-bitmap-probe) for
+prerequisites, output options and measurement limits.
+
 The SwiftUI shell (`App/`) is a real macOS app. Its Xcode project is **generated
 from `project.yml`** with [xcodegen] — `project.yml` is the checked-in source of
 truth; the `.xcodeproj` is a build artifact (gitignored, like `.build/`). No

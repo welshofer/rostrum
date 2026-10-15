@@ -72,6 +72,9 @@ and repeated inspections, process peak RSS and exact artifact comparisons.
 A local Release app-hosted probe instruments production WebKit navigation, font
 readiness, queue wait and bitmap capture. The user supplied one successful
 28-slide Mac run; see the cache continuation below.
+The post-pull `Lectern/scripts/test-preview.sh` runner now collects the Release
+profile and native thumbnail regressions in one command and creates a shareable
+evidence ZIP. The updated Mac run remains pending until executed on that host.
 First-bitmap availability is separate from actual first visible display latency;
 WebKit helper-process CPU/memory and compositor presentation need native traces. External faces unavailable to the host remain missing
 font diagnostics; supplying manifest files does not inject them into Lectern.
