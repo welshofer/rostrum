@@ -2,6 +2,14 @@
 
 ## Latest reconciled measurements
 
+The [production preview pipeline record](PREVIEW-PIPELINE-20261015.md) separates
+font setup, layout, save/reopen and SVG costs and adds a local Mac bitmap probe.
+Bounded reuse of accepted source-note page plans shows **2.30%** lower median
+paired whole-process CPU on the Linux template/table workload, with identical
+artifacts across 96 fresh processes. Other fixtures are controls, including
+small slowdowns; native Mac measurements and first-visible-frame latency remain
+pending.
+
 The [authored pagination decision record](CONTINUATION-PERFORMANCE-20261014.md)
 measures production Lectern rendering, saving and saved-deck previews on Linux.
 Across ten retained alternating pairs per fixture, long-source CPU improves

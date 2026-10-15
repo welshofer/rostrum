@@ -165,6 +165,11 @@ class FidelityPackTests(unittest.TestCase):
             timing = first["timings"]
             self.assertEqual(timing["nativeVisualAcceptance"], "pending")
             self.assertTrue(timing["firstPreviewRendered"])
+            self.assertEqual(timing["stages"]["droppedSamples"], 0)
+            stages = timing["stages"]["samples"]
+            self.assertEqual([s["slideNumber"] for s in stages if s["stage"] == "preview.svg"], list(range(1, total + 1)))
+            self.assertTrue({"inspect.read", "inspect.open", "inspect.extract", "preview.embeddedFonts",
+                             "preview.fontDiscovery", "preview.installedFonts"}.issubset({s["stage"] for s in stages}))
             self.assertGreater(timing["firstPreviewSlotCompleted"]["elapsedSeconds"], 0)
             self.assertLessEqual(timing["firstPreviewSlotCompleted"]["elapsedSeconds"], timing["inspection"]["elapsedSeconds"])
 

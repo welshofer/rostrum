@@ -161,23 +161,25 @@ public enum DeckInspector {
                                onEvent: (Event) -> Void = { _ in }) throws -> DeckInspection {
         try Task.checkCancellation()
         onEvent(.opening)
-        let data = try Data(contentsOf: url)
+        let data = try PipelineTrace.measure("inspect.read") { try Data(contentsOf: url) }
         guard !data.isEmpty else { throw DeckInspectionError.emptyFile }
         let deck: Presentation
         do {
-            deck = try Presentation(data: data, limits: limits)
+            deck = try PipelineTrace.measure("inspect.open") { try Presentation(data: data, limits: limits) }
         } catch {
             throw DeckInspectionError.cannotOpen(String(describing: error))
         }
-        let embeddedFonts = deck.registerEmbeddedFonts().sorted()
+        let embeddedFonts = PipelineTrace.measure("preview.embeddedFonts") { deck.registerEmbeddedFonts().sorted() }
 
         try Task.checkCancellation()
         onEvent(.validating)
         // A deck somebody else wrote is exactly the one whose lint might throw;
         // that is a finding, not a failure of the inspection.
-        let issues = (try? deck.validate()) ?? []
+        let issues = (try? PipelineTrace.measure("inspect.validate") { try deck.validate() }) ?? []
 
         onEvent(.extracting)
+        let extraction = PipelineTrace.begin("inspect.extract")
+        defer { extraction?.end(outcome: "interrupted") }
         try TableTextExtractor.preflight(deck)
         let outline = deck.outline()
         let detail = DeckDetailExtractor.walk(deck)
@@ -185,6 +187,7 @@ public enum DeckInspector {
             digest(of: slide, detail: detail.slideDetails[slide.number - 1])
         }
 
+        extraction?.end()
         var previews = DeckPreviews()
         if renderPreviews {
             previews = try DeckPreviews.render(from: deck, explicitFonts: detail.explicitFonts) { done, total in

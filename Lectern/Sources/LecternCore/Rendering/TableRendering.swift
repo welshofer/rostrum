@@ -45,8 +45,10 @@ enum TableRendering {
             let caption = [original.body?.kicker, original.body?.lead, original.body?.source]
                 .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
             func plan(_ caption: String) throws -> TemplateTablePaginationPlan {
-                try engine.planTablePages(title: title, table: content, caption: caption,
-                    preferredTypes: ["tbl", "obj"], masterURI: masterURI)
+                try PipelineTrace.measure("layout.tablePlan") {
+                    try engine.planTablePages(title: title, table: content, caption: caption,
+                        preferredTypes: ["tbl", "obj"], masterURI: masterURI)
+                }
             }
             let pagination: TemplateTablePaginationPlan
             var spilledCaption: String?
@@ -78,9 +80,28 @@ enum TableRendering {
                 let noteTitle = "Notes and sources"
                 let paragraphs = spilledCaption.components(separatedBy: .newlines)
                     .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+                // Planning this one source block is synchronous and does not
+                // mutate the deck/fonts. Reuse accepted decisions when the
+                // paginator probes a boundary that final page construction asks
+                // for again. Composition still freshly validates every page.
+                // Exact UTF-8 keys avoid conflating canonically equivalent text.
+                var notePlans: [[Data]: TemplateSlidePlan] = [:]
+                var retainedBytes = 0
                 func notePlan(_ text: [String]) throws -> TemplateSlidePlan {
-                    try engine.plan(title: noteTitle, columns: [text.map { LayoutParagraph($0) }],
-                        preferredTypes: ["obj", "tx"], masterURI: masterURI)
+                    try Task.checkCancellation()
+                    let key = text.map { Data($0.utf8) }
+                    if let cached = notePlans[key] {
+                        return PipelineTrace.measure("layout.tableSourceNotes.cacheHit") { cached }
+                    }
+                    let plan = try PipelineTrace.measure("layout.tableSourceNotes") {
+                        try engine.plan(title: noteTitle, columns: [text.map { LayoutParagraph($0) }],
+                            preferredTypes: ["obj", "tx"], masterURI: masterURI)
+                    }
+                    let bytes = key.reduce(0) { $0 + $1.count }
+                    if notePlans.count < 128, bytes <= 256 * 1024 - retainedBytes {
+                        notePlans[key] = plan; retainedBytes += bytes
+                    }
+                    return plan
                 }
                 if !templateBacked {
                     // Authored notes must use the ordinary text builder's content

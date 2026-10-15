@@ -39,8 +39,13 @@ require_idle_apps
 
 # Apply manual signing to SwiftPM resource bundles as well as the app.
 # Automatic bundle signing otherwise requests a team even for a local build.
-xcodebuild -project Lectern.xcodeproj -scheme LecternTests -configuration Debug \
+configuration="${LECTERN_TEST_CONFIGURATION:-Debug}"
+case "$configuration" in
+  Debug|Release) ;;
+  *) echo "error: LECTERN_TEST_CONFIGURATION must be Debug or Release" >&2; exit 1 ;;
+esac
+xcodebuild -project Lectern.xcodeproj -scheme LecternTests -configuration "$configuration" \
   -destination 'platform=macOS' -derivedDataPath "${LECTERN_TEST_DERIVED_DATA_PATH:-.build-xcode-tests}" \
-  CODE_SIGN_STYLE=Manual \
+  CODE_SIGN_STYLE=Manual ENABLE_TESTABILITY=YES \
   ${LECTERN_SIGN_IDENTITY:+CODE_SIGN_IDENTITY="$LECTERN_SIGN_IDENTITY"} \
   test "$@"

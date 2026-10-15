@@ -166,3 +166,7 @@ existing output. Set `ROSTRUM_NATIVE_FIDELITY_BINARY` to test another built bina
 With the Lectern executable supplied, it also verifies exact source rows, notes,
 sections, preview positions and deterministic exports through the production
 paths. Omit that variable for the library-only checks (two Lectern checks skip).
+
+For finer production stages, repeated operations and the local Mac bitmap probe,
+use the [preview pipeline profiler](../preview-profile/README.md). It keeps SVG
+readiness, bitmap availability and first visible display latency distinct.

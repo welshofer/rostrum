@@ -79,8 +79,9 @@ func snapshot(_ value: DeckInspection) -> [String: Any] {
 }
 
 func run() throws {
-    guard CommandLine.arguments.count == 3 else {
-        throw Failure("Usage: InspectionRegression DECK.pptx NEW_OUTPUT_DIRECTORY")
+    let args = CommandLine.arguments
+    guard args.count == 3 || (args.count == 5 && args[3] == "--repeat" && (Int(args[4]) ?? 0) > 0 && (Int(args[4]) ?? 0) <= 100) else {
+        throw Failure("Usage: InspectionRegression DECK.pptx NEW_OUTPUT_DIRECTORY [--repeat 1...100]")
     }
     let input = URL(fileURLWithPath: CommandLine.arguments[1]).standardizedFileURL
     let output = URL(fileURLWithPath: CommandLine.arguments[2]).standardizedFileURL
@@ -89,22 +90,34 @@ func run() throws {
     }
     guard FileManager.default.fileExists(atPath: input.path) else { throw Failure("Input deck does not exist") }
     try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+    let repeats = args.count == 5 ? Int(args[4])! : 1
+    for index in 0..<repeats {
+        let directory = repeats == 1 ? output : output.appendingPathComponent("run-\(index + 1)")
+        if repeats > 1 { try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true) }
+        try inspect(input: input, output: directory, operation: index + 1)
+    }
+}
+
+func inspect(input: URL, output: URL, operation: Int) throws {
+    let trace = PipelineTrace()
     var events: [[String: Any]] = []
     var firstPreview: [String: Double]?
     let inspectStart = Stamp()
-    let inspection = try DeckInspector.inspect(deckAt: input) { event in
-        let stamp = Stamp().since(inspectStart)
-        var record: [String: Any] = stamp
-        switch event {
-        case .opening: record["event"] = "opening"
-        case .validating: record["event"] = "validating"
-        case .extracting: record["event"] = "extracting"
-        case .rendering(let done, let total):
-            record["event"] = "rendering"; record["done"] = done; record["total"] = total
-            if done == 1 { firstPreview = stamp }
-        case .finished: record["event"] = "finished"
+    let inspection = try PipelineTrace.$current.withValue(trace) {
+        try DeckInspector.inspect(deckAt: input) { event in
+            let stamp = Stamp().since(inspectStart)
+            var record: [String: Any] = stamp
+            switch event {
+            case .opening: record["event"] = "opening"
+            case .validating: record["event"] = "validating"
+            case .extracting: record["event"] = "extracting"
+            case .rendering(let done, let total):
+                record["event"] = "rendering"; record["done"] = done; record["total"] = total
+                if done == 1 { firstPreview = stamp }
+            case .finished: record["event"] = "finished"
+            }
+            events.append(record)
         }
-        events.append(record)
     }
     let inspectTime = Stamp().since(inspectStart)
     let exportStart = Stamp()
@@ -125,10 +138,12 @@ func run() throws {
                           "chartsWritten": exported.chartsWritten, "warnings": exported.warnings]
     try writeJSON(evidence, to: output.appendingPathComponent("inspection.json"))
     try writeJSON([
-        "schemaVersion": 1, "inspection": inspectTime, "export": exportTime,
+        "schemaVersion": 2, "inspection": inspectTime, "export": exportTime,
+        "operationInProcess": operation,
+        "stages": try JSONSerialization.jsonObject(with: JSONEncoder().encode(trace.report)),
         "events": events, "firstPreviewSlotCompleted": nullable(firstPreview),
         "firstPreviewRendered": inspection.previewRecords.first?.svg != nil,
-        "measurementScope": "Inspection includes file read, embedded and installed font registration, validation, extraction and SVGs. Export includes reopening, extraction and artifact writes. Event stamps are cumulative from inspection start; extracting to rendering(0) includes extraction and installed font setup. First preview is a completed SVG or failure slot, not a displayed thumbnail. Evidence serialization is outside operation timings. No WebKit or UI timing.",
+        "measurementScope": "Inspection includes file read, embedded and installed font registration, validation, extraction and SVGs. Export includes reopening, extraction and artifact writes. Stages isolate read/open, embedded registration, validation, extraction, declared-font discovery, installed registration and each SVG. CPU is process CPU. Event stamps are cumulative from inspection start; extracting to rendering(0) includes extraction and installed font setup. First preview is a completed SVG or failure slot, not a displayed thumbnail. Evidence serialization is outside operation timings. No WebKit or UI timing.",
         "nativeVisualAcceptance": "pending"
     ], to: output.appendingPathComponent("timings.json"))
 }

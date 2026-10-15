@@ -113,6 +113,41 @@ import RostrumLayout
         #expect(output.previews == second.previews && output.warnings == second.warnings)
     }
 
+    @Test func sourceNoteReuseEndsBeforeFontsOrContentCanChange() throws {
+        let presentation = try Presentation()
+        let engine = TemplateLayoutEngine(presentation: presentation)
+        let source = (1...60).map { "Source \($0) retains exact evidence and publication details." }.joined(separator: "\n")
+        var input = fixture(source: source)
+        let trace = PipelineTrace()
+        let first = try PipelineTrace.$current.withValue(trace) {
+            try TableRendering.prepare(input, engine: engine)
+        }
+        #expect(!first.notes.isEmpty)
+        #expect(trace.report.samples.contains { $0.stage == "layout.tableSourceNotes.cacheHit" })
+        // The same engine is intentionally reused after its registry changes.
+        // This licensed fixture alias is for measurement only, not a font policy.
+        let font = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Tests/RostrumTests/Fixtures/Typography/DejaVuSans.ttf")
+        try presentation.fonts.register(Data(contentsOf: font), aliases: [try #require(presentation.theme.minorFont)])
+        input.slides[0].body?.source = source + "\nA newly added source must also survive."
+        let changed = try TableRendering.prepare(input, engine: engine)
+        let fresh = try TableRendering.prepare(input, engine: TemplateLayoutEngine(presentation: presentation))
+        #expect(changed.warnings == fresh.warnings)
+        #expect(changed.deck == fresh.deck)
+        #expect(Set(changed.notes.keys) == Set(fresh.notes.keys))
+        for (key, note) in changed.notes {
+            let reference = try #require(fresh.notes[key])
+            #expect(note.columns == reference.columns)
+            #expect(note.plan.layout.part.uri == reference.plan.layout.part.uri)
+            #expect(Set(note.plan.textFits.keys) == Set(reference.plan.textFits.keys))
+            for (slot, fit) in note.plan.textFits {
+                let other = try #require(reference.plan.textFits[slot])
+                #expect(fit.frame == other.frame && fit.fontScale == other.fontScale)
+            }
+        }
+    }
+
     @Test(arguments: [false, true])
     func tableRecoveryPreservesGroupIdentityAndReview(templateBacked: Bool) async throws {
         let root = try directory(); defer { try? FileManager.default.removeItem(at: root) }
