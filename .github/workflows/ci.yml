@@ -139,6 +139,8 @@ jobs:
           Lectern/scripts/build.sh
       - name: Build the Lectern iOS simulator app
         run: Lectern/scripts/build-ios.sh
+      - name: Compile the isolated native test host (no test execution)
+        run: Lectern/scripts/test-app.sh --build-only
 
 
   published-release-smoke:

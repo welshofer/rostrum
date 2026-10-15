@@ -61,6 +61,8 @@ for evidence. Performance percentages from different baselines are not additive;
 CPU improvements do not imply lower peak memory. The [performance ledger](PERFORMANCE.md)
 links both gains and measured costs. The [preview pipeline record](PREVIEW-PIPELINE-20261015.md)
 adds per-stage CPU/elapsed, paired artifact checks and the native bitmap measurement boundary.
+The [font-resource loading experiment](PREVIEW-FONT-RESOURCES-20261015.md) records
+the opt-in WebKit transport, its preparation costs and the native comparison gate.
 
 The [roadmap](../ROADMAP.md) tracks remaining work; [PLAN.md](../PLAN.md) tracks
 the current fidelity/performance milestones. Historical publication evidence

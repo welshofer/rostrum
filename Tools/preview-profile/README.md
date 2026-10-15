@@ -91,6 +91,8 @@ not PowerPoint visual acceptance.
 | `thumbnail.geometry` | Validate/bound bitmap dimensions within a thumbnail request |
 | `thumbnail.cacheLookup` | Exact-content cache lookup and LRU promotion within a request |
 | `thumbnail.cacheInsert` | Account SVG/bitmap bytes and admit or reject a rendered result |
+| `thumbnail.fontResources` | Opt-in preparation of bounded, exact-byte font resources |
+| `thumbnail.document` | HTML wrapper construction before WebKit navigation |
 
 Samples carry elapsed time, process CPU, start offset, optional original slide
 number and outcome. Process CPU includes every thread; overlapping spans cannot
@@ -107,6 +109,61 @@ an observed hotspot before changing an algorithm and then compare alternating
 fresh baseline/candidate processes with identical inputs and artifact hashes.
 
 ## Native Mac bitmap probe
+
+### Compare font-resource loading
+
+The shared-font transport is **experimental and off by default**. To compare it
+with the existing inline path on the same saved deck, quit Lectern and run:
+
+```sh
+python3 Lectern/scripts/compare-preview-loading.py "/path/to/your-deck.pptx"
+```
+
+This runs one warmup per mode and three alternating measured pairs, using fresh
+Release test processes. Each process performs first-use and repeated inspection.
+The candidate additionally compares every slide's actual bitmap pixels against
+an independent inline host, after measurements. The runner refuses changed SVGs,
+inputs, executable identities, failed/skipped regressions, truncated traces, or
+missing pixel comparisons. Use a deck with embedded preview fonts whose thumbnails
+fit in the cache. `--pairs 7` collects more samples; an optional second positional
+argument chooses a new results directory. The final ZIP retains small per-run
+evidence bundles and a combined summary; full SVGs stay local.
+If a native experiment fails, it instead prints a `.failed.zip` containing the
+failed receipt and logs. Send that diagnostics archive back as well; it does not
+claim a successful comparison.
+
+The transport rewrites only canonical renderer-owned font URLs in a temporary
+WebKit document. Exact bytes identify resources; aliases and font styles remain
+unchanged. Unknown rules and oversized resources stay inline. Host-retained keys
+and decoded fonts have a 32 MiB/32-entry limit, with another separately bounded
+active-document resource set. Fonts are served from memory only while a capture
+is active; responses disable browser caching. No font file or network access is
+added. The existing bitmap-cache budget excludes this additional resource storage.
+
+Linux preparation measurements show less HTML payload but **additional CPU work**;
+native timing and pixel evidence must justify adoption. See the
+[loading experiment](../../docs/PREVIEW-FONT-RESOURCES-20261015.md).
+The normal app still uses inline fonts. For a single candidate profile, set
+`LECTERN_PREVIEW_SHARED_FONTS=1` when invoking either runner below. Native schema 3
+records the mode, pixel-comparison count and resource statistics. `thumbnail.navigation`
+now excludes wrapper construction and font-resource preparation, so compare whole
+`thumbnail.request` spans across older schemas rather than navigation alone.
+
+For the portable preparation-only experiment, write a JSON array of absolute SVG
+paths (outside the checkout for private decks), then compile and collect:
+
+```sh
+swiftc -O Lectern/Sources/LecternCore/Inspection/CostLimitedCache.swift \
+  Lectern/Sources/LecternCore/Inspection/PreviewFontResources.swift \
+  Tools/preview-profile/font-resource-probe.swift -o .build/font-resource-probe
+python3 Tools/preview-profile/run-font-resources.py --binary .build/font-resource-probe \
+  --manifest /absolute/svg-paths.json --output /absolute/new-preparation-results
+```
+
+This measures CPU, elapsed and process peak RSS, checks exact SVG reconstruction,
+and retains input/source/executable hashes. It does not measure WebKit performance.
+
+### Standard post-pull check
 
 For the post-pull check, quit Lectern and run this from the repository root with
 the **same saved deck used for the earlier profile**:

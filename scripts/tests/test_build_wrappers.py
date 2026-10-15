@@ -51,6 +51,11 @@ targets:
                 if wrapper == 'test-app.sh':
                     self.assertIn('LecternTests', args)
                     self.assertIn('.build-xcode-tests', args)
+                    subprocess.run(['/bin/bash', str(root / 'scripts' / wrapper), '--build-only'],
+                                   env=env, check=True, capture_output=True)
+                    actions = (root / 'build-arguments.txt').read_text().splitlines()
+                    self.assertIn('build-for-testing', actions)
+                    self.assertNotIn('test', actions)
                 # Same missing-tool error, even when an old generated project exists.
                 (bindir / 'dirname').symlink_to('/usr/bin/dirname')
                 (bindir / 'bash').symlink_to('/bin/bash')

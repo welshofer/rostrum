@@ -6,9 +6,15 @@
 # LECTERN_TEST_DERIVED_DATA_PATH is intentionally separate from the app override.
 # Signing still follows build.sh; this script never terminates running apps.
 #
-# Deliberately local-only: never add a hosted macOS Actions job for this repo.
+# Test execution is local-only. --build-only compiles the test host in CI
+# without launching it, so native test code is also checked by the compiler.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+action=test
+if [ "${1:-}" = --build-only ]; then
+  action=build-for-testing
+  shift
+fi
 
 require_idle_apps() {
   local app process_status
@@ -48,4 +54,4 @@ xcodebuild -project Lectern.xcodeproj -scheme LecternTests -configuration "$conf
   -destination 'platform=macOS' -derivedDataPath "${LECTERN_TEST_DERIVED_DATA_PATH:-.build-xcode-tests}" \
   CODE_SIGN_STYLE=Manual ENABLE_TESTABILITY=YES \
   ${LECTERN_SIGN_IDENTITY:+CODE_SIGN_IDENTITY="$LECTERN_SIGN_IDENTITY"} \
-  test "$@"
+  "$action" "$@"

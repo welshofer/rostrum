@@ -30,7 +30,7 @@ class PreviewRunnerTests(unittest.TestCase):
             self.command(tool, 'exit 0')
         self.command('xcrun', 'cat "$TEST_ROOT/test-summary.json"')
         (self.root / 'test-summary.json').write_text(json.dumps({
-            'result': 'Passed', 'totalTestCount': 3, 'passedTests': 3,
+            'result': 'Passed', 'totalTestCount': 14, 'passedTests': 14,
             'failedTests': 0, 'skippedTests': 0,
         }))
         (self.root / 'timings.json').write_text(json.dumps({'samples': [{
@@ -87,7 +87,7 @@ printf '%s\\n' "$@" > "$TEST_ROOT/arguments"
             }})
             self.assertIn('test results/profile/provenance.json', names)
             self.assertIn('test results/regressions.log', names)
-            self.assertIn('3 passed', archive.read('test results/SUMMARY.txt').decode())
+            self.assertIn('14 passed', archive.read('test results/SUMMARY.txt').decode())
             self.assertFalse(any(name.endswith('.pptx') for name in names))
         self.assertEqual(self.deck.read_bytes(), b'original deck')
 

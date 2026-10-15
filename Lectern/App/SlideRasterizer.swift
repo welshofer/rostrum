@@ -49,6 +49,7 @@ final class SlideRasterizer {
     }
     private let cache: CostLimitedCache<CacheKey, Image>
     private var host: SnapshotHost?
+    private let shareFontResources: Bool
 
     // One web view means one render at a time. The gate is what makes that a
     // queue rather than a race.
@@ -60,8 +61,10 @@ final class SlideRasterizer {
     /// Tests can supply a snapshot operation without creating a window.
     init(capacity: Int = SlideRasterizer.defaultCapacity,
          byteLimit: Int = SlideRasterizer.defaultByteLimit,
+         shareFontResources: Bool = false,
          snapshot: (@MainActor (String, CGSize) async -> Image?)? = nil) {
         cache = CostLimitedCache(capacity: capacity, costLimit: byteLimit)
+        self.shareFontResources = shareFontResources
         snapshotOverride = snapshot
     }
 
@@ -72,6 +75,7 @@ final class SlideRasterizer {
     var cacheCostBytes: Int { cache.totalCost }
     var cacheByteLimit: Int { cache.costLimit }
     var pendingCount: Int { waiting.count }
+    var fontResourceStatistics: [String: Int] { host?.fontResourceStatistics ?? [:] }
 
     func image(for svg: String, pixelWidth: CGFloat = 640) async -> Image? {
         guard !Task.isCancelled else { return nil }
@@ -100,7 +104,7 @@ final class SlideRasterizer {
         var bitmapBytes = Self.bitmapCost(width: key.width, height: key.height)
         if let snapshotOverride { image = await snapshotOverride(content.svg, size) }
         else {
-            let host = host ?? SnapshotHost()
+            let host = host ?? SnapshotHost(shareFontResources: shareFontResources)
             self.host = host
             if let bitmap = await host.snapshot(svg: content.svg, size: size) {
                 bitmapBytes = Self.bitmapCost(bitmap, fallback: bitmapBytes)
@@ -246,6 +250,10 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
     private enum Mode { case bitmap, vector }
     private let window: NSWindow
     private let webView: WKWebView
+    private var fontResources: PreviewFontResources?
+    private let fontHandler: PreviewFontSchemeHandler?
+    private var sourceSVGBytes = 0
+    private var loadedSVGBytes = 0
     private var request: SlideSnapshotRequest<Capture>?
     private var navigation: WKNavigation?
     private var snapshotSize: CGSize = .zero
@@ -255,8 +263,23 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
     private(set) var lastCaptureFailure: String?
     var isCapturing: Bool { request != nil && navigation != nil }
 
-    override init() {
+    var fontResourceStatistics: [String: Int] {
+        ["sourceSVGBytes": sourceSVGBytes, "loadedSVGBytes": loadedSVGBytes,
+         "retainedBytes": fontResources?.retainedBytes ?? 0,
+         "retainedCount": fontResources?.retainedCount ?? 0,
+         "decodedResources": fontResources?.decodedResources ?? 0,
+         "servedFontBytes": fontHandler?.servedBytes ?? 0,
+         "servedFontRequests": fontHandler?.servedRequests ?? 0]
+    }
+
+    init(shareFontResources: Bool = false) {
         let config = WKWebViewConfiguration()
+        if shareFontResources {
+            fontResources = PreviewFontResources()
+            let handler = PreviewFontSchemeHandler()
+            fontHandler = handler
+            config.setURLSchemeHandler(handler, forURLScheme: PreviewFontResources.scheme)
+        } else { fontResources = nil; fontHandler = nil }
         // Same rule as the live preview: the markup is model-derived and SVG
         // can carry script. A picture is not a program.
         config.defaultWebpagePreferences.allowsContentJavaScript = false
@@ -304,18 +327,28 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
         let request = SlideSnapshotRequest<Capture>()
         self.request = request
         trace = PipelineTrace.current
-        phase = PipelineTrace.begin("thumbnail.navigation")
         defer {
             phase?.end(outcome: Task.isCancelled ? "cancelled" : "failed")
             phase = nil; trace = nil
+            fontHandler?.resources.removeAll()
         }
         self.mode = mode
         lastCaptureFailure = nil
         snapshotSize = size
         window.setContentSize(size)
         webView.frame = NSRect(origin: .zero, size: size)
+        let markup: String
+        if let fontResources {
+            let prepared = PipelineTrace.measure("thumbnail.fontResources") { fontResources.prepare(svg: svg) }
+            fontHandler?.resources = Dictionary(uniqueKeysWithValues: prepared.resources.map { ($0.url, $0) })
+            markup = prepared.svg
+        } else { markup = svg }
+        sourceSVGBytes += svg.utf8.count
+        loadedSVGBytes += markup.utf8.count
+        let document = PipelineTrace.measure("thumbnail.document") { Self.document(svg: markup) }
+        phase = PipelineTrace.begin("thumbnail.navigation")
         let result = await request.value(timeout: .seconds(10), start: {
-            navigation = webView.loadHTMLString(Self.document(svg: svg), baseURL: nil)
+            navigation = webView.loadHTMLString(document, baseURL: nil)
         }, stop: { [weak self] in
             guard let self else { return }
             if lastCaptureFailure == nil { lastCaptureFailure = "Capture cancelled or timed out." }
@@ -330,6 +363,8 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
         request?.finish(nil)
         navigation = nil
         webView.stopLoading()
+        fontHandler?.resources.removeAll()
+        fontResources = nil
         window.orderOut(nil)
         window.close()
     }

@@ -57,7 +57,7 @@ examples. Apple CI and live native acceptance are separate gates.
 
 ## Second milestone: end-to-end Mac performance baseline
 
-Status: **one native Mac baseline received; broader corpus and optimized native rerun pending**.
+Status: **two native Mac runs received on different decks; paired comparison and broader corpus pending**.
 
 The pack's optional `InspectionRegression` runner now calls production
 `DeckInspector` and `DeckExporter` with their normal embedded/installed-font
@@ -74,7 +74,11 @@ readiness, queue wait and bitmap capture. The user supplied one successful
 28-slide Mac run; see the cache continuation below.
 The post-pull `Lectern/scripts/test-preview.sh` runner now collects the Release
 profile and native thumbnail regressions in one command and creates a shareable
-evidence ZIP. The updated Mac run remains pending until executed on that host.
+evidence ZIP. An updated 17-slide Mac run at `e71b087` passed all 12 native
+regressions, rendered every slide and hit all 17 cached thumbnails on repeat.
+Its first bitmap arrived in 698/257 ms; all repeated thumbnail requests totaled
+1.53 ms. SVGs and diagnostics matched between inspections. Its input differs from
+the earlier 28-slide deck, so this does not establish a before/after speedup.
 First-bitmap availability is separate from actual first visible display latency;
 WebKit helper-process CPU/memory and compositor presentation need native traces. External faces unavailable to the host remain missing
 font diagnostics; supplying manifest files does not inject them into Lectern.
@@ -126,10 +130,20 @@ through generation/recovery/Inspect views, and replace SVG-bearing recency scans
 with constant-time promotion. Limit retained cache entries by both count and
 accounted SVG/bitmap bytes. The [cache decision record](docs/THUMBNAIL-CACHE-20261015.md)
 contains paired Release cache-only evidence on the supplied SVGs, adverse small
-controls, unchanged-input checks and memory limits. Native app tests, a paired
-Mac rerun, first-visible-frame latency and helper-process memory remain pending.
+controls, unchanged-input checks and memory limits. Native app tests passed in the
+subsequent 17-slide run; a paired Mac comparison, first-visible-frame latency and
+helper-process memory remain pending.
 Sharing repeated embedded-font resources is a separate follow-up; standalone
 SVG bytes and caller-selected fonts remain intact in this change.
+
+WebKit-loading experiment (2026-10-15): the new Mac run spends 828 ms of 1,113 ms
+of first-pass thumbnail requests in navigation. An opt-in transport shares exact
+font bytes through a bounded in-memory handler while preserving font rules and
+standalone SVGs. It reduces HTML payload on the earlier 28-slide corpus but adds
+preparation CPU, so it is **not enabled in the app**. The new
+`Lectern/scripts/compare-preview-loading.py` runner collects alternating native
+runs and requires exact bitmap and SVG parity. Native adoption is pending those
+results. See the [experiment record](docs/PREVIEW-FONT-RESOURCES-20261015.md).
 
 Font-registration continuation (2026-10-15): the same Mac trace reports
 143–190 ms in installed-font registration. Lectern parsed each accepted face
@@ -142,7 +156,7 @@ workloads retain identical saved decks, SVGs, diagnostics and registration
 receipts across 80 fresh processes. Available-font registration CPU falls
 30–40% first-use and 44–47% on a second fresh operation; a missing-font control
 has no demonstrated benefit. See the [registration record](docs/FONT-REGISTRATION-20261015.md)
-for raw CPU/elapsed, memory and control results. Native Mac timing remains pending.
+for raw CPU/elapsed, memory and control results. Paired native Mac timing remains pending.
 
 Recent Linux results include about 10% lower long-source CPU and 6–8% lower dense
 text CPU. They establish neither a current native Mac speedup nor a general memory

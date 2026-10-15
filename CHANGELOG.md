@@ -6,6 +6,12 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Lectern has an opt-in, bounded in-memory font transport experiment for Mac
+  previews, plus `compare-preview-loading.py` for alternating Release timings
+  and exact bitmap/SVG comparisons. Normal app loading remains inline pending
+  native evidence; Linux preparation alone costs additional CPU. CI now also
+  compiles the isolated native tests without executing them.
+
 - `Lectern/scripts/test-preview.sh` runs a saved deck through the isolated Mac
   Release preview profiler and native thumbnail regressions, then bundles SVG
   hashes, timing/provenance records and test logs for comparison after pulling
