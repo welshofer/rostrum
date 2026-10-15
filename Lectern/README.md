@@ -154,7 +154,12 @@ sections and complete comment text alongside the original media bytes.
 
 Preview geometry follows each slide's aspect ratio. macOS snapshots have bounded
 dimensions, queue depth and completion time; cache identity includes the full SVG
-and output size. Installed font lookup validates actual families and styles,
+and output size. SVG identities are prepared with the preview records, reused
+by generation/recovery/Inspect views, and checked against exact UTF-8 bytes on
+cache collisions. Bitmap caching is limited to 256 entries and 256 MiB of
+accounted SVG/bitmap bytes; oversized results render without cache admission.
+This budget excludes view-held images, WebKit processes and GPU overhead.
+Installed font lookup validates actual families and styles,
 preserves embedded faces, and reports unavailable metrics. Generation, recovery
 and inspection share the saved-deck preview pipeline. It registers Arial as an
 explicit measured preview fallback so missing fonts use consistent
@@ -303,6 +308,8 @@ ratio, including 4:3 and portrait. macOS bitmap previews share one WebKit host
 and a bounded cache whose keys include rendering dimensions. See the
 [preview and performance checks](../Tools/rostrum-benchmark/README.md) for
 reproducible snapshots and timing measurements.
+The [pipeline profiler](../Tools/preview-profile/README.md) also records prepared
+identity, geometry, lookup and admission costs and cache byte accounting.
 
 The SwiftUI shell (`App/`) is a real macOS app. Its Xcode project is **generated
 from `project.yml`** with [xcodegen] — `project.yml` is the checked-in source of

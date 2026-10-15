@@ -6,23 +6,8 @@ import AppKit
 import UIKit
 #endif
 
-/// A least-recently-used cache with a hard entry-count ceiling.
-///
-/// Both of the app's image caches were plain dictionaries with no eviction, so
-/// every thumbnail and every rasterised slide lived until the process exited.
-/// That is invisible on today's ~29-deck library and a slow leak with no
-/// ceiling on a large one, or on a session left open for days. This bounds
-/// them: once `capacity` is reached, inserting a new key evicts the
-/// least-recently-used entry.
-///
-/// The audit's suggestion — `NSCache` with a `totalCostLimit` — is a poor fit
-/// here: the value is a SwiftUI `Image`, a *struct*, which `NSCache` (an
-/// Objective-C class-object cache) cannot hold without boxing, and its eviction
-/// is opaque and so untestable. A plain dictionary plus a recency-ordered key
-/// array is a value type, evicts on a rule we can assert, and — with caps in
-/// the low hundreds — is far simpler than a hand-rolled linked list while being
-/// more than fast enough. Reads count as uses, so an image the grid is actively
-/// drawing keeps its place and is never the entry dropped.
+/// Count-bounded LRU for Quick Look's small path/version keys. Slide SVGs use
+/// CostLimitedCache with prepared content keys and a separate byte budget.
 struct BoundedCache<Key: Hashable, Value> {
     /// The hard upper bound on live entries. Never exceeded after `insert`.
     let capacity: Int

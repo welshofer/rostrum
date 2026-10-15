@@ -2,6 +2,14 @@
 
 ## Latest reconciled measurements
 
+The [thumbnail cache record](THUMBNAIL-CACHE-20261015.md) uses the user's Mac
+profile to identify unnecessary full-SVG work on bitmap cache hits. A Release
+Linux isolation on those 28 SVGs reduces repeat lookup CPU from 504 ms to 10 ms,
+plus 26 ms to prepare the new records. Raw samples include tiny adverse controls
+and essentially unchanged process peak RSS. Cache retention now has a byte
+budget as well as an entry cap. This is not a measured Mac app speedup; the
+updated native probe must be rerun on the same deck.
+
 The [production preview pipeline record](PREVIEW-PIPELINE-20261015.md) separates
 font setup, layout, save/reopen and SVG costs and adds a local Mac bitmap probe.
 Bounded reuse of accepted source-note page plans shows **2.30%** lower median

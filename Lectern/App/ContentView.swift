@@ -726,7 +726,7 @@ struct ResultView: View {
             }
             .padding(.top, 24).padding(.horizontal, 24).padding(.bottom, 12)
 
-            if result.previews.isEmpty {
+            if result.previewRecords.isEmpty {
                 // A green glyph floating in whitespace reads as a placeholder,
                 // not a finish. Say what was made and why there is no picture.
                 ContentUnavailableView {
@@ -738,8 +738,7 @@ struct ResultView: View {
             } else {
                 // Rendered from the written deck. Known preview differences
                 // are reported separately below.
-                SlideContactSheet(previews: result.previews, titles: result.previewTitles,
-                                  slideNumbers: result.previewSlideNumbers, slideCount: result.slideCount)
+                SlideContactSheet(records: result.previewRecords, total: result.slideCount)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 Divider()
             }

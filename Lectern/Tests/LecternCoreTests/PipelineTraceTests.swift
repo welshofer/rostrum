@@ -57,7 +57,12 @@ import Rostrum
                                       into: root.appendingPathComponent("measured"))
         }
         #expect(try Data(contentsOf: baseline.url) == Data(contentsOf: measured.url))
-        #expect(DeckResult.savedCopy(of: baseline, at: measured.url) == measured)
+        let copied = PipelineTrace.$current.withValue(trace) {
+            DeckResult.savedCopy(of: baseline, at: measured.url)
+        }
+        #expect(copied == measured)
+        #expect(measured.previewRecords.map(\.content.svg) == measured.previews)
+        #expect(trace.report.samples.filter { $0.stage == "preview.identity" }.count == measured.previewRecords.count)
         let stages = Set(trace.report.samples.map(\.stage))
         #expect(stages.isSuperset(of: ["generation.prepare", "generation.fontDiscovery", "generation.installedFonts",
             "generation.layout", "generation.compose", "generation.save", "preview.reopen", "preview.embeddedFonts",

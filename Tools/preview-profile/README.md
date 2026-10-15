@@ -87,6 +87,10 @@ not PowerPoint visual acceptance.
 | `preview.fontDiscovery` | Collect slide/layout/master/theme font declarations |
 | `preview.installedFonts` | OS lookup, file reads, validation and preview registration |
 | `preview.svg` | One slide's production SVG render, including text layout |
+| `preview.identity` | Prepare immutable SVG UTF-8 identity once per record, outside SVG rendering |
+| `thumbnail.geometry` | Validate/bound bitmap dimensions within a thumbnail request |
+| `thumbnail.cacheLookup` | Exact-content cache lookup and LRU promotion within a request |
+| `thumbnail.cacheInsert` | Account SVG/bitmap bytes and admit or reject a rendered result |
 
 Samples carry elapsed time, process CPU, start offset, optional original slide
 number and outcome. Process CPU includes every thread; overlapping spans cannot
@@ -122,6 +126,11 @@ cache and requires successful SVGs/bitmaps. Additional stages separate request
 latency, queue wait, WebKit navigation, font readiness and snapshot capture.
 Cache hits have explicit outcomes. Callback spans retain their originating trace
 rather than depending on task-local inheritance through WebKit delegates.
+The probe passes the record's prepared content, matching the production UI.
+Schema 2 reports cache entry count, accounted bytes and byte limit after each
+operation. Admission outcomes distinguish `admitted` from `overBudget`;
+oversized images still return successfully. Geometry, lookup and admission are
+children of `thumbnail.request`, so do not add them to the request total.
 
 `firstBitmapAvailableSeconds` measures inspection through the first returned
 bitmap. This is a sequential probe, not the lazy contact sheet's scheduling or
@@ -135,7 +144,7 @@ visual acceptance. Native app tests and measurement are pending until run on a M
 ## Checks
 
 ```sh
-swift test --package-path Lectern --filter PipelineTraceTests
+swift test --package-path Lectern --filter 'PipelineTraceTests|PreviewCacheTests'
 python3 -m unittest discover -s scripts/tests
 bash Lectern/scripts/test-app.sh -only-testing:LecternAppTests/PreviewPipelineTraceTests
 ```
@@ -145,3 +154,35 @@ ordered diagnostics, test task isolation and bounded traces, and retain failure
 outcomes. Collector checks reject changed content, source files or executables.
 The default app check exercises cache-hit accounting; the file-driven native
 probe runs only when explicitly configured by `profile-preview.sh`.
+
+## Cache-only comparison
+
+Compile the current production identity/cache sources alongside a frozen copy
+of the original cache from `e35bf24`. No SwiftPM dependencies or bitmap host are
+required. Keep these private inputs and result paths outside the checkout:
+
+```sh
+swiftc -O -parse-as-library \
+  Lectern/Sources/LecternCore/Inspection/PreviewContent.swift \
+  Lectern/Sources/LecternCore/Inspection/CostLimitedCache.swift \
+  Lectern/Sources/LecternCore/Rendering/PipelineTrace.swift \
+  Tools/preview-profile/cache-probe.swift -o /tmp/lectern-cache-probe
+python3 Tools/preview-profile/run-cache.py --binary /tmp/lectern-cache-probe \
+  --manifest /absolute/svg-paths.json --output /absolute/new-cache-profile
+```
+
+The manifest is a JSON array of absolute SVG paths (at most 256 slides, fitting
+the candidate's 256 MiB budget with 640×360 RGBA cost estimates). The collector
+alternates fresh baseline/candidate processes: one warmup pair, seven measured
+pairs. It retains raw CPU/elapsed samples, whole-process CPU/elapsed and lifetime
+peak RSS, input/source/executable hashes, and verifies unchanged input files.
+Preparation, insertion, independently regenerated lookup and reverse-order
+shared-content lookup are separate stages. Include preparation when comparing
+new-inspection cost; looking only at cache hits hides that work.
+
+Values are integers, so this probe allocates no bitmaps and cannot measure
+WebKit, GPU or native UI performance. Reported cache costs include hypothetical
+bitmap bytes; RSS includes both decoded SVG copies and process startup. The
+small SVG control can be slower by microseconds. See the
+[measured decision](../../docs/THUMBNAIL-CACHE-20261015.md), then rerun the native
+Mac probe on the same saved deck before claiming an app speedup.

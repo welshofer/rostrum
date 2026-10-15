@@ -30,20 +30,21 @@ public struct DeckResult: Sendable, Equatable {
     /// Preview approximations, separate from problems in the exported deck.
     public var previewWarnings: [String] = []
     /// One self-contained SVG per slide, rendered by Rostrum from the deck it
-    /// just wrote — not a reconstruction from the IR. Empty if rendering
-    /// failed, which is never fatal: the `.pptx` on disk is the deliverable
-    /// and a preview is a convenience.
+    /// just wrote, with a placeholder occupying each failed slide slot. Preview
+    /// failure is never fatal: the `.pptx` on disk is the deliverable.
     ///
     /// `String` rather than a view or an image so it crosses the actor
     /// boundary as a value; `Presentation` is not `Sendable` and must not
     /// leave.
-    public let previews: [String]
+    public var previews: [String] { previewRecords.map(\.displaySVG) }
+    /// Prepared on the rendering actor and reused by the UI without rehashing SVGs.
+    public let previewRecords: [SlidePreviewRecord]
     /// Slide titles, index-aligned with `previews`, so the contact sheet can
     /// tell VoiceOver what a tile SAYS — "Slide 3 of 12: Why now" — rather
     /// than only where it sits. A slide with no title contributes "".
-    public let previewTitles: [String]
+    public var previewTitles: [String] { previewRecords.map(\.title) }
     /// Original deck positions, aligned with `previews` even if a slide failed.
-    public let previewSlideNumbers: [Int]
+    public var previewSlideNumbers: [Int] { previewRecords.map(\.number) }
     /// Known limitations and failures in the SVG previews. Kept apart from
     /// model warnings, XML validation, font measurement and dropped content.
     public let previewDiagnostics: [SlidePreviewDiagnostics]
@@ -131,7 +132,7 @@ public actor DeckRenderer {
         let previews = DeckPreviews.savedDeck(at: url, failureContext: presentation)
         return DeckResult(recoveryURL: snapshotURL, url: url, slideCount: presentation.slides.count,
             warnings: warnings, schemaIssues: issues, unmeasuredFonts: missingFonts.missing, previewWarnings: previews.warnings,
-            previews: previews.svgs, previewTitles: previews.titles, previewSlideNumbers: previews.slideNumbers, previewDiagnostics: previews.diagnostics, droppedContent: dropped)
+            previewRecords: previews.records, previewDiagnostics: previews.diagnostics, droppedContent: dropped)
     }
 
     // MARK: - Document metadata
@@ -423,8 +424,7 @@ public actor DeckRenderer {
             return DeckResult(url: url, slideCount: presentation.slides.count,
                               warnings: warnings + layoutWarnings, schemaIssues: schemaIssues,
                               unmeasuredFonts: registration.missing, previewWarnings: previews.warnings,
-                              previews: previews.svgs, previewTitles: previews.titles,
-                              previewSlideNumbers: previews.slideNumbers, previewDiagnostics: previews.diagnostics,
+                              previewRecords: previews.records, previewDiagnostics: previews.diagnostics,
                               droppedContent: dropped)
         } catch is CancellationError {
             // Must precede the generic catch. Wrapped, this becomes
@@ -1032,6 +1032,6 @@ public extension DeckResult {
     static func savedCopy(of result: DeckResult, at url: URL) -> DeckResult {
         DeckResult(recoveryURL: result.recoveryURL, url: url, slideCount: result.slideCount,
             warnings: result.warnings, schemaIssues: result.schemaIssues, unmeasuredFonts: result.unmeasuredFonts, previewWarnings: result.previewWarnings,
-            previews: result.previews, previewTitles: result.previewTitles, previewSlideNumbers: result.previewSlideNumbers, previewDiagnostics: result.previewDiagnostics, droppedContent: result.droppedContent)
+            previewRecords: result.previewRecords, previewDiagnostics: result.previewDiagnostics, droppedContent: result.droppedContent)
     }
 }

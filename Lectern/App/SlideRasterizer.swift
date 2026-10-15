@@ -28,15 +28,26 @@ final class SlideRasterizer {
     /// picture per slide of *every* deck opened, forever) while capping the
     /// worst case to a few hundred renders rather than an unbounded pile.
     static let defaultCapacity = 256
+    /// Accounted SVG UTF-8 bytes plus bitmap backing estimates. This does not
+    /// bound WebKit processes, view-held images, allocator or GPU overhead.
+    static let defaultByteLimit = 256 * 1024 * 1024
 
     /// Keyed by the markup itself — the same slide re-inspected is the same
     /// picture, and two slides that happen to be identical cost one render.
     struct CacheKey: Hashable {
-        let svg: String
+        let content: PreviewContent
+        var svg: String { content.svg }
         let width: Int
         let height: Int
+
+        init(content: PreviewContent, width: Int, height: Int) {
+            self.content = content; self.width = width; self.height = height
+        }
+        init(svg: String, width: Int, height: Int) {
+            self.init(content: PreviewContent(svg: svg), width: width, height: height)
+        }
     }
-    private var cache: BoundedCache<CacheKey, Image>
+    private let cache: CostLimitedCache<CacheKey, Image>
     private var host: SnapshotHost?
 
     // One web view means one render at a time. The gate is what makes that a
@@ -48,22 +59,34 @@ final class SlideRasterizer {
 
     /// Tests can supply a snapshot operation without creating a window.
     init(capacity: Int = SlideRasterizer.defaultCapacity,
+         byteLimit: Int = SlideRasterizer.defaultByteLimit,
          snapshot: (@MainActor (String, CGSize) async -> Image?)? = nil) {
-        cache = BoundedCache(capacity: capacity)
+        cache = CostLimitedCache(capacity: capacity, costLimit: byteLimit)
         snapshotOverride = snapshot
     }
 
-    func cached(_ key: CacheKey) -> Image? { cache.value(forKey: key) }
+    func cached(_ key: CacheKey) -> Image? {
+        PipelineTrace.measure("thumbnail.cacheLookup") { cache.value(forKey: key) }
+    }
     var cacheCount: Int { cache.count }
+    var cacheCostBytes: Int { cache.totalCost }
+    var cacheByteLimit: Int { cache.costLimit }
     var pendingCount: Int { waiting.count }
 
     func image(for svg: String, pixelWidth: CGFloat = 640) async -> Image? {
+        guard !Task.isCancelled else { return nil }
+        return await image(for: PreviewContent(svg: svg), pixelWidth: pixelWidth)
+    }
+
+    func image(for content: PreviewContent, pixelWidth: CGFloat = 640) async -> Image? {
         let request = PipelineTrace.begin("thumbnail.request")
         var outcome = "unavailable"
         defer { request?.end(outcome: Task.isCancelled ? "cancelled" : outcome) }
         guard !Task.isCancelled,
-              let size = SlidePreviewGeometry(svg: svg)?.snapshotSize(pixelWidth: pixelWidth) else { return nil }
-        let key = Self.key(for: svg, size: size)
+              let size = PipelineTrace.measure("thumbnail.geometry", {
+                  SlidePreviewGeometry(svg: content.svg)?.snapshotSize(pixelWidth: pixelWidth)
+              }) else { return nil }
+        let key = CacheKey(content: content, width: Int(size.width), height: Int(size.height))
         if let hit = cached(key) { outcome = "cacheHit"; return hit }
         let queue = PipelineTrace.begin("thumbnail.queue")
         let acquired = await acquire()
@@ -74,14 +97,18 @@ final class SlideRasterizer {
         if let hit = cached(key) { outcome = "cacheHitAfterQueue"; return hit }
 
         let image: Image?
-        if let snapshotOverride { image = await snapshotOverride(svg, size) }
+        var bitmapBytes = Self.bitmapCost(width: key.width, height: key.height)
+        if let snapshotOverride { image = await snapshotOverride(content.svg, size) }
         else {
             let host = host ?? SnapshotHost()
             self.host = host
-            image = await host.snapshot(svg: svg, size: size).map { Image(nsImage: $0) }
+            if let bitmap = await host.snapshot(svg: content.svg, size: size) {
+                bitmapBytes = Self.bitmapCost(bitmap, fallback: bitmapBytes)
+                image = Image(nsImage: bitmap)
+            } else { image = nil }
         }
         guard !Task.isCancelled, let image else { return nil }
-        remember(image, forKey: key)
+        remember(image, forKey: key, bitmapBytes: bitmapBytes)
         outcome = "rendered"
         return image
     }
@@ -89,7 +116,36 @@ final class SlideRasterizer {
     /// Only an owning test/tool should close its private rasterizer.
     func close() { host?.close(); host = nil }
 
-    func remember(_ image: Image, forKey key: CacheKey) { cache.insert(image, forKey: key) }
+    func remember(_ image: Image, forKey key: CacheKey, bitmapBytes: Int? = nil) {
+        let bitmap = bitmapBytes ?? Self.bitmapCost(width: key.width, height: key.height)
+        let (cost, overflow) = key.content.byteCount.addingReportingOverflow(bitmap)
+        let span = PipelineTrace.begin("thumbnail.cacheInsert")
+        let admitted = !overflow && bitmap >= 0 && cache.insert(image, forKey: key, cost: cost)
+        span?.end(outcome: admitted ? "admitted" : "overBudget")
+    }
+
+    static func bitmapCost(width: Int, height: Int) -> Int {
+        guard width > 0, height > 0 else { return 0 }
+        let (pixels, pixelOverflow) = width.multipliedReportingOverflow(by: height)
+        let (bytes, byteOverflow) = pixels.multipliedReportingOverflow(by: 4)
+        return pixelOverflow || byteOverflow ? Int.max : bytes
+    }
+
+    private static func bitmapCost(_ image: NSImage, fallback: Int) -> Int {
+        var total = 0
+        for representation in image.representations {
+            let bytes: Int
+            if let bitmap = representation as? NSBitmapImageRep {
+                let (count, overflow) = bitmap.bytesPerRow.multipliedReportingOverflow(by: bitmap.pixelsHigh)
+                bytes = overflow ? Int.max : max(0, count)
+            } else {
+                bytes = bitmapCost(width: representation.pixelsWide, height: representation.pixelsHigh)
+            }
+            let (sum, overflow) = total.addingReportingOverflow(bytes)
+            total = overflow ? Int.max : sum
+        }
+        return max(fallback, total)
+    }
 
     /// Full content equality avoids hash collisions; normalized dimensions keep
     /// a small thumbnail from satisfying a later high-resolution request.
@@ -397,7 +453,7 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
 
 /// One slide in a grid: a picture on macOS, the live preview elsewhere.
 struct SlideTile: View {
-    let svg: String
+    let content: PreviewContent
 
     #if os(macOS)
     @State private var image: Image?
@@ -410,14 +466,14 @@ struct SlideTile: View {
                 Rectangle().fill(.quaternary.opacity(0.4))
             }
         }
-        .task(id: svg) {
+        .task(id: content) {
             image = nil
-            let rendered = await SlideRasterizer.shared.image(for: svg)
+            let rendered = await SlideRasterizer.shared.image(for: content)
             guard !Task.isCancelled else { return }
             image = rendered
         }
     }
     #else
-    var body: some View { SlidePreview(svg: svg) }
+    var body: some View { SlidePreview(svg: content.svg) }
     #endif
 }
