@@ -108,6 +108,35 @@ fresh baseline/candidate processes with identical inputs and artifact hashes.
 
 ## Native Mac bitmap probe
 
+For the post-pull check, quit Lectern and run this from the repository root with
+the **same saved deck used for the earlier profile**:
+
+```sh
+git pull --ff-only
+bash Lectern/scripts/test-preview.sh "/path/to/your-deck.pptx"
+```
+
+The runner requires macOS 26 or newer, full Xcode 26 or newer, XcodeGen
+(`brew install xcodegen`) and Python 3, using the existing local signing
+configuration. It first builds
+and runs the Release native profile below, then runs the native geometry,
+rasterizer, cancellation, queue and cache-trace regressions serially. Regression
+tests run after measurement and cannot warm the profile's in-process bitmap
+cache. It verifies that tests actually executed using the Xcode result bundle.
+This is a focused preview check, not the full repository gate.
+
+Results default to a new `.build/preview-test-<UTC timestamp>/` directory. An
+optional second argument chooses a different new output directory; relative
+paths and spaces are supported. The script prints a short summary and the path
+to a ZIP containing SVGs, raw CPU/elapsed/cache/memory measurements, provenance,
+test counts and logs. Send back that ZIP for comparison. It includes slide content
+and embedded resources; the original PPTX and full `regressions.xcresult` remain
+outside the archive. On failure, logs stay in the output directory and the script
+exits unsuccessfully without reporting a completed bundle. Existing results are
+never overwritten, and no app is terminated or normal app build replaced.
+
+For the profile alone:
+
 Run locally on an idle Mac with the repository's normal Xcode/signing setup:
 
 ```sh
