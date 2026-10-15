@@ -40,6 +40,7 @@ not a download of the newest Library Lab results.
 | Faster general pagination | Existing `MeasuredPaginator` APIs search near page boundaries with cancellation checks and deterministic monotonic fit predicates | [Boundary search](PAGINATION-PREFIX-20261013.md) |
 | Consistent Lectern previews | Generation, recovery and Inspect share saved-deck font discovery and preview preparation | [App integration](../Lectern/README.md#feature-integration-and-regression-checks), [font policy](IMPORTING-AND-PREVIEWING.md#lectern-saved-deck-previews) |
 | Better authored continuations | Lectern uses full-width comparison tails, measured final-page balancing and free citation space before source-note pages | [Reflow](CONTINUATION-REFLOW-20261014.md), [decision reuse](CONTINUATION-PERFORMANCE-20261014.md) |
+| Explicit missing chart caches | Call `Chart.rebuildMissingCachesFromWorkbook()` or run the Missing chart caches Lab; native acceptance pending | [Repair scope and evidence](CHART-CACHE-REPAIR.md) |
 | More precise diagnostics and portable gates | Group issues retain child/part locations; painted shadows and inherited placeholders avoid false omissions; pinned references run in CI | [Diagnostic traversal](DIAGNOSTIC-TRAVERSAL-PERFORMANCE-20261011.md), [verification](../CONTRIBUTING.md#before-a-pr) |
 
 The libraries impose no font-family policy. Applications register the faces they

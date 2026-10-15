@@ -213,6 +213,7 @@ file persistence and end-to-end verification.
 | **Pictures** | PNG/JPEG/GIF sniffing, content dedup, crop read/edit, isolated replacement, stretch/tile mapping, picture rotation/reflection and geometry clipping |
 | **Tables** | centered text in new cells, explicit vertical alignment, merge inspection/unmerge, row/column insertion, removal and reordering, edge/diagonal borders, padding, image fills, embedded/custom style resolution |
 | **Charts** | bar / line / pie / area / doughnut / scatter / **radar / bubble / combo**, stacked & multi-series, titles, **data labels**, axis control, embedded Edit-Data workbook |
+| **Missing chart caches** | Explicit workbook-backed repair of absent caches; atomic refusal, unchanged workbook and unrelated parts; [scope and native review status](docs/CHART-CACHE-REPAIR.md) |
 | **Chart editing** | `deck.charts` reads any deck's charts; `replaceData` swaps every cache and the workbook or **refuses without writing a byte**; `addSeries` / `removeSeries` |
 | **Rendering** | `renderSVG(slideAt:)` / `exportSVG` — deterministic SVG previews with shared rich-text layout and master/layout inheritance; structured fidelity reports and opt-in `strictRendering` reject known gaps |
 | **SmartArt** | Basic Block List creation; **text extraction from any diagram**; bounded preview of saved drawing caches |

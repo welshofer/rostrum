@@ -77,6 +77,7 @@ visible in Lectern and in its JSON report.
 | Border transitions | Four native reference pages; thirteen admitted color/width transition cases and one unchanged excluded colored merge; a fifth public page toggles a suppressed donor | [Platform border transitions](../Lectern/Sources/LecternCore/LibraryLab/PlatformTableTransitionsRecipe.swift) |
 | Chart gallery | Every category kind, XY/scatter, bubbles, combo/secondary axis and native workbooks | Document |
 | Chart editing | Replace/add/remove series; multi-group combo replacement; explicit invalid-operation refusals | Document |
+| Missing chart caches | Explicit category/XY repair; exact saved values/gaps, unchanged workbook/unrelated parts, atomic refusal, repeated no-op and production inspector/export; native PowerPoint acceptance pending | [Chart cache repair](../Lectern/Sources/LecternCore/LibraryLab/ChartCacheRepairRecipe.swift) |
 | SmartArt | Every public layout: block list, process, cycle, experimental pyramid; layout URNs and extracted labels | Document |
 | Rich speaker notes | Format, append, duplicate, import, independently edit and render notes pages | Document |
 | Comments and anchors | Modern and legacy comments, replies, status, text/shape anchors, positions, editing and deletion | Document |

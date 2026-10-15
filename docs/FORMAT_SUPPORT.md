@@ -40,8 +40,11 @@ Read fallback is not a PowerPoint repair operation. In the native comparison on
 2026-10-03, PowerPoint displayed the cached control chart, but left both the
 original cacheless fixture and its Rostrum round-trip blank. All three opened
 without repair prompts. Lectern displayed the embedded values and chart preview
-for the cacheless fixture. An explicit operation to rebuild missing chart caches
-is still needed; ordinary open/save must keep preserving the source package.
+for the cacheless fixture. The unreleased explicit
+`Chart.rebuildMissingCachesFromWorkbook()` operation now constructs missing
+caches under stricter write-time validation. Native acceptance of repaired decks
+remains pending; ordinary open/save still preserves the source package. See
+[repair scope, atomicity and the runnable Lab](CHART-CACHE-REPAIR.md).
 
 The fallback accepts local A1 cells and horizontal or vertical ranges of up to
 100,000 cells, quoted sheet names, shared/inline strings and cached formula results.
@@ -103,7 +106,7 @@ format expressions remain approximate. Source parts are preserved unchanged.
 1. Complete PowerPoint-rendered baselines for nested groups, flips, rotation, text
    and connector arrowheads; extend common geometry and rich text previews.
 2. Extend content checks to images, hyperlinks, sections and template relationships.
-3. Add explicit missing-chart-cache repair with native PowerPoint acceptance;
+3. Complete native PowerPoint acceptance for explicit missing-chart-cache repair;
    extend workbook-backed reading to date categories and formatted labels.
 4. Add group/connector/freeform authoring APIs.
 5. Add verified media playback and a bounded animation/transition set.
