@@ -57,7 +57,8 @@ import LecternCore
         try #require(!FileManager.default.fileExists(atPath: output.path), "Choose a new output directory")
         try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
         let original = try Data(contentsOf: input)
-        let rasterizer = SlideRasterizer()
+        let sharedFonts = environment["LECTERN_PREVIEW_SHARED_FONTS"] == "1"
+        let rasterizer = SlideRasterizer(shareFontResources: sharedFonts)
         defer { rasterizer.close() }
         var profiles: [[String: Any]] = []
         var reference: DeckInspection?
@@ -95,7 +96,28 @@ import LecternCore
                 "thumbnailCacheEntries": rasterizer.cacheCount,
                 "thumbnailCacheAccountedBytes": rasterizer.cacheCostBytes,
                 "thumbnailCacheByteLimit": rasterizer.cacheByteLimit,
+                "fontResources": rasterizer.fontResourceStatistics,
                 "stages": try JSONSerialization.jsonObject(with: JSONEncoder().encode(trace.report))])
+        }
+        // Outside measured operations: compare real pixels for every slide,
+        // through independent uncached hosts, including embedded-font loading.
+        // Do not publish successful candidate timing evidence on a mismatch.
+        var parityCount = 0
+        if sharedFonts, let reference {
+            let inline = SnapshotHost(), shared = SnapshotHost(shareFontResources: true)
+            defer { inline.close(); shared.close() }
+            for record in reference.previewRecords {
+                let svg = try #require(record.svg)
+                let size = try #require(SlidePreviewGeometry(svg: svg)?.snapshotSize(pixelWidth: 640))
+                let original = try #require(await inline.snapshot(svg: svg, size: size))
+                let candidate = try #require(await shared.snapshot(svg: svg, size: size))
+                let originalPixels = try PreviewBitmapPixels(original)
+                let candidatePixels = try PreviewBitmapPixels(candidate)
+                try #require(originalPixels == candidatePixels, "Font-resource transport changed slide \(record.number) pixels")
+                parityCount += 1
+            }
+            try #require(shared.fontResourceStatistics["servedFontRequests", default: 0] > 0,
+                         "Choose a deck containing embedded preview fonts to exercise shared resources")
         }
         #expect(try Data(contentsOf: input) == original)
         #if DEBUG
@@ -103,7 +125,8 @@ import LecternCore
         #else
         let mode = "release"
         #endif
-        let report: [String: Any] = ["schemaVersion": 2, "buildMode": mode, "platform": ProcessInfo.processInfo.operatingSystemVersionString,
+        let report: [String: Any] = ["schemaVersion": 3, "buildMode": mode, "platform": ProcessInfo.processInfo.operatingSystemVersionString,
+            "fontResourceMode": sharedFonts ? "shared" : "inline", "bitmapParityCount": parityCount,
             "samples": profiles, "nativeVisualAcceptance": "pending",
             "measurementScope": "Production inspection then sequential production raster requests, first-use and repeated on the same bounded cache. First bitmap availability is not first visible frame. Process CPU excludes WebKit helper processes. RSS is the app process lifetime peak, includes test-host startup, and is not per-operation or total WebKit memory. SVG evidence writes are outside stage timings but within first-bitmap wall offsets on later slides. Input hashing/reads may warm filesystem caches."]
         try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])

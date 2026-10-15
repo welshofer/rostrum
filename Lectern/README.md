@@ -328,6 +328,16 @@ SVGs stay in the results folder for review. See the
 [runner details](../Tools/preview-profile/README.md#native-mac-bitmap-probe) for
 prerequisites, output options and measurement limits.
 
+To evaluate the experimental shared-font loading path against the normal path:
+
+```sh
+python3 Lectern/scripts/compare-preview-loading.py "/path/to/your-deck.pptx"
+```
+
+It collects alternating Release runs and requires identical standalone SVGs and
+exact native bitmap pixels. The candidate is off in the normal app until native
+results justify adoption. See the [comparison details](../Tools/preview-profile/README.md#compare-font-resource-loading).
+
 The SwiftUI shell (`App/`) is a real macOS app. Its Xcode project is **generated
 from `project.yml`** with [xcodegen] — `project.yml` is the checked-in source of
 truth; the `.xcodeproj` is a build artifact (gitignored, like `.build/`). No
@@ -337,6 +347,7 @@ manual project bookkeeping, no merge conflicts in a pbxproj.
 cd Lectern
 scripts/build.sh       # generates the project as needed; honors .signing.local
 scripts/test-app.sh    # app-hosted tests, with the same signing configuration
+scripts/test-app.sh --build-only # compile the isolated host without running tests
 ```
 
 Hosted tests refuse to start while Lectern or LecternTestHost is running. Finish

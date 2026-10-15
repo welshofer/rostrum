@@ -54,6 +54,8 @@ LECTERN_TEST_CONFIGURATION=Release bash Lectern/scripts/test-app.sh \
   -only-testing:LecternAppTests/SlidePreviewGeometryTests \
   -only-testing:LecternAppTests/SlideRasterizerTests \
   -only-testing:LecternAppTests/PreviewPipelineTraceTests \
+  '-only-testing:LecternAppTests/GlyphPaintWebKitTests/invalidEmbeddedFontFailsAndTheOwnedHostRecovers(sharedFonts:)' \
+  '-only-testing:LecternAppTests/GlyphPaintWebKitTests/cancelledNavigationCannotCompleteTheNextCapture(sharedFonts:)' \
   -parallel-testing-enabled NO \
   -resultBundlePath "$output/regressions.xcresult" 2>&1 | tee "$output/regressions.log"
 
@@ -68,7 +70,7 @@ import zipfile
 
 output = Path(sys.argv[1])
 tests = json.loads((output / 'regressions.json').read_text())
-if (tests['totalTestCount'] <= 0 or tests['passedTests'] <= 0
+if (tests['totalTestCount'] < 14 or tests['passedTests'] < 14 or tests['skippedTests'] != 0
         or tests['failedTests'] != 0 or tests['result'] != 'Passed'):
     raise SystemExit('Native regressions did not execute successfully; inspect regressions.xcresult')
 timings = json.loads((output / 'profile/timings.json').read_text())
@@ -88,6 +90,7 @@ summary = [
     'Lectern Mac preview test run',
     f"Source: {provenance['sourceRevision']} (dirty: {provenance['sourceDirty']})",
     f"Input SHA256: {provenance['inputSHA256']}",
+    f"Font resource mode: {timings.get('fontResourceMode', 'inline')}; exact bitmap comparisons: {timings.get('bitmapParityCount', 0)}",
     f"Regressions: {tests['passedTests']} passed, {tests['failedTests']} failed, {tests['skippedTests']} skipped",
 ]
 for sample in timings['samples']:

@@ -12,14 +12,14 @@ import Rostrum
 /// separate; independent PDF glyph extraction establishes paint/origin fidelity.
 @MainActor
 @Suite(.serialized) struct GlyphPaintWebKitTests {
-    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
-    func invalidEmbeddedFontFailsAndTheOwnedHostRecovers() async throws {
-        let host = SnapshotHost()
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"), arguments: [false, true])
+    func invalidEmbeddedFontFailsAndTheOwnedHostRecovers(sharedFonts: Bool) async throws {
+        let host = SnapshotHost(shareFontResources: sharedFonts)
         defer { host.close() }
         let invalid = """
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">
-          <defs><style>@font-face { font-family: 'InvalidEmbeddedFont'; src: url('data:font/ttf;base64,AAECAw==') format('truetype'); }</style></defs>
-          <text x="10" y="50" font-family="InvalidEmbeddedFont" font-size="24">AVATAR ToTo</text>
+          <defs><style type="text/css">@font-face{font-family:'RostrumEmbeddedFace1';font-style:normal;font-weight:400;src:url(data:font/ttf;base64,AAECAw==) format('truetype');}</style></defs>
+          <text x="10" y="50" font-family="RostrumEmbeddedFace1" font-size="24">AVATAR ToTo</text>
         </svg>
         """
         #expect(await host.vectorCapture(svg: invalid, size: CGSize(width: 400, height: 100)) == nil)
@@ -44,9 +44,9 @@ import Rostrum
                                    region: CGRect(x: 380, y: 270, width: 290, height: 160))
     }
 
-    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"))
-    func cancelledNavigationCannotCompleteTheNextCapture() async throws {
-        let host = SnapshotHost()
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LECTERN_TEST_WEBKIT"] == "1"), arguments: [false, true])
+    func cancelledNavigationCannotCompleteTheNextCapture(sharedFonts: Bool) async throws {
+        let host = SnapshotHost(shareFontResources: sharedFonts)
         defer { host.close() }
         let source = try Presentation(contentsOf: Self.kerningFixture())
         #expect(source.registerEmbeddedFonts().contains("DejaVu Sans"))
