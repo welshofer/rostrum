@@ -128,10 +128,13 @@ This is a focused preview check, not the full repository gate.
 Results default to a new `.build/preview-test-<UTC timestamp>/` directory. An
 optional second argument chooses a different new output directory; relative
 paths and spaces are supported. The script prints a short summary and the path
-to a ZIP containing SVGs, raw CPU/elapsed/cache/memory measurements, provenance,
-test counts and logs. Send back that ZIP for comparison. It includes slide content
-and embedded resources; the original PPTX and full `regressions.xcresult` remain
-outside the archive. On failure, logs stay in the output directory and the script
+to a ZIP containing exact SVG hashes/sizes, raw CPU/elapsed/cache/memory
+measurements, provenance, test counts and logs. Send back that ZIP for comparison.
+All full SVGs remain in `profile/` for visual review or investigating changed
+hashes. Keeping their embedded images and fonts outside the ZIP avoids large
+repeat uploads; the earlier 28-slide SVG set alone compressed to about 66 MiB.
+The original PPTX and full `regressions.xcresult` also remain outside the archive.
+On failure, logs stay in the output directory and the script
 exits unsuccessfully without reporting a completed bundle. Existing results are
 never overwritten, and no app is terminated or normal app build replaced.
 

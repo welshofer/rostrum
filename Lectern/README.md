@@ -323,7 +323,8 @@ bash Lectern/scripts/test-preview.sh "/path/to/your-deck.pptx"
 
 It builds an isolated Release test host, profiles first and repeated thumbnails,
 runs native thumbnail regressions, and prints the path to a results ZIP under
-`.build/`. The ZIP contains slide SVGs, timings, provenance and test logs. See the
+`.build/`. The ZIP contains SVG hashes, timings, provenance and test logs; full
+SVGs stay in the results folder for review. See the
 [runner details](../Tools/preview-profile/README.md#native-mac-bitmap-probe) for
 prerequisites, output options and measurement limits.
 

@@ -60,6 +60,7 @@ LECTERN_TEST_CONFIGURATION=Release bash Lectern/scripts/test-app.sh \
 stage='result verification and archive'
 xcrun xcresulttool get test-results summary --path "$output/regressions.xcresult" > "$output/regressions.json"
 python3 - "$output" <<'PY'
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -72,6 +73,17 @@ if (tests['totalTestCount'] <= 0 or tests['passedTests'] <= 0
     raise SystemExit('Native regressions did not execute successfully; inspect regressions.xcresult')
 timings = json.loads((output / 'profile/timings.json').read_text())
 provenance = json.loads((output / 'profile/provenance.json').read_text())
+svgs = sorted((output / 'profile').glob('slide-*.svg'))
+if not svgs:
+    raise SystemExit('Native profile produced no SVG evidence')
+manifest = {}
+for svg in svgs:
+    digest = hashlib.sha256()
+    with svg.open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(block)
+    manifest[svg.name] = {'sha256': digest.hexdigest(), 'bytes': svg.stat().st_size}
+(output / 'svg-manifest.json').write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
 summary = [
     'Lectern Mac preview test run',
     f"Source: {provenance['sourceRevision']} (dirty: {provenance['sourceDirty']})",
@@ -88,14 +100,16 @@ summary += [
     '', 'First bitmap is not first visible frame. RSS excludes WebKit helper processes.',
     'Raw per-stage CPU and elapsed times are in profile/timings.json.',
     'This run does not establish PowerPoint visual acceptance or a speedup by itself.',
-    'The ZIP includes slide SVGs (with deck content/resources), timings, provenance and logs.',
-    'The original PPTX and full regressions.xcresult stay outside the ZIP.',
+    'The ZIP includes SVG hashes/sizes, timings, provenance, test counts and logs.',
+    'Full SVGs stay in profile/ for visual review or investigating a changed hash.',
+    'The original PPTX, full SVGs and regressions.xcresult stay outside the ZIP.',
 ]
 (output / 'SUMMARY.txt').write_text('\n'.join(summary) + '\n')
 # Exclusive creation also protects an archive created while the tests were running.
 with zipfile.ZipFile(str(output) + '.zip', 'x', zipfile.ZIP_DEFLATED) as archive:
-    files = [output / name for name in ('SUMMARY.txt', 'profile.log', 'regressions.log', 'regressions.json')]
-    files += sorted((output / 'profile').rglob('*'))
+    files = [output / name for name in (
+        'SUMMARY.txt', 'svg-manifest.json', 'profile.log', 'regressions.log',
+        'regressions.json', 'profile/timings.json', 'profile/provenance.json')]
     for path in files:
         if path.is_file():
             archive.write(path, str(Path(output.name) / path.relative_to(output)))

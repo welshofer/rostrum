@@ -1,4 +1,5 @@
 """Exercise orchestration and failure handling without launching a native app."""
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -78,12 +79,25 @@ printf '%s\\n' "$@" > "$TEST_ROOT/arguments"
         self.assertIn('-parallel-testing-enabled\nNO\n', arguments)
         with zipfile.ZipFile(str(self.output) + '.zip') as archive:
             names = archive.namelist()
-            self.assertIn('test results/profile/slide-1.svg', names)
+            self.assertNotIn('test results/profile/slide-1.svg', names)
+            manifest = json.loads(archive.read('test results/svg-manifest.json'))
+            svg = (self.output / 'profile/slide-1.svg').read_bytes()
+            self.assertEqual(manifest, {'slide-1.svg': {
+                'sha256': hashlib.sha256(svg).hexdigest(), 'bytes': len(svg),
+            }})
             self.assertIn('test results/profile/provenance.json', names)
             self.assertIn('test results/regressions.log', names)
             self.assertIn('3 passed', archive.read('test results/SUMMARY.txt').decode())
             self.assertFalse(any(name.endswith('.pptx') for name in names))
         self.assertEqual(self.deck.read_bytes(), b'original deck')
+
+    def test_missing_svg_evidence_never_produces_success_bundle(self):
+        with (self.scripts / 'profile-preview.sh').open('a') as script:
+            script.write('rm "$2/slide-1.svg"\n')
+        result = self.run_script(str(self.deck), str(self.output))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('no SVG evidence', result.stderr)
+        self.assertFalse(Path(str(self.output) + '.zip').exists())
 
     def test_default_output_is_inside_ignored_build_directory(self):
         result = self.run_script(str(self.deck))
