@@ -128,6 +128,15 @@ Mac rerun, first-visible-frame latency and helper-process memory remain pending.
 Sharing repeated embedded-font resources is a separate follow-up; standalone
 SVG bytes and caller-selected fonts remain intact in this change.
 
+Font-registration continuation (2026-10-15): the same Mac trace reports
+143–190 ms in installed-font registration. Lectern parsed each accepted face
+while validating candidates, then parsed it again to register it. A new immutable
+`PreparedFont` keeps source bytes, collection index and metrics together; public
+registration overloads and Lectern's operation-local session reuse that parse.
+Fresh operations still reread files. Embedded-face priority, aliases, exact
+style checks and resource budgets remain unchanged. Paired Release measurements
+and the full regression gate are in progress; native Mac timing remains pending.
+
 Recent Linux results include about 10% lower long-source CPU and 6–8% lower dense
 text CPU. They establish neither a current native Mac speedup nor a general memory
 reduction. See [the performance ledger](docs/PERFORMANCE.md).

@@ -51,17 +51,30 @@ public final class FontLibrary {
     /// Registering the same exact face again replaces it; other styles persist.
     @discardableResult
     public func register(_ data: Data, aliases: [String] = [], fontIndex: Int = 0) throws -> String {
-        let metrics = try FontMetrics(data: data, fontIndex: fontIndex)
-        return try register(metrics, data: data, names: metrics.familyNames + aliases,
-                            bold: metrics.isBold, italic: metrics.isItalic)
+        try register(PreparedFont(data: data, fontIndex: fontIndex), aliases: aliases)
     }
 
     /// Explicit style metadata overrides font metadata (including embedded-face tags).
     @discardableResult
     public func register(_ data: Data, face: FontFaceKey, aliases: [String] = [],
                          fontIndex: Int = 0) throws -> String {
-        let metrics = try FontMetrics(data: data, fontIndex: fontIndex)
-        return try register(metrics, data: data, names: [face.family] + metrics.familyNames + aliases,
+        try register(PreparedFont(data: data, fontIndex: fontIndex), face: face, aliases: aliases)
+    }
+
+    /// Register an already parsed snapshot with the same naming, style and
+    /// replacement rules as raw-byte registration. Does not reread its file.
+    @discardableResult
+    public func register(_ font: PreparedFont, aliases: [String] = []) throws -> String {
+        let metrics = font.metrics
+        return try register(metrics, data: font.data, names: metrics.familyNames + aliases,
+                            bold: metrics.isBold, italic: metrics.isItalic)
+    }
+
+    /// Register a prepared snapshot with explicit style metadata, as used by
+    /// embedded-face tags. Metrics and bytes always come from the same snapshot.
+    @discardableResult
+    public func register(_ font: PreparedFont, face: FontFaceKey, aliases: [String] = []) throws -> String {
+        try register(font.metrics, data: font.data, names: [face.family] + font.metrics.familyNames + aliases,
                             bold: face.bold, italic: face.italic)
     }
 
