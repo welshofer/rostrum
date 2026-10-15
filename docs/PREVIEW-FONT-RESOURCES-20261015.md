@@ -53,13 +53,13 @@ UTF-8 equality with all source SVGs. No WebKit runs in this measurement.
 
 | 28-slide preparation | Inline | Shared-resource candidate |
 | --- | ---: | ---: |
-| First-pass CPU | 19.629 ms | 180.953 ms |
-| Repeat-pass CPU | 14.234 ms | 173.184 ms |
-| First-pass elapsed | 19.631 ms | 181.052 ms |
-| Repeat-pass elapsed | 14.230 ms | 173.188 ms |
+| First-pass CPU | 17.395 ms | 173.588 ms |
+| Repeat-pass CPU | 12.375 ms | 163.643 ms |
+| First-pass elapsed | 17.397 ms | 173.587 ms |
+| Repeat-pass elapsed | 12.371 ms | 163.636 ms |
 | Process peak RSS (median) | 160.30 MiB | 151.99 MiB |
-| Whole-process CPU (median) | 160.66 ms | 486.93 ms |
-| Whole-process elapsed (median) | 161.56 ms | 487.64 ms |
+| Whole-process CPU (median) | 155.41 ms | 455.62 ms |
+| Whole-process elapsed (median) | 155.91 ms | 456.17 ms |
 | HTML bytes per pass | 114,999,901 | 43,927,613 |
 
 The candidate decodes three unique resources, retaining 4,442,287 accounted bytes.
@@ -70,7 +70,7 @@ Neither figure is a measured WebKit IPC or memory saving. Host memory includes
 source SVG loading and wrapper preparation, not browser helpers or snapshots.
 
 The tiny font-free control retains no resources: first preparation CPU is
-7 microseconds inline versus 11 microseconds shared; repeated preparation is
+8 microseconds inline versus 11 microseconds shared; repeated preparation is
 about 1 microsecond for both. Median process peak RSS is 11.00 MiB for both.
 These small timing differences do not demonstrate a benefit.
 

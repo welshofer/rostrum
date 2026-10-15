@@ -49,7 +49,7 @@ import Darwin
             for svg in svgs {
                 let prepared = store.prepare(svg: svg)
                 let restored = prepared.resources.reduce(prepared.svg) { result,r in
-                    result.replacingOccurrences(of:r.url,with:"data:\(r.mimeType);base64,\(r.data.base64EncodedString())")
+                    result.replacingOccurrences(of:r.url + ")",with:"data:\(r.mimeType);base64,\(r.data.base64EncodedString()))")
                 }
                 guard Data(restored.utf8) == Data(svg.utf8) else { fatalError("Output changed") }
             }

@@ -11,8 +11,8 @@ import Testing
     }
     private func restore(_ document: PreviewFontResources.Document) -> String {
         document.resources.reduce(document.svg) { result, resource in
-            result.replacingOccurrences(of: resource.url,
-                with: "data:\(resource.mimeType);base64,\(resource.data.base64EncodedString())")
+            result.replacingOccurrences(of: resource.url + ")",
+                with: "data:\(resource.mimeType);base64,\(resource.data.base64EncodedString()))")
         }
     }
 
@@ -38,6 +38,14 @@ import Testing
         let c = store.prepare(svg: svg(rule(Data([1, 2, 3]), face: 7)))
         #expect(a.resources.first?.url == c.resources.first?.url)
         #expect(store.decodedResources == 2)
+    }
+
+    @Test func manyFacesReconstructWithoutMatchingURLPrefixes() {
+        let store = PreviewFontResources()
+        let source = svg((1...12).map { rule(Data([UInt8($0), 2, 3]), face: $0) }.joined())
+        let prepared = store.prepare(svg: source)
+        #expect(prepared.resources.count == 12)
+        #expect(Array(restore(prepared).utf8) == Array(source.utf8))
     }
 
     @Test func formatsStayDistinctAndUnrecognizedMarkupStaysInline() {

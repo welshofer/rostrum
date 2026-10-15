@@ -3,13 +3,14 @@
     "schemaVersion": 1,
     "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
     "swift": "Swift version 6.1.3 (swift-6.1.3-RELEASE)\nTarget: x86_64-unknown-linux-gnu",
-    "sourceRevision": "e71b087e30d886802a69d6d49b277da162f654f4",
+    "sourceRevision": "33daffbe21821bdebc82d3f5f132ac09e69d6f6c",
+    "sourceDirty": true,
     "sourceSHA256": {
-      "Tools/preview-profile/font-resource-probe.swift": "ec3f6d003028e542bdbcb0549038c4ded0530be02183466378101e17a0863b99",
+      "Tools/preview-profile/font-resource-probe.swift": "91c9ffe7365954063d7aebebe68e1c65630acaeccbdc477f1e0cfcd05baa2fd6",
       "Lectern/Sources/LecternCore/Inspection/PreviewFontResources.swift": "47a33a72db51748622b05b67ca5d155b284abaee5b11ec98525341d51827214d",
       "Lectern/Sources/LecternCore/Inspection/CostLimitedCache.swift": "43e229d9ac543607a74bd6abdc09127d92fa8fcd33710d5359d16c0742febda7"
     },
-    "executableSHA256": "fbd96521edd39dd5e08515d57874c16a4fb2d6a6a15f731017f9cb7cd2ffa3cc",
+    "executableSHA256": "0384954ad73ff934ff9367a048ff4974cf9b0c2e4f6578e94ba1c72522cef124",
     "inputs": [
       {
         "name": "slide-1.svg",
@@ -160,22 +161,22 @@
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 0.018116,
-            "elapsedSeconds": 0.018118347972631454,
+            "cpuSeconds": 0.022562,
+            "elapsedSeconds": 0.022564653016161174,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           },
           {
-            "cpuSeconds": 0.014352,
-            "elapsedSeconds": 0.014347705990076065,
+            "cpuSeconds": 0.016287,
+            "elapsedSeconds": 0.016282270022202283,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           }
         ],
         "pair": 0,
         "warmup": true,
-        "processElapsedSeconds": 0.1621956080198288,
-        "processCPUSeconds": 0.16012099999999999
+        "processElapsedSeconds": 0.18682418100070208,
+        "processCPUSeconds": 0.18626500000000001
       },
       {
         "decodedResources": 3,
@@ -184,46 +185,46 @@
         "retainedBytes": 4442287,
         "samples": [
           {
-            "cpuSeconds": 0.177683,
-            "elapsedSeconds": 0.17768190300557762,
+            "cpuSeconds": 0.172284,
+            "elapsedSeconds": 0.17228406196227297,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           },
           {
-            "cpuSeconds": 0.1641,
-            "elapsedSeconds": 0.164126330986619,
+            "cpuSeconds": 0.160119,
+            "elapsedSeconds": 0.16011227696435526,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           }
         ],
         "pair": 0,
         "warmup": true,
-        "processElapsedSeconds": 0.46097072504926473,
-        "processCPUSeconds": 0.460055
+        "processElapsedSeconds": 0.4651759850094095,
+        "processCPUSeconds": 0.4647029999999999
       },
       {
         "decodedResources": 3,
         "mode": "shared",
-        "peakRSSBytes": 159375360,
+        "peakRSSBytes": 159408128,
         "retainedBytes": 4442287,
         "samples": [
           {
-            "cpuSeconds": 0.179762,
-            "elapsedSeconds": 0.17976114904740825,
+            "cpuSeconds": 0.161854,
+            "elapsedSeconds": 0.1618844830081798,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           },
           {
-            "cpuSeconds": 0.164728,
-            "elapsedSeconds": 0.16475187899777666,
+            "cpuSeconds": 0.15148,
+            "elapsedSeconds": 0.15147291700122878,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           }
         ],
         "pair": 1,
         "warmup": false,
-        "processElapsedSeconds": 0.48234255996067077,
-        "processCPUSeconds": 0.4819479999999998
+        "processElapsedSeconds": 0.4244370490196161,
+        "processCPUSeconds": 0.42381900000000006
       },
       {
         "decodedResources": 0,
@@ -232,22 +233,22 @@
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 0.017886,
-            "elapsedSeconds": 0.017896700999699533,
+            "cpuSeconds": 0.017189,
+            "elapsedSeconds": 0.017190750979352742,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           },
           {
-            "cpuSeconds": 0.013591,
-            "elapsedSeconds": 0.013587570982053876,
+            "cpuSeconds": 0.011873,
+            "elapsedSeconds": 0.011867665045429021,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           }
         ],
         "pair": 1,
         "warmup": false,
-        "processElapsedSeconds": 0.15114600700326264,
-        "processCPUSeconds": 0.15076100000000012
+        "processElapsedSeconds": 0.143917681009043,
+        "processCPUSeconds": 0.1434070000000001
       },
       {
         "decodedResources": 0,
@@ -256,22 +257,22 @@
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 0.018189,
-            "elapsedSeconds": 0.018192176008597016,
+            "cpuSeconds": 0.015157,
+            "elapsedSeconds": 0.015160424984060228,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           },
           {
-            "cpuSeconds": 0.014234,
-            "elapsedSeconds": 0.014230149041395634,
+            "cpuSeconds": 0.011146,
+            "elapsedSeconds": 0.011143536015879363,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           }
         ],
         "pair": 2,
         "warmup": false,
-        "processElapsedSeconds": 0.14833542902488261,
-        "processCPUSeconds": 0.1479499999999999
+        "processElapsedSeconds": 0.1382672610343434,
+        "processCPUSeconds": 0.1377660000000001
       },
       {
         "decodedResources": 3,
@@ -280,22 +281,118 @@
         "retainedBytes": 4442287,
         "samples": [
           {
-            "cpuSeconds": 0.182581,
-            "elapsedSeconds": 0.18258821603376418,
+            "cpuSeconds": 0.169192,
+            "elapsedSeconds": 0.16919235803652555,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           },
           {
-            "cpuSeconds": 0.172807,
-            "elapsedSeconds": 0.17280202498659492,
+            "cpuSeconds": 0.166038,
+            "elapsedSeconds": 0.1660310819861479,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           }
         ],
         "pair": 2,
         "warmup": false,
-        "processElapsedSeconds": 0.4731918260222301,
-        "processCPUSeconds": 0.4725230000000002
+        "processElapsedSeconds": 0.45038714894326404,
+        "processCPUSeconds": 0.44989100000000004
+      },
+      {
+        "decodedResources": 3,
+        "mode": "shared",
+        "peakRSSBytes": 159375360,
+        "retainedBytes": 4442287,
+        "samples": [
+          {
+            "cpuSeconds": 0.178659,
+            "elapsedSeconds": 0.1786990380496718,
+            "fontBytesIfRequestedEverySlide": 53306624,
+            "htmlBytes": 43927613
+          },
+          {
+            "cpuSeconds": 0.163099,
+            "elapsedSeconds": 0.16310182900633663,
+            "fontBytesIfRequestedEverySlide": 53306624,
+            "htmlBytes": 43927613
+          }
+        ],
+        "pair": 3,
+        "warmup": false,
+        "processElapsedSeconds": 0.47866468800930306,
+        "processCPUSeconds": 0.47816199999999986
+      },
+      {
+        "decodedResources": 0,
+        "mode": "inline",
+        "peakRSSBytes": 168087552,
+        "retainedBytes": 0,
+        "samples": [
+          {
+            "cpuSeconds": 0.018126,
+            "elapsedSeconds": 0.018129507021512836,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 114999901
+          },
+          {
+            "cpuSeconds": 0.012406,
+            "elapsedSeconds": 0.012402836000546813,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 114999901
+          }
+        ],
+        "pair": 3,
+        "warmup": false,
+        "processElapsedSeconds": 0.15658014395739883,
+        "processCPUSeconds": 0.1559819999999999
+      },
+      {
+        "decodedResources": 0,
+        "mode": "inline",
+        "peakRSSBytes": 168091648,
+        "retainedBytes": 0,
+        "samples": [
+          {
+            "cpuSeconds": 0.017565,
+            "elapsedSeconds": 0.01756701699923724,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 114999901
+          },
+          {
+            "cpuSeconds": 0.014239,
+            "elapsedSeconds": 0.014234719041269273,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 114999901
+          }
+        ],
+        "pair": 4,
+        "warmup": false,
+        "processElapsedSeconds": 0.1606426800135523,
+        "processCPUSeconds": 0.16024599999999967
+      },
+      {
+        "decodedResources": 3,
+        "mode": "shared",
+        "peakRSSBytes": 159375360,
+        "retainedBytes": 4442287,
+        "samples": [
+          {
+            "cpuSeconds": 0.173588,
+            "elapsedSeconds": 0.17358698399038985,
+            "fontBytesIfRequestedEverySlide": 53306624,
+            "htmlBytes": 43927613
+          },
+          {
+            "cpuSeconds": 0.163643,
+            "elapsedSeconds": 0.1636360629927367,
+            "fontBytesIfRequestedEverySlide": 53306624,
+            "htmlBytes": 43927613
+          }
+        ],
+        "pair": 4,
+        "warmup": false,
+        "processElapsedSeconds": 0.4561728879925795,
+        "processCPUSeconds": 0.4556030000000002
       },
       {
         "decodedResources": 3,
@@ -304,70 +401,70 @@
         "retainedBytes": 4442287,
         "samples": [
           {
-            "cpuSeconds": 0.180953,
-            "elapsedSeconds": 0.18105206900509074,
+            "cpuSeconds": 0.180716,
+            "elapsedSeconds": 0.1807752419845201,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           },
           {
-            "cpuSeconds": 0.165124,
-            "elapsedSeconds": 0.16523066099034622,
+            "cpuSeconds": 0.195694,
+            "elapsedSeconds": 0.19568853301461786,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           }
         ],
-        "pair": 3,
+        "pair": 5,
         "warmup": false,
-        "processElapsedSeconds": 0.465029412007425,
-        "processCPUSeconds": 0.4587079999999998
+        "processElapsedSeconds": 0.5079204810317606,
+        "processCPUSeconds": 0.5074559999999998
       },
       {
         "decodedResources": 0,
         "mode": "inline",
-        "peakRSSBytes": 168087552,
+        "peakRSSBytes": 168091648,
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 0.018616,
-            "elapsedSeconds": 0.018618285947013646,
+            "cpuSeconds": 0.017838,
+            "elapsedSeconds": 0.01783943799091503,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           },
           {
-            "cpuSeconds": 0.013868,
-            "elapsedSeconds": 0.013864750042557716,
+            "cpuSeconds": 0.013794,
+            "elapsedSeconds": 0.01379020296735689,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           }
         ],
-        "pair": 3,
+        "pair": 5,
         "warmup": false,
-        "processElapsedSeconds": 0.16155916400020942,
-        "processCPUSeconds": 0.16065900000000016
+        "processElapsedSeconds": 0.15591332002077252,
+        "processCPUSeconds": 0.15541300000000036
       },
       {
         "decodedResources": 0,
         "mode": "inline",
-        "peakRSSBytes": 168087552,
+        "peakRSSBytes": 168108032,
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 0.020879,
-            "elapsedSeconds": 0.020881043979898095,
+            "cpuSeconds": 0.0165,
+            "elapsedSeconds": 0.016502615995705128,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           },
           {
-            "cpuSeconds": 0.012428,
-            "elapsedSeconds": 0.012423653970472515,
+            "cpuSeconds": 0.012375,
+            "elapsedSeconds": 0.012370887969154865,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           }
         ],
-        "pair": 4,
+        "pair": 6,
         "warmup": false,
-        "processElapsedSeconds": 0.1551094149472192,
-        "processCPUSeconds": 0.15456600000000004
+        "processElapsedSeconds": 0.16022734198486432,
+        "processCPUSeconds": 0.15977900000000012
       },
       {
         "decodedResources": 3,
@@ -376,118 +473,22 @@
         "retainedBytes": 4442287,
         "samples": [
           {
-            "cpuSeconds": 0.188053,
-            "elapsedSeconds": 0.18807904003188014,
+            "cpuSeconds": 0.171154,
+            "elapsedSeconds": 0.17115084902616218,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           },
           {
-            "cpuSeconds": 0.215442,
-            "elapsedSeconds": 0.21543479803949594,
-            "fontBytesIfRequestedEverySlide": 53306624,
-            "htmlBytes": 43927613
-          }
-        ],
-        "pair": 4,
-        "warmup": false,
-        "processElapsedSeconds": 0.5451888520037755,
-        "processCPUSeconds": 0.5444990000000003
-      },
-      {
-        "decodedResources": 3,
-        "mode": "shared",
-        "peakRSSBytes": 159379456,
-        "retainedBytes": 4442287,
-        "samples": [
-          {
-            "cpuSeconds": 0.17856,
-            "elapsedSeconds": 0.1785808129934594,
-            "fontBytesIfRequestedEverySlide": 53306624,
-            "htmlBytes": 43927613
-          },
-          {
-            "cpuSeconds": 0.194071,
-            "elapsedSeconds": 0.19424961501499638,
-            "fontBytesIfRequestedEverySlide": 53306624,
-            "htmlBytes": 43927613
-          }
-        ],
-        "pair": 5,
-        "warmup": false,
-        "processElapsedSeconds": 0.4910604750039056,
-        "processCPUSeconds": 0.4904339999999997
-      },
-      {
-        "decodedResources": 0,
-        "mode": "inline",
-        "peakRSSBytes": 168087552,
-        "retainedBytes": 0,
-        "samples": [
-          {
-            "cpuSeconds": 0.019629,
-            "elapsedSeconds": 0.019631450006272644,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 114999901
-          },
-          {
-            "cpuSeconds": 0.015952,
-            "elapsedSeconds": 0.015947534004226327,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 114999901
-          }
-        ],
-        "pair": 5,
-        "warmup": false,
-        "processElapsedSeconds": 0.1812139680259861,
-        "processCPUSeconds": 0.1808059999999999
-      },
-      {
-        "decodedResources": 0,
-        "mode": "inline",
-        "peakRSSBytes": 168087552,
-        "retainedBytes": 0,
-        "samples": [
-          {
-            "cpuSeconds": 0.021691,
-            "elapsedSeconds": 0.02169457997661084,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 114999901
-          },
-          {
-            "cpuSeconds": 0.015894,
-            "elapsedSeconds": 0.015890448994468898,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 114999901
-          }
-        ],
-        "pair": 6,
-        "warmup": false,
-        "processElapsedSeconds": 0.1708113470231183,
-        "processCPUSeconds": 0.17034800000000017
-      },
-      {
-        "decodedResources": 3,
-        "mode": "shared",
-        "peakRSSBytes": 159412224,
-        "retainedBytes": 4442287,
-        "samples": [
-          {
-            "cpuSeconds": 0.185178,
-            "elapsedSeconds": 0.18524901295313612,
-            "fontBytesIfRequestedEverySlide": 53306624,
-            "htmlBytes": 43927613
-          },
-          {
-            "cpuSeconds": 0.173184,
-            "elapsedSeconds": 0.17318768298719078,
+            "cpuSeconds": 0.161912,
+            "elapsedSeconds": 0.16191551799420267,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           }
         ],
         "pair": 6,
         "warmup": false,
-        "processElapsedSeconds": 0.49124477803707123,
-        "processCPUSeconds": 0.4904080000000004
+        "processElapsedSeconds": 0.4560723539907485,
+        "processCPUSeconds": 0.4556229999999998
       },
       {
         "decodedResources": 3,
@@ -496,63 +497,63 @@
         "retainedBytes": 4442287,
         "samples": [
           {
-            "cpuSeconds": 0.180929,
-            "elapsedSeconds": 0.18092925800010562,
+            "cpuSeconds": 0.181629,
+            "elapsedSeconds": 0.18178670603083447,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           },
           {
-            "cpuSeconds": 0.174043,
-            "elapsedSeconds": 0.17409305000910535,
+            "cpuSeconds": 0.167778,
+            "elapsedSeconds": 0.1678094820235856,
             "fontBytesIfRequestedEverySlide": 53306624,
             "htmlBytes": 43927613
           }
         ],
         "pair": 7,
         "warmup": false,
-        "processElapsedSeconds": 0.48764365300303325,
-        "processCPUSeconds": 0.486928
+        "processElapsedSeconds": 0.49238253897055984,
+        "processCPUSeconds": 0.4917830000000005
       },
       {
         "decodedResources": 0,
         "mode": "inline",
-        "peakRSSBytes": 168087552,
+        "peakRSSBytes": 168124416,
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 0.022164,
-            "elapsedSeconds": 0.022271766036283225,
+            "cpuSeconds": 0.017395,
+            "elapsedSeconds": 0.017397176998201758,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           },
           {
-            "cpuSeconds": 0.01848,
-            "elapsedSeconds": 0.018476021999958903,
+            "cpuSeconds": 0.012255,
+            "elapsedSeconds": 0.01225250301649794,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 114999901
           }
         ],
         "pair": 7,
         "warmup": false,
-        "processElapsedSeconds": 0.170088903978467,
-        "processCPUSeconds": 0.1696549999999999
+        "processElapsedSeconds": 0.14543030800996348,
+        "processCPUSeconds": 0.1445019999999997
       }
     ],
     "exactReconstructionPassed": true,
-    "scope": "Swift -O preparation only; no WebKit. One warmup and alternating fresh processes. Two passes share the resource cache. Input reads are outside stage timings and inside process CPU/elapsed/peak RSS. Exact SVG reconstruction runs separately afterward.",
-    "sourceDirty": true
+    "scope": "Swift -O preparation only; no WebKit. One warmup and alternating fresh processes. Two passes share the resource cache. Input reads are outside stage timings and inside process CPU/elapsed/peak RSS. Exact SVG reconstruction runs separately afterward."
   },
   "small": {
     "schemaVersion": 1,
     "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
     "swift": "Swift version 6.1.3 (swift-6.1.3-RELEASE)\nTarget: x86_64-unknown-linux-gnu",
-    "sourceRevision": "e71b087e30d886802a69d6d49b277da162f654f4",
+    "sourceRevision": "33daffbe21821bdebc82d3f5f132ac09e69d6f6c",
+    "sourceDirty": true,
     "sourceSHA256": {
-      "Tools/preview-profile/font-resource-probe.swift": "ec3f6d003028e542bdbcb0549038c4ded0530be02183466378101e17a0863b99",
+      "Tools/preview-profile/font-resource-probe.swift": "91c9ffe7365954063d7aebebe68e1c65630acaeccbdc477f1e0cfcd05baa2fd6",
       "Lectern/Sources/LecternCore/Inspection/PreviewFontResources.swift": "47a33a72db51748622b05b67ca5d155b284abaee5b11ec98525341d51827214d",
       "Lectern/Sources/LecternCore/Inspection/CostLimitedCache.swift": "43e229d9ac543607a74bd6abdc09127d92fa8fcd33710d5359d16c0742febda7"
     },
-    "executableSHA256": "fbd96521edd39dd5e08515d57874c16a4fb2d6a6a15f731017f9cb7cd2ffa3cc",
+    "executableSHA256": "0384954ad73ff934ff9367a048ff4974cf9b0c2e4f6578e94ba1c72522cef124",
     "inputs": [
       {
         "name": "small.svg",
@@ -569,21 +570,21 @@
         "samples": [
           {
             "cpuSeconds": 8e-06,
-            "elapsedSeconds": 1.1185999028384686e-05,
+            "elapsedSeconds": 1.1576979886740446e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
-            "cpuSeconds": 0,
-            "elapsedSeconds": 8.909846656024456e-07,
+            "cpuSeconds": 1e-06,
+            "elapsedSeconds": 8.320203050971031e-07,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 0,
         "warmup": true,
-        "processElapsedSeconds": 0.010002866969443858,
-        "processCPUSeconds": 0.009611999999999954
+        "processElapsedSeconds": 0.010529661027248949,
+        "processCPUSeconds": 0.01012999999999975
       },
       {
         "decodedResources": 0,
@@ -593,21 +594,21 @@
         "samples": [
           {
             "cpuSeconds": 1.1e-05,
-            "elapsedSeconds": 1.4271005056798458e-05,
+            "elapsedSeconds": 1.5202967915683985e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
-            "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.2820237316191196e-06,
+            "cpuSeconds": 2e-06,
+            "elapsedSeconds": 1.90298305824399e-06,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 0,
         "warmup": true,
-        "processElapsedSeconds": 0.008882074034772813,
-        "processCPUSeconds": 0.008578000000001085
+        "processElapsedSeconds": 0.012128239031881094,
+        "processCPUSeconds": 0.011806999999999013
       },
       {
         "decodedResources": 0,
@@ -617,21 +618,21 @@
         "samples": [
           {
             "cpuSeconds": 1e-05,
-            "elapsedSeconds": 1.2398988474160433e-05,
+            "elapsedSeconds": 1.3118959031999111e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
             "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.2119999155402184e-06,
+            "elapsedSeconds": 1.401989720761776e-06,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 1,
         "warmup": false,
-        "processElapsedSeconds": 0.008413502015173435,
-        "processCPUSeconds": 0.007897999999999517
+        "processElapsedSeconds": 0.009433193015865982,
+        "processCPUSeconds": 0.009083000000000174
       },
       {
         "decodedResources": 0,
@@ -640,22 +641,22 @@
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 7e-06,
-            "elapsedSeconds": 9.533949196338654e-06,
+            "cpuSeconds": 8e-06,
+            "elapsedSeconds": 1.1106021702289581e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
-            "cpuSeconds": 1e-06,
-            "elapsedSeconds": 8.210190571844578e-07,
+            "cpuSeconds": 0,
+            "elapsedSeconds": 9.520445019006729e-07,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 1,
         "warmup": false,
-        "processElapsedSeconds": 0.007843061001040041,
-        "processCPUSeconds": 0.007419000000000064
+        "processElapsedSeconds": 0.010752889967989177,
+        "processCPUSeconds": 0.010504000000001401
       },
       {
         "decodedResources": 0,
@@ -664,22 +665,22 @@
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 7e-06,
-            "elapsedSeconds": 9.954965207725763e-06,
+            "cpuSeconds": 8e-06,
+            "elapsedSeconds": 1.180701656267047e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
             "cpuSeconds": 1e-06,
-            "elapsedSeconds": 8.41973815113306e-07,
+            "elapsedSeconds": 8.810311555862427e-07,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 2,
         "warmup": false,
-        "processElapsedSeconds": 0.007891471963375807,
-        "processCPUSeconds": 0.007485000000000852
+        "processElapsedSeconds": 0.009584205050487071,
+        "processCPUSeconds": 0.009316999999999798
       },
       {
         "decodedResources": 0,
@@ -688,22 +689,22 @@
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 1.4e-05,
-            "elapsedSeconds": 1.7646001651883125e-05,
+            "cpuSeconds": 3.4e-05,
+            "elapsedSeconds": 4.164100391790271e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
             "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.2919772416353226e-06,
+            "elapsedSeconds": 1.5519908629357815e-06,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 2,
         "warmup": false,
-        "processElapsedSeconds": 0.01214511797297746,
-        "processCPUSeconds": 0.011813000000000962
+        "processElapsedSeconds": 0.008249906008131802,
+        "processCPUSeconds": 0.008015000000000327
       },
       {
         "decodedResources": 0,
@@ -712,22 +713,22 @@
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 1.1e-05,
-            "elapsedSeconds": 1.4040968380868435e-05,
+            "cpuSeconds": 1e-05,
+            "elapsedSeconds": 1.2799049727618694e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
             "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.241976860910654e-06,
+            "elapsedSeconds": 1.3820244930684566e-06,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 3,
         "warmup": false,
-        "processElapsedSeconds": 0.009362151962704957,
-        "processCPUSeconds": 0.009151999999999383
+        "processElapsedSeconds": 0.008173363981768489,
+        "processCPUSeconds": 0.007844999999999658
       },
       {
         "decodedResources": 0,
@@ -736,8 +737,8 @@
         "retainedBytes": 0,
         "samples": [
           {
-            "cpuSeconds": 6e-06,
-            "elapsedSeconds": 1.019495539367199e-05,
+            "cpuSeconds": 8e-06,
+            "elapsedSeconds": 1.1096009984612465e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
@@ -750,80 +751,8 @@
         ],
         "pair": 3,
         "warmup": false,
-        "processElapsedSeconds": 0.007903570018243045,
-        "processCPUSeconds": 0.007657999999998832
-      },
-      {
-        "decodedResources": 0,
-        "mode": "inline",
-        "peakRSSBytes": 11534336,
-        "retainedBytes": 0,
-        "samples": [
-          {
-            "cpuSeconds": 6e-06,
-            "elapsedSeconds": 9.75397415459156e-06,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          },
-          {
-            "cpuSeconds": 1e-06,
-            "elapsedSeconds": 8.410424925386906e-07,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          }
-        ],
-        "pair": 4,
-        "warmup": false,
-        "processElapsedSeconds": 0.007591889996547252,
-        "processCPUSeconds": 0.007298999999999056
-      },
-      {
-        "decodedResources": 0,
-        "mode": "shared",
-        "peakRSSBytes": 11534336,
-        "retainedBytes": 0,
-        "samples": [
-          {
-            "cpuSeconds": 1.1e-05,
-            "elapsedSeconds": 1.3088982086628675e-05,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          },
-          {
-            "cpuSeconds": 2e-06,
-            "elapsedSeconds": 1.3720127753913403e-06,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          }
-        ],
-        "pair": 4,
-        "warmup": false,
-        "processElapsedSeconds": 0.009000658988952637,
-        "processCPUSeconds": 0.008793000000000273
-      },
-      {
-        "decodedResources": 0,
-        "mode": "shared",
-        "peakRSSBytes": 11534336,
-        "retainedBytes": 0,
-        "samples": [
-          {
-            "cpuSeconds": 1.4e-05,
-            "elapsedSeconds": 1.7155020032078028e-05,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          },
-          {
-            "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.2320233508944511e-06,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          }
-        ],
-        "pair": 5,
-        "warmup": false,
-        "processElapsedSeconds": 0.010605857009068131,
-        "processCPUSeconds": 0.010415999999998649
+        "processElapsedSeconds": 0.011671204993035644,
+        "processCPUSeconds": 0.011416000000000093
       },
       {
         "decodedResources": 0,
@@ -833,93 +762,69 @@
         "samples": [
           {
             "cpuSeconds": 8e-06,
-            "elapsedSeconds": 1.166702713817358e-05,
+            "elapsedSeconds": 1.1576979886740446e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
             "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.000997144728899e-06,
+            "elapsedSeconds": 9.119976311922073e-07,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          }
+        ],
+        "pair": 4,
+        "warmup": false,
+        "processElapsedSeconds": 0.011572149000130594,
+        "processCPUSeconds": 0.01120399999999977
+      },
+      {
+        "decodedResources": 0,
+        "mode": "shared",
+        "peakRSSBytes": 11534336,
+        "retainedBytes": 0,
+        "samples": [
+          {
+            "cpuSeconds": 1.2e-05,
+            "elapsedSeconds": 1.5182013157755136e-05,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          },
+          {
+            "cpuSeconds": 1e-06,
+            "elapsedSeconds": 1.341977622359991e-06,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          }
+        ],
+        "pair": 4,
+        "warmup": false,
+        "processElapsedSeconds": 0.008540053968317807,
+        "processCPUSeconds": 0.008078000000001584
+      },
+      {
+        "decodedResources": 0,
+        "mode": "shared",
+        "peakRSSBytes": 11534336,
+        "retainedBytes": 0,
+        "samples": [
+          {
+            "cpuSeconds": 9e-06,
+            "elapsedSeconds": 1.1307012755423784e-05,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          },
+          {
+            "cpuSeconds": 1e-06,
+            "elapsedSeconds": 1.3320241123437881e-06,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 5,
         "warmup": false,
-        "processElapsedSeconds": 0.008396125980652869,
-        "processCPUSeconds": 0.00819100000000117
-      },
-      {
-        "decodedResources": 0,
-        "mode": "inline",
-        "peakRSSBytes": 11534336,
-        "retainedBytes": 0,
-        "samples": [
-          {
-            "cpuSeconds": 9e-06,
-            "elapsedSeconds": 1.1747993994504213e-05,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          },
-          {
-            "cpuSeconds": 1e-06,
-            "elapsedSeconds": 8.910428732633591e-07,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          }
-        ],
-        "pair": 6,
-        "warmup": false,
-        "processElapsedSeconds": 0.00956833700183779,
-        "processCPUSeconds": 0.009324999999999584
-      },
-      {
-        "decodedResources": 0,
-        "mode": "shared",
-        "peakRSSBytes": 11534336,
-        "retainedBytes": 0,
-        "samples": [
-          {
-            "cpuSeconds": 1e-05,
-            "elapsedSeconds": 1.3890035916119814e-05,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          },
-          {
-            "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.2820237316191196e-06,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          }
-        ],
-        "pair": 6,
-        "warmup": false,
-        "processElapsedSeconds": 0.009348642022814602,
-        "processCPUSeconds": 0.009045000000000414
-      },
-      {
-        "decodedResources": 0,
-        "mode": "shared",
-        "peakRSSBytes": 11534336,
-        "retainedBytes": 0,
-        "samples": [
-          {
-            "cpuSeconds": 9e-06,
-            "elapsedSeconds": 1.1976982932537794e-05,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          },
-          {
-            "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.4519901014864445e-06,
-            "fontBytesIfRequestedEverySlide": 0,
-            "htmlBytes": 331
-          }
-        ],
-        "pair": 7,
-        "warmup": false,
-        "processElapsedSeconds": 0.007998229993972927,
-        "processCPUSeconds": 0.0075550000000004225
+        "processElapsedSeconds": 0.00823917001252994,
+        "processCPUSeconds": 0.007895999999999237
       },
       {
         "decodedResources": 0,
@@ -929,25 +834,120 @@
         "samples": [
           {
             "cpuSeconds": 7e-06,
-            "elapsedSeconds": 9.564042557030916e-06,
+            "elapsedSeconds": 9.073992259800434e-06,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           },
           {
             "cpuSeconds": 1e-06,
-            "elapsedSeconds": 1.200998667627573e-06,
+            "elapsedSeconds": 9.310315363109112e-07,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          }
+        ],
+        "pair": 5,
+        "warmup": false,
+        "processElapsedSeconds": 0.007826140965335071,
+        "processCPUSeconds": 0.007612000000000396
+      },
+      {
+        "decodedResources": 0,
+        "mode": "inline",
+        "peakRSSBytes": 11534336,
+        "retainedBytes": 0,
+        "samples": [
+          {
+            "cpuSeconds": 7e-06,
+            "elapsedSeconds": 9.864976163953543e-06,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          },
+          {
+            "cpuSeconds": 1e-06,
+            "elapsedSeconds": 8.209608495235443e-07,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          }
+        ],
+        "pair": 6,
+        "warmup": false,
+        "processElapsedSeconds": 0.007891235989518464,
+        "processCPUSeconds": 0.007688000000000361
+      },
+      {
+        "decodedResources": 0,
+        "mode": "shared",
+        "peakRSSBytes": 11534336,
+        "retainedBytes": 0,
+        "samples": [
+          {
+            "cpuSeconds": 1.4e-05,
+            "elapsedSeconds": 2.9874034225940704e-05,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          },
+          {
+            "cpuSeconds": 1e-06,
+            "elapsedSeconds": 1.4230026863515377e-06,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          }
+        ],
+        "pair": 6,
+        "warmup": false,
+        "processElapsedSeconds": 0.01032195397419855,
+        "processCPUSeconds": 0.010007000000000321
+      },
+      {
+        "decodedResources": 0,
+        "mode": "shared",
+        "peakRSSBytes": 11534336,
+        "retainedBytes": 0,
+        "samples": [
+          {
+            "cpuSeconds": 1.1e-05,
+            "elapsedSeconds": 1.4131015632301569e-05,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          },
+          {
+            "cpuSeconds": 2.1e-05,
+            "elapsedSeconds": 2.047000452876091e-05,
             "fontBytesIfRequestedEverySlide": 0,
             "htmlBytes": 331
           }
         ],
         "pair": 7,
         "warmup": false,
-        "processElapsedSeconds": 0.007347620034124702,
-        "processCPUSeconds": 0.007121000000000155
+        "processElapsedSeconds": 0.014356257976032794,
+        "processCPUSeconds": 0.014091999999999771
+      },
+      {
+        "decodedResources": 0,
+        "mode": "inline",
+        "peakRSSBytes": 11534336,
+        "retainedBytes": 0,
+        "samples": [
+          {
+            "cpuSeconds": 8e-06,
+            "elapsedSeconds": 1.0396004654467106e-05,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          },
+          {
+            "cpuSeconds": 1e-06,
+            "elapsedSeconds": 9.00996383279562e-07,
+            "fontBytesIfRequestedEverySlide": 0,
+            "htmlBytes": 331
+          }
+        ],
+        "pair": 7,
+        "warmup": false,
+        "processElapsedSeconds": 0.009272255003452301,
+        "processCPUSeconds": 0.008744000000000085
       }
     ],
     "exactReconstructionPassed": true,
-    "scope": "Swift -O preparation only; no WebKit. One warmup and alternating fresh processes. Two passes share the resource cache. Input reads are outside stage timings and inside process CPU/elapsed/peak RSS. Exact SVG reconstruction runs separately afterward.",
-    "sourceDirty": true
+    "scope": "Swift -O preparation only; no WebKit. One warmup and alternating fresh processes. Two passes share the resource cache. Input reads are outside stage timings and inside process CPU/elapsed/peak RSS. Exact SVG reconstruction runs separately afterward."
   }
 }
