@@ -1,0 +1,1776 @@
+{
+  "baselineBuild": {
+    "executableSHA256": "aa97dd881d056742cdcb2d8a212a7d408517c9d0b8876bd611a3ffbd205e9d9f",
+    "probeSHA256": "738153c250008c745e62d451dca5b4eb24e3c6e5cd850fe822902140b6d62764",
+    "revision": "a16e98e74abb36e964749986d3754607e317cfd1",
+    "scope": "Release Rostrum target built from baseline library source; new font probe compiled with unchanged baseline InstalledFonts. Candidate preparation was implemented after this binary was built.",
+    "sourceSHA256": {
+      "Lectern/Sources/LecternCore/Rendering/InstalledFonts.swift": "0d5e1fac04f4d766bfb27dd3789ed87f31b81e3a628cff7d59b5cf43c87b3a70",
+      "Sources/Rostrum/Fonts/FontLibrary.swift": "5cf5d8eb027de5a9a79932f41f72fe39711d821fd9871f375a6a161812891f3f",
+      "Sources/Rostrum/Fonts/FontMetrics.swift": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+    }
+  },
+  "candidateDirty": false,
+  "candidateRevision": "f95330c908662175222b430aac0a1632e064e5ac",
+  "candidateSourceSHA256": {
+    "Lectern/Sources/LecternCore/Rendering/InstalledFonts.swift": "79227a5c699feac937d1c1175ae72b6d5dd826bc53f5b8c3954d6b385970501f",
+    "Sources/Rostrum/Fonts/FontLibrary.swift": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c",
+    "Sources/Rostrum/Fonts/PreparedFont.swift": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30",
+    "Tools/preview-profile/font-probe.swift": "738153c250008c745e62d451dca5b4eb24e3c6e5cd850fe822902140b6d62764",
+    "Tools/preview-profile/run-fonts.py": "e71340bbe8143d4588a0c130539da7a38c1a06900e8b912136580e0f004bd1cc"
+  },
+  "executableSHA256": {
+    "baseline": "aa97dd881d056742cdcb2d8a212a7d408517c9d0b8876bd611a3ffbd205e9d9f",
+    "candidate": "6de61faee6b42f131e63620b70bbdc37e6cfecfa1e6dc36695ae5e8362464475"
+  },
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "schemaVersion": 1,
+  "scope": "Release font-registration probe; candidate file discovery is injected. Two fresh production sessions per process include file reads, validation and registration. Stage timings exclude fixture authoring, rendering and artifact writes; process timings and lifetime peak RSS include all of them. OS lookup, WebKit and UI are not measured. Input hashing and warmups can warm filesystem caches. Binary hashes identify measured builds; source revision alone does not establish binary provenance.",
+  "swift": "Swift version 6.1.3 (swift-6.1.3-RELEASE)\nTarget: x86_64-unknown-linux-gnu",
+  "workloads": [
+    {
+      "artifacts": {
+        "operation-1-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-1-slide-2.svg": "34737065076db1fb4c342f35b16178b9d828b1f42de33069c27107bee403bb6f",
+        "operation-1.diagnostics.json": "97df07f236b8c1a5d3a94f8a55d283418b34a154c7a461697e5055fc850aa5c5",
+        "operation-1.pptx": "f7b69dd5c0d0fb1a92e8188fee1273631e8cbe4ed88b6e22f5a443f4d424dafc",
+        "operation-1.registration.json": "8c4e5817abb6d252dec8c5b53b3eec50b85753daeecc0ce32b4a9fbc116e4769",
+        "operation-2-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-2-slide-2.svg": "34737065076db1fb4c342f35b16178b9d828b1f42de33069c27107bee403bb6f",
+        "operation-2.diagnostics.json": "97df07f236b8c1a5d3a94f8a55d283418b34a154c7a461697e5055fc850aa5c5",
+        "operation-2.pptx": "f7b69dd5c0d0fb1a92e8188fee1273631e8cbe4ed88b6e22f5a443f4d424dafc",
+        "operation-2.registration.json": "8c4e5817abb6d252dec8c5b53b3eec50b85753daeecc0ce32b4a9fbc116e4769"
+      },
+      "families": [
+        "Calibri"
+      ],
+      "inputs": [
+        {
+          "bytes": 329144,
+          "name": "Calibri.ttf",
+          "sha256": "89027a8e0dbec88455152e2ec84e03c7eb58f01627a1f7564147596366777fbc"
+        },
+        {
+          "bytes": 327772,
+          "name": "Calibri Bold.ttf",
+          "sha256": "84374a631545c8a4963a782e3b5862c84a55f046ed7f2e3487f219c8215305f9"
+        },
+        {
+          "bytes": 338344,
+          "name": "Calibri Italic.ttf",
+          "sha256": "a4a54216026cc70a71ab6d18204474e66a7069b6c2cc37c58fff7adcf2fecd37"
+        },
+        {
+          "bytes": 340984,
+          "name": "Calibri Bold Italic.ttf",
+          "sha256": "d59b243dbbee4ae2e57eb0a0ca06e404ff5d4331427204ccb8b4d4fa078c31e9"
+        }
+      ],
+      "name": "calibri-four",
+      "samples": [
+        {
+          "pair": 0,
+          "peakRSSBytes": 35233792,
+          "processCPUSeconds": 0.076734,
+          "processElapsedSeconds": 0.08296165999490768,
+          "stages": [
+            {
+              "cpuSeconds": 0.017758,
+              "elapsedSeconds": 0.017727531027048826,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.011503,
+              "elapsedSeconds": 0.01149728603195399,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": true
+        },
+        {
+          "pair": 0,
+          "peakRSSBytes": 34918400,
+          "processCPUSeconds": 0.058861,
+          "processElapsedSeconds": 0.06427759799407795,
+          "stages": [
+            {
+              "cpuSeconds": 0.008159,
+              "elapsedSeconds": 0.008133773982990533,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.006068999999999998,
+              "elapsedSeconds": 0.00606587203219533,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": true
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 34959360,
+          "processCPUSeconds": 0.0637,
+          "processElapsedSeconds": 0.07308875996386632,
+          "stages": [
+            {
+              "cpuSeconds": 0.010423,
+              "elapsedSeconds": 0.010401461040601134,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005934999999999996,
+              "elapsedSeconds": 0.005930993007495999,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 35573760,
+          "processCPUSeconds": 0.06487699999999998,
+          "processElapsedSeconds": 0.07026181899709627,
+          "stages": [
+            {
+              "cpuSeconds": 0.013651000000000002,
+              "elapsedSeconds": 0.01362586801405996,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.011153999999999997,
+              "elapsedSeconds": 0.011150025005917996,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 35614720,
+          "processCPUSeconds": 0.06298499999999999,
+          "processElapsedSeconds": 0.0675781579921022,
+          "stages": [
+            {
+              "cpuSeconds": 0.014230000000000001,
+              "elapsedSeconds": 0.014208958018571138,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010912999999999999,
+              "elapsedSeconds": 0.010910201002843678,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 34848768,
+          "processCPUSeconds": 0.05112800000000001,
+          "processElapsedSeconds": 0.05573477997677401,
+          "stages": [
+            {
+              "cpuSeconds": 0.007658999999999999,
+              "elapsedSeconds": 0.007635076995939016,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005429000000000003,
+              "elapsedSeconds": 0.005426026997156441,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 34971648,
+          "processCPUSeconds": 0.05682100000000001,
+          "processElapsedSeconds": 0.06286927004111931,
+          "stages": [
+            {
+              "cpuSeconds": 0.008601999999999999,
+              "elapsedSeconds": 0.008574593986850232,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005858999999999996,
+              "elapsedSeconds": 0.005855972005520016,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 35545088,
+          "processCPUSeconds": 0.06127300000000002,
+          "processElapsedSeconds": 0.06587051798123866,
+          "stages": [
+            {
+              "cpuSeconds": 0.013442,
+              "elapsedSeconds": 0.013417831039987504,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010730000000000003,
+              "elapsedSeconds": 0.010726780048571527,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 35713024,
+          "processCPUSeconds": 0.064719,
+          "processElapsedSeconds": 0.06961233000038192,
+          "stages": [
+            {
+              "cpuSeconds": 0.013492000000000002,
+              "elapsedSeconds": 0.013467334036249667,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010429,
+              "elapsedSeconds": 0.010426406981423497,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 34508800,
+          "processCPUSeconds": 0.05535900000000005,
+          "processElapsedSeconds": 0.06136791798053309,
+          "stages": [
+            {
+              "cpuSeconds": 0.008696,
+              "elapsedSeconds": 0.008669804024975747,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.006069999999999999,
+              "elapsedSeconds": 0.006067704001907259,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 34983936,
+          "processCPUSeconds": 0.05530200000000002,
+          "processElapsedSeconds": 0.06073818897129968,
+          "stages": [
+            {
+              "cpuSeconds": 0.008006999999999998,
+              "elapsedSeconds": 0.007983190997038037,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005594999999999996,
+              "elapsedSeconds": 0.00559242203598842,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 35565568,
+          "processCPUSeconds": 0.06563600000000006,
+          "processElapsedSeconds": 0.06999627698678523,
+          "stages": [
+            {
+              "cpuSeconds": 0.0146,
+              "elapsedSeconds": 0.014572635991498828,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010820999999999997,
+              "elapsedSeconds": 0.010816493013408035,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 35639296,
+          "processCPUSeconds": 0.07192899999999994,
+          "processElapsedSeconds": 0.07745551399420947,
+          "stages": [
+            {
+              "cpuSeconds": 0.015818,
+              "elapsedSeconds": 0.015790742996614426,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.011410999999999998,
+              "elapsedSeconds": 0.011407724989112467,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 34799616,
+          "processCPUSeconds": 0.05349899999999996,
+          "processElapsedSeconds": 0.0591483730240725,
+          "stages": [
+            {
+              "cpuSeconds": 0.008173000000000001,
+              "elapsedSeconds": 0.008148826018441468,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0056729999999999975,
+              "elapsedSeconds": 0.005670398997608572,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 34840576,
+          "processCPUSeconds": 0.05117699999999997,
+          "processElapsedSeconds": 0.056370434002019465,
+          "stages": [
+            {
+              "cpuSeconds": 0.007781,
+              "elapsedSeconds": 0.007755375001579523,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005964999999999998,
+              "elapsedSeconds": 0.005921408999711275,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 35659776,
+          "processCPUSeconds": 0.061093000000000064,
+          "processElapsedSeconds": 0.06553573400015011,
+          "stages": [
+            {
+              "cpuSeconds": 0.012962000000000001,
+              "elapsedSeconds": 0.01289656205335632,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010134999999999998,
+              "elapsedSeconds": 0.01014058495638892,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        }
+      ]
+    },
+    {
+      "artifacts": {
+        "operation-1-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-1-slide-2.svg": "90d0c417f3654e6178fb9c5a7f180d7eacb9f2fb97b12b536a16c9527228db84",
+        "operation-1.diagnostics.json": "8db95b989e45e4daa7cf38d16dc33267703b5cfa8ddca0177d073c77d237c092",
+        "operation-1.pptx": "f7b69dd5c0d0fb1a92e8188fee1273631e8cbe4ed88b6e22f5a443f4d424dafc",
+        "operation-1.registration.json": "8c4e5817abb6d252dec8c5b53b3eec50b85753daeecc0ce32b4a9fbc116e4769",
+        "operation-2-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-2-slide-2.svg": "90d0c417f3654e6178fb9c5a7f180d7eacb9f2fb97b12b536a16c9527228db84",
+        "operation-2.diagnostics.json": "8db95b989e45e4daa7cf38d16dc33267703b5cfa8ddca0177d073c77d237c092",
+        "operation-2.pptx": "f7b69dd5c0d0fb1a92e8188fee1273631e8cbe4ed88b6e22f5a443f4d424dafc",
+        "operation-2.registration.json": "8c4e5817abb6d252dec8c5b53b3eec50b85753daeecc0ce32b4a9fbc116e4769"
+      },
+      "families": [
+        "Calibri"
+      ],
+      "inputs": [
+        {
+          "bytes": 1336272,
+          "name": "calibri-test-collection.ttc",
+          "sha256": "7b2019c76e2796e2232e4faba4aec7833af4810affeab633ed508e42a4948e99"
+        }
+      ],
+      "name": "calibri-collection",
+      "samples": [
+        {
+          "pair": 0,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.05047000000000007,
+          "processElapsedSeconds": 0.05461441201623529,
+          "stages": [
+            {
+              "cpuSeconds": 0.013696,
+              "elapsedSeconds": 0.013673148001544178,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010877999999999999,
+              "elapsedSeconds": 0.010875920008402318,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": true
+        },
+        {
+          "pair": 0,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03972899999999996,
+          "processElapsedSeconds": 0.04449578997446224,
+          "stages": [
+            {
+              "cpuSeconds": 0.009158000000000001,
+              "elapsedSeconds": 0.009134119958616793,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005699999999999997,
+              "elapsedSeconds": 0.005698600027244538,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": true
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.0386189999999999,
+          "processElapsedSeconds": 0.04217789397807792,
+          "stages": [
+            {
+              "cpuSeconds": 0.008171,
+              "elapsedSeconds": 0.008146142004989088,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.006078,
+              "elapsedSeconds": 0.006076788005884737,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.04953000000000002,
+          "processElapsedSeconds": 0.05431790999136865,
+          "stages": [
+            {
+              "cpuSeconds": 0.012829,
+              "elapsedSeconds": 0.012804745987523347,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010788000000000006,
+              "elapsedSeconds": 0.010784735961351544,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.04935600000000001,
+          "processElapsedSeconds": 0.05329819401958957,
+          "stages": [
+            {
+              "cpuSeconds": 0.01311,
+              "elapsedSeconds": 0.01308539102319628,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010902000000000002,
+              "elapsedSeconds": 0.01089912501629442,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.0394830000000001,
+          "processElapsedSeconds": 0.04284735198598355,
+          "stages": [
+            {
+              "cpuSeconds": 0.008421,
+              "elapsedSeconds": 0.008397131983656436,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005844000000000002,
+              "elapsedSeconds": 0.005840800004079938,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03854400000000002,
+          "processElapsedSeconds": 0.043535137025173753,
+          "stages": [
+            {
+              "cpuSeconds": 0.008073,
+              "elapsedSeconds": 0.008049859025049955,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005755,
+              "elapsedSeconds": 0.005751847987994552,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.05212700000000009,
+          "processElapsedSeconds": 0.05594559101155028,
+          "stages": [
+            {
+              "cpuSeconds": 0.014783,
+              "elapsedSeconds": 0.014762675971724093,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010985000000000002,
+              "elapsedSeconds": 0.010981646017171443,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.0501080000000001,
+          "processElapsedSeconds": 0.05396135401679203,
+          "stages": [
+            {
+              "cpuSeconds": 0.013753,
+              "elapsedSeconds": 0.013728140038438141,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010700000000000001,
+              "elapsedSeconds": 0.010696785990148783,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.0380589999999999,
+          "processElapsedSeconds": 0.042037867999169976,
+          "stages": [
+            {
+              "cpuSeconds": 0.008305,
+              "elapsedSeconds": 0.008276814012788236,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005649000000000001,
+              "elapsedSeconds": 0.005646703997626901,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.044204999999999994,
+          "processElapsedSeconds": 0.04853568598628044,
+          "stages": [
+            {
+              "cpuSeconds": 0.010438999999999999,
+              "elapsedSeconds": 0.010413536976557225,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0063520000000000035,
+              "elapsedSeconds": 0.00634913903195411,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.050809000000000104,
+          "processElapsedSeconds": 0.05580168898450211,
+          "stages": [
+            {
+              "cpuSeconds": 0.013524,
+              "elapsedSeconds": 0.013497688982170075,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010533,
+              "elapsedSeconds": 0.010529379011131823,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.052408000000000066,
+          "processElapsedSeconds": 0.05608737102011219,
+          "stages": [
+            {
+              "cpuSeconds": 0.013012999999999999,
+              "elapsedSeconds": 0.01298770698485896,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010637999999999995,
+              "elapsedSeconds": 0.010634534002747387,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.04560199999999992,
+          "processElapsedSeconds": 0.050277667003683746,
+          "stages": [
+            {
+              "cpuSeconds": 0.008159999999999999,
+              "elapsedSeconds": 0.008130208007059991,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.009354000000000001,
+              "elapsedSeconds": 0.009350670035928488,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.045043,
+          "processElapsedSeconds": 0.049201294023077935,
+          "stages": [
+            {
+              "cpuSeconds": 0.008991,
+              "elapsedSeconds": 0.008965680026449263,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.006107000000000001,
+              "elapsedSeconds": 0.006104178028181195,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.050346,
+          "processElapsedSeconds": 0.054595063033048064,
+          "stages": [
+            {
+              "cpuSeconds": 0.012936999999999999,
+              "elapsedSeconds": 0.012913386977743357,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.010537999999999999,
+              "elapsedSeconds": 0.010533755004871637,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        }
+      ]
+    },
+    {
+      "artifacts": {
+        "operation-1-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-1-slide-2.svg": "ec2e7d6a1b306c6942df760aab4e7664da01d6a82a9cef9c44439aad1b7205ce",
+        "operation-1.diagnostics.json": "251c9798d8f90f8ad97a69f474926766358b43484f137ffa60cd425dccdb9a88",
+        "operation-1.pptx": "bd79af30e306ac36cdff1720eb3bdcb039968b98ef1862f1655764c025f95b09",
+        "operation-1.registration.json": "bb4f2e261962e49bf2b2e6d4b0572651898b9e315e20b2d0b889cbe4e85c5843",
+        "operation-2-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-2-slide-2.svg": "ec2e7d6a1b306c6942df760aab4e7664da01d6a82a9cef9c44439aad1b7205ce",
+        "operation-2.diagnostics.json": "251c9798d8f90f8ad97a69f474926766358b43484f137ffa60cd425dccdb9a88",
+        "operation-2.pptx": "bd79af30e306ac36cdff1720eb3bdcb039968b98ef1862f1655764c025f95b09",
+        "operation-2.registration.json": "bb4f2e261962e49bf2b2e6d4b0572651898b9e315e20b2d0b889cbe4e85c5843"
+      },
+      "families": [
+        "Arial"
+      ],
+      "inputs": [
+        {
+          "bytes": 773236,
+          "name": "Arial.ttf",
+          "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+        }
+      ],
+      "name": "arial-regular",
+      "samples": [
+        {
+          "pair": 0,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.04018699999999997,
+          "processElapsedSeconds": 0.04570137400878593,
+          "stages": [
+            {
+              "cpuSeconds": 0.005761000000000002,
+              "elapsedSeconds": 0.0057361850049346685,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0034579999999999993,
+              "elapsedSeconds": 0.0034547389950603247,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": true
+        },
+        {
+          "pair": 0,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03888700000000006,
+          "processElapsedSeconds": 0.043830473034176975,
+          "stages": [
+            {
+              "cpuSeconds": 0.004513999999999999,
+              "elapsedSeconds": 0.0044901560177095234,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.001849,
+              "elapsedSeconds": 0.0018466949695721269,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": true
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03710000000000013,
+          "processElapsedSeconds": 0.042433466005604714,
+          "stages": [
+            {
+              "cpuSeconds": 0.003758000000000001,
+              "elapsedSeconds": 0.003732498036697507,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0019629999999999995,
+              "elapsedSeconds": 0.0019609640003181994,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03968800000000006,
+          "processElapsedSeconds": 0.04459392902208492,
+          "stages": [
+            {
+              "cpuSeconds": 0.005323999999999999,
+              "elapsedSeconds": 0.005294653994496912,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003537000000000002,
+              "elapsedSeconds": 0.0035339760361239314,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.04090399999999983,
+          "processElapsedSeconds": 0.045576083997730166,
+          "stages": [
+            {
+              "cpuSeconds": 0.005493,
+              "elapsedSeconds": 0.0054691300028935075,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0035120000000000012,
+              "elapsedSeconds": 0.0035091089666821063,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.037317000000000045,
+          "processElapsedSeconds": 0.04454259399790317,
+          "stages": [
+            {
+              "cpuSeconds": 0.0037400000000000003,
+              "elapsedSeconds": 0.0037157940096221864,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.002270000000000001,
+              "elapsedSeconds": 0.0022723739966750145,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.0345899999999999,
+          "processElapsedSeconds": 0.03847669198876247,
+          "stages": [
+            {
+              "cpuSeconds": 0.0038460000000000005,
+              "elapsedSeconds": 0.0038228719495236874,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0018340000000000023,
+              "elapsedSeconds": 0.001831121975556016,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.042724000000000206,
+          "processElapsedSeconds": 0.047569649992510676,
+          "stages": [
+            {
+              "cpuSeconds": 0.006026,
+              "elapsedSeconds": 0.006001446978189051,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003595000000000001,
+              "elapsedSeconds": 0.003591629967559129,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.044848999999999806,
+          "processElapsedSeconds": 0.0495473489863798,
+          "stages": [
+            {
+              "cpuSeconds": 0.005912000000000001,
+              "elapsedSeconds": 0.005886627011932433,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003716000000000004,
+              "elapsedSeconds": 0.0037129500415176153,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03535100000000013,
+          "processElapsedSeconds": 0.03923628298798576,
+          "stages": [
+            {
+              "cpuSeconds": 0.0036970000000000006,
+              "elapsedSeconds": 0.0036733910092152655,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.001807000000000003,
+              "elapsedSeconds": 0.0018052540253847837,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.036920000000000064,
+          "processElapsedSeconds": 0.04231357399839908,
+          "stages": [
+            {
+              "cpuSeconds": 0.0036019999999999993,
+              "elapsedSeconds": 0.0035786309745162725,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0022369999999999994,
+              "elapsedSeconds": 0.002234246989246458,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03986500000000015,
+          "processElapsedSeconds": 0.044056575978174806,
+          "stages": [
+            {
+              "cpuSeconds": 0.005644,
+              "elapsedSeconds": 0.005619253031909466,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003381000000000002,
+              "elapsedSeconds": 0.003378276014700532,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03976499999999983,
+          "processElapsedSeconds": 0.04469966498436406,
+          "stages": [
+            {
+              "cpuSeconds": 0.005664000000000001,
+              "elapsedSeconds": 0.005638901959173381,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003243999999999997,
+              "elapsedSeconds": 0.003242273989599198,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03616300000000017,
+          "processElapsedSeconds": 0.04093549097888172,
+          "stages": [
+            {
+              "cpuSeconds": 0.003924,
+              "elapsedSeconds": 0.003898883005604148,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0017870000000000004,
+              "elapsedSeconds": 0.0017854339675977826,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.040243999999999835,
+          "processElapsedSeconds": 0.04547947598621249,
+          "stages": [
+            {
+              "cpuSeconds": 0.004751,
+              "elapsedSeconds": 0.004727456020191312,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0019279999999999992,
+              "elapsedSeconds": 0.0019259320106357336,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03858299999999992,
+          "processElapsedSeconds": 0.04436792602064088,
+          "stages": [
+            {
+              "cpuSeconds": 0.005455,
+              "elapsedSeconds": 0.005430844961665571,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003318999999999999,
+              "elapsedSeconds": 0.003315832989756018,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        }
+      ]
+    },
+    {
+      "artifacts": {
+        "operation-1-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-1-slide-2.svg": "734aaaf69d87ee699d503d26caaf89b56d29499d96ded38bbe2b04f8c297304e",
+        "operation-1.diagnostics.json": "b5c2ee98a75de84fa961f244a089ff493602e06fd45d26dd55293027e693b012",
+        "operation-1.pptx": "662e6c035a98fd93c47815430ef0ae61d55a10dfc45e5173203863444e16af0e",
+        "operation-1.registration.json": "1d1498fe1cb0e687abc255c3d4d0c396f6a0d6349f528a70c2ea7c10f9468af8",
+        "operation-2-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-2-slide-2.svg": "734aaaf69d87ee699d503d26caaf89b56d29499d96ded38bbe2b04f8c297304e",
+        "operation-2.diagnostics.json": "b5c2ee98a75de84fa961f244a089ff493602e06fd45d26dd55293027e693b012",
+        "operation-2.pptx": "662e6c035a98fd93c47815430ef0ae61d55a10dfc45e5173203863444e16af0e",
+        "operation-2.registration.json": "1d1498fe1cb0e687abc255c3d4d0c396f6a0d6349f528a70c2ea7c10f9468af8"
+      },
+      "families": [
+        "DejaVu Sans"
+      ],
+      "inputs": [
+        {
+          "bytes": 757076,
+          "name": "DejaVuSans.ttf",
+          "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+        }
+      ],
+      "name": "bundled-regular",
+      "samples": [
+        {
+          "pair": 0,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.042384999999999895,
+          "processElapsedSeconds": 0.04705277504399419,
+          "stages": [
+            {
+              "cpuSeconds": 0.005973000000000001,
+              "elapsedSeconds": 0.005918273003771901,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.004766999999999997,
+              "elapsedSeconds": 0.0047641610144637525,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": true
+        },
+        {
+          "pair": 0,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.04002400000000017,
+          "processElapsedSeconds": 0.046423366002272815,
+          "stages": [
+            {
+              "cpuSeconds": 0.004016000000000002,
+              "elapsedSeconds": 0.003994253987912089,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0018949999999999974,
+              "elapsedSeconds": 0.0018927729688584805,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": true
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03829099999999974,
+          "processElapsedSeconds": 0.04316333500901237,
+          "stages": [
+            {
+              "cpuSeconds": 0.0036959999999999996,
+              "elapsedSeconds": 0.003672468999866396,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0021449999999999976,
+              "elapsedSeconds": 0.002143222955055535,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03862600000000016,
+          "processElapsedSeconds": 0.04397270496701822,
+          "stages": [
+            {
+              "cpuSeconds": 0.005160000000000001,
+              "elapsedSeconds": 0.005137191037647426,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0038510000000000003,
+              "elapsedSeconds": 0.0038485999684780836,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03857900000000003,
+          "processElapsedSeconds": 0.04367107502184808,
+          "stages": [
+            {
+              "cpuSeconds": 0.005214999999999999,
+              "elapsedSeconds": 0.0051909799803979695,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003112,
+              "elapsedSeconds": 0.0031093579600565135,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.036370000000000235,
+          "processElapsedSeconds": 0.04104272200493142,
+          "stages": [
+            {
+              "cpuSeconds": 0.0038790000000000005,
+              "elapsedSeconds": 0.0038545989664271474,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0018880000000000008,
+              "elapsedSeconds": 0.0018850220367312431,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03449000000000013,
+          "processElapsedSeconds": 0.03904987598070875,
+          "stages": [
+            {
+              "cpuSeconds": 0.0036439999999999997,
+              "elapsedSeconds": 0.0036193509586155415,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0016550000000000002,
+              "elapsedSeconds": 0.0016533100279048085,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.04566400000000004,
+          "processElapsedSeconds": 0.04988364299060777,
+          "stages": [
+            {
+              "cpuSeconds": 0.006893999999999999,
+              "elapsedSeconds": 0.006873973994515836,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003814999999999999,
+              "elapsedSeconds": 0.00381192599888891,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.037426999999999655,
+          "processElapsedSeconds": 0.04223331296816468,
+          "stages": [
+            {
+              "cpuSeconds": 0.00515,
+              "elapsedSeconds": 0.005125644034706056,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.00324,
+              "elapsedSeconds": 0.0032371669658459723,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03725900000000004,
+          "processElapsedSeconds": 0.04202636796981096,
+          "stages": [
+            {
+              "cpuSeconds": 0.003656999999999999,
+              "elapsedSeconds": 0.0036333719617687166,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.001954000000000001,
+              "elapsedSeconds": 0.0019518709741532803,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.035514000000000046,
+          "processElapsedSeconds": 0.04146710300119594,
+          "stages": [
+            {
+              "cpuSeconds": 0.0036299999999999995,
+              "elapsedSeconds": 0.003605861042160541,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0018209999999999997,
+              "elapsedSeconds": 0.0018192339921370149,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.03973099999999974,
+          "processElapsedSeconds": 0.044706723012495786,
+          "stages": [
+            {
+              "cpuSeconds": 0.005150999999999999,
+              "elapsedSeconds": 0.0051272360142320395,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0034059999999999993,
+              "elapsedSeconds": 0.0034028809750452638,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.045905000000000196,
+          "processElapsedSeconds": 0.04973386198980734,
+          "stages": [
+            {
+              "cpuSeconds": 0.0059320000000000015,
+              "elapsedSeconds": 0.005906795966438949,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.003828999999999999,
+              "elapsedSeconds": 0.0038264470058493316,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.035972000000000226,
+          "processElapsedSeconds": 0.04120403400156647,
+          "stages": [
+            {
+              "cpuSeconds": 0.0035919999999999997,
+              "elapsedSeconds": 0.0035690669901669025,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0017389999999999975,
+              "elapsedSeconds": 0.001737703976687044,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.035567000000000015,
+          "processElapsedSeconds": 0.03991282405331731,
+          "stages": [
+            {
+              "cpuSeconds": 0.0036609999999999993,
+              "elapsedSeconds": 0.0036372680333442986,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.0017740000000000013,
+              "elapsedSeconds": 0.0017730169929564,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.05269999999999986,
+          "processElapsedSeconds": 0.05789641197770834,
+          "stages": [
+            {
+              "cpuSeconds": 0.005899999999999999,
+              "elapsedSeconds": 0.00586421403568238,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 0.005156000000000001,
+              "elapsedSeconds": 0.005152593017555773,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        }
+      ]
+    },
+    {
+      "artifacts": {
+        "operation-1-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-1-slide-2.svg": "a27f4f4ef0a146a18fd940a2e9b4feac47920fa91dad1f76dc20e37ed6c61372",
+        "operation-1.diagnostics.json": "71f3654ef7c974977fb4f8863ce42ff540db7460beac67ea847a432de45d5737",
+        "operation-1.pptx": "a4366eb8cc35f8ed7c97ba0ba9e85c34736d3f9df33ee69dbb3e3518bbac1d60",
+        "operation-1.registration.json": "f8c0dc455efb561067e9f8676dbe437f49ce16a4dd183b67fc2ca9cc8ec0647f",
+        "operation-2-slide-1.svg": "5542f6e1edf324c0885ba9502bb521903d33a997b32a10b6b73c66c85a121098",
+        "operation-2-slide-2.svg": "a27f4f4ef0a146a18fd940a2e9b4feac47920fa91dad1f76dc20e37ed6c61372",
+        "operation-2.diagnostics.json": "71f3654ef7c974977fb4f8863ce42ff540db7460beac67ea847a432de45d5737",
+        "operation-2.pptx": "a4366eb8cc35f8ed7c97ba0ba9e85c34736d3f9df33ee69dbb3e3518bbac1d60",
+        "operation-2.registration.json": "f8c0dc455efb561067e9f8676dbe437f49ce16a4dd183b67fc2ca9cc8ec0647f"
+      },
+      "families": [
+        "Unavailable"
+      ],
+      "inputs": [],
+      "name": "missing-control",
+      "samples": [
+        {
+          "pair": 0,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.02052500000000046,
+          "processElapsedSeconds": 0.025296940002590418,
+          "stages": [
+            {
+              "cpuSeconds": 3.799999999999984e-05,
+              "elapsedSeconds": 1.5974044799804688e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 7.000000000000062e-06,
+              "elapsedSeconds": 5.879031959921122e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": true
+        },
+        {
+          "pair": 0,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.019755999999999774,
+          "processElapsedSeconds": 0.023548224999103695,
+          "stages": [
+            {
+              "cpuSeconds": 3.8999999999999105e-05,
+              "elapsedSeconds": 1.5832949429750443e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 7.000000000000062e-06,
+              "elapsedSeconds": 5.607958883047104e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": true
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.02035700000000018,
+          "processElapsedSeconds": 0.02400417299941182,
+          "stages": [
+            {
+              "cpuSeconds": 6.399999999999982e-05,
+              "elapsedSeconds": 4.1040999349206686e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 5.999999999999062e-06,
+              "elapsedSeconds": 5.29800308868289e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 1,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.02120400000000011,
+          "processElapsedSeconds": 0.02536496502580121,
+          "stages": [
+            {
+              "cpuSeconds": 4.0000000000000105e-05,
+              "elapsedSeconds": 1.633400097489357e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 8.000000000001062e-06,
+              "elapsedSeconds": 6.3490006141364574e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.020502999999999827,
+          "processElapsedSeconds": 0.024491096031852067,
+          "stages": [
+            {
+              "cpuSeconds": 3.799999999999984e-05,
+              "elapsedSeconds": 1.4471006579697132e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 5.999999999999062e-06,
+              "elapsedSeconds": 5.73799479752779e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 2,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.019490999999999814,
+          "processElapsedSeconds": 0.022603054996579885,
+          "stages": [
+            {
+              "cpuSeconds": 6.100000000000029e-05,
+              "elapsedSeconds": 3.657396882772446e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 5.999999999999062e-06,
+              "elapsedSeconds": 5.057023372501135e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.020688999999999846,
+          "processElapsedSeconds": 0.024855563999153674,
+          "stages": [
+            {
+              "cpuSeconds": 3.5999999999999574e-05,
+              "elapsedSeconds": 1.4091026969254017e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 8.000000000001062e-06,
+              "elapsedSeconds": 6.03898661211133e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 3,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.02172900000000033,
+          "processElapsedSeconds": 0.2502026809961535,
+          "stages": [
+            {
+              "cpuSeconds": 4.099999999999937e-05,
+              "elapsedSeconds": 1.737498678267002e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 9.999999999999593e-06,
+              "elapsedSeconds": 8.651986718177795e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.021031999999999607,
+          "processElapsedSeconds": 0.0241369089926593,
+          "stages": [
+            {
+              "cpuSeconds": 4.0000000000000105e-05,
+              "elapsedSeconds": 1.610402250662446e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 7.000000000000062e-06,
+              "elapsedSeconds": 5.277979653328657e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 4,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.021908999999999956,
+          "processElapsedSeconds": 0.03167288901749998,
+          "stages": [
+            {
+              "cpuSeconds": 3.900000000000084e-05,
+              "elapsedSeconds": 1.561298267915845e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 7.999999999997592e-06,
+              "elapsedSeconds": 6.059010047465563e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.022608000000000406,
+          "processElapsedSeconds": 0.026975055981893092,
+          "stages": [
+            {
+              "cpuSeconds": 3.8999999999999105e-05,
+              "elapsedSeconds": 1.473200973123312e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 7.000000000000062e-06,
+              "elapsedSeconds": 5.837995558977127e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 5,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.019182999999999728,
+          "processElapsedSeconds": 0.02268796000862494,
+          "stages": [
+            {
+              "cpuSeconds": 3.900000000000084e-05,
+              "elapsedSeconds": 1.6144011169672012e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 6.000000000000796e-06,
+              "elapsedSeconds": 5.258014425635338e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.01923700000000028,
+          "processElapsedSeconds": 0.02258647099370137,
+          "stages": [
+            {
+              "cpuSeconds": 3.5999999999999574e-05,
+              "elapsedSeconds": 1.4151039067655802e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 7.000000000000062e-06,
+              "elapsedSeconds": 6.078975275158882e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        },
+        {
+          "pair": 6,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.018597000000000086,
+          "processElapsedSeconds": 0.022069848026148975,
+          "stages": [
+            {
+              "cpuSeconds": 4.0000000000000105e-05,
+              "elapsedSeconds": 1.663400325924158e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 5.999999999999062e-06,
+              "elapsedSeconds": 5.118025001138449e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.0209189999999998,
+          "processElapsedSeconds": 0.024971980950795114,
+          "stages": [
+            {
+              "cpuSeconds": 3.799999999999984e-05,
+              "elapsedSeconds": 1.4560995623469353e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 7.000000000000062e-06,
+              "elapsedSeconds": 5.998997949063778e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "candidate",
+          "warmup": false
+        },
+        {
+          "pair": 7,
+          "peakRSSBytes": 30048256,
+          "processCPUSeconds": 0.019842999999999944,
+          "processElapsedSeconds": 0.023385609965771437,
+          "stages": [
+            {
+              "cpuSeconds": 4.0000000000000105e-05,
+              "elapsedSeconds": 1.68450060300529e-05,
+              "stage": "registration1"
+            },
+            {
+              "cpuSeconds": 7.000000000000062e-06,
+              "elapsedSeconds": 5.779031198471785e-06,
+              "stage": "registration2"
+            }
+          ],
+          "variant": "baseline",
+          "warmup": false
+        }
+      ]
+    }
+  ]
+}

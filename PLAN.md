@@ -134,8 +134,12 @@ while validating candidates, then parsed it again to register it. A new immutabl
 `PreparedFont` keeps source bytes, collection index and metrics together; public
 registration overloads and Lectern's operation-local session reuse that parse.
 Fresh operations still reread files. Embedded-face priority, aliases, exact
-style checks and resource budgets remain unchanged. Paired Release measurements
-and the full regression gate are in progress; native Mac timing remains pending.
+style checks and resource budgets remain unchanged. Five paired Linux Release
+workloads retain identical saved decks, SVGs, diagnostics and registration
+receipts across 80 fresh processes. Available-font registration CPU falls
+30–40% first-use and 44–47% on a second fresh operation; a missing-font control
+has no demonstrated benefit. See the [registration record](docs/FONT-REGISTRATION-20261015.md)
+for raw CPU/elapsed, memory and control results. Native Mac timing remains pending.
 
 Recent Linux results include about 10% lower long-source CPU and 6–8% lower dense
 text CPU. They establish neither a current native Mac speedup nor a general memory
