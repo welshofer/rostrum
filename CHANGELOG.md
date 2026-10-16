@@ -6,6 +6,14 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- `TableLayoutEngine.plan` measures existing vertical and rectangular table
+  merges at full text size. Anchors expose `rowSpan`; covered cells retain their
+  XML without contributing height or diagnostics. Extra required height is
+  distributed deterministically across the spanned rows. The Templates Library
+  Lab checks saved geometry, content and previews on both canvas ratios.
+  Row-span template composition/pagination and native PowerPoint acceptance
+  remain separate work. See [vertical merges](docs/TABLE-VERTICAL-SPANS-20261016.md).
+
 - Lectern has an opt-in, bounded in-memory font transport experiment for Mac
   previews, plus `compare-preview-loading.py` for alternating Release timings
   and exact bitmap/SVG comparisons. Normal app loading remains inline pending

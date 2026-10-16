@@ -31,7 +31,7 @@ not a download of the newest Library Lab results.
 | --- | --- | --- |
 | Shared authored and template fitting | Fit mixed runs, inherited styles, tabs, bullets, breaks and spacing with the same geometry used for previews; recheck before composing | [Authored fitting](AUTHORED-FITTING-20261011.md), [template fitting](TEMPLATE-FITTING-20261011.md) |
 | Prepared shrink trials | Existing fit APIs reuse scale-independent preparation within each body; each trial still measures scaled geometry | [Prepared fitting](PREPARED-FITTING-20261012.md) |
-| Native table row planning | `TableLayoutEngine.plan` reports cell geometry and diagnostics without editing the table | [Row layout](TABLE-LAYOUT-20261012.md) |
+| Native table row planning | `TableLayoutEngine.plan` reports cell geometry and diagnostics without editing the table | [Row layout](TABLE-LAYOUT-20261012.md), [vertical merges](TABLE-VERTICAL-SPANS-20261016.md) |
 | Measured column widths | Choose `TemplateTableContent(rows:columnSizing:)` with `.measured()` and optional constraints | [Column search](TABLE-COLUMNS-20261012.md), [preparation](TABLE-PREPARATION-20261012.md), [fragment reuse](TABLE-SHAPING-20261013.md) |
 | Table pagination and horizontal spans | `planTablePages` / `composeTablePages` preserve complete rows, header spans, fixed widths and captions | [Pagination](TABLE-PAGINATION-20261012.md), [spans](TABLE-SPANS-20261012.md) |
 | Production tables in Lectern | Generate or recover a table deck; use `CompositionRegression --tables` for offline checks | [Lectern tables](LECTERN-TABLES-20261013.md) |

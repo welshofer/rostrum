@@ -198,12 +198,12 @@ import Testing
         #expect(try TableLayoutEngine(presentation: deck).plan(native).fits)
     }
 
-    @Test func verticalAndMalformedNativeSpansStayUnsupported() throws {
+    @Test func verticalSpansFitButMalformedNativeSpansStillThrow() throws {
         let deck = try fixture(), native = try table(deck, rows: [["Vertical", "Other"], ["", "Cell"]])
         try native.merge(row: 0, column: 0, rowSpan: 2, columnSpan: 1)
         let engine = TableLayoutEngine(presentation: deck), before = try deck.serializedData()
         let plan = try engine.plan(native)
-        #expect(!plan.fits && plan.cells[0].issues == [.mergedCell] && plan.cells[2].issues == [.mergedCell])
+        #expect(plan.fits && plan.cells[0].rowSpan == 2 && plan.cells[2].isMergeContinuation)
         #expect(try deck.serializedData() == before)
         try native.cell(0, 0).tc[attribute: "gridSpan"] = String(Int.max)
         native.part.markDirty()

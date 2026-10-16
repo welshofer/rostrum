@@ -104,8 +104,8 @@ eight-point gap. The native table retains theme/style references. Column weights
 default to half equal share and half bounded text-length weight. Existing callers
 retain this estimated allocation; measured sizing is an explicit option below.
 
-The planner supports rectangular grids with horizontal column spans. Vertical
-spans, vertical/rotated text, multiple text columns, dynamic fields and nonzero stored
+The existing-table planner supports rectangular grids with horizontal, vertical
+and rectangular merged cells. Vertical/rotated text, multiple text columns, dynamic fields and nonzero stored
 line-spacing reduction return explicit issues. The existing-table planner does
 not paginate rows, choose native autofit or certify PowerPoint visual equivalence.
 The Templates Library Lab demonstrates composition and existing-table planning,
@@ -180,6 +180,37 @@ Measurement has an explicit performance cost; see the
 Shaping diagnostics and native PowerPoint visual acceptance remain separate from
 portable fit, including when width search succeeds.
 
+### Vertical and rectangular merges in existing tables
+
+`TableLayoutEngine.plan` also measures a native merge that covers several rows.
+Its anchor exposes `rowSpan` and `columnSpan`; `requiredHeight` is the full cell
+height, not a per-row contribution. All covered cells have
+`isMergeContinuation == true`, zero required height and empty diagnostics.
+Their hidden text, formatting and unknown XML remain untouched.
+
+```swift
+try table.merge(row: 1, column: 0, rowSpan: 2, columnSpan: 2)
+let geometry = try TableLayoutEngine(presentation: deck).plan(table,
+    minimumRowHeight: .points(30), maximumHeight: .points(300))
+if geometry.fits {
+    table.columnWidths(geometry.columnWidths).rowHeights(geometry.rowHeights)
+}
+```
+
+Ordinary cells and `minimumRowHeight` establish the row minima; saved row heights
+are not minima. The planner then processes multi-row anchors in row-major order.
+If a merged cell needs more than its rows provide, the deficit is divided equally
+among those rows, with leftover EMUs assigned to earlier rows. Rows only grow,
+so intersecting row ranges retain every already-satisfied constraint. This policy
+is deterministic; it does not claim globally minimal height or PowerPoint's native
+autofit choices. `maximumHeight` applies after resolving all row-span constraints.
+
+Planning is read-only, and fresh operations observe current fonts, content and
+styles. Width trials reuse text measurements but recompute row constraints.
+`TemplateTableContent` and template pagination still reject row spans; grouping
+rows for safe page boundaries is a separate milestone. See
+[scope, regression coverage and evidence](TABLE-VERTICAL-SPANS-20261016.md).
+
 ### Horizontal merged cells
 
 `TableLayoutEngine.plan` accepts native horizontal merges and measures the
@@ -187,7 +218,8 @@ anchor's rich text, padding and resolved style across the sum of its column
 widths. `cells` stays in physical row-major order: anchors expose `columnSpan`;
 covered cells have `isMergeContinuation == true` and zero height, issues and
 diagnostics. Hidden continuation XML is preserved without contributing to visible
-layout. Vertical spans continue to report `.mergedCell`; malformed topology throws.
+layout. Malformed topology throws. Existing-table row spans are described below;
+template content and pagination still accept horizontal spans only.
 
 Template content declares spans in source-grid coordinates:
 
@@ -204,7 +236,7 @@ let continuation = try engine.planTablePages(title: "Evidence", table: content)
 let pages = try engine.composeTablePages(continuation)
 ```
 
-Only nonoverlapping, in-bounds spans with `rowSpan == 1` and `columnSpan >= 2`
+For `TemplateTableContent`, only nonoverlapping, in-bounds spans with `rowSpan == 1` and `columnSpan >= 2`
 are accepted. Covered input strings must be exactly empty, including no whitespace;
 invalid content fails before slide insertion. Header spans repeat on every page,
 and body spans move with their source row. Native merge flags are written in one
