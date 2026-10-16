@@ -16,7 +16,7 @@ enum TableHorizontalSpansRecipe {
                 merges.append(.init(row: row, column: 0, rowSpan: 1, columnSpan: 2))
             } else { rows.append(["Record \(row)", "Exact source evidence remains editable and wraps at full size.", "Ready"]) }
         }
-        let caption = "Horizontal spans only; row spans unsupported. PowerPoint visual acceptance pending."
+        let caption = "Grouped headers and source text stay editable. PowerPoint visual acceptance pending."
         let content = TemplateTableContent(rows: rows, columnSizing: .measured(), merges: merges)
         let engine = TemplateLayoutEngine(presentation: deck)
         let plan = try engine.planTablePages(title: "Grouped headers stay editable", table: content, caption: caption)

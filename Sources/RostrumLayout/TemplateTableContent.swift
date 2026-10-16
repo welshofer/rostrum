@@ -8,9 +8,10 @@ public struct TemplateTableContent: Sendable {
     public var rows: [[String]]
     public var columnWeights: [Double]?
     public var columnSizing: TableColumnSizing
-    /// Horizontal merges in source-grid coordinates (rowSpan == 1 and
-    /// columnSpan >= 2). Covered cells must be empty; no words are discarded.
-    /// Header merges repeat on every page; body merges move with their row.
+    /// Rectangular merges in source-grid coordinates. Covered cells must be
+    /// empty; no words are discarded. Pagination keeps connected body-row
+    /// groups together and repeats horizontal header merges. A merge crossing
+    /// the single header row is supported only by single-slide composition.
     public var merges: [TableMergeRegion]
     public init(rows: [[String]], columnWeights: [Double]? = nil, columnSizing: TableColumnSizing = .estimated,
                 merges: [TableMergeRegion] = []) {
@@ -56,6 +57,29 @@ public struct TemplateTableContent: Sendable {
     }
 
     private func validateMerges(columnCount: Int) throws {
+        if merges.contains(where: { $0.rowSpan != 1 }) {
+            var covered = Set<Int>()
+            for merge in merges {
+                guard merge.row >= 0, merge.row < rows.count, merge.column >= 0, merge.column < columnCount,
+                      merge.rowSpan >= 1, merge.rowSpan <= rows.count - merge.row,
+                      merge.columnSpan >= 1, merge.columnSpan <= columnCount - merge.column,
+                      merge.rowSpan > 1 || merge.columnSpan > 1 else {
+                    throw LayoutError.cannotFit("Table merges must be nonoverlapping rectangles inside the grid.")
+                }
+                for row in merge.row..<(merge.row + merge.rowSpan) {
+                    for column in merge.column..<(merge.column + merge.columnSpan) {
+                        guard covered.insert(row * columnCount + column).inserted else {
+                            throw LayoutError.cannotFit("Table merge rectangles cannot overlap.")
+                        }
+                        guard (row == merge.row && column == merge.column) || rows[row][column].isEmpty else {
+                            throw LayoutError.cannotFit("Covered table cells must be empty; merging cannot discard source text.")
+                        }
+                    }
+                }
+            }
+            return
+        }
+        // Keep the existing horizontal-only path allocation-light.
         var previousRow = -1, previousEnd = 0
         for merge in merges.sorted(by: { $0.row == $1.row ? $0.column < $1.column : $0.row < $1.row }) {
             guard merge.row >= 0, merge.row < rows.count, merge.column >= 0, merge.column < columnCount,

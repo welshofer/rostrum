@@ -44,7 +44,7 @@ enum TableVerticalSpansRecipe {
         table.columnWidths(plan.columnWidths).rowHeights(plan.rowHeights)
         try text("All source text remains editable. Merged groups stay on this slide.",
             y: deck.bounds.height.points - 65, height: 45, size: 14)
-        try slide.setNotes("Vertical and rectangular merges use full-size cell measurement. Row-span pagination and native PowerPoint visual acceptance remain pending.")
+        try slide.setNotes("Vertical and rectangular merges use full-size cell measurement. The separate pagination example keeps connected row groups together. Native PowerPoint visual acceptance remains pending.")
         let page = draft.deck.slides.count, svg = try deck.renderSVG(slideAt: 0)
         try draft.deck.slides.importAll(from: deck)
         result.extraFiles["vertical-spans-output.pptx"] = try deck.serializedData()

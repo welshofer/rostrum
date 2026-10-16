@@ -22,5 +22,10 @@ import Rostrum
             includingPropertiesForKeys: nil).filter { $0.pathExtension == "svg" && $0.lastPathComponent.hasPrefix("slide-") }
         #expect(previews.count == result.slideCount)
         #expect(result.checks.contains { $0.name == "Saved multi-row cells fit their combined area" && $0.passed })
+        let continuations = try Presentation(contentsOf: result.directory.appendingPathComponent("vertical-pagination-output.pptx"))
+        #expect(continuations.slides.count > 1)
+        #expect(continuations.slideSize.width == deck.slideSize.width && continuations.slideSize.height == deck.slideSize.height)
+        #expect(extracted.contains("A connected summary preserves the complete source for group 6."))
+        #expect(result.checks.contains { $0.name == "Saved merged pages fit their combined cell areas" && $0.passed })
     }
 }

@@ -1,5 +1,8 @@
 # Existing-table vertical merge measurement — 2026-10-16
 
+This records the measurement milestone. The [follow-up](TABLE-ROW-PAGINATION-20261016.md)
+adds template composition and pagination beyond the refusal boundary recorded here.
+
 `TableLayoutEngine.plan` measures horizontal text in existing native tables with
 vertical and rectangular merges. It remains read-only: callers check `fits`
 before applying the returned column widths and row heights.

@@ -6,13 +6,21 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Compose vertical and rectangular template-table merges and paginate connected
+  body-row groups without splitting cells. Width search scores the same groups;
+  oversized groups, vertical header merges and covered source text are refused
+  before adding slides. Lectern's Templates Lab exercises saved continuations
+  and production Inspect/export on both canvas ratios. Generated IR still does
+  not express merged cells; native PowerPoint acceptance remains separate.
+- Provider retry tests use a controlled clock and wait schedule, avoiding
+  wall-clock deadline failures during CPU-heavy Lab runs. Production deadlines
+  are unchanged; tests verify remaining request time and expired-wait refusal.
 - `TableLayoutEngine.plan` measures existing vertical and rectangular table
   merges at full text size. Anchors expose `rowSpan`; covered cells retain their
   XML without contributing height or diagnostics. Extra required height is
   distributed deterministically across the spanned rows. The Templates Library
   Lab checks saved geometry, content and previews on both canvas ratios.
-  Row-span template composition/pagination and native PowerPoint acceptance
-  remain separate work. See [vertical merges](docs/TABLE-VERTICAL-SPANS-20261016.md).
+  Native PowerPoint acceptance remains separate from portable checks. See [vertical merges](docs/TABLE-VERTICAL-SPANS-20261016.md).
 
 - Lectern has an opt-in, bounded in-memory font transport experiment for Mac
   previews, plus `compare-preview-loading.py` for alternating Release timings

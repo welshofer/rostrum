@@ -207,9 +207,11 @@ autofit choices. `maximumHeight` applies after resolving all row-span constraint
 
 Planning is read-only, and fresh operations observe current fonts, content and
 styles. Width trials reuse text measurements but recompute row constraints.
-`TemplateTableContent` and template pagination still reject row spans; grouping
-rows for safe page boundaries is a separate milestone. See
-[scope, regression coverage and evidence](TABLE-VERTICAL-SPANS-20261016.md).
+`TemplateTableContent` accepts the same rectangular merges. Pagination keeps
+connected body-row groups together; a group must fit with its repeated header.
+Vertical merges crossing row zero require single-slide composition. See
+[measurement evidence](TABLE-VERTICAL-SPANS-20261016.md) and
+[template composition and pagination](TABLE-ROW-PAGINATION-20261016.md).
 
 ### Horizontal merged cells
 
@@ -218,8 +220,8 @@ anchor's rich text, padding and resolved style across the sum of its column
 widths. `cells` stays in physical row-major order: anchors expose `columnSpan`;
 covered cells have `isMergeContinuation == true` and zero height, issues and
 diagnostics. Hidden continuation XML is preserved without contributing to visible
-layout. Malformed topology throws. Existing-table row spans are described below;
-template content and pagination still accept horizontal spans only.
+layout. Malformed topology throws. Vertical and rectangular spans use the
+combined row-area policy described above.
 
 Template content declares spans in source-grid coordinates:
 
@@ -236,11 +238,13 @@ let continuation = try engine.planTablePages(title: "Evidence", table: content)
 let pages = try engine.composeTablePages(continuation)
 ```
 
-For `TemplateTableContent`, only nonoverlapping, in-bounds spans with `rowSpan == 1` and `columnSpan >= 2`
-are accepted. Covered input strings must be exactly empty, including no whitespace;
-invalid content fails before slide insertion. Header spans repeat on every page,
-and body spans move with their source row. Native merge flags are written in one
-validated batch, retaining the full physical grid.
+For `TemplateTableContent`, nonoverlapping, in-bounds rectangles with positive
+row/column spans and at least one span greater than one are accepted. Covered
+input strings must be exactly empty, including no whitespace; invalid content
+fails before slide insertion. Horizontal header spans repeat on every page,
+and body spans move with their complete connected row group. Vertical merges
+across row zero are supported only by single-slide composition. Native merge
+flags are written in one validated batch, retaining the full physical grid.
 
 Measured width trials include every anchored span's combined width in their
 column-cache identity. Span width demand is reserved across its columns, favoring
@@ -262,7 +266,7 @@ for page in pages { try page.setNotes("Original speaker notes.") }
 ```
 
 This API accepts `TemplateTableContent`: a rectangular string grid with optional
-horizontal merges, with the first
+horizontal, vertical or rectangular merges, with the first
 row repeated as a native header on every slide. It chooses one compatible layout,
 preferring fewer pages and then the existing composition score. Optional
 `masterURI` and `layoutURI` restrict selection. Column widths are computed from
@@ -274,9 +278,12 @@ The title and caption repeat on every page. Unlike single-slide `compose`,
 
 `continuation.pages` exposes each slide plan and its `bodyRows` range into the
 original `content.rows` array, excluding header index zero. Each body row occurs
-once in order. A header-only table creates one page; a header or body row too tall
-to fit throws without shrinking, splitting or discarding text. Cell diagnostics
-remain available through each page's `slide.tableLayout`.
+once in order. Intersecting row spans in different columns connect transitively;
+page boundaries and width-search scores use those same indivisible groups. A
+header-only table creates one page. A header, body row or connected group too
+tall to fit throws without shrinking, splitting or discarding text. A vertical
+merge crossing the single repeated header requires single-slide composition.
+Cell diagnostics remain available through each page's `slide.tableLayout`.
 
 Composition remeasures live fonts/styles and checks all pages before inserting
 slides. Changed page boundaries, row heights or reserved frames require a new

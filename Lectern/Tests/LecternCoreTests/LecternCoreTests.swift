@@ -848,16 +848,40 @@ import Rostrum
     /// expensive call in the product, so one dead socket threw away a paid
     /// generation without ever asking again.
     @Test func aDroppedConnectionIsRetriedRatherThanEndingTheDraft() async throws {
-        let attempts = SentBox()
+        let attempts = SentBox(), delays = SentBox()
+        let start = Date(timeIntervalSince1970: 0)
         let good = openAIResponse(stopReason: "tool_use", deck: #"{"meta":{"title":"T"},"slides":[]}"#)
-        let provider = OpenAIProvider(apiKey: "k", send: { _ in
-            attempts.record(1)
+        let provider = OpenAIProvider(apiKey: "k",
+            now: { start.addingTimeInterval(TimeInterval(delays.values.reduce(0, +))) },
+            wait: { delays.record($0) }, send: { request in
+            attempts.record(Int(request.timeoutInterval))
             if attempts.values.count < 3 { throw URLError(.networkConnectionLost) }
             return (Data(good.utf8), Self.http(200))
         })
         let draft = try await provider.draft(DeckRequest(prompt: "x", slideCount: 5), repairing: nil) { _ in }
         #expect(draft.json.contains("\"title\""))
-        #expect(attempts.values.count == 3, "expected three attempts, saw \(attempts.values.count)")
+        let budget = Int(ReasoningEffort.medium.timeout)
+        #expect(attempts.values == [budget, budget - 2, budget - 6])
+        #expect(delays.values == [2, 4])
+    }
+
+    @Test(arguments: [false, true])
+    func retryDoesNotSendAnotherRequestWhenTheWaitOutlivesItsDeadline(serverResponse: Bool) async throws {
+        let attempts = SentBox(), elapsed = SentBox()
+        let start = Date(timeIntervalSince1970: 0)
+        let provider = OpenAIProvider(apiKey: "k",
+            now: { start.addingTimeInterval(TimeInterval(elapsed.values.reduce(0, +))) },
+            wait: { _ in elapsed.record(Int(ReasoningEffort.medium.timeout)) }, send: { _ in
+                attempts.record(1)
+                if serverResponse { return (Data(), Self.http(503)) }
+                throw URLError(.networkConnectionLost)
+            })
+        await #expect(throws: LecternError.providerError(
+            status: 0, message: "the request ran out of time before it could finish")) {
+            try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
+        }
+        #expect(attempts.values == [1])
+        #expect(elapsed.values == [Int(ReasoningEffort.medium.timeout)])
     }
 
     /// Offline is different: there is nothing to wait for, and the user gets a

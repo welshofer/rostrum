@@ -13,6 +13,8 @@ public struct OpenAIProvider: LLMProvider {
     private let model: String
     private let effort: ReasoningEffort
     private let http: HTTPRequestSender
+    private let now: @Sendable () -> Date
+    private let wait: @Sendable (Int) async throws -> Void
     private let endpoint = URL(string: "https://api.openai.com/v1/responses")!
 
     public init(apiKey: String,
@@ -23,14 +25,21 @@ public struct OpenAIProvider: LLMProvider {
         self.model = model
         self.effort = TextStrength.resolve(modelID: model).supported(effort)
         self.http = { request in try await session.data(for: request) }
+        self.now = { Date() }
+        self.wait = { try await HTTPRetry.wait(seconds: $0) }
     }
 
     /// Test seam, matching the other providers: exercises real request-building,
-    /// retry and truncation handling without a key or a network.
+    /// retry and truncation handling without a key or a network. Clock and wait
+    /// injection keep retry tests independent of other CPU-heavy test work.
     init(apiKey: String, model: String = TextStrength.sol.modelID,
-                effort: ReasoningEffort = .medium, send: @escaping HTTPRequestSender) {
+                effort: ReasoningEffort = .medium,
+                now: @escaping @Sendable () -> Date = { Date() },
+                wait: @escaping @Sendable (Int) async throws -> Void = { try await HTTPRetry.wait(seconds: $0) },
+                send: @escaping HTTPRequestSender) {
         self.apiKey = apiKey; self.model = model; self.http = send
         self.effort = TextStrength.resolve(modelID: model).supported(effort)
+        self.now = now; self.wait = wait
     }
 
     // MARK: - Drafting
@@ -148,10 +157,10 @@ public struct OpenAIProvider: LLMProvider {
     /// asking again cannot change the answer.
     private func send(_ payload: [String: Any]) async throws -> (Data, Usage) {
         var attempt = 0
-        let startedAt = Date()
+        let startedAt = now()
         while true {
             try Task.checkCancellation()
-            guard let timeout = HTTPRetry.timeout(startedAt: startedAt, cap: effort.timeout, deadline: effort.timeout) else {
+            guard let timeout = HTTPRetry.timeout(startedAt: startedAt, cap: effort.timeout, deadline: effort.timeout, now: now()) else {
                 throw LecternError.providerError(
                     status: 0, message: "the request ran out of time before it could finish")
             }
@@ -169,10 +178,10 @@ public struct OpenAIProvider: LLMProvider {
             } catch let error as URLError where HTTPRetry.isRetriable(error) {
                 let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: nil)
                 guard attempt + 1 < HTTPRetry.maxAttempts,
-                      HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait, deadline: effort.timeout) else {
+                      HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait, deadline: effort.timeout, now: now()) else {
                     throw LecternError.providerError(status: 0, message: error.localizedDescription)
                 }
-                try await HTTPRetry.wait(seconds: wait)
+                try await self.wait(wait)
                 attempt += 1
                 continue
             }
@@ -189,8 +198,8 @@ public struct OpenAIProvider: LLMProvider {
                 let retryAfter = HTTPRetry.retryAfterSeconds(http)
                 let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter)
                 if attempt + 1 < HTTPRetry.maxAttempts,
-                   HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait, deadline: effort.timeout) {
-                    try await HTTPRetry.wait(seconds: wait)
+                   HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: wait, deadline: effort.timeout, now: now()) {
+                    try await self.wait(wait)
                     attempt += 1
                     continue
                 }

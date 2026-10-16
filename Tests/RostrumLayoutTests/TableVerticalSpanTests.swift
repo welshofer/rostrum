@@ -122,7 +122,7 @@ import Testing
         #expect(reuse.reusedCells > 0 && reuse.preparation.cellCount == 9)
         let pagination = try engine.plan(table, columnWidths: [.points(100), .points(100), .points(100)],
             minimumRowHeight: .zero, theme: deck.theme, pagination: true)
-        #expect(!pagination.fits && pagination.cells[0].issues == [.mergedCell])
+        #expect(pagination.fits && pagination.cells[0].rowSpan == 3 && pagination.cells[0].issues.isEmpty)
     }
 
     @Test func freshCallsObserveFontsTextStylesAndUnmerging() throws {
