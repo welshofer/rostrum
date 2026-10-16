@@ -68,7 +68,7 @@ jobs:
             PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
         if: matrix.swift != '6.0'
       - name: Check optimized text preparation
-        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|MeasuredPaginatorTests'
+        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|TableVerticalSpanTests|TableVerticalPaginationTests|MeasuredPaginatorTests'
         if: matrix.swift != '6.0'
       - name: Retain fidelity evidence
         uses: actions/upload-artifact@v4
@@ -118,7 +118,7 @@ jobs:
           ROSTRUM_LECTERN_INSPECTION_BINARY="$PWD/Lectern/.build/debug/InspectionRegression" \
             PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
       - name: Check optimized text preparation
-        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|MeasuredPaginatorTests'
+        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|TableVerticalSpanTests|TableVerticalPaginationTests|MeasuredPaginatorTests'
       - name: Check portable fidelity references
         run: bash scripts/check-fidelity.sh
       - name: Retain fidelity evidence

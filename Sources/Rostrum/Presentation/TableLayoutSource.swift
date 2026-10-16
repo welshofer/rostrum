@@ -5,7 +5,7 @@ import Foundation
 package struct TableLayoutSource {
     package let columnWidths: [EMU]
     package let rowCount: Int
-    package let horizontalMerges: [TableMergeRegion]
+    package let merges: [TableMergeRegion]
     private let grid: TableGridSnapshot
     private let topology: TableMergeTopology
     private var styles: TableStyleResolver.FittingSession
@@ -14,17 +14,16 @@ package struct TableLayoutSource {
         styles = TableStyleResolver.FittingSession(table: table, theme: theme)
         grid = styles.grid
         topology = try grid.topology(requireRectangular: true)
-        horizontalMerges = topology.regions.filter { $0.rowSpan == 1 }
+        merges = topology.regions
         columnWidths = grid.columns.map { EMU($0.coordinate("w") ?? 0) }
         rowCount = grid.rows.count
     }
 
-    /// Zero marks a covered horizontal continuation; vertical merges remain
-    /// ordinary physical cells whose unsupported geometry is diagnosed below.
-    package func columnSpan(row: Int, column: Int) -> Int {
-        guard !horizontalMerges.isEmpty,
-              let region = topology.region(row: row, column: column), region.rowSpan == 1 else { return 1 }
-        return column == region.column ? region.columnSpan : 0
+    /// Only the top-left anchor contributes geometry. Zero columns marks any
+    /// covered continuation, including the left edge of a vertical merge.
+    package func span(row: Int, column: Int) -> (rows: Int, columns: Int) {
+        guard let region = topology.region(row: row, column: column) else { return (1, 1) }
+        return row == region.row && column == region.column ? (region.rowSpan, region.columnSpan) : (1, 0)
     }
 
     package mutating func cell(row: Int, column: Int, styleRow: Int? = nil,

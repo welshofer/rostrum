@@ -193,13 +193,39 @@ diagnosed placeholder. The full local fast gate passed: 1,374 Rostrum tests,
 portable references, workflow checks and README examples. Native app builds,
 app-hosted tests and live PowerPoint acceptance remain separate.
 
+## Next layout milestone: multi-row merged cells
+
+Status: **portable measurement and connected-row pagination validated; native PowerPoint acceptance pending**.
+
+- [x] Measure vertical/rectangular merge anchors across their combined width;
+  distribute height deficits across spanned rows deterministically.
+- [x] Retain covered XML and fresh font/content checks; recompute cross-row
+  constraints during cached width trials.
+- [x] Add an editable Templates Lab example with save/reopen and Inspect/export
+  checks on 4:3 and 16:9 canvases.
+- [x] Verify existing-output preservation and record CPU, elapsed time and peak memory.
+  Timings are mixed/noisy; no universal speedup or nonregression claim.
+- [x] Include both merged-cell suites in optimized Linux and Apple CI.
+- [ ] Capture PowerPoint slide-view and export evidence with exact fonts.
+- [x] In a separate change, support template composition and page partitioning
+  that keeps connected row-span groups intact, with explicit oversized refusal.
+- [x] Complete portable pagination regressions, both Lab ratios, independent
+  saved-file checks and preservation/performance comparisons. Small controls
+  retain adverse timing results; no general speedup claim.
+
+Both Linux and Apple PR gates must pass before merging. Native visual acceptance
+and native Mac performance remain separate from these portable results.
+
+See [vertical-merge measurement](docs/TABLE-VERTICAL-SPANS-20261016.md) and
+[connected-row pagination](docs/TABLE-ROW-PAGINATION-20261016.md).
+
 ## Subsequent scope
 
 These are known gaps, not promises that the first milestone implements them:
 
 | Area | Remaining work |
 | --- | --- |
-| Table layout | Vertical merged cells, rotated/vertical text, dynamic fields and native table autofit |
+| Table layout | Multi-row repeated headers, rotated/vertical text, dynamic fields and native table autofit |
 | Imported artwork | Custom arcs, bent/curved connectors and broader effects |
 | Typography | Full bidirectional and complex-script layout; broader native autofit equivalence |
 | Charts | Date/number formatting, broader workbook references and advanced layouts |

@@ -69,7 +69,8 @@ import Testing
         let before = try deck.serializedData()
         let plan = try TableLayoutEngine(presentation: deck).plan(table)
         #expect(!plan.fits)
-        #expect(plan.cells.first { $0.row == 0 && $0.column == 1 }?.issues == [.mergedCell])
+        #expect(plan.cells.first { $0.row == 0 && $0.column == 1 }?.rowSpan == 2)
+        #expect(plan.cells.first { $0.row == 0 && $0.column == 1 }?.issues.isEmpty == true)
         #expect(plan.cells.first { $0.row == 1 && $0.column == 0 }?.issues == [.verticalText])
         #expect(try deck.serializedData() == before)
     }

@@ -44,7 +44,7 @@ remains a snapshot of that release.
 
 - **Measured native tables:** plan row heights from actual cell typography and
   padding, search for column widths, and paginate complete rows with repeated
-  headers, stable widths, captions and horizontal merged cells.
+  headers, stable widths, captions and connected groups of merged rows.
 - **More reliable fitting:** authored and template text use shared rich-text
   geometry, including mixed sizes, inherited styles, tabs, bullets and spacing.
   Composition rechecks live content and fonts before adding slides; native soft
@@ -222,7 +222,7 @@ file persistence and end-to-end verification.
 | **Notes** | rich speaker notes, independent duplicates, source notes-master preservation on import; bounded notes-page SVG previews with fidelity diagnostics; incompatible masters are refused atomically |
 | **Fonts** | distinct regular/bold/italic faces, TTF/OTF embedding, bounded Swift kerning/ligature shaping with diagnostics for unsupported scripts; permitted registered fonts are embedded in SVG; explicit measured preview fallback with missing-font diagnostics |
 | **Text fitting** | `shape.fitText(fonts: deck.fonts)` — shared mixed-run layout measures registered faces and writes computed `normAutofit`; inspect `renderSVGReportingProblems` for unsupported script/layout cases |
-| **Table layout** | `TableLayoutEngine` measures existing cells without mutation; `TemplateTableContent` supports measured columns and horizontal spans; template table pagination repeats headers and captions without splitting rows |
+| **Table layout** | `TableLayoutEngine` measures existing cells, including vertical and rectangular merges, without mutation; `TemplateTableContent` supports measured columns and rectangular merges; pagination repeats headers/captions and keeps connected row groups intact |
 | **Composition** | `TemplateLayoutEngine` plans and rechecks inherited placeholders; `AuthoredLayoutEngine` fits authored slides; `MeasuredPaginator` partitions exact source text against the caller's fit rule |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import slides with images, charts, layouts and embedded font faces intact; matching font faces are reused and conflicts are refused atomically |

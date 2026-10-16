@@ -28,7 +28,6 @@ struct TableCellInput {
             guard seenStyles.insert(style).inserted else { continue }
             let body = cell.body.firstChild(named: "a:bodyPr"), margins = cell.insets
             var issues: [TableLayoutIssue] = []
-            if cell.verticallyMerged { issues.append(.mergedCell) }
             if cell.direction != "horz" || (body?[attribute: "vert"].map { $0 != "horz" } ?? false) { issues.append(.verticalText) }
             if Double(body?[attribute: "rot"] ?? "0") != 0 { issues.append(.rotatedText) }
             if Int(body?[attribute: "numCol"] ?? "1") != 1 { issues.append(.multipleTextColumns) }

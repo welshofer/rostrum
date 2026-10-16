@@ -52,11 +52,12 @@ final class TableColumnOptimizer {
         let seed = bounds.project(initial)
         let engine = TableLayoutEngine(presentation: presentation)
         let reuse = try TableColumnMeasurements(table: table, theme: theme)
+        let groups = try (pagination ? TableRowGroups(merges: reuse.source.merges) : .empty)
         var best = try engine.plan(table, columnWidths: seed, minimumRowHeight: .points(30),
             theme: theme, pagination: pagination, reuse: reuse)
         let initialVisits = reuse.measuredCells
         var bestOccupied = reuse.occupiedWidths
-        var bestScore = score(best, bounds: bounds)
+        var bestScore = score(best, bounds: bounds, groups: groups)
         var tried: Set<[EMU]> = [seed], evaluated = 1, exhausted = false
         func evaluate(_ widths: [EMU]) throws {
             guard !tried.contains(widths) else { return }
@@ -66,7 +67,7 @@ final class TableColumnOptimizer {
             tried.insert(widths); evaluated += 1
             let candidate = try engine.plan(table, columnWidths: widths, minimumRowHeight: .points(30),
                 theme: theme, pagination: pagination, reuse: reuse)
-            let candidateScore = score(candidate, bounds: bounds)
+            let candidateScore = score(candidate, bounds: bounds, groups: groups)
             if candidateScore.precedes(bestScore) {
                 best = candidate; bestScore = candidateScore; bestOccupied = reuse.occupiedWidths
             }
@@ -142,13 +143,14 @@ final class TableColumnOptimizer {
         }
     }
 
-    private func score(_ plan: TableLayoutPlan, bounds: Bounds) -> Score {
+    private func score(_ plan: TableLayoutPlan, bounds: Bounds, groups: TableRowGroups) -> Score {
         var unplaceable = 0, pages = 1
         if let availableHeight {
             if pagination, let header = plan.rowHeights.first {
                 unplaceable = (header > availableHeight ? 1 : 0)
-                    + plan.rowHeights.dropFirst().filter { $0 > availableHeight - header }.count
-                pages = (try? TemplateLayoutEngine.tablePageRanges(heights: plan.rowHeights, available: availableHeight).count) ?? Int.max
+                    + (groups.isEmpty ? plan.rowHeights.dropFirst().filter { $0 > availableHeight - header }.count
+                        : groups.unplaceableCount(heights: plan.rowHeights, capacity: availableHeight - header))
+                pages = (try? TemplateLayoutEngine.tablePageRanges(heights: plan.rowHeights, available: availableHeight, groups: groups).count) ?? Int.max
             } else { unplaceable = plan.totalHeight > availableHeight ? 1 : 0 }
         }
         return Score(invalidCells: plan.cells.filter { !$0.issues.isEmpty }.count + (plan.fits ? 0 : 1),
