@@ -9,11 +9,16 @@ let package = Package(
     ],
     products: [
         .library(name: "Rostrum", targets: ["Rostrum"]),
-        .library(name: "RostrumLayout", targets: ["RostrumLayout"])
+        .library(name: "RostrumLayout", targets: ["RostrumLayout"]),
+        // The lectern.deck/1 Deck IR alone (Foundation only): one definition for
+        // every renderer — LecternCore (.pptx) and DeckMonkey (.key).
+        .library(name: "LecternIR", targets: ["LecternIR"]),
     ],
     targets: [
         .target(name: "Rostrum"),
         .target(name: "RostrumLayout", dependencies: ["Rostrum"]),
+        .target(name: "LecternIR"),
+        .testTarget(name: "LecternIRTests", dependencies: ["LecternIR"]),
         .testTarget(name: "RostrumLayoutTests", dependencies: ["RostrumLayout", "Rostrum"]),
         .executableTarget(
             name: "ClimateDeck",
