@@ -15,7 +15,7 @@ class PreviewLoadingTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.deck = self.root / 'deck with spaces.pptx'
         self.deck.write_bytes(b'original')
         self.output = self.root / 'new results'
