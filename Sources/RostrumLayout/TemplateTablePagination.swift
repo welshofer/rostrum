@@ -1,11 +1,12 @@
 import Foundation
 import Rostrum
 
-/// One editable native table. Row zero is repeated; bodyRows indexes the
-/// original TemplateTableContent.rows and excludes that header.
+/// One editable native table. The leading headerRowCount rows repeat;
+/// bodyRows indexes the original TemplateTableContent.rows and excludes them.
 public struct TemplateTablePagePlan {
     public let slide: TemplateSlidePlan
     public let bodyRows: Range<Int>
+    public let headerRowCount: Int
 }
 
 /// A read-only plan for one table continued across a single template layout.
@@ -21,16 +22,17 @@ public struct TemplateTablePaginationPlan {
 extension TemplateLayoutEngine {
     /// Measures full-size plain cells with bounded reuse across candidate layouts,
     /// then partitions between connected row groups. Reserves caption space on every page.
-    /// The first row is the repeated header; even a header-only grid makes one
+    /// The leading headerRowCount rows repeat; even a header-only grid makes one
     /// page. A body row or merged group that cannot fit beside its header throws
-    /// before mutation. Vertical merges cannot cross the single repeated header.
+    /// before mutation. Vertical merges cannot cross the header/body boundary.
     /// Band/edge text styles use a conservative height envelope, so a custom
     /// style can leave extra space. Columns keep identical widths on every page.
     public func planTablePages(title: String, table: TemplateTableContent,
                                caption: String = "", preferredTypes: [String] = ["obj"],
                                masterURI: String? = nil, layoutURI: String? = nil) throws -> TemplateTablePaginationPlan {
         _ = try table.widths(for: presentation.bounds.width)
-        let groups = try TableRowGroups(merges: table.merges)
+        let groups = try TableRowGroups(merges: table.merges, headerRowCount: table.headerRowCount)
+        let headerRows = Array(0..<table.headerRowCount)
         let mergesByRow = Dictionary(grouping: table.merges, by: \.row)
         struct Key: Hashable { let width: EMU; let font: Data; let theme: PackURI; let availableHeight: EMU? }
         var measured: [Key: TableLayoutPlan] = [:], remainingCells = 8192
@@ -62,10 +64,11 @@ extension TemplateLayoutEngine {
                     throw LayoutError.cannotFit(cell.map { "Unsupported or overflowing table cell at row \($0.row), column \($0.column): \($0.issues)." }
                         ?? "Table geometry exceeds the supported dimensions.")
                 }
-                let ranges = try Self.tablePageRanges(heights: geometry.rowHeights, available: frame.height, groups: groups)
+                let ranges = try Self.tablePageRanges(heights: geometry.rowHeights, available: frame.height,
+                    groups: groups, headerRowCount: table.headerRowCount)
                 let columns = geometry.columnWidths.count
                 let pages = ranges.map { range -> TemplateTablePagePlan in
-                    let indices = [0] + Array(range)
+                    let indices = headerRows + Array(range)
                     let heights = indices.map { geometry.rowHeights[$0] }
                     let cells = indices.enumerated().flatMap { localRow, sourceRow in
                         geometry.cells[(sourceRow * columns)..<((sourceRow + 1) * columns)].map {
@@ -81,10 +84,10 @@ extension TemplateLayoutEngine {
                             (mergesByRow[sourceRow] ?? []).map { merge in
                                 TableMergeRegion(row: localRow, column: merge.column, rowSpan: merge.rowSpan, columnSpan: merge.columnSpan)
                             }
-                        })
+                        }, headerRowCount: table.headerRowCount)
                     page.tableLayout = TableLayoutPlan(columnWidths: geometry.columnWidths, rowHeights: heights,
                         cells: cells, totalHeight: heights.reduce(.zero, +), fits: true, columnSearch: geometry.columnSearch)
-                    return TemplateTablePagePlan(slide: page, bodyRows: range)
+                    return TemplateTablePagePlan(slide: page, bodyRows: range, headerRowCount: table.headerRowCount)
                 }
                 if best == nil || pages.count < best!.pages.count
                     || (pages.count == best!.pages.count && base.score.penalty < bestScore) {
@@ -106,7 +109,7 @@ extension TemplateLayoutEngine {
             layoutURI: first.slide.layout.part.uri.value)
         guard current.pages.count == plan.pages.count,
               zip(current.pages, plan.pages).allSatisfy({ a, b in
-                  a.bodyRows == b.bodyRows && a.slide.objectFrame == b.slide.objectFrame
+                  a.bodyRows == b.bodyRows && a.headerRowCount == b.headerRowCount && a.slide.objectFrame == b.slide.objectFrame
                       && a.slide.captionFrame == b.slide.captionFrame
                       && a.slide.title.frame == b.slide.title.frame
                       && a.slide.tableLayout?.columnWidths == b.slide.tableLayout?.columnWidths
@@ -127,12 +130,14 @@ extension TemplateLayoutEngine {
 
     // Integer EMU arithmetic accepts exact fits without a floating-point epsilon.
     // Each source row is visited once; no prefix copying or candidate reshaping.
-    static func tablePageRanges(heights: [EMU], available: EMU, groups: TableRowGroups = .empty) throws -> [Range<Int>] {
-        guard let header = heights.first, header > .zero, header <= available else {
+    static func tablePageRanges(heights: [EMU], available: EMU, groups: TableRowGroups = .empty,
+                                headerRowCount: Int = 1) throws -> [Range<Int>] {
+        guard headerRowCount > 0, headerRowCount <= heights.count,
+              let header = groups.height(0..<headerRowCount, in: heights, capacity: available) else {
             throw LayoutError.cannotFit("The repeated header is taller than the available table area.")
         }
-        var ranges: [Range<Int>] = [], start = 1, used = header
-        var row = 1
+        var ranges: [Range<Int>] = [], start = headerRowCount, used = header
+        var row = headerRowCount
         while row < heights.count {
             let end = groups.end(startingAt: row)
             guard let height = groups.height(row..<end, in: heights, capacity: available - header) else {

@@ -2,6 +2,13 @@
 
 ## Latest reconciled measurements
 
+The [multi-row header comparison](TABLE-REPEATED-HEADERS-20261016.md) preserves
+142 existing geometry/deck/SVG artifacts and reproduces 44 new artifacts. Existing
+Linux Release phase medians range from -3.1% to +4.6%; plain-table composition
+retains two 4–5% slowdowns. Peak RSS is essentially unchanged. This is a capability
+expansion with measured costs, not a general speedup claim. All 35 paired controls
+and 20 new-workload processes retain CPU, elapsed and memory samples.
+
 The [shared-font preparation follow-up](PREVIEW-PREPARATION-20261016.md) measures
 52.7%/55.6% lower median paired first/repeat preparation CPU on the supplied
 28-slide SVG corpus. All five pairs improve and 68 prepared-document/resource

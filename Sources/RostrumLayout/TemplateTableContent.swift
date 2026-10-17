@@ -1,8 +1,8 @@
 import Foundation
 import Rostrum
 
-/// Plain editable cells for a template object slot. The first row is a header;
-/// native table styles supply its weight and theme references. Columns default
+/// Plain editable cells for a template object slot. Native table styles supply
+/// first-row weight, bands and theme references. Columns default
 /// to half equal share, half text-length weight; supply weights to choose them.
 public struct TemplateTableContent: Sendable {
     public var rows: [[String]]
@@ -10,13 +10,18 @@ public struct TemplateTableContent: Sendable {
     public var columnSizing: TableColumnSizing
     /// Rectangular merges in source-grid coordinates. Covered cells must be
     /// empty; no words are discarded. Pagination keeps connected body-row
-    /// groups together and repeats horizontal header merges. A merge crossing
-    /// the single header row is supported only by single-slide composition.
+    /// groups together and repeats merges wholly inside the header prefix.
+    /// A merge crossing the header/body boundary requires single-slide composition.
     public var merges: [TableMergeRegion]
+    /// Leading source rows repeated on every continuation. Must be in 1...rows.count.
+    /// This controls pagination, not styling: native firstRow styling still applies
+    /// only to row zero. Additional header rows retain native band/edge styles.
+    public var headerRowCount: Int
     public init(rows: [[String]], columnWeights: [Double]? = nil, columnSizing: TableColumnSizing = .estimated,
-                merges: [TableMergeRegion] = []) {
+                merges: [TableMergeRegion] = [], headerRowCount: Int = 1) {
         self.rows = rows; self.columnWeights = columnWeights; self.columnSizing = columnSizing
         self.merges = merges
+        self.headerRowCount = headerRowCount
     }
 
     var measuresColumns: Bool { if case .measured = columnSizing { return true }; return false }
@@ -51,6 +56,9 @@ public struct TemplateTableContent: Sendable {
     private func validate() throws -> Int {
         guard let count = rows.first?.count, count > 0, rows.allSatisfy({ $0.count == count }) else {
             throw LayoutError.cannotFit("Table content must be a nonempty rectangular grid.")
+        }
+        guard headerRowCount > 0, headerRowCount <= rows.count else {
+            throw LayoutError.cannotFit("The repeated header count must be between one and the source row count.")
         }
         try validateMerges(columnCount: count)
         return count
@@ -107,7 +115,8 @@ public struct TemplateTableContent: Sendable {
         try prototype.merge(merges)
         if fixedColumnWidths == nil, case .measured(let constraints) = columnSizing {
             return try TableColumnOptimizer(presentation: presentation, table: prototype, theme: theme,
-                pagination: pagination, availableHeight: availableHeight).plan(initial: widths, constraints: constraints)
+                pagination: pagination, availableHeight: availableHeight,
+                headerRowCount: headerRowCount).plan(initial: widths, constraints: constraints)
         }
         return try TableLayoutEngine(presentation: presentation).plan(prototype, columnWidths: widths,
             minimumRowHeight: .points(30), theme: theme, pagination: pagination)
