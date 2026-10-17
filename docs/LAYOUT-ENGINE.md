@@ -105,7 +105,8 @@ default to half equal share and half bounded text-length weight. Existing caller
 retain this estimated allocation; measured sizing is an explicit option below.
 
 The existing-table planner supports rectangular grids with horizontal, vertical
-and rectangular merged cells. Vertical/rotated text, multiple text columns, dynamic fields and nonzero stored
+and rectangular merged cells, including `tcPr` quarter-turn text (`vert`/`vert270`).
+Other vertical writing modes, arbitrary body rotation, multiple text columns, dynamic fields and nonzero stored
 line-spacing reduction return explicit issues. The existing-table planner does
 not paginate rows, choose native autofit or certify PowerPoint visual equivalence.
 The Templates Library Lab demonstrates composition and existing-table planning,
@@ -183,6 +184,46 @@ Measurement has an explicit performance cost; see the
 Shaping diagnostics and native PowerPoint visual acceptance remain separate from
 portable fit, including when width search succeeds.
 
+### Rotated table-cell text
+
+Existing cells with `textDirection = .vertical` (90°) or `.vertical270` (270°)
+can be measured without changing their text or font size. The planner uses the
+same swapped text rectangle and text-relative insets as SVG and cell `fitText`.
+Column width limits the rotated block height; row height provides line width.
+A bounded search chooses a verified fitting extent without emergency breaks
+inside words, then checks it again after
+neighboring cells and merged-row constraints determine the final saved height.
+
+Template composition accepts sparse source-grid overrides:
+
+```swift
+let content = TemplateTableContent(
+    rows: [["Source", "Evidence", "State"], ["R1", "Exact source words", "Ready"]],
+    columnWeights: [1, 5, 1],
+    columnSizing: .measured(),
+    textDirections: [
+        .init(row: 0, column: 0, direction: .vertical),
+        .init(row: 0, column: 2, direction: .vertical270)
+    ])
+let pages = try engine.planTablePages(title: "Rotated headers", table: content)
+let slides = try engine.composeTablePages(pages)
+```
+
+Directions repeat with header rows and follow body anchors to each continuation.
+Set an override on a merge's anchor, never a covered cell. Duplicate/outside
+coordinates and unsupported directions refuse before adding slides. Omitting
+`textDirections` retains the existing horizontal behavior. The public native
+cell API still preserves other OOXML directions; the planner explicitly refuses
+unsupported stacked/complex vertical writing and nonhorizontal `bodyPr.vert`.
+
+Each rotated style/column trial uses at most 22 layouts to search the inline
+extent, plus a final check in the actual saved rectangle. Preparation is reused
+within those trials and discarded with the operation. The search retains an
+accepted upper extent; it does not promise the shortest possible row or native
+PowerPoint autofit equivalence. A too-narrow column, excessive explicit lines,
+or a final rectangle that fails the mixed-run recheck yields a non-fitting plan.
+See [support, review workflow, and measurements](TABLE-ROTATED-TEXT-20261017.md).
+
 ### Vertical and rectangular merges in existing tables
 
 `TableLayoutEngine.plan` also measures a native merge that covers several rows.
@@ -204,7 +245,8 @@ Ordinary cells and `minimumRowHeight` establish the row minima; saved row height
 are not minima. The planner then processes multi-row anchors in row-major order.
 If a merged cell needs more than its rows provide, the deficit is divided equally
 among those rows, with leftover EMUs assigned to earlier rows. Rows only grow,
-so intersecting row ranges retain every already-satisfied constraint. This policy
+so intersecting merge height requirements remain satisfied. Rotated text is then
+rechecked at the final extents. This policy
 is deterministic; it does not claim globally minimal height or PowerPoint's native
 autofit choices. `maximumHeight` applies after resolving all row-span constraints.
 

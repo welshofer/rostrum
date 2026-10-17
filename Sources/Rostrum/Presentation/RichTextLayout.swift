@@ -68,6 +68,10 @@ public struct RichTextLayout: Sendable {
     public let fits: Bool
     public let truncated: Bool
     public let diagnostics: [ShapingDiagnostic]
+    /// An otherwise unbreakable word was split to fit the supplied line width.
+    /// Rendering preserves that existing fallback; rotated-height selection can
+    /// instead provide more inline room before accepting a candidate.
+    package let usedEmergencyLineBreak: Bool
 
     /// Insets and verticalAnchor can override bodyPr for DrawingML table cells.
     /// Insets are ordered left/top/right/bottom; nil preserves the body value.
@@ -130,6 +134,7 @@ public struct RichTextLayout: Sendable {
             warnings.append(.unsupportedLayoutFeature("Native table line-spacing reduction is not verified"))
         }
         var cursor = 0.0, didTruncate = false, overflowWidth = false
+        var emergencyLineBreak = false
         var measuredBottom = 0.0
         var trailingLineGap = 0.0
         var numberByLevel: [Int: Int] = [:]
@@ -899,7 +904,10 @@ public struct RichTextLayout: Sendable {
                             if lineAtoms[i].tab { lineAtoms[i].width = tabAdvance(lineAtoms[i], at: startX() + lineWidth) }
                             lineWidth += lineAtoms[i].width
                         }
-                    } else { emit(justify: true) }
+                    } else {
+                        if wordBoundary == nil && !atom.tab { emergencyLineBreak = true }
+                        emit(justify: true)
+                    }
                     continue
                 }
                 lineAtoms.append(atom); lineWidth += atom.width; index += 1
@@ -944,6 +952,7 @@ public struct RichTextLayout: Sendable {
         }
         for i in output.indices { output[i].baseline += offset }
         lines = output; contentHeight = cursor; truncated = didTruncate
+        usedEmergencyLineBreak = emergencyLineBreak
         fits = !didTruncate && !overflowWidth && cursor <= availableHeight + 0.01
         var unique: [ShapingDiagnostic] = [], seen: Set<ShapingDiagnostic> = []
         for warning in warnings where seen.insert(warning).inserted { unique.append(warning) }

@@ -1,6 +1,17 @@
 import Foundation
 import Rostrum
 
+/// An explicit text direction at a source-grid cell. Merge anchors own visible
+/// text; directions on covered cells are refused rather than silently ignored.
+public struct TableCellTextDirection: Sendable {
+    public var row: Int
+    public var column: Int
+    public var direction: TableTextDirection
+    public init(row: Int, column: Int, direction: TableTextDirection) {
+        self.row = row; self.column = column; self.direction = direction
+    }
+}
+
 /// Plain editable cells for a template object slot. Native table styles supply
 /// first-row weight, bands and theme references. Columns default
 /// to half equal share, half text-length weight; supply weights to choose them.
@@ -17,11 +28,16 @@ public struct TemplateTableContent: Sendable {
     /// This controls pagination, not styling: native firstRow styling still applies
     /// only to row zero. Additional header rows retain native band/edge styles.
     public var headerRowCount: Int
+    /// Sparse source-grid overrides; all other cells remain horizontal.
+    /// Measured composition supports horizontal, vertical (90°), and vertical270.
+    public var textDirections: [TableCellTextDirection]
     public init(rows: [[String]], columnWeights: [Double]? = nil, columnSizing: TableColumnSizing = .estimated,
-                merges: [TableMergeRegion] = [], headerRowCount: Int = 1) {
+                merges: [TableMergeRegion] = [], headerRowCount: Int = 1,
+                textDirections: [TableCellTextDirection] = []) {
         self.rows = rows; self.columnWeights = columnWeights; self.columnSizing = columnSizing
         self.merges = merges
         self.headerRowCount = headerRowCount
+        self.textDirections = textDirections
     }
 
     var measuresColumns: Bool { if case .measured = columnSizing { return true }; return false }
@@ -61,6 +77,28 @@ public struct TemplateTableContent: Sendable {
             throw LayoutError.cannotFit("The repeated header count must be between one and the source row count.")
         }
         try validateMerges(columnCount: count)
+        var directed = Set<Int>()
+        for cell in textDirections {
+            guard cell.row >= 0, cell.row < rows.count, cell.column >= 0, cell.column < count,
+                  directed.insert(cell.row * count + cell.column).inserted else {
+                throw LayoutError.cannotFit("Cell text directions must have unique coordinates inside the table grid.")
+            }
+            guard [.horizontal, .vertical, .vertical270].contains(cell.direction) else {
+                throw LayoutError.cannotFit("Measured tables support only horizontal and 90°/270° cell text.")
+            }
+        }
+        if !directed.isEmpty {
+            for merge in merges {
+                for row in merge.row..<(merge.row + merge.rowSpan) {
+                    for column in merge.column..<(merge.column + merge.columnSpan)
+                        where row != merge.row || column != merge.column {
+                        guard !directed.contains(row * count + column) else {
+                            throw LayoutError.cannotFit("Set text direction on the merge anchor, not a covered cell.")
+                        }
+                    }
+                }
+            }
+        }
         return count
     }
 
@@ -113,6 +151,7 @@ public struct TemplateTableContent: Sendable {
         else { widths = try self.widths(for: width) }
         let prototype = try Table.layoutPrototype(contents: rows, width: width, font: font, size: size, package: presentation.package)
         try prototype.merge(merges)
+        try applyTextDirections(to: prototype)
         if fixedColumnWidths == nil, case .measured(let constraints) = columnSizing {
             return try TableColumnOptimizer(presentation: presentation, table: prototype, theme: theme,
                 pagination: pagination, availableHeight: availableHeight,
@@ -120,5 +159,9 @@ public struct TemplateTableContent: Sendable {
         }
         return try TableLayoutEngine(presentation: presentation).plan(prototype, columnWidths: widths,
             minimumRowHeight: .points(30), theme: theme, pagination: pagination)
+    }
+
+    func applyTextDirections(to table: Table) throws {
+        try table.setLayoutTextDirections(textDirections.map { ($0.row, $0.column, $0.direction) })
     }
 }

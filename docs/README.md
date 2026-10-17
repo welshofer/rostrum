@@ -75,3 +75,6 @@ The [roadmap](../ROADMAP.md) tracks remaining work; [PLAN.md](../PLAN.md) tracks
 the current fidelity/performance milestones. Historical publication evidence
 is in the [1.0 validation receipt](RELEASE-1.0-VALIDATION.md) and
 [release audit](RELEASE-1.0-AUDIT.md).
+
+The [rotated table-text guide](TABLE-ROTATED-TEXT-20261017.md) covers quarter-turn
+cell fitting, template directions, repeated headers, and the Lectern review workflow.

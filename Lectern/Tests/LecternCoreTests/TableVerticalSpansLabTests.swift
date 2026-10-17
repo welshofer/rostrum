@@ -31,6 +31,16 @@ import Rostrum
         #expect(headers.slides.count > 1 && headers.slideSize.width == deck.slideSize.width)
         #expect(extracted.contains("Observation 8.2"))
         #expect(result.checks.contains { $0.name == "Saved repeated headers and body groups fit" && $0.passed })
+        let rotated = try Presentation(contentsOf: result.directory.appendingPathComponent("rotated-text-output.pptx"))
+        #expect(rotated.slides.count > 1 && rotated.slideSize.width == deck.slideSize.width)
+        #expect(extracted.contains("Rotated labels stay editable"))
+        #expect(result.checks.contains { $0.name == "Saved rotated text fits its final cells" && $0.passed })
+        for index in 0..<rotated.slides.count {
+            let tables = try rotated.slides[index].shapes.all.compactMap { ($0 as? TableFrame)?.table }
+            let table = try #require(tables.first)
+            #expect(try table.cell(0, 0).textDirection == .vertical)
+            #expect(try table.cell(0, 3).textDirection == .vertical270)
+        }
         for index in 0..<headers.slides.count {
             let tables = try headers.slides[index].shapes.all.compactMap { ($0 as? TableFrame)?.table }
             let table = try #require(tables.first)

@@ -309,7 +309,7 @@ These are known gaps, not promises that the first milestone implements them:
 
 | Area | Remaining work |
 | --- | --- |
-| Table layout | Rotated/vertical text, dynamic fields and native table autofit; multi-row headers tracked above |
+| Table layout | Stacked/complex vertical text, dynamic fields and native table autofit; multi-row headers tracked above |
 | Imported artwork | Custom arcs, bent/curved connectors and broader effects |
 | Typography | Full bidirectional and complex-script layout; broader native autofit equivalence |
 | Charts | Date/number formatting, broader workbook references and advanced layouts |
@@ -331,3 +331,16 @@ These are known gaps, not promises that the first milestone implements them:
 Evidence map: [documentation](docs/README.md), [conformance](docs/CONFORMANCE.md),
 [native layout review](docs/POWERPOINT-LAYOUT-20261013.md),
 [composition regression workflow](Lectern/Tools/CompositionRegression/README.md).
+
+
+## Rotated table text — October 17 continuation
+
+- [x] Measure native 90°/270° cell text at full size with bounded preparation reuse.
+- [x] Retain directions through template composition, merges, repeated headers and pagination.
+- [x] Verify final rectangles after shared row heights are resolved; retain explicit unsupported-mode diagnostics.
+- [x] Complete regression, saved-file, horizontal preservation and CPU/elapsed/RSS checks.
+- [x] Provide the implementation, usage documentation and runnable Lectern Templates Lab review path.
+- [ ] Capture native PowerPoint slide-view and PDF-export acceptance of the new rotated cases.
+
+See [support and evidence](docs/TABLE-ROTATED-TEXT-20261017.md). Native acceptance
+of earlier Calibri decks does not cover these new cases.

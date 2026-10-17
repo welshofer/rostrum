@@ -1,0 +1,660 @@
+{
+  "binary_sha256": "aa52c414c967df3dd9e2365291834dc3bcc4e0b7d48cbfdacc5847ee34f63d9a",
+  "cpu_affinity": [
+    0
+  ],
+  "driver_sha256": "4e47256ed46d58f465771472042ef3a5f345f9c164f3347445701def71d2d299",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "preservation": [
+    {
+      "identical_files": 18,
+      "independent_grid_direction_source_checks": true,
+      "labels": "distinct",
+      "pages": 6,
+      "rows": 24,
+      "sizing": "estimated"
+    },
+    {
+      "identical_files": 14,
+      "independent_grid_direction_source_checks": true,
+      "labels": "distinct",
+      "pages": 4,
+      "rows": 24,
+      "sizing": "measured"
+    },
+    {
+      "identical_files": 14,
+      "independent_grid_direction_source_checks": true,
+      "labels": "mixed",
+      "pages": 4,
+      "rows": 28,
+      "sizing": "estimated"
+    },
+    {
+      "identical_files": 14,
+      "independent_grid_direction_source_checks": true,
+      "labels": "mixed",
+      "pages": 4,
+      "rows": 28,
+      "sizing": "measured"
+    },
+    {
+      "identical_files": 32,
+      "independent_grid_direction_source_checks": true,
+      "labels": "distinct",
+      "pages": 13,
+      "rows": 100,
+      "sizing": "estimated"
+    },
+    {
+      "identical_files": 32,
+      "independent_grid_direction_source_checks": true,
+      "labels": "distinct",
+      "pages": 13,
+      "rows": 100,
+      "sizing": "measured"
+    }
+  ],
+  "runs": [
+    {
+      "batch": 0,
+      "process_cpu_ms": 91.63,
+      "process_elapsed_ms": 93.28218999871751,
+      "rows": 24,
+      "rss_kib": 23956.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 9.282446000000004,
+          "compose_ms": 9.27946700155735,
+          "pages": 6,
+          "plan_cpu_ms": 7.555123999999999,
+          "plan_ms": 7.551495999097824,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 7.705229000000003,
+          "compose_ms": 7.703193999826908,
+          "pages": 6,
+          "plan_cpu_ms": 5.242332000000005,
+          "plan_ms": 5.239958003163338,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 7.332751999999999,
+          "compose_ms": 7.3302570059895515,
+          "pages": 6,
+          "plan_cpu_ms": 4.918509999999998,
+          "plan_ms": 4.916545994579792,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 7.097305999999989,
+          "compose_ms": 7.095133997499943,
+          "pages": 6,
+          "plan_cpu_ms": 4.675036000000006,
+          "plan_ms": 4.6727690026164055,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 6.6101389999999896,
+          "compose_ms": 6.608061000704765,
+          "pages": 6,
+          "plan_cpu_ms": 4.268089000000003,
+          "plan_ms": 4.265808001160622,
+          "trial": 4
+        }
+      ],
+      "sizing": "estimated"
+    },
+    {
+      "batch": 0,
+      "process_cpu_ms": 312.612,
+      "process_elapsed_ms": 314.2492830011179,
+      "rows": 24,
+      "rss_kib": 24088.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 27.612788999999992,
+          "compose_ms": 27.61048699915409,
+          "pages": 4,
+          "plan_cpu_ms": 28.789689999999997,
+          "plan_ms": 28.818813003599644,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 29.683922999999993,
+          "compose_ms": 29.68087900429964,
+          "pages": 4,
+          "plan_cpu_ms": 28.539030999999994,
+          "plan_ms": 28.53666600584984,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 29.62667300000001,
+          "compose_ms": 29.62406500428915,
+          "pages": 4,
+          "plan_cpu_ms": 28.483415000000008,
+          "plan_ms": 28.480660997331142,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 30.202787999999998,
+          "compose_ms": 30.200542002916336,
+          "pages": 4,
+          "plan_cpu_ms": 29.172338000000025,
+          "plan_ms": 29.169855006039143,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 28.59488799999997,
+          "compose_ms": 28.5927369967103,
+          "pages": 4,
+          "plan_cpu_ms": 26.841858000000002,
+          "plan_ms": 26.83873200416565,
+          "trial": 4
+        }
+      ],
+      "sizing": "measured"
+    },
+    {
+      "batch": 0,
+      "process_cpu_ms": 1923.526,
+      "process_elapsed_ms": 1926.2258279995876,
+      "rows": 1000,
+      "rss_kib": 34080.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 231.684348,
+          "compose_ms": 231.67235799878836,
+          "pages": 250,
+          "plan_cpu_ms": 140.17202799999998,
+          "plan_ms": 140.16818299889565,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 230.777291,
+          "compose_ms": 230.8026579990983,
+          "pages": 250,
+          "plan_cpu_ms": 139.26472200000006,
+          "plan_ms": 139.25184800475836,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 224.63963400000011,
+          "compose_ms": 224.63353600353003,
+          "pages": 250,
+          "plan_cpu_ms": 131.835103,
+          "plan_ms": 131.82939399778843,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 225.91428999999994,
+          "compose_ms": 225.90865299850702,
+          "pages": 250,
+          "plan_cpu_ms": 128.2585200000001,
+          "plan_ms": 128.26749100536108,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 231.58408499999996,
+          "compose_ms": 231.62317299842834,
+          "pages": 250,
+          "plan_cpu_ms": 128.82949899999994,
+          "plan_ms": 128.8239210024476,
+          "trial": 4
+        }
+      ],
+      "sizing": "estimated"
+    },
+    {
+      "batch": 0,
+      "process_cpu_ms": 10286.267,
+      "process_elapsed_ms": 10290.616245998535,
+      "rows": 1000,
+      "rss_kib": 34720.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 1044.165641,
+          "compose_ms": 1044.2678980007768,
+          "pages": 167,
+          "plan_cpu_ms": 1162.0062169999999,
+          "plan_ms": 1162.0281800031662,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 1043.7332090000004,
+          "compose_ms": 1043.736873999238,
+          "pages": 167,
+          "plan_cpu_ms": 951.679975,
+          "plan_ms": 951.6847930029035,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 1020.0894430000008,
+          "compose_ms": 1020.0941559970379,
+          "pages": 167,
+          "plan_cpu_ms": 970.9646849999999,
+          "plan_ms": 970.9692709967494,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 1023.993610999999,
+          "compose_ms": 1024.0162400007248,
+          "pages": 167,
+          "plan_cpu_ms": 961.3223099999996,
+          "plan_ms": 961.3620570003986,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 1064.2698930000006,
+          "compose_ms": 1064.3165300041437,
+          "pages": 167,
+          "plan_cpu_ms": 960.8877079999984,
+          "plan_ms": 961.1191399991512,
+          "trial": 4
+        }
+      ],
+      "sizing": "measured"
+    },
+    {
+      "batch": 1,
+      "process_cpu_ms": 316.421,
+      "process_elapsed_ms": 318.5662739997497,
+      "rows": 24,
+      "rss_kib": 23976.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 28.529793999999995,
+          "compose_ms": 28.527791000902653,
+          "pages": 4,
+          "plan_cpu_ms": 30.622390999999997,
+          "plan_ms": 30.61947099864483,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 30.60621300000001,
+          "compose_ms": 30.60257299989462,
+          "pages": 4,
+          "plan_cpu_ms": 27.235224000000002,
+          "plan_ms": 27.212352000176907,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 29.757783000000018,
+          "compose_ms": 29.7547449991107,
+          "pages": 4,
+          "plan_cpu_ms": 27.00085200000001,
+          "plan_ms": 26.998700000345707,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 30.605559999999997,
+          "compose_ms": 30.60292199999094,
+          "pages": 4,
+          "plan_cpu_ms": 27.264477999999997,
+          "plan_ms": 27.267802000045776,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 28.317841999999985,
+          "compose_ms": 28.31428999453783,
+          "pages": 4,
+          "plan_cpu_ms": 29.727776000000006,
+          "plan_ms": 29.725685000419617,
+          "trial": 4
+        }
+      ],
+      "sizing": "measured"
+    },
+    {
+      "batch": 1,
+      "process_cpu_ms": 83.263,
+      "process_elapsed_ms": 85.53171099629253,
+      "rows": 24,
+      "rss_kib": 23972.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 6.601365999999999,
+          "compose_ms": 6.5992679968476295,
+          "pages": 6,
+          "plan_cpu_ms": 6.542840999999999,
+          "plan_ms": 6.539625994861126,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 6.462068000000002,
+          "compose_ms": 6.459034003317356,
+          "pages": 6,
+          "plan_cpu_ms": 4.666848000000002,
+          "plan_ms": 4.664437994360924,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 6.628233000000002,
+          "compose_ms": 6.624931000173092,
+          "pages": 6,
+          "plan_cpu_ms": 4.368982000000003,
+          "plan_ms": 4.367139995098114,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 6.11725400000001,
+          "compose_ms": 6.115175999701023,
+          "pages": 6,
+          "plan_cpu_ms": 4.095022,
+          "plan_ms": 4.09281200170517,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 7.849996000000004,
+          "compose_ms": 7.847284995019436,
+          "pages": 6,
+          "plan_cpu_ms": 4.054909000000009,
+          "plan_ms": 4.053576998412609,
+          "trial": 4
+        }
+      ],
+      "sizing": "estimated"
+    },
+    {
+      "batch": 1,
+      "process_cpu_ms": 9961.265,
+      "process_elapsed_ms": 9963.337430999673,
+      "rows": 1000,
+      "rss_kib": 34592.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 1009.1121489999999,
+          "compose_ms": 1009.1460150033236,
+          "pages": 167,
+          "plan_cpu_ms": 953.394977,
+          "plan_ms": 953.4046499952674,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 1012.9163830000002,
+          "compose_ms": 1012.9363199993968,
+          "pages": 167,
+          "plan_cpu_ms": 953.5567490000001,
+          "plan_ms": 953.5507590025663,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 1007.7122559999998,
+          "compose_ms": 1007.7274160012603,
+          "pages": 167,
+          "plan_cpu_ms": 967.0669270000003,
+          "plan_ms": 967.0942139998078,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 1029.563534,
+          "compose_ms": 1029.6177830025554,
+          "pages": 167,
+          "plan_cpu_ms": 963.7771910000001,
+          "plan_ms": 963.7938770055771,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 1019.4466859999993,
+          "compose_ms": 1019.4617380052805,
+          "pages": 167,
+          "plan_cpu_ms": 965.5377090000002,
+          "plan_ms": 965.539838001132,
+          "trial": 4
+        }
+      ],
+      "sizing": "measured"
+    },
+    {
+      "batch": 1,
+      "process_cpu_ms": 1879.137,
+      "process_elapsed_ms": 1883.055376005359,
+      "rows": 1000,
+      "rss_kib": 33972.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 228.21947999999998,
+          "compose_ms": 228.22876500338316,
+          "pages": 250,
+          "plan_cpu_ms": 133.039261,
+          "plan_ms": 133.05572299659252,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 221.40284300000008,
+          "compose_ms": 221.39776799827814,
+          "pages": 250,
+          "plan_cpu_ms": 128.62816999999995,
+          "plan_ms": 128.62387300282717,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 227.85631699999988,
+          "compose_ms": 227.879767999053,
+          "pages": 250,
+          "plan_cpu_ms": 137.555883,
+          "plan_ms": 137.46060299873352,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 223.17279899999994,
+          "compose_ms": 223.16739799827337,
+          "pages": 250,
+          "plan_cpu_ms": 130.76235500000007,
+          "plan_ms": 130.7690690010786,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 218.82623599999988,
+          "compose_ms": 218.8207840025425,
+          "pages": 250,
+          "plan_cpu_ms": 124.21777900000006,
+          "plan_ms": 125.47823599725962,
+          "trial": 4
+        }
+      ],
+      "sizing": "estimated"
+    },
+    {
+      "batch": 2,
+      "process_cpu_ms": 84.792,
+      "process_elapsed_ms": 87.3111710025114,
+      "rows": 24,
+      "rss_kib": 23972.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 6.377526,
+          "compose_ms": 6.375153005123138,
+          "pages": 6,
+          "plan_cpu_ms": 6.155213000000003,
+          "plan_ms": 6.152271993458271,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 8.210437999999996,
+          "compose_ms": 8.207777999341488,
+          "pages": 6,
+          "plan_cpu_ms": 4.316884999999999,
+          "plan_ms": 4.315490998327732,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 6.643011999999999,
+          "compose_ms": 6.640363000333309,
+          "pages": 6,
+          "plan_cpu_ms": 5.349519999999998,
+          "plan_ms": 5.346739999949932,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 6.070946000000006,
+          "compose_ms": 6.068850994110107,
+          "pages": 6,
+          "plan_cpu_ms": 4.062005000000006,
+          "plan_ms": 4.059712998569012,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 6.7699910000000045,
+          "compose_ms": 6.766707003116608,
+          "pages": 6,
+          "plan_cpu_ms": 4.547882999999999,
+          "plan_ms": 4.545748993754387,
+          "trial": 4
+        }
+      ],
+      "sizing": "estimated"
+    },
+    {
+      "batch": 2,
+      "process_cpu_ms": 326.331,
+      "process_elapsed_ms": 328.20221499423496,
+      "rows": 24,
+      "rss_kib": 23968.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 27.754739,
+          "compose_ms": 27.752165995538235,
+          "pages": 4,
+          "plan_cpu_ms": 29.697376000000002,
+          "plan_ms": 29.694343000650406,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 34.98737700000001,
+          "compose_ms": 34.99866499751806,
+          "pages": 4,
+          "plan_cpu_ms": 28.94547700000001,
+          "plan_ms": 28.942990005016327,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 31.051623000000006,
+          "compose_ms": 31.048281997442245,
+          "pages": 4,
+          "plan_cpu_ms": 26.505916000000013,
+          "plan_ms": 26.503175005316734,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 29.255007999999975,
+          "compose_ms": 29.259455002844334,
+          "pages": 4,
+          "plan_cpu_ms": 34.11849700000002,
+          "plan_ms": 34.11590300500393,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 30.16600699999998,
+          "compose_ms": 30.163832999765873,
+          "pages": 4,
+          "plan_cpu_ms": 27.194309000000032,
+          "plan_ms": 27.191295996308327,
+          "trial": 4
+        }
+      ],
+      "sizing": "measured"
+    },
+    {
+      "batch": 2,
+      "process_cpu_ms": 1917.141,
+      "process_elapsed_ms": 1919.4336620057584,
+      "rows": 1000,
+      "rss_kib": 33956.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 249.847262,
+          "compose_ms": 249.84649100154638,
+          "pages": 250,
+          "plan_cpu_ms": 131.568499,
+          "plan_ms": 131.56352999806404,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 220.75556900000004,
+          "compose_ms": 220.75088100135326,
+          "pages": 250,
+          "plan_cpu_ms": 126.34994899999998,
+          "plan_ms": 126.34531300514936,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 219.8253840000001,
+          "compose_ms": 219.82832699269056,
+          "pages": 250,
+          "plan_cpu_ms": 131.92315099999996,
+          "plan_ms": 131.92842300236225,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 223.62637199999995,
+          "compose_ms": 223.90811299532652,
+          "pages": 250,
+          "plan_cpu_ms": 128.32223999999997,
+          "plan_ms": 128.3158970028162,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 240.89919599999985,
+          "compose_ms": 240.90177399665117,
+          "pages": 250,
+          "plan_cpu_ms": 128.65851499999985,
+          "plan_ms": 128.65896999835968,
+          "trial": 4
+        }
+      ],
+      "sizing": "estimated"
+    },
+    {
+      "batch": 2,
+      "process_cpu_ms": 10910.45,
+      "process_elapsed_ms": 10914.697386004264,
+      "rows": 1000,
+      "rss_kib": 34748.0,
+      "samples": [
+        {
+          "compose_cpu_ms": 1158.9727899999998,
+          "compose_ms": 1159.0180770009756,
+          "pages": 167,
+          "plan_cpu_ms": 1079.681322,
+          "plan_ms": 1080.6870630010962,
+          "trial": 0
+        },
+        {
+          "compose_cpu_ms": 1065.476227,
+          "compose_ms": 1065.5030540004373,
+          "pages": 167,
+          "plan_cpu_ms": 985.513097,
+          "plan_ms": 985.5245369970798,
+          "trial": 1
+        },
+        {
+          "compose_cpu_ms": 1093.604762,
+          "compose_ms": 1093.6801960021257,
+          "pages": 167,
+          "plan_cpu_ms": 1412.7097140000005,
+          "plan_ms": 1413.6129099950194,
+          "trial": 2
+        },
+        {
+          "compose_cpu_ms": 1040.2441480000007,
+          "compose_ms": 1040.3037379980087,
+          "pages": 167,
+          "plan_cpu_ms": 960.7712849999998,
+          "plan_ms": 960.798471994698,
+          "trial": 3
+        },
+        {
+          "compose_cpu_ms": 1069.406556,
+          "compose_ms": 1069.4211229979992,
+          "pages": 167,
+          "plan_cpu_ms": 954.8262749999994,
+          "plan_ms": 954.8307499960065,
+          "trial": 4
+        }
+      ],
+      "sizing": "measured"
+    }
+  ]
+}
