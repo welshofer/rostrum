@@ -2,6 +2,15 @@
 
 ## Latest reconciled measurements
 
+The [rotated table-text expansion](TABLE-ROTATED-TEXT-20261017.md) preserves
+264 existing control artifacts, 84 accepted Calibri artifacts and every existing
+field in 1,248 detailed layout/shaping snapshots. Five alternating Linux Release
+pairs retain mixed costs: process CPU changes range from -1.16% to +7.07%, with
+small plain/span cases slower and a 2.73% slowdown for large column spans. Peak
+RSS medians differ by less than 0.25 MiB. New 90°/270° cases reproduce 124 artifacts
+and retain absolute planning/composition CPU, elapsed and memory measurements.
+This is a capability expansion, not a general speedup or native Mac claim.
+
 The [resolved run-metrics comparison](TEXT-LAYOUT-20261017.md) removes redundant
 font lookup during wrapped-fragment measurement. Seven alternating Linux Release
 pairs/batches measure 2.50–3.55% lower whole-process CPU for large merged/header

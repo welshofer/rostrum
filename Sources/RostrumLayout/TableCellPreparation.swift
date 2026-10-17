@@ -7,10 +7,12 @@ struct TableCellInput {
     struct Key: Hashable {
         let body: Data, style: Data
         let left: Double, top: Double, right: Double, bottom: Double
+        let rotated: Bool
     }
     var body: XML.Element
     var style: XML.Element
     let insets: (left: Double, top: Double, right: Double, bottom: Double)
+    let rotated: Bool
     let issues: [TableLayoutIssue]
     let key: Key?
     var preparation: RichTextLayout.Preparation?
@@ -28,7 +30,8 @@ struct TableCellInput {
             guard seenStyles.insert(style).inserted else { continue }
             let body = cell.body.firstChild(named: "a:bodyPr"), margins = cell.insets
             var issues: [TableLayoutIssue] = []
-            if cell.direction != "horz" || (body?[attribute: "vert"].map { $0 != "horz" } ?? false) { issues.append(.verticalText) }
+            let rotated = cell.direction == "vert" || cell.direction == "vert270"
+            if (!rotated && cell.direction != "horz") || (body?[attribute: "vert"].map { $0 != "horz" } ?? false) { issues.append(.verticalText) }
             if Double(body?[attribute: "rot"] ?? "0") != 0 { issues.append(.rotatedText) }
             if Int(body?[attribute: "numCol"] ?? "1") != 1 { issues.append(.multipleTextColumns) }
             if cell.body.children(named: "a:p").contains(where: { !$0.children(named: "a:fld").isEmpty }) { issues.append(.dynamicField) }
@@ -42,9 +45,9 @@ struct TableCellInput {
             if issues.isEmpty {
                 if bodyBytes == nil { bodyBytes = Data(cell.body.serialized().utf8) }
                 key = Key(body: bodyBytes!, style: style, left: margins.left, top: margins.top,
-                    right: margins.right, bottom: margins.bottom)
+                    right: margins.right, bottom: margins.bottom, rotated: rotated)
             }
-            result.append(TableCellInput(body: cell.body, style: cell.textStyle, insets: margins,
+            result.append(TableCellInput(body: cell.body, style: cell.textStyle, insets: margins, rotated: rotated,
                 issues: issues, key: key))
         }
         return result

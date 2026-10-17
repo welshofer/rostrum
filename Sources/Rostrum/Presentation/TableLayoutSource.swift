@@ -83,4 +83,17 @@ extension Table {
             } }
         } }
     }
+
+    /// Index the native grid once for sparse template overrides. Calling the
+    /// public positional accessor for each source row would repeatedly walk it.
+    package func setLayoutTextDirections(_ directions: [(Int, Int, TableTextDirection)]) throws {
+        guard !directions.isEmpty else { return }
+        let grid = TableGridSnapshot(tbl)
+        guard directions.allSatisfy({ row, column, _ in
+            grid.cells.indices.contains(row) && grid.cells[row].indices.contains(column)
+        }) else { throw RostrumError.packageInvalid("Cell text direction is outside the table grid") }
+        for (row, column, direction) in directions {
+            TableCell(tc: grid.cells[row][column], part: part, package: package).textDirection = direction
+        }
+    }
 }

@@ -6,6 +6,13 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Measure native 90°/270° table-cell text at full font size, including merged
+  anchors, without squeezing labels into split words. `TemplateTableContent.textDirections` preserves sparse source-cell
+  directions through measured columns, composition, repeated headers and body
+  pagination. Final shared-row rectangles are rechecked before reporting fit.
+  Lectern's Templates Lab adds saved/reopened rotated tables and Inspect/export
+  coverage. See [support and validation](docs/TABLE-ROTATED-TEXT-20261017.md).
+
 - Shared rich-text layout reuses each source run's resolved font metrics when
   measuring wrapped fragments, preserving current font/content checks and exact
   output. No additional cache or font policy is introduced; see the

@@ -34,6 +34,7 @@ extension TemplateLayoutEngine {
         let groups = try TableRowGroups(merges: table.merges, headerRowCount: table.headerRowCount)
         let headerRows = Array(0..<table.headerRowCount)
         let mergesByRow = Dictionary(grouping: table.merges, by: \.row)
+        let directionsByRow = Dictionary(grouping: table.textDirections, by: \.row)
         struct Key: Hashable { let width: EMU; let font: Data; let theme: PackURI; let availableHeight: EMU? }
         var measured: [Key: TableLayoutPlan] = [:], remainingCells = 8192
         var best: TemplateTablePaginationPlan?, bestScore = Double.infinity
@@ -84,7 +85,12 @@ extension TemplateLayoutEngine {
                             (mergesByRow[sourceRow] ?? []).map { merge in
                                 TableMergeRegion(row: localRow, column: merge.column, rowSpan: merge.rowSpan, columnSpan: merge.columnSpan)
                             }
-                        }, headerRowCount: table.headerRowCount)
+                        }, headerRowCount: table.headerRowCount,
+                        textDirections: directionsByRow.isEmpty ? [] : indices.enumerated().flatMap { localRow, sourceRow in
+                            (directionsByRow[sourceRow] ?? []).map {
+                                TableCellTextDirection(row: localRow, column: $0.column, direction: $0.direction)
+                            }
+                        })
                     page.tableLayout = TableLayoutPlan(columnWidths: geometry.columnWidths, rowHeights: heights,
                         cells: cells, totalHeight: heights.reduce(.zero, +), fits: true, columnSearch: geometry.columnSearch)
                     return TemplateTablePagePlan(slide: page, bodyRows: range, headerRowCount: table.headerRowCount)

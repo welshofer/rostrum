@@ -4,6 +4,8 @@ import Rostrum
 public enum TableLayoutIssue: String, Sendable {
     case mergedCell, verticalText, rotatedText, multipleTextColumns, dynamicField, lineSpacingReduction
     case horizontalOverflow, lineLimit, invalidInsets, heightLimit
+    /// Rotated-height selection could not preserve the normal word boundaries.
+    case wordSplit
 }
 
 public struct TableCellLayout: Sendable {
@@ -36,7 +38,7 @@ public struct TableCellLayout: Sendable {
     }
 }
 
-/// A read-only measurement of native cells with horizontal text, including row
+/// A read-only measurement of native cells with horizontal or quarter-turn text, including row
 /// and column spans. Cells remain in physical row-major order. Apply
 /// columnWidths and rowHeights only after checking fits. No font shrinking or
 /// pagination is implied; diagnostics retain font substitution information.
@@ -62,6 +64,8 @@ final class TableColumnMeasurements {
     private(set) var columns: [Key: Column] = [:]
     var occupiedWidths: [EMU] = []
     var measuredCells = 0, reusedCells = 0
+    // Source-grid indices are width-independent within this immutable search.
+    var rotatedCells: Set<Int> = []
     private var remainingCells = 32_768
     private let spans: [Int: [Int]]
     var hasSpans: Bool { !spans.isEmpty }
@@ -148,6 +152,7 @@ public final class TableLayoutEngine {
             ? cachedColumns!.map { $0?.spanningOccupiedWidths ?? [:] } : []
         let hasSpans = !source.merges.isEmpty
         let hasRowSpans = source.merges.contains { $0.rowSpan > 1 }
+        var rotatedCells = Set<Int>()
         for row in 0..<source.rowCount { for column in widths.indices {
             if let cached = cachedColumns?[column] {
                 let cell = cached.cells[row]
@@ -168,6 +173,9 @@ public final class TableLayoutEngine {
                 ?? TableCellInput.resolve(source: &source, row: row, column: column, pagination: pagination)
             var cellHeight = EMU.zero
             var cellIssues: [TableLayoutIssue] = [], diagnostics: [ShapingDiagnostic] = []
+            if inputs.first?.rotated == true {
+                rotatedCells.insert(cells.count)
+            }
             for input in inputs {
                 let margins = input.insets
                 var issues = input.issues
@@ -177,20 +185,27 @@ public final class TableLayoutEngine {
                     let key = Key(input: input.key!, width: cellWidth)
                     if let cached = cache[key] { measurement = cached }
                     else {
-                        let geometry = RichTextLayout(textBody: input.body, width: cellWidth.points, height: limit.points,
-                            fonts: presentation.fonts, theme: theme, inheritedStyles: [input.style], maxLines: 65,
-                            insets: margins, verticalAnchor: "t", context: .tableCell, preparation: input.preparation)
-                        if geometry.truncated || geometry.lines.count > 64 { issues.append(.lineLimit) }
-                        if !geometry.fits { issues.append(.horizontalOverflow) }
-                        if margins.left + margins.right >= cellWidth.points { issues.append(.horizontalOverflow) }
-                        let required = geometry.contentHeight + margins.top + margins.bottom
-                        if !required.isFinite || required > limit.points { issues.append(.heightLimit) }
-                        // Round upwards at EMU precision so serialization cannot make
-                        // a measured cell shorter than the accepted line geometry.
-                        measurement = Measurement(height: .points(ceil(required * Double(EMU.perPoint)) / Double(EMU.perPoint)),
-                            occupiedWidth: reuse == nil ? .zero : .points(ceil((geometry.lines.map(\.width).max() ?? 0)
-                                + margins.left + margins.right)),
-                            issues: issues, diagnostics: geometry.diagnostics)
+                        if input.rotated {
+                            let rotated = RotatedTableCellMeasurement(input: input, width: cellWidth,
+                                fonts: presentation.fonts, theme: theme)
+                            measurement = Measurement(height: rotated.height, occupiedWidth: rotated.occupiedWidth,
+                                issues: rotated.issues, diagnostics: rotated.diagnostics)
+                        } else {
+                            let geometry = RichTextLayout(textBody: input.body, width: cellWidth.points, height: limit.points,
+                                fonts: presentation.fonts, theme: theme, inheritedStyles: [input.style], maxLines: 65,
+                                insets: margins, verticalAnchor: "t", context: .tableCell, preparation: input.preparation)
+                            if geometry.truncated || geometry.lines.count > 64 { issues.append(.lineLimit) }
+                            if !geometry.fits { issues.append(.horizontalOverflow) }
+                            if margins.left + margins.right >= cellWidth.points { issues.append(.horizontalOverflow) }
+                            let required = geometry.contentHeight + margins.top + margins.bottom
+                            if !required.isFinite || required > limit.points { issues.append(.heightLimit) }
+                            // Round upwards at EMU precision so serialization cannot make
+                            // a measured cell shorter than the accepted line geometry.
+                            measurement = Measurement(height: .points(ceil(required * Double(EMU.perPoint)) / Double(EMU.perPoint)),
+                                occupiedWidth: reuse == nil ? .zero : .points(ceil((geometry.lines.map(\.width).max() ?? 0)
+                                    + margins.left + margins.right)),
+                                issues: issues, diagnostics: geometry.diagnostics)
+                        }
                         let cost = key.input.body.count + key.input.style.count + 256
                         if cache.count < 64 && cost <= remainingBytes {
                             cache[key] = measurement; remainingBytes -= cost
@@ -209,6 +224,10 @@ public final class TableLayoutEngine {
             cells.append(TableCellLayout(row: row, column: column, requiredHeight: cellHeight,
                 issues: cellIssues, diagnostics: diagnostics, columnSpan: span, rowSpan: extent.rows))
         } }
+        if let reuse {
+            reuse.rotatedCells.formUnion(rotatedCells)
+            rotatedCells = reuse.rotatedCells
+        }
         if hasRowSpans {
             // Recompute after every width trial, including column-cache hits:
             // a span's deficit depends on ordinary cells in other columns too.
@@ -255,6 +274,30 @@ public final class TableLayoutEngine {
                 }
             }
             reuse.occupiedWidths = occupiedWidths
+        }
+        // Neighboring cells and intersecting row spans can increase a rotated
+        // cell's final inline extent. Recheck that exact saved rectangle after
+        // distributing every deficit; mixed metrics need not wrap monotonically.
+        // Do not retain these final-fit issues in the per-column cache: another
+        // column trial can produce different shared row heights.
+        for index in rotatedCells.sorted() {
+            let cell = cells[index]
+            guard cell.issues.isEmpty else { continue }
+            let width = widths[cell.column..<(cell.column + cell.columnSpan)].reduce(.zero, +)
+            let height = heights[cell.row..<(cell.row + cell.rowSpan)].reduce(.zero, +)
+            var issues = cell.issues, diagnostics = cell.diagnostics
+            let inputs = reuse?.preparation.inputs(source: &source, row: cell.row, column: cell.column,
+                pagination: pagination, prepareText: true)
+                ?? TableCellInput.resolve(source: &source, row: cell.row, column: cell.column, pagination: pagination)
+            for input in inputs {
+                let geometry = RotatedTableCellMeasurement.layout(input, width: width, height: height,
+                    fonts: presentation.fonts, theme: theme)
+                for issue in RotatedTableCellMeasurement.issues(geometry, input: input, width: width, height: height)
+                    where !issues.contains(issue) { issues.append(issue) }
+                for diagnostic in geometry.diagnostics where !diagnostics.contains(diagnostic) { diagnostics.append(diagnostic) }
+            }
+            cells[index] = TableCellLayout(row: cell.row, column: cell.column, requiredHeight: cell.requiredHeight,
+                issues: issues, diagnostics: diagnostics, columnSpan: cell.columnSpan, rowSpan: cell.rowSpan)
         }
         let total = heights.reduce(0.0) { $0 + $1.points }
         let totalHeight = EMU.points(min(total, limit.points))

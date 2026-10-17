@@ -163,6 +163,8 @@ heights. `TemplateTableContent(rows:columnSizing:)` with `.measured()` enables
 bounded column search; `planTablePages` / `composeTablePages` create editable continuations with
 repeated headers and reserved captions. Horizontal, vertical and rectangular
 merges are supported; connected body-row groups stay together across pages.
+`textDirections` adds editable 90°/270° cell labels with measured row heights;
+rotated headers and merged anchors retain their directions across pages.
 `headerRowCount` repeats a complete leading header block, including vertical and
 rectangular header merges. Merges cannot cross the header/body boundary. Native
 table autofit remains outside this profile; see the [layout guide](docs/LAYOUT-ENGINE.md#table-continuations-in-templates).
@@ -171,7 +173,7 @@ The [caller-font fidelity pack](Tools/native-fidelity/README.md) exercises text
 and merged-table continuations at both slide ratios, retaining exact geometry
 and separate PowerPoint slide-view/export review status. The delivered Calibri
 pack has [user-reported PowerPoint acceptance](docs/POWERPOINT-REVIEW-20261016.md);
-new multi-row header cases still need native review.
+new multi-row header and rotated-text cases still need native review.
 
 Table previews resolve native and embedded custom styles, padding, vertical
 alignment, fills and supported border joins. Newly authored table cells center
@@ -231,7 +233,7 @@ file persistence and end-to-end verification.
 | **Notes** | rich speaker notes, independent duplicates, source notes-master preservation on import; bounded notes-page SVG previews with fidelity diagnostics; incompatible masters are refused atomically |
 | **Fonts** | distinct regular/bold/italic faces, TTF/OTF embedding, bounded Swift kerning/ligature shaping with diagnostics for unsupported scripts; permitted registered fonts are embedded in SVG; explicit measured preview fallback with missing-font diagnostics |
 | **Text fitting** | `shape.fitText(fonts: deck.fonts)` — shared mixed-run layout measures registered faces and writes computed `normAutofit`; inspect `renderSVGReportingProblems` for unsupported script/layout cases |
-| **Table layout** | `TableLayoutEngine` measures existing cells, including vertical and rectangular merges, without mutation; `TemplateTableContent` supports measured columns and rectangular merges; pagination repeats headers/captions and keeps connected row groups intact |
+| **Table layout** | `TableLayoutEngine` measures existing cells, including 90°/270° text and vertical/rectangular merges, without mutation; `TemplateTableContent` supports measured columns and rectangular merges; pagination repeats headers/captions and keeps connected row groups intact |
 | **Composition** | `TemplateLayoutEngine` plans and rechecks inherited placeholders; `AuthoredLayoutEngine` fits authored slides; `MeasuredPaginator` partitions exact source text against the caller's fit rule |
 | **Theme** | read/edit palette & fonts; resolve `schemeClr` → RGB |
 | **Merge** | import slides with images, charts, layouts and embedded font faces intact; matching font faces are reused and conflicts are refused atomically |

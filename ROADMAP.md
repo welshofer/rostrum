@@ -582,7 +582,8 @@ bounded scope passed; it is not a claim of universal PowerPoint equivalence.
   and export—not visual equivalence. [Evidence](docs/LAYOUT-FIDELITY-20261004-22.md).
 - [x] Namespace-aliased section mutation preserves inherited
   compatibility/XML context.
-- [ ] Advanced vertical cell typography, pattern/effect preview, unsupported
+- [x] Measured 90°/270° cell text, template direction overrides, repeated rotated headers and final merged-rectangle fit checks; native acceptance pending.
+- [ ] Advanced stacked/complex vertical cell typography, pattern/effect preview, unsupported
   compound/dashed-double/junction variants and whole-slide Office equivalence.
   New table cells now center text vertically and imported cells retain authored
   alignment, but the broader gate remains open. Table and typography PNG

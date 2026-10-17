@@ -65,7 +65,7 @@ import Testing
         let (deck, table) = try fixture()
         try table.merge(row: 0, column: 1, rowSpan: 2, columnSpan: 1)
         let cell = try table.cell(1, 0)
-        cell.tc.getOrAddChild("a:tcPr")[attribute: "vert"] = "vert"
+        cell.tc.getOrAddChild("a:tcPr")[attribute: "vert"] = "eaVert"
         let before = try deck.serializedData()
         let plan = try TableLayoutEngine(presentation: deck).plan(table)
         #expect(!plan.fits)
