@@ -6,6 +6,10 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Table measurement reuses exact effective-style bytes and immutable cell-key
+  hashes within each operation, retaining fresh font/content checks and bounded
+  caches. See the [profile, preservation and Release comparison](docs/TABLE-MEASUREMENT-20261017.md).
+
 - Measure native 90°/270° table-cell text at full font size, including merged
   anchors, without squeezing labels into split words. `TemplateTableContent.textDirections` preserves sparse source-cell
   directions through measured columns, composition, repeated headers and body

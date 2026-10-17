@@ -35,6 +35,7 @@ package struct TableLayoutSource {
         }
         return TableLayoutCell(body: cell.firstChild(named: "a:txBody") ?? XML.Element("a:txBody"),
             textStyle: effective.text,
+            textStyleBytes: effective.textBytes,
             insets: (inset("marL", 91440), inset("marT", 45720), inset("marR", 91440), inset("marB", 45720)),
             direction: effective.properties[attribute: "vert"] ?? "horz",
             verticallyMerged: (topology.region(row: row, column: column)?.rowSpan ?? 1) > 1)
@@ -44,6 +45,7 @@ package struct TableLayoutSource {
 package struct TableLayoutCell {
     package let body: XML.Element
     package let textStyle: XML.Element
+    package let textStyleBytes: Data
     package let insets: (left: Double, top: Double, right: Double, bottom: Double)
     package let direction: String
     package let verticallyMerged: Bool

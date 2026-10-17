@@ -340,7 +340,19 @@ Evidence map: [documentation](docs/README.md), [conformance](docs/CONFORMANCE.md
 - [x] Verify final rectangles after shared row heights are resolved; retain explicit unsupported-mode diagnostics.
 - [x] Complete regression, saved-file, horizontal preservation and CPU/elapsed/RSS checks.
 - [x] Provide the implementation, usage documentation and runnable Lectern Templates Lab review path.
-- [ ] Capture native PowerPoint slide-view and PDF-export acceptance of the new rotated cases.
+- [x] Record user-reported visual acceptance of the delivered rotated-table pack.
+- [ ] Capture separate native slide-view and PDF-export evidence for the rotated cases.
 
-See [support and evidence](docs/TABLE-ROTATED-TEXT-20261017.md). Native acceptance
-of earlier Calibri decks does not cover these new cases.
+See [support and evidence](docs/TABLE-ROTATED-TEXT-20261017.md) for the accepted
+deck hashes and the limits of the pack-level review.
+
+## Small-table measurement overhead
+
+- [x] Profile the measured small-table slowdown in normal Release builds.
+- [x] Reuse effective-style bytes and immutable cell-key hashes within each operation.
+- [x] Compare CPU, elapsed time and peak memory; preserve all 388 control artifacts,
+  1,248 snapshots, 84 Calibri artifacts and the accepted rotated PPTX/SVG files.
+- [x] Complete the full portable gate and prepare the validated change for PR checks.
+
+[Measurements and validation](docs/TABLE-MEASUREMENT-20261017.md) retain the full
+comparison. Required Linux and Apple PR checks must pass before merging.

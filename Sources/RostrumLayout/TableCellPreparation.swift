@@ -8,6 +8,28 @@ struct TableCellInput {
         let body: Data, style: Data
         let left: Double, top: Double, right: Double, bottom: Double
         let rotated: Bool
+        // Width trials reuse immutable bytes. Hash them once per input; retain
+        // exact equality so hash collisions cannot alias text or geometry.
+        private let fingerprint: Int
+
+        init(body: Data, style: Data, left: Double, top: Double, right: Double, bottom: Double, rotated: Bool) {
+            self.body = body; self.style = style
+            self.left = left; self.top = top; self.right = right; self.bottom = bottom
+            self.rotated = rotated
+            var hasher = Hasher()
+            hasher.combine(body); hasher.combine(style)
+            hasher.combine(left); hasher.combine(top); hasher.combine(right); hasher.combine(bottom)
+            hasher.combine(rotated)
+            fingerprint = hasher.finalize()
+        }
+
+        func hash(into hasher: inout Hasher) { hasher.combine(fingerprint) }
+
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.fingerprint == rhs.fingerprint && lhs.body == rhs.body && lhs.style == rhs.style
+                && lhs.left == rhs.left && lhs.top == rhs.top && lhs.right == rhs.right
+                && lhs.bottom == rhs.bottom && lhs.rotated == rhs.rotated
+        }
     }
     var body: XML.Element
     var style: XML.Element
@@ -26,7 +48,7 @@ struct TableCellInput {
         var bodyBytes: Data?
         for (styleRow, count) in positions {
             let cell = source.cell(row: row, column: column, styleRow: styleRow, styleRowCount: count)
-            let style = Data(cell.textStyle.serialized().utf8)
+            let style = cell.textStyleBytes
             guard seenStyles.insert(style).inserted else { continue }
             let body = cell.body.firstChild(named: "a:bodyPr"), margins = cell.insets
             var issues: [TableLayoutIssue] = []

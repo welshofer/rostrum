@@ -46,10 +46,42 @@ import Testing
                         == XML.Element("a:tcPr", attributes: full.properties.attributes).serialized())
                     let bulk = session.effective(row: position.0, column: position.1)
                     #expect(bulk.text.serialized() == projected.text.serialized())
+                    #expect(bulk.textBytes == Data(full.text.serialized().utf8))
                     #expect(bulk.properties.serialized() == projected.properties.serialized())
                 }
             }
         }
+    }
+
+    @Test func fittingStyleBytesRefreshAndSurviveCacheBudgetFallback() throws {
+        let deck = try Presentation()
+        let table = try deck.slides[0].shapes.addTable(rows: 3, columns: 2, frame: deck.bounds)
+        let before = try deck.serializedData()
+        var ordinary = try TableLayoutSource(table: table, theme: deck.theme)
+        let first = ordinary.cell(row: 1, column: 0)
+        #expect(first.textStyleBytes == Data(first.textStyle.serialized().utf8))
+        #expect(try deck.serializedData() == before)
+
+        // The unescaped attribute fits the budget; its serialized bytes do not.
+        // Uncached cells must still supply the exact same resolved style bytes.
+        let family = "Large caller font " + String(repeating: "é&", count: 44_000)
+        let style = XML.Element("a:tblStyle", attributes: [("styleId", Table.defaultStyleGUID)])
+        let text = style.getOrAddChild("a:wholeTbl").getOrAddChild("a:tcTxStyle")
+        text.getOrAddChild("a:font").getOrAddChild("a:latin")[attribute: "typeface"] = family
+        text.appendElement(XML.Element("a:schemeClr", attributes: [("val", "accent1")]))
+        try table.setStyleDefinition(style)
+        deck.theme.setAccent(1, Color("123456"))
+        let saved = try deck.serializedData()
+        var changed = try TableLayoutSource(table: table, theme: deck.theme)
+        let resolver = TableStyleResolver(table: table, theme: deck.theme)
+        for row in [1, 2, 1] {
+            let actual = changed.cell(row: row, column: 0)
+            let expected = resolver.effective(row: row, column: 0).text
+            #expect(actual.textStyleBytes.count > 262_144)
+            #expect(actual.textStyleBytes != first.textStyleBytes)
+            #expect(actual.textStyleBytes == Data(expected.serialized().utf8))
+        }
+        #expect(try deck.serializedData() == saved)
     }
 
     @Test func inlineNamespacesDuplicateRegionsAndDegenerateGridsMatchFullResolution() throws {

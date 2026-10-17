@@ -418,11 +418,15 @@ public struct TableStyleResolver {
     /// one indexed grid and bounded region reuse. Paint and borders are irrelevant
     /// to text geometry and can be expensive to materialize on small tables.
     struct FittingSession {
+        private struct Template {
+            let text: XML.Element
+            let bytes: Data
+        }
         let grid: TableGridSnapshot
         private let theme: Theme
         private let definition: XML.Element?
         private let flags: Set<String>
-        private var templates: [[String]: XML.Element] = [:]
+        private var templates: [[String]: Template] = [:]
         private var remainingCost = 262_144
 
         init(table: Table, theme: Theme) {
@@ -437,28 +441,33 @@ public struct TableStyleResolver {
         }
 
         mutating func effective(row: Int, column: Int, styleRow: Int? = nil,
-                                styleRowCount: Int? = nil) -> (properties: XML.Element, text: XML.Element) {
+                                styleRowCount: Int? = nil) -> (properties: XML.Element, text: XML.Element, textBytes: Data) {
             let regions = TableStyleResolver.regionNames(row: styleRow ?? row, column: column,
                 rowCount: styleRowCount ?? grid.rows.count, columnCount: grid.columns.count, flags: flags)
-            let text: XML.Element
-            if let cached = templates[regions] { text = cached }
+            let template: Template
+            if let cached = templates[regions] { template = cached }
             else {
-                text = XML.Element("a:defRPr")
+                let text = XML.Element("a:defRPr")
                 for name in regions {
                     if let style = definition?.firstChild(named: "a:" + name)?.firstChild(named: "a:tcTxStyle") {
                         TableStyleResolver.mergeText(style, into: text, theme: theme)
                     }
                 }
                 TableStyleResolver.resolveColors(in: text, theme: theme)
-                if templates.count < 64, let cost = RenderSession.cost(of: [text], limit: remainingCost) {
-                    templates[regions] = text; remainingCost -= cost
+                // These resolved nodes are immutable for this fitting operation.
+                // Keep their exact bytes beside them rather than serializing the
+                // same region style for every cell and pagination position.
+                template = Template(text: text, bytes: Data(text.serialized().utf8))
+                if templates.count < 64,
+                   let cost = RenderSession.cost(of: [text], limit: remainingCost - template.bytes.count) {
+                    templates[regions] = template; remainingCost -= cost + template.bytes.count
                 }
             }
             let properties = XML.Element("a:tcPr")
             for attribute in grid.cells[row][column].firstChild(named: "a:tcPr")?.attributes ?? [] {
                 properties[attribute: attribute.name] = attribute.value
             }
-            return (properties, text)
+            return (properties, template.text, template.bytes)
         }
     }
 
