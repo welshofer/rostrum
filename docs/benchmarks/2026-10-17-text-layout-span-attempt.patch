@@ -1,0 +1,58 @@
+--- a/Sources/Rostrum/Presentation/RichTextLayout.swift
++++ b/Sources/Rostrum/Presentation/RichTextLayout.swift
+@@ -811,26 +811,40 @@
+                     spans.append(span)
+                 }
+                 var previousSource: Int?
+-                for (atomIndex, atom) in lineAtoms.enumerated() {
+-                    if atom.tab { x += atom.width; previousSource = nil; continue }
++                var atomIndex = 0
++                while atomIndex < lineAtoms.count {
++                    let atom = lineAtoms[atomIndex]
++                    if atom.tab {
++                        x += atom.width; previousSource = nil; atomIndex += 1; continue
++                    }
+                     // Isolate expanded spaces so SVG's textLength never scales
+                     // the letters of a justified word along with its whitespace.
+                     let expanded = expandedSpaces.contains(atomIndex)
+-                    if previousSource == atom.source, !spans.isEmpty, !expanded {
++                    var run = runStyles[atom.styleIndex]; run.text = atom.text
++                    let spanX = x
++                    var width = atom.width
++                    var positions: [Double]?
++                    x += atom.width; atomIndex += 1
++                    // Build one source run locally instead of repeatedly mutating
++                    // nested span storage. Keep each floating-point addition in
++                    // its original order, including the per-glyph pen positions.
++                    while !expanded && atomIndex < lineAtoms.count {
++                        let next = lineAtoms[atomIndex]
++                        guard !next.tab, next.source == atom.source,
++                              !expandedSpaces.contains(atomIndex) else { break }
+                         if nativePaint {
+-                            if spans[spans.count - 1].scalarPositions == nil {
+-                                spans[spans.count - 1].scalarPositions = [spans[spans.count - 1].x]
+-                            }
+-                            spans[spans.count - 1].scalarPositions?.append(x)
++                            if positions == nil { positions = [spanX] }
++                            positions?.append(x)
+                         }
+-                        spans[spans.count - 1].run.text += atom.text
+-                        spans[spans.count - 1].width += atom.width
+-                    } else {
+-                        var run = runStyles[atom.styleIndex]; run.text = atom.text
+-                        spans.append(RichTextSpan(run: run, x: x, width: atom.width,
+-                            followsPreviousRun: previousSource != nil && !expanded))
+-                    }
+-                    previousSource = expanded ? nil : atom.source; x += atom.width
++                        run.text += next.text
++                        width += next.width
++                        x += next.width; atomIndex += 1
++                    }
++                    var span = RichTextSpan(run: run, x: spanX, width: width,
++                        followsPreviousRun: previousSource != nil && !expanded)
++                    span.scalarPositions = positions
++                    spans.append(span)
++                    previousSource = expanded ? nil : atom.source
+                 }
+                 let trailingSpace = lineAtoms.reversed().prefix(while: { $0.text == " " }).reduce(0) { $0 + $1.width }
+                 overflowWidth = overflowWidth || lineWidth - trailingSpace > limit() + 0.01

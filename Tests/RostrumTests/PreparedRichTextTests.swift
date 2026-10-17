@@ -36,6 +36,42 @@ import Testing
         #expect(actual.diagnostics == expected.diagnostics)
     }
 
+    @Test func fragmentsRetainSourceFacesAcrossEmptyRunsTabsAndFreshRegistration() throws {
+        let library = FontLibrary()
+        try library.register(FontFaceTests.font(400, bold: false, italic: false), aliases: ["Alias"])
+        try library.register(FontFaceTests.font(700, bold: true, italic: false), aliases: ["Alias"])
+        let body = try XML.parse(Data("""
+        <p:txBody><a:bodyPr lIns="0" rIns="0" tIns="0" bIns="0"/>
+        <a:p><a:pPr><a:tabLst><a:tab pos="508000"/></a:tabLst>
+        <a:defRPr sz="1000"><a:latin typeface="Alias"/></a:defRPr></a:pPr>
+        <a:r><a:rPr b="1"/><a:t/></a:r><a:r><a:t>AB </a:t></a:r>
+        <a:r><a:t/></a:r><a:r><a:rPr b="1"/><a:t>CD\tEF\nG</a:t></a:r></a:p></p:txBody>
+        """.utf8))
+        for boldAdvance in [7.0, 6.0] {
+            if boldAdvance == 6 {
+                try library.register(FontFaceTests.font(600, bold: true, italic: false), aliases: ["Alias"])
+            }
+            for width in [100.0, 35] {
+                let expected = RichTextLayout(textBody: body, width: width, height: 100, fonts: library)
+                let prepared = RichTextLayout.Preparation(fragments: .init())
+                for trialWidth in [100.0, width, width] {
+                    let actual = RichTextLayout(textBody: body, width: trialWidth, height: 100,
+                        fonts: library, preparation: prepared)
+                    if trialWidth == width { equal(actual, expected) }
+                    if trialWidth == 100 {
+                        let first = try #require(actual.lines.first)
+                        #expect(first.spans.map(\.run.text) == ["AB ", "CD", "EF"])
+                        #expect(first.spans.map(\.x) == [0, 12, 40])
+                        #expect(first.spans.map(\.width) == [12, 2 * boldAdvance, 2 * boldAdvance])
+                        #expect(first.spans.map(\.run.bold) == [false, true, true])
+                        #expect(first.spans.map(\.followsPreviousRun) == [false, true, false])
+                        #expect(actual.lines.last?.spans.first?.width == boldAdvance)
+                    }
+                }
+            }
+        }
+    }
+
     @Test(arguments: ["mixed", "tabs", "breaks", "scripts", "empty", "invalid"])
     func reusePreservesGeometryAtEveryScaleAndWidth(sample: String) throws {
         let contents = [
