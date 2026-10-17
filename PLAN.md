@@ -219,6 +219,26 @@ and native Mac performance remain separate from these portable results.
 See [vertical-merge measurement](docs/TABLE-VERTICAL-SPANS-20261016.md) and
 [connected-row pagination](docs/TABLE-ROW-PAGINATION-20261016.md).
 
+## Typography and first-preview continuation (2026-10-16)
+
+- [x] Profile the opt-in shared-font transport on the supplied 28-slide corpus.
+  Repeated scans and large-key hashing dominate preparation; decoding is small.
+- [x] Use bounded word scanning and hash reuse with exact byte equality. Keep
+  resource budgets, changed-font checks and inline fallback intact.
+- [x] Compare Release preparation CPU, elapsed and process peak RSS across five
+  alternating pairs and retain adverse controls. Prepared SVGs/font resources
+  and exact reconstruction match; memory is essentially unchanged.
+- [x] Extend the exact caller-font pack with vertical/rectangular merged groups,
+  source/geometry evidence and independent saved-grid checks.
+- [ ] Run the paired native Mac transport comparison and measure WebKit helper
+  resources/actual first-visible-frame latency before claiming a product gain.
+- [ ] Review the extended pack in PowerPoint slide view and PDF/image export;
+  fix confirmed typography discrepancies against those exact bytes and fonts.
+
+The normal app remains on inline font loading. This Linux environment can
+prepare and test the candidate but cannot establish native visual acceptance.
+See [preparation measurements and native commands](docs/PREVIEW-PREPARATION-20261016.md).
+
 ## Subsequent scope
 
 These are known gaps, not promises that the first milestone implements them:

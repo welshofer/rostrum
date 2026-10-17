@@ -7,8 +7,10 @@ profiles: true 4:3 and 16:9 canvases, each with external and embedded fonts.
 
 Each profile includes inherited template text, tabs, soft breaks, a bullet,
 mixed regular/bold/italic faces and sizes, and 24 table rows with measured column
-widths, pagination and a repeated horizontally merged header. An optional
-bold-italic face adds another run. It does not cover vertical merges, arbitrary
+widths, pagination and a repeated horizontally merged header. A second 24-row
+table covers vertical and rectangular merges, including transitive connections
+that keep four source rows on the same page. All cells use the selected family.
+An optional bold-italic face adds another run. It does not cover arbitrary
 private templates, complex scripts, dynamic fields or native autofit equivalence.
 
 ## Run
@@ -60,7 +62,13 @@ notes, sections, inherited text and soft
 breaks, shape bounds, deterministic save, unchanged template parts, and identical
 SVGs/diagnostics before and after reopening. Portable text must fit and retain its
 line geometry; this does **not** prove native text fits inside its frame.
-SVG diagnostics remain visible even if checks pass.
+SVG diagnostics remain visible even if checks pass. Schema 2 of `report.json`
+retains the original plain-table `pages` and adds `mergedPages`. The separate
+`merged-source.json` and `merged-geometry.json` files retain exact source cells,
+merge rectangles and saved page geometry. Reopening independently fits each
+visible anchor inside the sum of its saved row heights and column widths, and
+checks caption clearance. The Python integration suite also verifies native
+merge topology through python-pptx.
 
 The top-level manifest records font, executable and artifact SHA-256 hashes,
 source revision/dirty status, toolchain, platform and caller-declared build mode.
@@ -139,7 +147,9 @@ For each first sample of each profile on a Mac:
    Record diagnostics and thumbnails separately from the library SVGs.
 3. Open the same bytes in PowerPoint for Mac, record its version, and review every
    slide in slide view. Capture letter spacing, wrapping, baselines, bullet
-   visibility, clipping, header merges, captions and page boundaries.
+   visibility, clipping, header/body merges, captions and page boundaries.
+   In the Merged tables section, each four-row group must remain intact; inspect
+   the two-row group label, bridging State cell and two-by-two summary cell.
 4. Export PDF or images and review them separately. Previous overlapping glyphs
    appeared only in slide view; a good PDF cannot approve the slide-view result.
 5. Record native evidence with the existing

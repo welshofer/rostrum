@@ -6,6 +6,16 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Shared-font preview preparation skips marker-free bytes in bounded word loads
+  and reuses exact-byte key hashes. Paired Linux Release probes preserve prepared
+  documents and font resources while reducing preparation CPU; normal app loading
+  remains inline until the native bitmap/timing comparison passes. See the
+  [measurement record](docs/PREVIEW-PREPARATION-20261016.md).
+- The caller-font fidelity pack now includes connected vertical/rectangular
+  merged tables, saved geometry, independent native-grid readback and Lectern
+  Inspect/export checks in every aspect/font-storage profile. This extends the
+  review corpus; PowerPoint visual acceptance remains pending.
+
 - Compose vertical and rectangular template-table merges and paginate connected
   body-row groups without splitting cells. Width search scores the same groups;
   oversized groups, vertical header merges and covered source text are refused
