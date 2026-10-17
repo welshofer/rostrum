@@ -115,14 +115,19 @@ extension TemplateLayoutEngine {
                       && a.slide.tableLayout?.columnWidths == b.slide.tableLayout?.columnWidths
                       && a.slide.tableLayout?.rowHeights == b.slide.tableLayout?.rowHeights
               }) else { throw LayoutError.cannotFit("The table pagination geometry changed. Plan again before composing.") }
+        // All freshly planned pages share one layout and object slot. Resolve its
+        // style once for this operation; never retain it across composition calls.
+        let source = current.pages[0].slide
+        let style = objectStyle(layout: source.layout, slot: source.objectSlot?.index)
         let prepared = try current.pages.map {
-            try prepare($0.slide, title: current.title, columns: [], measuredTable: $0.slide.tableLayout)
+            try prepare($0.slide, title: current.title, columns: [], measuredTable: $0.slide.tableLayout,
+                resolvedTableStyle: style)
         }
         return try zip(current.pages, prepared).map { page, prepared in
             let slide = try write(page.slide, prepared: prepared)
             if let frame = page.slide.captionFrame {
                 try slide.addText(current.caption, in: frame, role: .caption,
-                    style: objectStyle(layout: page.slide.layout, slot: page.slide.objectSlot?.index))
+                    style: style)
             }
             return slide
         }

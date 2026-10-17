@@ -2,6 +2,16 @@
 
 ## Latest reconciled measurements
 
+The [composition follow-up](TABLE-COMPOSITION-20261017.md) resolves the shared
+table/caption template style once per composition call, retaining all fresh
+validation. Seven paired Linux Release runs measure 6.99–9.72% lower composition
+CPU for distinct-text plain tables and 19.93% for repeated text, with all 264
+output artifacts and six Calibri review decks unchanged. Peak RSS is essentially
+unchanged. Whole-process gains are smaller; one-page controls retain 1.68%/0.44%
+process-CPU slowdowns. The earlier 4–5% slowdowns below did not reproduce
+consistently with the exact historical binaries; both records remain available.
+These results establish no native Mac or general startup improvement.
+
 The [multi-row header comparison](TABLE-REPEATED-HEADERS-20261016.md) preserves
 142 existing geometry/deck/SVG artifacts and reproduces 44 new artifacts. Existing
 Linux Release phase medians range from -3.1% to +4.6%; plain-table composition

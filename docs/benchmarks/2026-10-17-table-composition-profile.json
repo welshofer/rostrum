@@ -1,0 +1,702 @@
+{
+  "baseline": {
+    "binary_sha256": "82baef2f24250a960749eeefe5898475602196a3dcc3ef5cf483310c535ab4d9",
+    "cases": [
+      {
+        "labels": "distinct",
+        "profile": [
+          {
+            "calls": {
+              "caption": 4,
+              "clone": 4,
+              "context": 6,
+              "fresh_replan": 1,
+              "measure_text": 6,
+              "object_style": 11,
+              "prepare": 4,
+              "prototype": 1,
+              "set_contents": 4,
+              "write": 4
+            },
+            "cpu_ms": {
+              "caption": 0.5229860000000102,
+              "clone": 0.44965299999999075,
+              "context": 0.14386200000000215,
+              "fresh_replan": 7.352440000000001,
+              "measure_text": 0.24635199999999458,
+              "object_style": 0.9573439999999991,
+              "prepare": 0.7960700000000003,
+              "prototype": 0.270783999999999,
+              "set_contents": 0.19306899999999416,
+              "write": 0.8850970000000018
+            }
+          },
+          {
+            "calls": {
+              "caption": 4,
+              "clone": 4,
+              "context": 6,
+              "fresh_replan": 1,
+              "measure_text": 6,
+              "object_style": 11,
+              "prepare": 4,
+              "prototype": 1,
+              "set_contents": 4,
+              "write": 4
+            },
+            "cpu_ms": {
+              "caption": 0.4619120000000123,
+              "clone": 0.44212399999999974,
+              "context": 0.1572230000000019,
+              "fresh_replan": 6.418161999999995,
+              "measure_text": 0.23242000000001184,
+              "object_style": 0.8962780000000095,
+              "prepare": 0.7175399999999996,
+              "prototype": 0.24121500000000395,
+              "set_contents": 0.23707600000000184,
+              "write": 0.908245000000008
+            }
+          },
+          {
+            "calls": {
+              "caption": 4,
+              "clone": 4,
+              "context": 6,
+              "fresh_replan": 1,
+              "measure_text": 6,
+              "object_style": 11,
+              "prepare": 4,
+              "prototype": 1,
+              "set_contents": 4,
+              "write": 4
+            },
+            "cpu_ms": {
+              "caption": 0.4611239999999981,
+              "clone": 0.5134099999999933,
+              "context": 0.2117640000000165,
+              "fresh_replan": 6.469677000000004,
+              "measure_text": 0.24257299999999304,
+              "object_style": 0.8625640000000132,
+              "prepare": 0.880904000000001,
+              "prototype": 0.24308700000000272,
+              "set_contents": 0.16160800000000108,
+              "write": 0.90625
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "compose_cpu_ms": 10.836004000000003,
+            "compose_ms": 10.83360300026834,
+            "pages": 4,
+            "plan_cpu_ms": 9.169443000000001,
+            "plan_ms": 9.16644100099802,
+            "trial": 0
+          },
+          {
+            "compose_cpu_ms": 8.854185999999999,
+            "compose_ms": 8.853116000071168,
+            "pages": 4,
+            "plan_cpu_ms": 6.781496999999995,
+            "plan_ms": 6.779721999540925,
+            "trial": 1
+          },
+          {
+            "compose_cpu_ms": 9.072408999999993,
+            "compose_ms": 9.071368999779224,
+            "pages": 4,
+            "plan_cpu_ms": 6.838076999999998,
+            "plan_ms": 6.836125999689102,
+            "trial": 2
+          }
+        ]
+      },
+      {
+        "labels": "distinct",
+        "profile": [
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 337,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 20.865748999999596,
+              "clone": 22.18346799999938,
+              "context": 4.27272700000043,
+              "fresh_replan": 266.04248700000005,
+              "measure_text": 5.192061999999794,
+              "object_style": 27.67816900000122,
+              "prepare": 26.777604999999994,
+              "prototype": 6.287526000000014,
+              "set_contents": 7.300198999999907,
+              "write": 39.13522199999966
+            }
+          },
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 337,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 21.10608900000193,
+              "clone": 21.19865799999843,
+              "context": 4.066892000000166,
+              "fresh_replan": 252.6497300000001,
+              "measure_text": 5.046527999999057,
+              "object_style": 27.887821999998778,
+              "prepare": 26.08843400000046,
+              "prototype": 6.263501999999903,
+              "set_contents": 6.9262280000043575,
+              "write": 37.780564000003324
+            }
+          },
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 337,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 22.524528000002192,
+              "clone": 22.146350000005214,
+              "context": 3.8597729999999046,
+              "fresh_replan": 255.9494169999998,
+              "measure_text": 5.022850999999491,
+              "object_style": 27.457820999999285,
+              "prepare": 25.29719699999987,
+              "prototype": 6.7812370000001465,
+              "set_contents": 6.854810000001635,
+              "write": 39.10324300000252
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "compose_cpu_ms": 355.207335,
+            "compose_ms": 355.5976900011301,
+            "pages": 167,
+            "plan_cpu_ms": 260.099979,
+            "plan_ms": 260.3856120016426,
+            "trial": 0
+          },
+          {
+            "compose_cpu_ms": 338.80279899999994,
+            "compose_ms": 338.9962370004505,
+            "pages": 167,
+            "plan_cpu_ms": 261.0591079999999,
+            "plan_ms": 261.28407400101423,
+            "trial": 1
+          },
+          {
+            "compose_cpu_ms": 344.003232,
+            "compose_ms": 344.246855000034,
+            "pages": 167,
+            "plan_cpu_ms": 257.2675649999999,
+            "plan_ms": 257.49618799984455,
+            "trial": 2
+          }
+        ]
+      },
+      {
+        "labels": "repeated",
+        "profile": [
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 337,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 19.14850400000023,
+              "clone": 19.523274000000185,
+              "context": 4.928142000000136,
+              "fresh_replan": 78.382544,
+              "measure_text": 4.964733000000166,
+              "object_style": 26.19106599999978,
+              "prepare": 27.065505000000144,
+              "prototype": 6.765562000000003,
+              "set_contents": 6.522487000000126,
+              "write": 35.113477999999986
+            }
+          },
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 337,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 20.587568999999917,
+              "clone": 21.325711999999328,
+              "context": 5.497335000000021,
+              "fresh_replan": 79.49823799999996,
+              "measure_text": 5.403358000000026,
+              "object_style": 27.27711000000079,
+              "prepare": 28.960604000000444,
+              "prototype": 5.987948000000017,
+              "set_contents": 7.006805000000668,
+              "write": 38.12946099999965
+            }
+          },
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 337,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 20.399985999999558,
+              "clone": 22.036030000000096,
+              "context": 4.903116000000182,
+              "fresh_replan": 76.58109000000002,
+              "measure_text": 5.411551999999006,
+              "object_style": 26.87202599999921,
+              "prepare": 27.237781999999925,
+              "prototype": 6.749239999999986,
+              "set_contents": 6.67533099999946,
+              "write": 38.50243100000034
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "compose_cpu_ms": 161.81951300000003,
+            "compose_ms": 161.8156599998474,
+            "pages": 167,
+            "plan_cpu_ms": 84.889446,
+            "plan_ms": 84.88530000112951,
+            "trial": 0
+          },
+          {
+            "compose_cpu_ms": 168.29429500000003,
+            "compose_ms": 168.31040599942207,
+            "pages": 167,
+            "plan_cpu_ms": 73.69377300000002,
+            "plan_ms": 73.68922599963844,
+            "trial": 1
+          },
+          {
+            "compose_cpu_ms": 163.9144,
+            "compose_ms": 163.91141599975526,
+            "pages": 167,
+            "plan_cpu_ms": 76.36964699999999,
+            "plan_ms": 76.36443999968469,
+            "trial": 2
+          }
+        ]
+      }
+    ],
+    "checkout_commit": "097733b90d0cad61d8246ce5ffe2dbf58d6250b3",
+    "source_dirty": false,
+    "source_hashes": {
+      "Sources/RostrumLayout/AuthoredLayoutEngine.swift": "7d2eb25eb12ad2e8321179acb92fa0cf8647a01f7163f186c64ac3a353f2da5d",
+      "Sources/RostrumLayout/MeasuredPaginator.swift": "df682b359da8ef38d6a1eeefbe70f98e1cb2077f6002efc2799fd283669582d9",
+      "Sources/RostrumLayout/StructuredLayout.swift": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850",
+      "Sources/RostrumLayout/TableCellPreparation.swift": "ad1c50cd7efbe97a600abbf9677b8af3f462fa20afb968bbc44229b2c51de53b",
+      "Sources/RostrumLayout/TableColumnSizing.swift": "d2050969dca61518d8690d7796c56984a1dec85e191b9e3d39608f6f7e938adc",
+      "Sources/RostrumLayout/TableLayoutEngine.swift": "a0bb5085edef04cc7a2e3f9defca433813b0639d55ff7dc6df3e7e0696ff318e",
+      "Sources/RostrumLayout/TableRowGroups.swift": "6b9156bd9c4677e9facacb9a79808a44f4eb4c7a5087884e3c95450f52f335b0",
+      "Sources/RostrumLayout/TemplateLayoutEngine.swift": "5d69e77acdb8c523a59addf2bd9b0a103a1cf5bcd43e1d0d7555cb066bd103ba",
+      "Sources/RostrumLayout/TemplateTableContent.swift": "f1a2b70c7cf60604f6a9598845d17af15d59ebd69d28bbe16d6a0212b87b8ac4",
+      "Sources/RostrumLayout/TemplateTablePagination.swift": "5fa6f13ac0a97fbd428f52ea22c57e7de06986f05d7f8e69a548dc2d8abf0e7a",
+      "Sources/RostrumLayout/TemplateTextContext.swift": "ee97e7e7816bfd594d2b70b7a67bbe48f331379a5332db5d3062f3ec464cfdb3"
+    }
+  },
+  "candidate": {
+    "binary_sha256": "d2c9da7a96cbcf331084cfd6f3df73b11aea7e2f5c9119467ea60fa071445f46",
+    "cases": [
+      {
+        "labels": "distinct",
+        "profile": [
+          {
+            "calls": {
+              "caption": 4,
+              "clone": 4,
+              "context": 6,
+              "fresh_replan": 1,
+              "measure_text": 6,
+              "object_style": 4,
+              "prepare": 4,
+              "prototype": 1,
+              "set_contents": 4,
+              "write": 4
+            },
+            "cpu_ms": {
+              "caption": 0.15545600000000093,
+              "clone": 0.752952999999998,
+              "context": 0.12411300000001191,
+              "fresh_replan": 6.810834999999997,
+              "measure_text": 0.2684880000000014,
+              "object_style": 0.5168900000000001,
+              "prepare": 0.3668169999999975,
+              "prototype": 0.22798299999999827,
+              "set_contents": 0.1631850000000057,
+              "write": 1.1608039999999988
+            }
+          },
+          {
+            "calls": {
+              "caption": 4,
+              "clone": 4,
+              "context": 6,
+              "fresh_replan": 1,
+              "measure_text": 6,
+              "object_style": 4,
+              "prepare": 4,
+              "prototype": 1,
+              "set_contents": 4,
+              "write": 4
+            },
+            "cpu_ms": {
+              "caption": 0.19757800000000003,
+              "clone": 0.6375400000000013,
+              "context": 0.12822599999999795,
+              "fresh_replan": 6.870282000000003,
+              "measure_text": 0.2716209999999961,
+              "object_style": 0.3536089999999916,
+              "prepare": 0.35284599999999955,
+              "prototype": 0.2241029999999995,
+              "set_contents": 0.16357500000000158,
+              "write": 1.0955089999999998
+            }
+          },
+          {
+            "calls": {
+              "caption": 4,
+              "clone": 4,
+              "context": 6,
+              "fresh_replan": 1,
+              "measure_text": 6,
+              "object_style": 4,
+              "prepare": 4,
+              "prototype": 1,
+              "set_contents": 4,
+              "write": 4
+            },
+            "cpu_ms": {
+              "caption": 0.14704500000000564,
+              "clone": 0.5009969999999981,
+              "context": 0.12256300000001374,
+              "fresh_replan": 6.736627000000013,
+              "measure_text": 0.22401400000001104,
+              "object_style": 0.3650339999999943,
+              "prepare": 0.3137959999999964,
+              "prototype": 0.22460399999999936,
+              "set_contents": 0.19058499999999867,
+              "write": 0.9853080000000176
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "compose_cpu_ms": 10.282402000000001,
+            "compose_ms": 10.280104000121355,
+            "pages": 4,
+            "plan_cpu_ms": 8.548706,
+            "plan_ms": 8.544711999595165,
+            "trial": 0
+          },
+          {
+            "compose_cpu_ms": 8.931534999999997,
+            "compose_ms": 8.930715998634696,
+            "pages": 4,
+            "plan_cpu_ms": 8.525569999999995,
+            "plan_ms": 8.52287800051272,
+            "trial": 1
+          },
+          {
+            "compose_cpu_ms": 8.568703999999997,
+            "compose_ms": 8.567782999947667,
+            "pages": 4,
+            "plan_cpu_ms": 6.861024999999998,
+            "plan_ms": 6.859740000218153,
+            "trial": 2
+          }
+        ]
+      },
+      {
+        "labels": "distinct",
+        "profile": [
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 4,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 6.977583000001346,
+              "clone": 20.764677000001257,
+              "context": 3.9992670000000885,
+              "fresh_replan": 254.74385899999993,
+              "measure_text": 4.499356000000603,
+              "object_style": 0.4186419999999771,
+              "prepare": 12.471077000000719,
+              "prototype": 6.448787999999979,
+              "set_contents": 6.9422820000003185,
+              "write": 37.09344399999941
+            }
+          },
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 4,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 6.053191000001561,
+              "clone": 20.47322500000041,
+              "context": 3.723662000000104,
+              "fresh_replan": 250.690919,
+              "measure_text": 4.438040000002047,
+              "object_style": 0.42531400000018493,
+              "prepare": 12.067448999998533,
+              "prototype": 6.3105860000000575,
+              "set_contents": 6.743540000000621,
+              "write": 36.743237999999565
+            }
+          },
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 4,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 6.930515999998761,
+              "clone": 27.269756999998435,
+              "context": 4.263577000000623,
+              "fresh_replan": 256.5615550000002,
+              "measure_text": 5.14375500000142,
+              "object_style": 0.42346900000006826,
+              "prepare": 14.010338999999021,
+              "prototype": 7.5886699999998655,
+              "set_contents": 9.592406999998275,
+              "write": 48.60635300000126
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "compose_cpu_ms": 313.67060299999997,
+            "compose_ms": 313.6741560008377,
+            "pages": 167,
+            "plan_cpu_ms": 262.89621900000003,
+            "plan_ms": 262.8951350003481,
+            "trial": 0
+          },
+          {
+            "compose_cpu_ms": 307.12870099999986,
+            "compose_ms": 307.1247910000384,
+            "pages": 167,
+            "plan_cpu_ms": 256.76554999999996,
+            "plan_ms": 256.7649680003524,
+            "trial": 1
+          },
+          {
+            "compose_cpu_ms": 327.53235599999994,
+            "compose_ms": 327.54255499877036,
+            "pages": 167,
+            "plan_cpu_ms": 256.48534599999994,
+            "plan_ms": 256.49238799884915,
+            "trial": 2
+          }
+        ]
+      },
+      {
+        "labels": "repeated",
+        "profile": [
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 4,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 7.3275810000000945,
+              "clone": 21.96705899999992,
+              "context": 4.780680999999902,
+              "fresh_replan": 76.600526,
+              "measure_text": 5.529569000000038,
+              "object_style": 0.4085139999999967,
+              "prepare": 14.881490999999926,
+              "prototype": 6.665791999999996,
+              "set_contents": 7.822630999999802,
+              "write": 40.6040339999999
+            }
+          },
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 4,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 6.57169899999991,
+              "clone": 20.836967999999786,
+              "context": 4.106199999999831,
+              "fresh_replan": 72.90553599999998,
+              "measure_text": 4.8859529999998585,
+              "object_style": 0.4062749999999937,
+              "prepare": 13.134392999999363,
+              "prototype": 6.14697799999999,
+              "set_contents": 7.39751299999989,
+              "write": 38.31665899999979
+            }
+          },
+          {
+            "calls": {
+              "caption": 167,
+              "clone": 167,
+              "context": 169,
+              "fresh_replan": 1,
+              "measure_text": 169,
+              "object_style": 4,
+              "prepare": 167,
+              "prototype": 1,
+              "set_contents": 167,
+              "write": 167
+            },
+            "cpu_ms": {
+              "caption": 5.8838909999989255,
+              "clone": 21.060405999999944,
+              "context": 3.893965000000776,
+              "fresh_replan": 72.25189599999999,
+              "measure_text": 4.435424999999896,
+              "object_style": 0.36378499999989344,
+              "prepare": 12.272973000000889,
+              "prototype": 6.558215000000018,
+              "set_contents": 6.812523000000169,
+              "write": 36.93931699999939
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "compose_cpu_ms": 142.069336,
+            "compose_ms": 142.06612600013614,
+            "pages": 167,
+            "plan_cpu_ms": 83.807817,
+            "plan_ms": 83.8034940008074,
+            "trial": 0
+          },
+          {
+            "compose_cpu_ms": 132.168631,
+            "compose_ms": 132.1664710007608,
+            "pages": 167,
+            "plan_cpu_ms": 74.81410799999998,
+            "plan_ms": 74.80905199982226,
+            "trial": 1
+          },
+          {
+            "compose_cpu_ms": 128.64144399999998,
+            "compose_ms": 128.64835200086236,
+            "pages": 167,
+            "plan_cpu_ms": 75.43587799999995,
+            "plan_ms": 75.43199500069022,
+            "trial": 2
+          }
+        ]
+      }
+    ],
+    "checkout_commit": "097733b90d0cad61d8246ce5ffe2dbf58d6250b3",
+    "source_dirty": true,
+    "source_hashes": {
+      "Sources/RostrumLayout/AuthoredLayoutEngine.swift": "7d2eb25eb12ad2e8321179acb92fa0cf8647a01f7163f186c64ac3a353f2da5d",
+      "Sources/RostrumLayout/MeasuredPaginator.swift": "df682b359da8ef38d6a1eeefbe70f98e1cb2077f6002efc2799fd283669582d9",
+      "Sources/RostrumLayout/StructuredLayout.swift": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850",
+      "Sources/RostrumLayout/TableCellPreparation.swift": "ad1c50cd7efbe97a600abbf9677b8af3f462fa20afb968bbc44229b2c51de53b",
+      "Sources/RostrumLayout/TableColumnSizing.swift": "d2050969dca61518d8690d7796c56984a1dec85e191b9e3d39608f6f7e938adc",
+      "Sources/RostrumLayout/TableLayoutEngine.swift": "a0bb5085edef04cc7a2e3f9defca433813b0639d55ff7dc6df3e7e0696ff318e",
+      "Sources/RostrumLayout/TableRowGroups.swift": "6b9156bd9c4677e9facacb9a79808a44f4eb4c7a5087884e3c95450f52f335b0",
+      "Sources/RostrumLayout/TemplateLayoutEngine.swift": "8299d85224f88062517d1f8e3995491e177b99d713f7a9156423df948ca602ba",
+      "Sources/RostrumLayout/TemplateTableContent.swift": "f1a2b70c7cf60604f6a9598845d17af15d59ebd69d28bbe16d6a0212b87b8ac4",
+      "Sources/RostrumLayout/TemplateTablePagination.swift": "ba1d90dcd42bf42f3bb9e071ac47e70f2a2ee6faadacffa1c3dfe41d4cf35e49",
+      "Sources/RostrumLayout/TemplateTextContext.swift": "ee97e7e7816bfd594d2b70b7a67bbe48f331379a5332db5d3062f3ec464cfdb3"
+    }
+  }
+}

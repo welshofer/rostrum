@@ -340,7 +340,7 @@ public final class TemplateLayoutEngine {
     // Pagination prepares every page before inserting any slides. Its table
     // geometry was freshly measured as one complete operation.
     func prepare(_ plan: TemplateSlidePlan, title: String, columns: [[LayoutParagraph]],
-                 measuredTable: TableLayoutPlan? = nil) throws -> PreparedSlide {
+                 measuredTable: TableLayoutPlan? = nil, resolvedTableStyle: DeckStyle? = nil) throws -> PreparedSlide {
         textContexts.removeAll(keepingCapacity: true)
         defer { textContexts.removeAll(keepingCapacity: true) }
         guard plan.combinesTitleAndBody ? columns.count <= 1 : columns.count == plan.textSlots.count else {
@@ -366,7 +366,9 @@ public final class TemplateLayoutEngine {
             prepared.append((index, body))
         }
         var tableLayout: TableLayoutPlan?
-        let tableStyle = plan.tableContent.map { _ in objectStyle(layout: plan.layout, slot: plan.objectSlot?.index) }
+        let tableStyle = plan.tableContent.map { _ in
+            resolvedTableStyle ?? objectStyle(layout: plan.layout, slot: plan.objectSlot?.index)
+        }
         if let table = plan.tableContent, let tableStyle {
             guard let frame = plan.objectFrame, valid(frame), let slot = plan.objectSlot,
                   plan.layout.placeholders.first(where: { $0.index == slot.index })?.frame == slot.frame else {

@@ -267,6 +267,22 @@ this message. The broader native evidence checklist above remains open where it
 requires those details. This acceptance covers the delivered connected-body-merge
 cases; it does not extend to new multi-row headers, chart repair or WebKit transport.
 
+## Composition performance follow-up (2026-10-17)
+
+- [x] Recheck the earlier 4–5% table-composition slowdowns with ten alternating
+  pairs of the exact retained Release binaries. The magnitudes did not reproduce
+  consistently; retain all results rather than attributing a fixed regression.
+- [x] Profile composition phases. Repeated template-style resolution accounts
+  for about 27 ms and 337 calls on a 167-page table.
+- [x] Resolve that immutable style once per composition operation, retaining
+  fresh replanning, per-page title checks and current font/style validation.
+- [x] Require exact output preservation and measure CPU, elapsed and peak RSS.
+  All 264 artifacts match across 16 controls; retain all 70 alternating pairs.
+- [x] Complete the full local portable gate. Apple CI remains a required
+  pre-merge check; native app-hosted execution and Mac timings are separate.
+
+See the [composition measurement record](docs/TABLE-COMPOSITION-20261017.md).
+
 ## Subsequent scope
 
 These are known gaps, not promises that the first milestone implements them:
