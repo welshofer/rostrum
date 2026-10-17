@@ -1,0 +1,2677 @@
+{
+  "baseline": {
+    "cases": [
+      {
+        "kind": "plain",
+        "labels": "distinct",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "face": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 1.291152000000018,
+              "emit": 1.2193240000000323,
+              "face": 0.12660300000000646,
+              "fragment": 0.20253699999998886,
+              "input": 0.9568030000000007,
+              "layout": 5.330249000000013,
+              "shape": 0.4560899999999073,
+              "wrap": 1.51312800000008
+            }
+          },
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "face": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 0.8876109999999571,
+              "emit": 1.0429899999999819,
+              "face": 0.14013300000006268,
+              "fragment": 0.17701500000001857,
+              "input": 0.6444370000000532,
+              "layout": 3.9753809999999348,
+              "shape": 0.37814300000000856,
+              "wrap": 1.3277580000000242
+            }
+          },
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "face": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 1.361276999999994,
+              "emit": 1.2108239999999384,
+              "face": 0.12516500000001685,
+              "fragment": 0.23608700000000482,
+              "input": 0.8830499999999901,
+              "layout": 4.915087000000042,
+              "shape": 0.8187689999999677,
+              "wrap": 1.5161410000000544
+            }
+          },
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "face": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 1.018557999999956,
+              "emit": 1.2641260000000187,
+              "face": 0.14688800000003255,
+              "fragment": 0.26174499999996925,
+              "input": 0.683799000000036,
+              "layout": 4.790310999999988,
+              "shape": 0.43789300000004516,
+              "wrap": 1.6040459999999612
+            }
+          },
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "face": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 0.9388420000001503,
+              "emit": 1.3466550000000197,
+              "face": 0.2863299999998077,
+              "fragment": 0.17976099999997075,
+              "input": 0.7245459999999255,
+              "layout": 4.781160000000085,
+              "shape": 0.39205899999998906,
+              "wrap": 1.635970999999941
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "pages": 4,
+            "plan_cpu_ms": 10.339020999999999,
+            "plan_ms": 10.336722999811172,
+            "trial": 0
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 7.676102999999998,
+            "plan_ms": 7.674820996820927,
+            "trial": 1
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.943297999999999,
+            "plan_ms": 8.942552000284195,
+            "trial": 2
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 9.194553999999997,
+            "plan_ms": 9.192994005978107,
+            "trial": 3
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.828996000000004,
+            "plan_ms": 8.828337997198105,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "plain",
+        "labels": "distinct",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "face": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 28.29666300000066,
+              "emit": 33.22249899999922,
+              "face": 4.707983999997833,
+              "fragment": 4.119391000000036,
+              "input": 25.798605000000343,
+              "layout": 133.07336700000002,
+              "shape": 11.956031999999738,
+              "wrap": 41.56269899999929
+            }
+          },
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "face": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 27.789910000003317,
+              "emit": 30.511252000003594,
+              "face": 4.237309999997763,
+              "fragment": 4.320483999998885,
+              "input": 23.857180000002472,
+              "layout": 127.56900499999483,
+              "shape": 12.00138700000332,
+              "wrap": 39.01744099999809
+            }
+          },
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "face": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 31.390296000003673,
+              "emit": 32.984779999997045,
+              "face": 4.754388999995626,
+              "fragment": 4.25473199999692,
+              "input": 27.95190200000127,
+              "layout": 147.1388549999973,
+              "shape": 14.308255999993776,
+              "wrap": 43.802284999997596
+            }
+          },
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "face": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 27.84156999999152,
+              "emit": 32.9263119999963,
+              "face": 4.502717999995525,
+              "fragment": 4.743286999999896,
+              "input": 30.362368000013134,
+              "layout": 138.4568630000157,
+              "shape": 11.98948100001087,
+              "wrap": 41.41515299997377
+            }
+          },
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "face": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 29.626071999990927,
+              "emit": 31.9835830000045,
+              "face": 4.683101999994506,
+              "fragment": 4.378405999998449,
+              "input": 29.624461000003294,
+              "layout": 139.1278049999969,
+              "shape": 11.854106999996475,
+              "wrap": 40.48667899998577
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 315.17873999999995,
+            "plan_ms": 315.1719249933958,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 305.50492799999995,
+            "plan_ms": 305.51486100256443,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 340.66053999999997,
+            "plan_ms": 340.6981189996004,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 353.74331899999993,
+            "plan_ms": 353.7486369982362,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 330.737572,
+            "plan_ms": 330.75213199853897,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "plain",
+        "labels": "repeated",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "face": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.6589470000000013,
+              "emit": 0.5509480000000231,
+              "face": 0.042652000000011014,
+              "fragment": 0.13725899999997537,
+              "input": 0.30890300000004345,
+              "layout": 2.18772400000001,
+              "shape": 0.27700100000002337,
+              "wrap": 0.7130240000000398
+            }
+          },
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "face": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.588419000000016,
+              "emit": 0.5046329999998562,
+              "face": 0.06028600000006179,
+              "fragment": 0.11165600000005327,
+              "input": 0.3224599999999782,
+              "layout": 2.0042299999998505,
+              "shape": 0.33255600000002516,
+              "wrap": 0.6695669999999865
+            }
+          },
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "face": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.6240739999999789,
+              "emit": 0.5058810000001586,
+              "face": 0.04060099999998101,
+              "fragment": 0.13142199999998638,
+              "input": 0.28309599999971624,
+              "layout": 1.9648270000001276,
+              "shape": 0.33745799999999804,
+              "wrap": 0.6507560000001718
+            }
+          },
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "face": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.4873259999999391,
+              "emit": 0.560817000000327,
+              "face": 0.0427770000000578,
+              "fragment": 0.11282300000016221,
+              "input": 0.23704699999990453,
+              "layout": 1.911545999999987,
+              "shape": 0.2203260000001137,
+              "wrap": 0.7267920000000458
+            }
+          },
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "face": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.47903000000002294,
+              "emit": 0.8439910000002442,
+              "face": 0.04297500000012633,
+              "fragment": 0.10950199999996357,
+              "input": 0.2299569999997857,
+              "layout": 2.4441100000000233,
+              "shape": 0.21533700000020417,
+              "wrap": 0.9911809999998127
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 84.59931,
+            "plan_ms": 84.59547800570726,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 79.797996,
+            "plan_ms": 79.7938750013709,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 84.52740399999999,
+            "plan_ms": 84.52332600206137,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 97.24884700000001,
+            "plan_ms": 97.2445269972086,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 84.87656000000004,
+            "plan_ms": 84.87271600216627,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "labels": "distinct",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "face": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 4.820284999999949,
+              "emit": 5.713643000000008,
+              "face": 0.576094000000186,
+              "fragment": 0.9276400000000073,
+              "input": 1.2447919999998902,
+              "layout": 16.81509000000002,
+              "shape": 1.9199709999997978,
+              "wrap": 8.006952999999928
+            }
+          },
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "face": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 5.043974999999811,
+              "emit": 5.114907000000272,
+              "face": 0.5373139999999665,
+              "fragment": 0.5407410000000397,
+              "input": 0.8851470000000035,
+              "layout": 16.072631999999928,
+              "shape": 1.836689999999976,
+              "wrap": 7.3928930000000435
+            }
+          },
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "face": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 4.9834630000001425,
+              "emit": 5.0906790000001365,
+              "face": 0.4332870000000497,
+              "fragment": 0.674062999999947,
+              "input": 0.8598259999996429,
+              "layout": 16.298454000000035,
+              "shape": 2.041728000000006,
+              "wrap": 7.2525300000000925
+            }
+          },
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "face": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 4.562016999999727,
+              "emit": 5.2637009999999265,
+              "face": 0.4347920000000016,
+              "fragment": 0.5155659999999784,
+              "input": 1.3056770000001308,
+              "layout": 16.889582000000075,
+              "shape": 1.8389699999999607,
+              "wrap": 7.497896999999966
+            }
+          },
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "face": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 4.9746649999997175,
+              "emit": 5.548378,
+              "face": 0.5624319999998733,
+              "fragment": 0.6190930000000208,
+              "input": 1.0282840000000277,
+              "layout": 17.827606999999745,
+              "shape": 1.942570000000103,
+              "wrap": 7.923491000000212
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "pages": 4,
+            "plan_cpu_ms": 23.199239,
+            "plan_ms": 23.19759600609541,
+            "trial": 0
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 20.772665999999994,
+            "plan_ms": 20.770948000252247,
+            "trial": 1
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 20.758252,
+            "plan_ms": 20.8812799975276,
+            "trial": 2
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 21.23407999999999,
+            "plan_ms": 21.240866996347904,
+            "trial": 3
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 23.537836000000013,
+            "plan_ms": 23.537151001393795,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "labels": "distinct",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "face": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 190.0552420000041,
+              "emit": 216.04372500000144,
+              "face": 20.614254999990294,
+              "fragment": 24.64106200000039,
+              "input": 39.062391000005896,
+              "layout": 641.9743529999907,
+              "shape": 75.17189599999355,
+              "wrap": 305.2261840000009
+            }
+          },
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "face": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 233.50239800003123,
+              "emit": 312.2019679999821,
+              "face": 70.07858199999941,
+              "fragment": 47.39855399999851,
+              "input": 217.5147899999896,
+              "layout": 1028.182318000006,
+              "shape": 94.99083099997131,
+              "wrap": 433.663641000005
+            }
+          },
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "face": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 216.87131199998475,
+              "emit": 241.45738299998902,
+              "face": 25.513892999924337,
+              "fragment": 25.70598600000858,
+              "input": 42.46408100000053,
+              "layout": 719.0084140000035,
+              "shape": 82.87322999997423,
+              "wrap": 336.59727399998883
+            }
+          },
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "face": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 220.42030399999703,
+              "emit": 362.90085199997475,
+              "face": 20.893695000016578,
+              "fragment": 48.388489999993,
+              "input": 47.22285499996815,
+              "layout": 848.3865550000096,
+              "shape": 99.40726600004791,
+              "wrap": 450.1750730000026
+            }
+          },
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "face": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 227.1929109999055,
+              "emit": 239.24542399989969,
+              "face": 20.387680999989243,
+              "fragment": 32.65086899995367,
+              "input": 39.41533600010371,
+              "layout": 724.1235469999765,
+              "shape": 104.27611399996385,
+              "wrap": 334.8738679999651
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 864.656293,
+            "plan_ms": 864.6753320023417,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 1317.433821,
+            "plan_ms": 1318.369861997664,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 933.47307,
+            "plan_ms": 933.6449270024896,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 1054.785891,
+            "plan_ms": 1054.8405230045319,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 928.8138739999995,
+            "plan_ms": 928.8597630038857,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "labels": "repeated",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "face": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.5482260000001062,
+              "emit": 1.1802840000000572,
+              "face": 0.10702100000015946,
+              "fragment": 0.21500100000000089,
+              "input": 0.3786369999998911,
+              "layout": 4.596748000000083,
+              "shape": 0.5612040000000462,
+              "wrap": 1.864491999999835
+            }
+          },
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "face": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.510686000000078,
+              "emit": 1.4064200000000255,
+              "face": 0.3091299999999819,
+              "fragment": 0.20144000000010465,
+              "input": 0.25949100000013914,
+              "layout": 4.468671999999913,
+              "shape": 0.8087139999997817,
+              "wrap": 1.8504530000001296
+            }
+          },
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "face": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.0187010000000498,
+              "emit": 1.8439979999999423,
+              "face": 0.0894279999999128,
+              "fragment": 0.19968799999989528,
+              "input": 0.2636349999999652,
+              "layout": 4.221776999999975,
+              "shape": 0.4276970000000233,
+              "wrap": 2.2278300000000115
+            }
+          },
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "face": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.1129479999999603,
+              "emit": 1.2177390000000514,
+              "face": 0.08797699999968245,
+              "fragment": 0.199478000000056,
+              "input": 0.25851299999987987,
+              "layout": 4.175223000000017,
+              "shape": 0.48654899999996815,
+              "wrap": 1.928811999999823
+            }
+          },
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "face": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.1368600000001834,
+              "emit": 1.1514299999998343,
+              "face": 0.08499800000021196,
+              "fragment": 0.2596520000000737,
+              "input": 0.34775199999990036,
+              "layout": 3.8386850000002255,
+              "shape": 0.42037400000009484,
+              "wrap": 1.6520459999995296
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 117.37427400000001,
+            "plan_ms": 117.36937899887562,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 89.875279,
+            "plan_ms": 89.901955999434,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 87.35334900000004,
+            "plan_ms": 87.35057400166988,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 90.54004700000002,
+            "plan_ms": 90.59270200133324,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 90.78832399999999,
+            "plan_ms": 90.7839860022068,
+            "trial": 4
+          }
+        ]
+      }
+    ],
+    "commit": "91fcb55ceaca41c702a906d6ea7d9764c6343a69",
+    "plain_binary_sha256": "fa3be8f9ec80304c9d17a64e7e14710ca6cae4129a5767104f44de8ef04bdc0b",
+    "source_hashes": [
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheRepair.swift",
+        "sha256": "29ea3b40edb93f89c85d7eb52dd9e6fa22b5e2c2a5ec73a213cfadec6af2d193"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheWorkbook.swift",
+        "sha256": "485694a3d4f367c459254b9471e0354542425a95be99ccda293086317dc0531a"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartData.swift",
+        "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartReader.swift",
+        "sha256": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartSeriesEditing.swift",
+        "sha256": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbook.swift",
+        "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbookReader.swift",
+        "sha256": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartXML.swift",
+        "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/Charts.swift",
+        "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ComboChartData.swift",
+        "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+      },
+      {
+        "path": "Sources/Rostrum/Core/RostrumError.swift",
+        "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+      },
+      {
+        "path": "Sources/Rostrum/Core/Units.swift",
+        "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ColorMath.swift",
+        "sha256": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Drawing.swift",
+        "sha256": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/DrawingColor.swift",
+        "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Geometry.swift",
+        "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/GradientStops.swift",
+        "sha256": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ImageSniffer.swift",
+        "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicJoining.swift",
+        "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicLayoutTables.swift",
+        "sha256": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicTextShaper.swift",
+        "sha256": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontFaceKey.swift",
+        "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLayoutTables.swift",
+        "sha256": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLibrary.swift",
+        "sha256": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontMetrics.swift",
+        "sha256": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/MarkPositioning.swift",
+        "sha256": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/PreparedFont.swift",
+        "sha256": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ShapedGlyphRun.swift",
+        "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextMeasurer.swift",
+        "sha256": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextShaper.swift",
+        "sha256": "06462c96d3d0ef883ad46d4b4c44ffa9f05be7f2c0ebdda3f6be225146d1306a"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/ContentTypes.swift",
+        "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCArchive.swift",
+        "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCPackage.swift",
+        "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/PackURI.swift",
+        "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/Relationships.swift",
+        "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationDependencies.swift",
+        "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationImport.swift",
+        "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BackgroundResolver.swift",
+        "sha256": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BuiltInTableStyle.swift",
+        "sha256": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/CommentEditing.swift",
+        "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Comments.swift",
+        "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Components.swift",
+        "sha256": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckExport.swift",
+        "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckMerge.swift",
+        "sha256": "a469986af885706217489bb0cf105bcb2802acce16c0c736f8db93e17876f4bc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckOutline.swift",
+        "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckStyle.swift",
+        "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Design.swift",
+        "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DocumentProperties.swift",
+        "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/EmbeddedFontImport.swift",
+        "sha256": "f1f6035482326237e58bc14c7ee96666cfe382257df4e0ef5c1fa9a6da8152e6"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbedding.swift",
+        "sha256": "1bdf5c1b286e615c3aff8090163cfc4cda58fe82b67f8264627550afb05026bd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbeddingPlan.swift",
+        "sha256": "7e07c1493a81947400ab0a0d91edce2624eda09b7b567a64b57c6ba9a57f5df0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/HeadersFooters.swift",
+        "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ImageFill.swift",
+        "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Layouts.swift",
+        "sha256": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift",
+        "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyComments.swift",
+        "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Media.swift",
+        "sha256": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/MinimalTemplate.swift",
+        "sha256": "d11d5c5310f1614a66521f6ede0d28cd5239cec1311dfe346345661f8bc06eed"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Notes.swift",
+        "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesImportGeometry.swift",
+        "sha256": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageRenderer.swift",
+        "sha256": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageTemplate.swift",
+        "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/OutlineImageFills.swift",
+        "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PictureCrop.swift",
+        "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Pictures.swift",
+        "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Presentation.swift",
+        "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PublishedLayouts.swift",
+        "sha256": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderDiagnostics.swift",
+        "sha256": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderImageResources.swift",
+        "sha256": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderTextAttributes.swift",
+        "sha256": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+        "sha256": "769151dacb524985bb86825c64aed33dee97d5fb2685a9822213cf0ab4934527"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextPreparation.swift",
+        "sha256": "a566c575a7a2754323288a634740b19d026a7a540dcf3078cb9922918574f1a3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGCustomGeometry.swift",
+        "sha256": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift",
+        "sha256": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGImagePlacement.swift",
+        "sha256": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPaint.swift",
+        "sha256": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPresetGeometry.swift",
+        "sha256": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+        "sha256": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRichText.swift",
+        "sha256": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGShadow.swift",
+        "sha256": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Sections.swift",
+        "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeAppearance.swift",
+        "sha256": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeKind.swift",
+        "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTransform.swift",
+        "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTypes.swift",
+        "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Shapes.swift",
+        "sha256": "c319d1ee4a1f0afe4df7fba7149c063899be996daff2133effa66353ff1311d3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slide.swift",
+        "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideAnnotations.swift",
+        "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideBuilders.swift",
+        "sha256": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideMasters.swift",
+        "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slides.swift",
+        "sha256": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SmartArt.swift",
+        "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+        "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderSegments.swift",
+        "sha256": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableCellFormatting.swift",
+        "sha256": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableDoubleBorder.swift",
+        "sha256": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableEditing.swift",
+        "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableGridSnapshot.swift",
+        "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableLayoutSource.swift",
+        "sha256": "1919ed9e96badc1e35d8ae91606151c52fcdf85d3116830748746fcf8b9b0d5a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleImport.swift",
+        "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+        "sha256": "9c24b8814c05984b1167061560d2de630f72c2de29a9d93f9b51b8475e84ad56"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyling.swift",
+        "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Tables.swift",
+        "sha256": "98b29d0b1a5ea29ba01e48d40f87ea4f47800383a52cda42fc93471bd109a801"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+        "sha256": "7aa27bb6775926aa1c646433315a0fbfa47bcd384b4b8c964654a789ab744f09"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Text.swift",
+        "sha256": "db17e2ad61df9e9d9180d4cb2301da41e551a6162e33881d35236933b2c06169"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Theme.swift",
+        "sha256": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Validation.swift",
+        "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/GeneratedSchema.swift",
+        "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/OXMLHelpers.swift",
+        "sha256": "f30ef480475252569a33f345fc004238e8e38863610c9c5ee886725402d23050"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/PresetGeometry.swift",
+        "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+      },
+      {
+        "path": "Sources/Rostrum/XML/XML.swift",
+        "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/CRC32.swift",
+        "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Deflate.swift",
+        "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Inflate.swift",
+        "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipReader.swift",
+        "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipWriter.swift",
+        "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+      }
+    ],
+    "spans_binary_sha256": "04942195c440aa63140aeb6ec50e2a6883de952d791ad5143d9d8c477994abe1"
+  },
+  "candidate": {
+    "cases": [
+      {
+        "kind": "plain",
+        "labels": "distinct",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 1.1771659999999962,
+              "emit": 0.9847310000000107,
+              "fragment": 0.18442499999998319,
+              "input": 1.022048000000023,
+              "layout": 4.650445000000012,
+              "shape": 0.4704899999999981,
+              "wrap": 1.2715460000000007
+            }
+          },
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 1.3638020000000424,
+              "emit": 1.0183189999999982,
+              "fragment": 0.179037000000001,
+              "input": 0.7447459999999282,
+              "layout": 4.566692999999987,
+              "shape": 0.811458999999985,
+              "wrap": 1.30123099999998
+            }
+          },
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 1.1786810000000187,
+              "emit": 0.8571180000000638,
+              "fragment": 0.1768120000000124,
+              "input": 0.6668800000000061,
+              "layout": 4.319341999999956,
+              "shape": 0.6722709999999807,
+              "wrap": 1.1370899999999438
+            }
+          },
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 0.9951700000000159,
+              "emit": 0.8666410000000724,
+              "fragment": 0.178606999999964,
+              "input": 0.7211669999999941,
+              "layout": 4.065516000000038,
+              "shape": 0.4887189999999819,
+              "wrap": 1.1496989999999911
+            }
+          },
+          {
+            "calls": {
+              "atoms": 205,
+              "emit": 213,
+              "fragment": 66,
+              "input": 205,
+              "layout": 205,
+              "shape": 204,
+              "wrap": 205
+            },
+            "cpu_ms": {
+              "atoms": 0.9289950000000573,
+              "emit": 0.975205999999929,
+              "fragment": 0.25772100000001785,
+              "input": 0.785883999999939,
+              "layout": 4.27359100000001,
+              "shape": 0.41850400000014076,
+              "wrap": 1.2592359999999303
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "pages": 4,
+            "plan_cpu_ms": 11.884742,
+            "plan_ms": 11.883160002529621,
+            "trial": 0
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.041550999999998,
+            "plan_ms": 8.03982999920845,
+            "trial": 1
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 7.640293,
+            "plan_ms": 7.639660000801086,
+            "trial": 2
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.07444000000001,
+            "plan_ms": 8.073670998215675,
+            "trial": 3
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.119444999999999,
+            "plan_ms": 8.118913002312183,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "plain",
+        "labels": "distinct",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 33.94721400000055,
+              "emit": 31.355439999999508,
+              "fragment": 6.039979000000354,
+              "input": 42.90320700000041,
+              "layout": 162.04857300000094,
+              "shape": 13.472355999996243,
+              "wrap": 41.2114650000012
+            }
+          },
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 30.82806500000231,
+              "emit": 26.302161999998873,
+              "fragment": 4.453272000001618,
+              "input": 29.72407699999428,
+              "layout": 137.4046980000037,
+              "shape": 14.675171999991619,
+              "wrap": 35.35900599999434
+            }
+          },
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 32.674347999993984,
+              "emit": 28.134532000007198,
+              "fragment": 4.139746000002333,
+              "input": 28.737991000001784,
+              "layout": 141.5888830000015,
+              "shape": 13.091611000006878,
+              "wrap": 38.60731699999508
+            }
+          },
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 29.17999300000315,
+              "emit": 25.541866999998547,
+              "fragment": 4.357710000002953,
+              "input": 26.322819000011577,
+              "layout": 129.5225290000203,
+              "shape": 12.350713999999698,
+              "wrap": 34.201076000009834
+            }
+          },
+          {
+            "calls": {
+              "atoms": 7037,
+              "emit": 7045,
+              "fragment": 2018,
+              "input": 7037,
+              "layout": 7037,
+              "shape": 7036,
+              "wrap": 7037
+            },
+            "cpu_ms": {
+              "atoms": 33.0123319999866,
+              "emit": 28.913114000025416,
+              "fragment": 4.92970300000502,
+              "input": 26.3427979999974,
+              "layout": 140.55804200001216,
+              "shape": 12.603913000012199,
+              "wrap": 39.07768000000033
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 419.00701,
+            "plan_ms": 419.01016300171614,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 341.45480499999996,
+            "plan_ms": 341.4597970023751,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 330.65573099999995,
+            "plan_ms": 330.6499060019851,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 317.68954400000007,
+            "plan_ms": 317.6944840028882,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 337.69277599999987,
+            "plan_ms": 337.6968019977212,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "plain",
+        "labels": "repeated",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.5746629999999833,
+              "emit": 0.6140830000000044,
+              "fragment": 0.11473199999997519,
+              "input": 0.30868299999997717,
+              "layout": 2.1372640000000054,
+              "shape": 0.2624539999999982,
+              "wrap": 0.7871389999999785
+            }
+          },
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 1.5172730000000456,
+              "emit": 0.9107599999999536,
+              "fragment": 0.1438299999999515,
+              "input": 0.23559799999996756,
+              "layout": 4.229507999999981,
+              "shape": 0.676752999999934,
+              "wrap": 1.0622209999999797
+            }
+          },
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.4587910000000761,
+              "emit": 0.5514699999996822,
+              "fragment": 0.22147599999973977,
+              "input": 0.2544699999999125,
+              "layout": 2.026754000000011,
+              "shape": 0.20815100000010034,
+              "wrap": 0.6994320000002006
+            }
+          },
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.5626560000000609,
+              "emit": 0.4497269999999389,
+              "fragment": 0.1116920000001187,
+              "input": 0.23621299999990697,
+              "layout": 2.2714160000001584,
+              "shape": 0.2881539999999063,
+              "wrap": 0.6965719999999465
+            }
+          },
+          {
+            "calls": {
+              "atoms": 44,
+              "emit": 52,
+              "fragment": 20,
+              "input": 44,
+              "layout": 44,
+              "shape": 43,
+              "wrap": 44
+            },
+            "cpu_ms": {
+              "atoms": 0.5050339999999096,
+              "emit": 0.43682100000006585,
+              "fragment": 0.10938100000009854,
+              "input": 0.22699300000004996,
+              "layout": 1.79197599999992,
+              "shape": 0.22849399999995512,
+              "wrap": 0.5816510000001927
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 88.392989,
+            "plan_ms": 88.38910300284624,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 98.389252,
+            "plan_ms": 98.38433600217104,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 85.38692,
+            "plan_ms": 85.38223100453615,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 91.17457100000001,
+            "plan_ms": 91.17066600173712,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 85.48083400000002,
+            "plan_ms": 85.48618700355291,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "labels": "distinct",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 4.789390000000051,
+              "emit": 4.752936999999992,
+              "fragment": 0.6340729999999866,
+              "input": 1.0116410000000151,
+              "layout": 15.830542999999903,
+              "shape": 1.8652869999999773,
+              "wrap": 6.850099999999998
+            }
+          },
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 5.144967999999871,
+              "emit": 4.927783999999953,
+              "fragment": 0.5785850000000181,
+              "input": 1.0691739999999044,
+              "layout": 16.58088200000013,
+              "shape": 2.2092929999999456,
+              "wrap": 7.552226000000054
+            }
+          },
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 4.961213000000271,
+              "emit": 5.214154999999906,
+              "fragment": 1.3804459999999636,
+              "input": 0.852006999999972,
+              "layout": 15.981498999999985,
+              "shape": 2.185951000000017,
+              "wrap": 7.264644000000047
+            }
+          },
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 5.220553999999822,
+              "emit": 5.198024999999944,
+              "fragment": 0.5369489999999502,
+              "input": 0.9976960000000332,
+              "layout": 16.436473000000035,
+              "shape": 2.2436309999999935,
+              "wrap": 7.52901700000001
+            }
+          },
+          {
+            "calls": {
+              "atoms": 479,
+              "emit": 752,
+              "fragment": 101,
+              "input": 479,
+              "layout": 479,
+              "shape": 478,
+              "wrap": 479
+            },
+            "cpu_ms": {
+              "atoms": 4.923968999999488,
+              "emit": 5.233510000000024,
+              "fragment": 0.6843070000000466,
+              "input": 0.8887729999996594,
+              "layout": 15.830562000000057,
+              "shape": 2.0530650000000037,
+              "wrap": 7.280469999999752
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "pages": 4,
+            "plan_cpu_ms": 21.725890999999997,
+            "plan_ms": 21.724325999617577,
+            "trial": 0
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 21.739852,
+            "plan_ms": 21.750915996730328,
+            "trial": 1
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 20.849126999999996,
+            "plan_ms": 20.847796998918056,
+            "trial": 2
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 21.397209000000004,
+            "plan_ms": 21.396438002586365,
+            "trial": 3
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 20.193455999999998,
+            "plan_ms": 20.192700996994972,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "labels": "distinct",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 198.99231900000433,
+              "emit": 207.26370199999548,
+              "fragment": 25.4389369999997,
+              "input": 37.33584400000055,
+              "layout": 648.3696749999976,
+              "shape": 75.88767799999951,
+              "wrap": 297.8639429999965
+            }
+          },
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 188.96780100001422,
+              "emit": 198.54425500000764,
+              "fragment": 23.861986999998066,
+              "input": 37.276873999964096,
+              "layout": 621.808071000001,
+              "shape": 74.6668829999868,
+              "wrap": 283.5348399999997
+            }
+          },
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 212.33049699996332,
+              "emit": 218.4563379999695,
+              "fragment": 25.75622899999439,
+              "input": 40.75663600000598,
+              "layout": 695.9868609999612,
+              "shape": 88.80061700001534,
+              "wrap": 316.8375530000112
+            }
+          },
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 190.48344599995744,
+              "emit": 196.77095199998485,
+              "fragment": 25.016493000000082,
+              "input": 41.34781899999098,
+              "layout": 628.2179680000172,
+              "shape": 74.24882900001421,
+              "wrap": 285.0436169999725
+            }
+          },
+          {
+            "calls": {
+              "atoms": 18045,
+              "emit": 30448,
+              "fragment": 3134,
+              "input": 18045,
+              "layout": 18045,
+              "shape": 18044,
+              "wrap": 18045
+            },
+            "cpu_ms": {
+              "atoms": 194.35058000000845,
+              "emit": 198.03707899998972,
+              "fragment": 24.556710000025305,
+              "input": 37.69247700000051,
+              "layout": 629.9403379999549,
+              "shape": 71.64000000000442,
+              "wrap": 285.5525349999789
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 823.191189,
+            "plan_ms": 823.2306390032172,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 794.2288950000001,
+            "plan_ms": 794.2749330028892,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 893.200887,
+            "plan_ms": 893.2721609994769,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 804.6076940000003,
+            "plan_ms": 804.7880560010672,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 817.3755889999998,
+            "plan_ms": 817.4505600035191,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "labels": "repeated",
+        "profiles": [
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.3311600000001178,
+              "emit": 1.6169189999999318,
+              "fragment": 0.19649400000008654,
+              "input": 0.32889999999990494,
+              "layout": 4.516717000000092,
+              "shape": 0.5714650000000177,
+              "wrap": 2.0467030000000364
+            }
+          },
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.2010359999999878,
+              "emit": 1.0673550000000205,
+              "fragment": 0.19179799999994884,
+              "input": 0.3361540000000218,
+              "layout": 4.08746000000005,
+              "shape": 0.5665030000000115,
+              "wrap": 1.4731109999999603
+            }
+          },
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.1502539999999328,
+              "emit": 1.2671550000003435,
+              "fragment": 0.1968710000001579,
+              "input": 0.27923599999994053,
+              "layout": 4.7033950000001425,
+              "shape": 0.5532020000003399,
+              "wrap": 2.0138140000002807
+            }
+          },
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.041208000000097,
+              "emit": 1.2061630000001742,
+              "fragment": 0.19282599999991135,
+              "input": 0.45119499999998425,
+              "layout": 4.065915000000018,
+              "shape": 0.4170360000000528,
+              "wrap": 1.5867059999999356
+            }
+          },
+          {
+            "calls": {
+              "atoms": 79,
+              "emit": 119,
+              "fragment": 38,
+              "input": 79,
+              "layout": 79,
+              "shape": 78,
+              "wrap": 79
+            },
+            "cpu_ms": {
+              "atoms": 1.0304019999997536,
+              "emit": 0.9846660000003453,
+              "fragment": 0.19069600000000264,
+              "input": 0.2417209999999841,
+              "layout": 3.3069790000001262,
+              "shape": 0.4752599999998779,
+              "wrap": 1.3600299999997105
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 95.983405,
+            "plan_ms": 95.97860100120306,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 88.669262,
+            "plan_ms": 88.66451799869537,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 109.48528100000001,
+            "plan_ms": 109.48788499832153,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 85.37362999999999,
+            "plan_ms": 85.37002899497747,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 83.85425300000003,
+            "plan_ms": 83.85037599503994,
+            "trial": 4
+          }
+        ]
+      }
+    ],
+    "commit": "91fcb55ceaca41c702a906d6ea7d9764c6343a69",
+    "plain_binary_sha256": "dac3cb452ae7039eb983c3538538291454588740f713281a224d3a1cd6d0392a",
+    "source_hashes": [
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheRepair.swift",
+        "sha256": "29ea3b40edb93f89c85d7eb52dd9e6fa22b5e2c2a5ec73a213cfadec6af2d193"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheWorkbook.swift",
+        "sha256": "485694a3d4f367c459254b9471e0354542425a95be99ccda293086317dc0531a"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartData.swift",
+        "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartReader.swift",
+        "sha256": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartSeriesEditing.swift",
+        "sha256": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbook.swift",
+        "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbookReader.swift",
+        "sha256": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartXML.swift",
+        "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/Charts.swift",
+        "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ComboChartData.swift",
+        "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+      },
+      {
+        "path": "Sources/Rostrum/Core/RostrumError.swift",
+        "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+      },
+      {
+        "path": "Sources/Rostrum/Core/Units.swift",
+        "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ColorMath.swift",
+        "sha256": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Drawing.swift",
+        "sha256": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/DrawingColor.swift",
+        "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Geometry.swift",
+        "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/GradientStops.swift",
+        "sha256": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ImageSniffer.swift",
+        "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicJoining.swift",
+        "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicLayoutTables.swift",
+        "sha256": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicTextShaper.swift",
+        "sha256": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontFaceKey.swift",
+        "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLayoutTables.swift",
+        "sha256": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLibrary.swift",
+        "sha256": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontMetrics.swift",
+        "sha256": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/MarkPositioning.swift",
+        "sha256": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/PreparedFont.swift",
+        "sha256": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ShapedGlyphRun.swift",
+        "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextMeasurer.swift",
+        "sha256": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextShaper.swift",
+        "sha256": "06462c96d3d0ef883ad46d4b4c44ffa9f05be7f2c0ebdda3f6be225146d1306a"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/ContentTypes.swift",
+        "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCArchive.swift",
+        "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCPackage.swift",
+        "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/PackURI.swift",
+        "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/Relationships.swift",
+        "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationDependencies.swift",
+        "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationImport.swift",
+        "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BackgroundResolver.swift",
+        "sha256": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BuiltInTableStyle.swift",
+        "sha256": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/CommentEditing.swift",
+        "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Comments.swift",
+        "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Components.swift",
+        "sha256": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckExport.swift",
+        "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckMerge.swift",
+        "sha256": "a469986af885706217489bb0cf105bcb2802acce16c0c736f8db93e17876f4bc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckOutline.swift",
+        "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckStyle.swift",
+        "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Design.swift",
+        "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DocumentProperties.swift",
+        "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/EmbeddedFontImport.swift",
+        "sha256": "f1f6035482326237e58bc14c7ee96666cfe382257df4e0ef5c1fa9a6da8152e6"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbedding.swift",
+        "sha256": "1bdf5c1b286e615c3aff8090163cfc4cda58fe82b67f8264627550afb05026bd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbeddingPlan.swift",
+        "sha256": "7e07c1493a81947400ab0a0d91edce2624eda09b7b567a64b57c6ba9a57f5df0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/HeadersFooters.swift",
+        "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ImageFill.swift",
+        "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Layouts.swift",
+        "sha256": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift",
+        "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyComments.swift",
+        "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Media.swift",
+        "sha256": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/MinimalTemplate.swift",
+        "sha256": "d11d5c5310f1614a66521f6ede0d28cd5239cec1311dfe346345661f8bc06eed"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Notes.swift",
+        "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesImportGeometry.swift",
+        "sha256": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageRenderer.swift",
+        "sha256": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageTemplate.swift",
+        "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/OutlineImageFills.swift",
+        "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PictureCrop.swift",
+        "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Pictures.swift",
+        "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Presentation.swift",
+        "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PublishedLayouts.swift",
+        "sha256": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderDiagnostics.swift",
+        "sha256": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderImageResources.swift",
+        "sha256": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderTextAttributes.swift",
+        "sha256": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+        "sha256": "e290e6eff2aa1f48a54d9db94f8439d121b771e2aeeeda26124abb36d6f3af32"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextPreparation.swift",
+        "sha256": "a566c575a7a2754323288a634740b19d026a7a540dcf3078cb9922918574f1a3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGCustomGeometry.swift",
+        "sha256": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift",
+        "sha256": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGImagePlacement.swift",
+        "sha256": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPaint.swift",
+        "sha256": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPresetGeometry.swift",
+        "sha256": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+        "sha256": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRichText.swift",
+        "sha256": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGShadow.swift",
+        "sha256": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Sections.swift",
+        "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeAppearance.swift",
+        "sha256": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeKind.swift",
+        "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTransform.swift",
+        "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTypes.swift",
+        "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Shapes.swift",
+        "sha256": "c319d1ee4a1f0afe4df7fba7149c063899be996daff2133effa66353ff1311d3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slide.swift",
+        "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideAnnotations.swift",
+        "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideBuilders.swift",
+        "sha256": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideMasters.swift",
+        "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slides.swift",
+        "sha256": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SmartArt.swift",
+        "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+        "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderSegments.swift",
+        "sha256": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableCellFormatting.swift",
+        "sha256": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableDoubleBorder.swift",
+        "sha256": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableEditing.swift",
+        "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableGridSnapshot.swift",
+        "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableLayoutSource.swift",
+        "sha256": "1919ed9e96badc1e35d8ae91606151c52fcdf85d3116830748746fcf8b9b0d5a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleImport.swift",
+        "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+        "sha256": "9c24b8814c05984b1167061560d2de630f72c2de29a9d93f9b51b8475e84ad56"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyling.swift",
+        "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Tables.swift",
+        "sha256": "98b29d0b1a5ea29ba01e48d40f87ea4f47800383a52cda42fc93471bd109a801"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+        "sha256": "7aa27bb6775926aa1c646433315a0fbfa47bcd384b4b8c964654a789ab744f09"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Text.swift",
+        "sha256": "db17e2ad61df9e9d9180d4cb2301da41e551a6162e33881d35236933b2c06169"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Theme.swift",
+        "sha256": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Validation.swift",
+        "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/GeneratedSchema.swift",
+        "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/OXMLHelpers.swift",
+        "sha256": "f30ef480475252569a33f345fc004238e8e38863610c9c5ee886725402d23050"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/PresetGeometry.swift",
+        "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+      },
+      {
+        "path": "Sources/Rostrum/XML/XML.swift",
+        "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/CRC32.swift",
+        "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Deflate.swift",
+        "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Inflate.swift",
+        "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipReader.swift",
+        "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipWriter.swift",
+        "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+      }
+    ],
+    "spans_binary_sha256": "21b7292f49f46a2407006afb233ac3d2370ed805c123eea537d49bd4bb4ae756"
+  },
+  "note": "Instrumented nested process-CPU scopes; diagnostic only, not net speedup. Uninstrumented paired measurements are separate."
+}

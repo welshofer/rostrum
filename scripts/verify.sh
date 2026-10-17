@@ -50,7 +50,7 @@ ROSTRUM_LECTERN_INSPECTION_BINARY="$PWD/Lectern/.build/debug/InspectionRegressio
   PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
 
 step "Optimized text preparation"
-swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|TableVerticalSpanTests|TableVerticalPaginationTests|TableRepeatedHeaderTests|MeasuredPaginatorTests'
+swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|NativeGlyphPlacementTests|ParagraphJustificationTests|TabLayoutTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|TableVerticalSpanTests|TableVerticalPaginationTests|TableRepeatedHeaderTests|MeasuredPaginatorTests'
 
 step "Portable fidelity references"
 bash scripts/check-fidelity.sh

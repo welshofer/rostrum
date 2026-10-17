@@ -2,6 +2,16 @@
 
 ## Latest reconciled measurements
 
+The [resolved run-metrics comparison](TEXT-LAYOUT-20261017.md) removes redundant
+font lookup during wrapped-fragment measurement. Seven alternating Linux Release
+pairs/batches measure 2.50–3.55% lower whole-process CPU for large merged/header
+tables and 6.82% lower fitting CPU for distinct mixed text. Table phase gains are
+smaller and inconsistent; fallback fitting and short shrinking retain 2.55% and
+1.54% CPU slowdowns. All table, native typography, fitting, snapshot and approved
+Calibri outputs match. Peak RSS differs by less than 0.4 MiB; no general memory
+or native Mac speedup is established. A broader span rewrite was discarded after
+mixed results; the report retains both experiments separately.
+
 The [composition follow-up](TABLE-COMPOSITION-20261017.md) resolves the shared
 table/caption template style once per composition call, retaining all fresh
 validation. Seven paired Linux Release runs measure 6.99–9.72% lower composition

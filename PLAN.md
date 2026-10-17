@@ -283,6 +283,26 @@ cases; it does not extend to new multi-row headers, chart repair or WebKit trans
 
 See the [composition measurement record](docs/TABLE-COMPOSITION-20261017.md).
 
+## Text layout follow-up (2026-10-17)
+
+- [x] Run current native typography/fitting regressions and profile the remaining
+  table layout work. Existing geometry references pass; the historical PNG gate
+  lacks three exact pinned faces and remains unqualified by this work.
+- [x] Discard a span-assembly experiment with inconsistent performance; reuse
+  already resolved run metrics during line-fragment measurement instead, retaining
+  current font/content checks and exact output.
+- [x] Preserve the table corpus, native typography decks, detailed bit-pattern
+  snapshots, authored fitting results and user-approved Calibri pack.
+- [x] Compare freshly built Release variants with identical compiler arguments;
+  retain CPU, elapsed, peak RSS, every raw sample and adverse controls.
+- [x] Complete the full portable gate, including expanded optimized text checks.
+
+Green Apple CI remains required before merging.
+
+See the [text-layout record](docs/TEXT-LAYOUT-20261017.md). This removes repeated font
+lookup without extending native autofit/typography qualification or changing
+users' font choices. Paired Mac timing and broader native evidence remain open.
+
 ## Subsequent scope
 
 These are known gaps, not promises that the first milestone implements them:

@@ -606,6 +606,12 @@ bytes so canonical equivalence cannot change original scalar offsets. Each trial
 still recomputes scaled glyph advances, kerning, wrapping, geometry and diagnostics;
 Arabic and over-budget input retain the ordinary path.
 
+Shared rich-text layout reuses each source run's already resolved metrics when
+remeasuring its wrapped fragments. This adds no cache or cross-operation state;
+font/style changes receive the existing fresh checks. Fitting and rendering use
+the same path. See the [text layout comparison](TEXT-LAYOUT-20261017.md) for
+preservation checks and scoped Release results.
+
 Font-resource encoding retains at most 4 MiB of cached base64 data and invalidates
 on registration. Ordered single-scalar ASCII shaping avoids unnecessary lookup
 construction and sorting while retaining the general path for other input.

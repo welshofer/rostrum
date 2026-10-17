@@ -675,7 +675,10 @@ public struct RichTextLayout: Sendable {
                             && lineAtoms[end].source == lineAtoms[fragmentStart].source { end += 1 }
                         let fragment = lineAtoms[fragmentStart..<end]
                         let style = runStyles[lineAtoms[fragmentStart].styleIndex]
-                        if let font = face(style) {
+                        // Text atoms retain their one-based source-piece index,
+                        // including empty runs. Font resolution is already complete
+                        // for this immutable paragraph; only fragment text changes.
+                        if let font = pieces[lineAtoms[fragmentStart].source - 1].metrics {
                             let value = fragment.map(\.text).joined()
                             func measureFragment() -> Double {
                                 let shaped = TextShaper(font).shape(value, pointSize: style.measurementPointSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)

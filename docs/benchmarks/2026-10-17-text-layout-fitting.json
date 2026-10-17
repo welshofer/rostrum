@@ -1,0 +1,5029 @@
+{
+  "binary_hashes": {
+    "baseline": "ee03db1566df1c2602d1aea911b872dc72135a64f60f4aa5d662c60f28521305",
+    "candidate": "fbdf323488c141222e1b5d87e3f24f5a8856ca008b566b0209d5421a917c16b4"
+  },
+  "cpu_affinity": [
+    0
+  ],
+  "pairs": [
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 7.289253000000002,
+              "elapsedMS": 7.291893001820426,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.162,
+            "process_elapsed_ms": 41.54408899921691,
+            "rss_kib": 20852.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.563845,
+              "elapsedMS": 7.566264001070522,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.418,
+            "process_elapsed_ms": 40.62214899749961,
+            "rss_kib": 20924.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.016874999999999,
+              "elapsedMS": 8.019934997719247,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.129,
+            "process_elapsed_ms": 43.58845899696462,
+            "rss_kib": 20896.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.0691109999999995,
+              "elapsedMS": 7.072045002132654,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.35,
+            "process_elapsed_ms": 40.33177699602675,
+            "rss_kib": 20808.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.552927999999998,
+              "elapsedMS": 8.555658998375293,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.338,
+            "process_elapsed_ms": 43.970701000944246,
+            "rss_kib": 20988.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 6.977087999999999,
+              "elapsedMS": 6.979751997278072,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.361,
+            "process_elapsed_ms": 40.86762000224553,
+            "rss_kib": 20368.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.068046000000002,
+              "elapsedMS": 7.071224004903343,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.953,
+            "process_elapsed_ms": 39.222554994921666,
+            "rss_kib": 20440.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.659080000000002,
+              "elapsedMS": 7.662575000722427,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.085,
+            "process_elapsed_ms": 44.294577004620805,
+            "rss_kib": 20436.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.611264000000003,
+              "elapsedMS": 7.613915004185401,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.955,
+            "process_elapsed_ms": 41.28741699969396,
+            "rss_kib": 20500.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.570347999999997,
+              "elapsedMS": 7.573317998321727,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.098,
+            "process_elapsed_ms": 41.31975999916904,
+            "rss_kib": 20536.0
+          }
+        ]
+      },
+      "case": "plain-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.552891999999999,
+              "elapsedMS": 4.555491999781225,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.708,
+            "process_elapsed_ms": 32.09240899741417,
+            "rss_kib": 18344.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.0810189999999995,
+              "elapsedMS": 5.083419004222378,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.937,
+            "process_elapsed_ms": 33.147761001600884,
+            "rss_kib": 18788.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.4933229999999975,
+              "elapsedMS": 5.496281002706382,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.586,
+            "process_elapsed_ms": 33.86981900257524,
+            "rss_kib": 18764.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.666254999999998,
+              "elapsedMS": 4.668631001550239,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.844,
+            "process_elapsed_ms": 32.07283400115557,
+            "rss_kib": 18708.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.087170999999998,
+              "elapsedMS": 5.090182006824762,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.236,
+            "process_elapsed_ms": 32.619530997180846,
+            "rss_kib": 18772.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 5.866063000000001,
+              "elapsedMS": 5.869268003152683,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.101,
+            "process_elapsed_ms": 33.317448003799655,
+            "rss_kib": 18208.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.419882000000001,
+              "elapsedMS": 5.422939997515641,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.562,
+            "process_elapsed_ms": 33.78125299786916,
+            "rss_kib": 18328.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.843019000000001,
+              "elapsedMS": 4.845335002755746,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.928,
+            "process_elapsed_ms": 32.37230800004909,
+            "rss_kib": 18316.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.149378,
+              "elapsedMS": 5.152680998435244,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 33.775,
+            "process_elapsed_ms": 35.09307299827924,
+            "rss_kib": 18212.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.564958000000001,
+              "elapsedMS": 4.567210002278443,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.676,
+            "process_elapsed_ms": 31.997473997762427,
+            "rss_kib": 18612.0
+          }
+        ]
+      },
+      "case": "plain-fallback-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 53.259669,
+              "elapsedMS": 53.26184899604414,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.572,
+            "process_elapsed_ms": 89.2736860041623,
+            "rss_kib": 20912.0
+          },
+          {
+            "phase": {
+              "cpuMS": 55.9,
+              "elapsedMS": 55.903223998029716,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 91.458,
+            "process_elapsed_ms": 92.7719489991432,
+            "rss_kib": 21056.0
+          },
+          {
+            "phase": {
+              "cpuMS": 53.167302,
+              "elapsedMS": 53.169909995631315,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 90.405,
+            "process_elapsed_ms": 92.17914100008784,
+            "rss_kib": 20884.0
+          },
+          {
+            "phase": {
+              "cpuMS": 53.211392999999994,
+              "elapsedMS": 53.21483599982457,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 91.246,
+            "process_elapsed_ms": 92.85034699860262,
+            "rss_kib": 20960.0
+          },
+          {
+            "phase": {
+              "cpuMS": 49.61124700000001,
+              "elapsedMS": 49.61386999639217,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 88.619,
+            "process_elapsed_ms": 90.39577799558174,
+            "rss_kib": 20956.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 49.448539,
+              "elapsedMS": 49.45218800276052,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.643,
+            "process_elapsed_ms": 89.19280499685556,
+            "rss_kib": 20640.0
+          },
+          {
+            "phase": {
+              "cpuMS": 75.874997,
+              "elapsedMS": 75.87701500597177,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 115.009,
+            "process_elapsed_ms": 116.71055699844146,
+            "rss_kib": 20660.0
+          },
+          {
+            "phase": {
+              "cpuMS": 50.43668900000001,
+              "elapsedMS": 50.44818000169471,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 88.636,
+            "process_elapsed_ms": 90.70209199853707,
+            "rss_kib": 20500.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.771452999999994,
+              "elapsedMS": 51.774472995020915,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 88.829,
+            "process_elapsed_ms": 90.58195499528665,
+            "rss_kib": 20628.0
+          },
+          {
+            "phase": {
+              "cpuMS": 50.358581,
+              "elapsedMS": 50.361572997644544,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 88.813,
+            "process_elapsed_ms": 90.53234400198562,
+            "rss_kib": 20576.0
+          }
+        ]
+      },
+      "case": "mixed-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 3.9976490000000022,
+              "elapsedMS": 4.000623004685622,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 48.741,
+            "process_elapsed_ms": 50.19729800551431,
+            "rss_kib": 20900.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.9305069999999995,
+              "elapsedMS": 3.9336499976343475,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.091,
+            "process_elapsed_ms": 44.39271400042344,
+            "rss_kib": 20932.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.784102000000001,
+              "elapsedMS": 3.787731002375949,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.403,
+            "process_elapsed_ms": 47.65621700062184,
+            "rss_kib": 20836.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.043870000000002,
+              "elapsedMS": 4.04733199684415,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.7,
+            "process_elapsed_ms": 46.85941099887714,
+            "rss_kib": 20840.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.1398119999999965,
+              "elapsedMS": 4.143142003158573,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 48.048,
+            "process_elapsed_ms": 49.66688299464295,
+            "rss_kib": 20896.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 5.4319760000000015,
+              "elapsedMS": 5.434468999737874,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.275,
+            "process_elapsed_ms": 46.61548400326865,
+            "rss_kib": 20616.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.9345190000000008,
+              "elapsedMS": 3.937280001991894,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.163,
+            "process_elapsed_ms": 44.42299599759281,
+            "rss_kib": 20368.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.264051000000001,
+              "elapsedMS": 4.2670589973567985,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.534,
+            "process_elapsed_ms": 45.147379001718946,
+            "rss_kib": 20520.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.012949000000002,
+              "elapsedMS": 4.016218998003751,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.375,
+            "process_elapsed_ms": 47.670230000221636,
+            "rss_kib": 20416.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.6815089999999993,
+              "elapsedMS": 3.6839360036537983,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.52,
+            "process_elapsed_ms": 45.700786999077536,
+            "rss_kib": 20668.0
+          }
+        ]
+      },
+      "case": "shrink",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.3940949999999988,
+              "elapsedMS": 2.3966739972820505,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.739,
+            "process_elapsed_ms": 46.92687400529394,
+            "rss_kib": 20576.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4226270000000003,
+              "elapsedMS": 2.4253829978988506,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.614,
+            "process_elapsed_ms": 47.82060399884358,
+            "rss_kib": 20944.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.3714270000000024,
+              "elapsedMS": 2.3741290060570464,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.533,
+            "process_elapsed_ms": 46.97722100536339,
+            "rss_kib": 20580.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.5154170000000025,
+              "elapsedMS": 2.5188700019498356,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.603,
+            "process_elapsed_ms": 45.90145399561152,
+            "rss_kib": 20836.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.588746999999999,
+              "elapsedMS": 2.5916160011547618,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.707,
+            "process_elapsed_ms": 46.99967499618651,
+            "rss_kib": 20576.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.5180370000000005,
+              "elapsedMS": 2.5217700022039935,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.498,
+            "process_elapsed_ms": 46.72162800125079,
+            "rss_kib": 20596.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.2806029999999993,
+              "elapsedMS": 2.283544003148563,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.35,
+            "process_elapsed_ms": 45.667820995731745,
+            "rss_kib": 20660.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.3026880000000007,
+              "elapsedMS": 2.3056669961079024,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.287,
+            "process_elapsed_ms": 45.51056299533229,
+            "rss_kib": 20548.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.3329509999999996,
+              "elapsedMS": 2.335300996492151,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.7,
+            "process_elapsed_ms": 44.55747600150062,
+            "rss_kib": 20540.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.5208640000000013,
+              "elapsedMS": 2.5240060058422387,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.119,
+            "process_elapsed_ms": 47.31647000153316,
+            "rss_kib": 20632.0
+          }
+        ]
+      },
+      "case": "shrink-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 6.859500000000001,
+              "elapsedMS": 6.862494999950286,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.854,
+            "process_elapsed_ms": 41.20004100695951,
+            "rss_kib": 20792.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.417944999999999,
+              "elapsedMS": 7.420948000799399,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.831,
+            "process_elapsed_ms": 42.44670099433279,
+            "rss_kib": 20824.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.091918000000002,
+              "elapsedMS": 7.0951410016277805,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 41.977,
+            "process_elapsed_ms": 43.295604999002535,
+            "rss_kib": 20812.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.874802,
+              "elapsedMS": 7.878263997554313,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.586,
+            "process_elapsed_ms": 42.318261999753304,
+            "rss_kib": 20812.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.342985999999996,
+              "elapsedMS": 7.34602399461437,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 41.257,
+            "process_elapsed_ms": 43.14651399909053,
+            "rss_kib": 20932.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 7.240167000000002,
+              "elapsedMS": 7.2428589992341585,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.291,
+            "process_elapsed_ms": 40.86074299993925,
+            "rss_kib": 20372.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.361302000000004,
+              "elapsedMS": 7.364179000433069,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.247,
+            "process_elapsed_ms": 40.42869000113569,
+            "rss_kib": 20600.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.059762999999997,
+              "elapsedMS": 8.06249200104503,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.105,
+            "process_elapsed_ms": 45.225266003399156,
+            "rss_kib": 20500.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.768782000000002,
+              "elapsedMS": 7.771593998768367,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.478,
+            "process_elapsed_ms": 43.71949000051245,
+            "rss_kib": 20440.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.844064999999997,
+              "elapsedMS": 7.846339998650365,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.305,
+            "process_elapsed_ms": 41.790205003053416,
+            "rss_kib": 20440.0
+          }
+        ]
+      },
+      "case": "plain-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.808299999999998,
+              "elapsedMS": 4.810965001524892,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.909,
+            "process_elapsed_ms": 33.209322005859576,
+            "rss_kib": 18720.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.554262,
+              "elapsedMS": 4.556730003969278,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.811,
+            "process_elapsed_ms": 33.22045999811962,
+            "rss_kib": 18680.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.843038000000001,
+              "elapsedMS": 4.845969000598416,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.368,
+            "process_elapsed_ms": 32.6398170000175,
+            "rss_kib": 18704.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.528008999999999,
+              "elapsedMS": 4.5303750011953525,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.442,
+            "process_elapsed_ms": 31.92461699654814,
+            "rss_kib": 18748.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.269713000000002,
+              "elapsedMS": 5.272291004075669,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.47,
+            "process_elapsed_ms": 33.7814399972558,
+            "rss_kib": 18816.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 5.075575999999998,
+              "elapsedMS": 5.087429999548476,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 33.545,
+            "process_elapsed_ms": 35.30151900486089,
+            "rss_kib": 18560.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.891812999999999,
+              "elapsedMS": 5.895513997529633,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 34.884,
+            "process_elapsed_ms": 36.38568399765063,
+            "rss_kib": 18316.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.629072999999997,
+              "elapsedMS": 4.631313000572845,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 33.924,
+            "process_elapsed_ms": 35.44763899844838,
+            "rss_kib": 18536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.751637,
+              "elapsedMS": 4.754610999953002,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.898,
+            "process_elapsed_ms": 32.40712100523524,
+            "rss_kib": 18364.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.930765999999999,
+              "elapsedMS": 4.934224001772236,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 34.034,
+            "process_elapsed_ms": 35.62637999857543,
+            "rss_kib": 18212.0
+          }
+        ]
+      },
+      "case": "plain-fallback-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 53.13423900000001,
+              "elapsedMS": 53.1370530006825,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 89.211,
+            "process_elapsed_ms": 91.13101800176082,
+            "rss_kib": 20944.0
+          },
+          {
+            "phase": {
+              "cpuMS": 144.65788300000003,
+              "elapsedMS": 144.65975200437242,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 181.31,
+            "process_elapsed_ms": 182.69184700329788,
+            "rss_kib": 20600.0
+          },
+          {
+            "phase": {
+              "cpuMS": 54.85083399999999,
+              "elapsedMS": 54.85406800289638,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 94.675,
+            "process_elapsed_ms": 96.5767509987927,
+            "rss_kib": 21040.0
+          },
+          {
+            "phase": {
+              "cpuMS": 49.712745,
+              "elapsedMS": 49.715231005393434,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 88.616,
+            "process_elapsed_ms": 90.11068199470174,
+            "rss_kib": 20916.0
+          },
+          {
+            "phase": {
+              "cpuMS": 54.841319,
+              "elapsedMS": 54.84394800441805,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 93.572,
+            "process_elapsed_ms": 94.97434700460872,
+            "rss_kib": 20988.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 50.56242399999999,
+              "elapsedMS": 50.565188998007216,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.175,
+            "process_elapsed_ms": 87.46485399751691,
+            "rss_kib": 20680.0
+          },
+          {
+            "phase": {
+              "cpuMS": 48.057189,
+              "elapsedMS": 48.0601549934363,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 82.453,
+            "process_elapsed_ms": 83.73716800269904,
+            "rss_kib": 20624.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.159842999999995,
+              "elapsedMS": 51.16232699947432,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.837,
+            "process_elapsed_ms": 88.72111899836455,
+            "rss_kib": 20696.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.78252,
+              "elapsedMS": 51.78549800621113,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.878,
+            "process_elapsed_ms": 89.690150001843,
+            "rss_kib": 20720.0
+          },
+          {
+            "phase": {
+              "cpuMS": 49.206726,
+              "elapsedMS": 49.209386997972615,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 84.496,
+            "process_elapsed_ms": 85.84808499290375,
+            "rss_kib": 20624.0
+          }
+        ]
+      },
+      "case": "mixed-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.053872999999999,
+              "elapsedMS": 4.057004996866453,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.328,
+            "process_elapsed_ms": 45.593804999953136,
+            "rss_kib": 20948.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.9126909999999993,
+              "elapsedMS": 3.9165829948615283,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.873,
+            "process_elapsed_ms": 45.58508499758318,
+            "rss_kib": 20908.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.8913689999999987,
+              "elapsedMS": 3.894232999300584,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.871,
+            "process_elapsed_ms": 46.3394749967847,
+            "rss_kib": 20848.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.8867959999999977,
+              "elapsedMS": 3.890225001669023,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.184,
+            "process_elapsed_ms": 43.34215099515859,
+            "rss_kib": 20984.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.8577360000000005,
+              "elapsedMS": 3.860532997350674,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.074,
+            "process_elapsed_ms": 45.31711000163341,
+            "rss_kib": 20880.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 3.795870999999999,
+              "elapsedMS": 3.798735997406766,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.129,
+            "process_elapsed_ms": 47.574089003319386,
+            "rss_kib": 20672.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.450692,
+              "elapsedMS": 5.453393998323008,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.52,
+            "process_elapsed_ms": 47.059860997251235,
+            "rss_kib": 20368.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.049109999999998,
+              "elapsedMS": 4.051736003020778,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 41.886,
+            "process_elapsed_ms": 43.45454699796392,
+            "rss_kib": 20604.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.652927,
+              "elapsedMS": 3.6555279948515818,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.49,
+            "process_elapsed_ms": 43.74344200186897,
+            "rss_kib": 20472.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.266561000000002,
+              "elapsedMS": 4.269458004273474,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.607,
+            "process_elapsed_ms": 45.899932003521826,
+            "rss_kib": 20512.0
+          }
+        ]
+      },
+      "case": "shrink",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.605172999999999,
+              "elapsedMS": 2.6082850017701276,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.69,
+            "process_elapsed_ms": 47.13636800443055,
+            "rss_kib": 20940.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4420120000000005,
+              "elapsedMS": 2.4452099969494157,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.913,
+            "process_elapsed_ms": 47.24758599331835,
+            "rss_kib": 20848.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4523080000000004,
+              "elapsedMS": 2.4548579967813566,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.338,
+            "process_elapsed_ms": 47.5729309982853,
+            "rss_kib": 20940.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.439405999999998,
+              "elapsedMS": 2.4418840039288625,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.84,
+            "process_elapsed_ms": 46.069604002695996,
+            "rss_kib": 20852.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.5209609999999985,
+              "elapsedMS": 2.5237520021619275,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.164,
+            "process_elapsed_ms": 46.377503997064196,
+            "rss_kib": 20868.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.3712460000000006,
+              "elapsedMS": 2.373890994931571,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.985,
+            "process_elapsed_ms": 45.274923999386374,
+            "rss_kib": 20408.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.471842999999998,
+              "elapsedMS": 2.474873006576672,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.577,
+            "process_elapsed_ms": 47.782394001842476,
+            "rss_kib": 20560.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.916288999999999,
+              "elapsedMS": 2.919061000284273,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.991,
+            "process_elapsed_ms": 46.38667699327925,
+            "rss_kib": 20668.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.394162000000002,
+              "elapsedMS": 2.39701199461706,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.108,
+            "process_elapsed_ms": 46.60501099715475,
+            "rss_kib": 20608.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.400335,
+              "elapsedMS": 2.4029959968174808,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.511,
+            "process_elapsed_ms": 44.89858899614774,
+            "rss_kib": 20560.0
+          }
+        ]
+      },
+      "case": "shrink-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 7.3762989999999995,
+              "elapsedMS": 7.379463997494895,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.929,
+            "process_elapsed_ms": 42.49771399918245,
+            "rss_kib": 20912.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.775811999999997,
+              "elapsedMS": 7.778584003972355,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.685,
+            "process_elapsed_ms": 42.06497899576789,
+            "rss_kib": 20904.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.230383000000003,
+              "elapsedMS": 7.2333709977101535,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.915,
+            "process_elapsed_ms": 40.230487000371795,
+            "rss_kib": 20728.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.024787000000002,
+              "elapsedMS": 8.0274179999833,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.066,
+            "process_elapsed_ms": 40.51634699862916,
+            "rss_kib": 20924.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.478481999999998,
+              "elapsedMS": 7.481746004486922,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.948,
+            "process_elapsed_ms": 41.13021400553407,
+            "rss_kib": 20864.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 6.872838999999999,
+              "elapsedMS": 6.875441002193838,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.633,
+            "process_elapsed_ms": 38.974410002992954,
+            "rss_kib": 20520.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.105113000000003,
+              "elapsedMS": 7.10832799813943,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.467,
+            "process_elapsed_ms": 38.762476993724704,
+            "rss_kib": 20552.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.982577,
+              "elapsedMS": 8.985298001789488,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.036,
+            "process_elapsed_ms": 44.33466600312386,
+            "rss_kib": 20520.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.307665000000001,
+              "elapsedMS": 7.310461995075457,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.211,
+            "process_elapsed_ms": 39.84864900121465,
+            "rss_kib": 20428.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.1428550000000035,
+              "elapsedMS": 7.145574003516231,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.382,
+            "process_elapsed_ms": 41.65791899868054,
+            "rss_kib": 20448.0
+          }
+        ]
+      },
+      "case": "plain-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.996741000000003,
+              "elapsedMS": 4.999635995773133,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.716,
+            "process_elapsed_ms": 32.24695200333372,
+            "rss_kib": 18600.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.557744999999999,
+              "elapsedMS": 4.560230998322368,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.246,
+            "process_elapsed_ms": 31.446360000700224,
+            "rss_kib": 18800.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.2276430000000005,
+              "elapsedMS": 5.230621994996909,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.917,
+            "process_elapsed_ms": 32.06127799785463,
+            "rss_kib": 18748.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.804664,
+              "elapsedMS": 4.8070830016513355,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.534,
+            "process_elapsed_ms": 31.670502001361456,
+            "rss_kib": 18696.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.7341320000000024,
+              "elapsedMS": 4.736543996841647,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 29.81,
+            "process_elapsed_ms": 30.98938599578105,
+            "rss_kib": 18672.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 5.2043550000000005,
+              "elapsedMS": 5.207611000514589,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.77,
+            "process_elapsed_ms": 33.89228399464628,
+            "rss_kib": 18532.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.858446999999998,
+              "elapsedMS": 4.861435998464003,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.109,
+            "process_elapsed_ms": 32.557515005464666,
+            "rss_kib": 18212.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.328592,
+              "elapsedMS": 5.331257001671474,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.427,
+            "process_elapsed_ms": 32.637443000567146,
+            "rss_kib": 18472.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.587712999999997,
+              "elapsedMS": 5.591348999587353,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.779,
+            "process_elapsed_ms": 33.056868000130635,
+            "rss_kib": 18476.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.220016999999997,
+              "elapsedMS": 5.223512998782098,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.371,
+            "process_elapsed_ms": 32.63636200426845,
+            "rss_kib": 18316.0
+          }
+        ]
+      },
+      "case": "plain-fallback-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 52.87739200000001,
+              "elapsedMS": 52.88062599720433,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.166,
+            "process_elapsed_ms": 88.32506199541967,
+            "rss_kib": 21044.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.543158999999996,
+              "elapsedMS": 51.54631799814524,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.844,
+            "process_elapsed_ms": 89.18967199861072,
+            "rss_kib": 20960.0
+          },
+          {
+            "phase": {
+              "cpuMS": 48.956447999999995,
+              "elapsedMS": 48.95975600084057,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 85.082,
+            "process_elapsed_ms": 86.40846699563554,
+            "rss_kib": 20932.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.07432200000001,
+              "elapsedMS": 52.07676999998512,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 88.146,
+            "process_elapsed_ms": 89.74574800231494,
+            "rss_kib": 21044.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.389428,
+              "elapsedMS": 51.401201002590824,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.638,
+            "process_elapsed_ms": 89.02177900017705,
+            "rss_kib": 20924.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 48.789319,
+              "elapsedMS": 48.792585999763105,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 83.956,
+            "process_elapsed_ms": 85.21005500369938,
+            "rss_kib": 20556.0
+          },
+          {
+            "phase": {
+              "cpuMS": 50.602236,
+              "elapsedMS": 50.60488999879453,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.023,
+            "process_elapsed_ms": 87.35443499608664,
+            "rss_kib": 20644.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.832198000000005,
+              "elapsedMS": 51.835041005688254,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.461,
+            "process_elapsed_ms": 87.67926799919223,
+            "rss_kib": 20528.0
+          },
+          {
+            "phase": {
+              "cpuMS": 49.607904999999995,
+              "elapsedMS": 49.610561996814795,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 84.067,
+            "process_elapsed_ms": 85.4893540017656,
+            "rss_kib": 20716.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.551413999999994,
+              "elapsedMS": 52.55374799889978,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.813,
+            "process_elapsed_ms": 89.22385099867824,
+            "rss_kib": 20532.0
+          }
+        ]
+      },
+      "case": "mixed-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.100419999999997,
+              "elapsedMS": 4.104305000510067,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.368,
+            "process_elapsed_ms": 49.001569001120515,
+            "rss_kib": 20916.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.630791000000001,
+              "elapsedMS": 3.6337179990368895,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.225,
+            "process_elapsed_ms": 45.49995200068224,
+            "rss_kib": 20992.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.208414,
+              "elapsedMS": 4.211393999867141,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.986,
+            "process_elapsed_ms": 45.3048490016954,
+            "rss_kib": 20868.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.838914000000002,
+              "elapsedMS": 3.8420729979407042,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.743,
+            "process_elapsed_ms": 46.00288299843669,
+            "rss_kib": 20836.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.8873650000000004,
+              "elapsedMS": 3.890301006322261,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.422,
+            "process_elapsed_ms": 45.845806002034806,
+            "rss_kib": 20948.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.329061000000002,
+              "elapsedMS": 4.332824995799456,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.462,
+            "process_elapsed_ms": 46.79655500513036,
+            "rss_kib": 20448.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.997327000000002,
+              "elapsedMS": 4.000781002105214,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.187,
+            "process_elapsed_ms": 47.551595998811536,
+            "rss_kib": 20400.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.115710000000002,
+              "elapsedMS": 4.118750999623444,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.793,
+            "process_elapsed_ms": 46.27433299901895,
+            "rss_kib": 20672.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.8007619999999993,
+              "elapsedMS": 3.8037779959267937,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.75,
+            "process_elapsed_ms": 47.11851799947908,
+            "rss_kib": 20368.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.407656999999999,
+              "elapsedMS": 4.411321002407931,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.534,
+            "process_elapsed_ms": 48.28150699904654,
+            "rss_kib": 20584.0
+          }
+        ]
+      },
+      "case": "shrink",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.4770980000000007,
+              "elapsedMS": 2.480143004504498,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.06,
+            "process_elapsed_ms": 48.42177299724426,
+            "rss_kib": 20832.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.652849999999999,
+              "elapsedMS": 3.656276996480301,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.115,
+            "process_elapsed_ms": 48.42991400073515,
+            "rss_kib": 20888.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.895186999999997,
+              "elapsedMS": 2.8981549985473976,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.303,
+            "process_elapsed_ms": 45.588199005578645,
+            "rss_kib": 20848.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.5050029999999985,
+              "elapsedMS": 2.5080589985009283,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.998,
+            "process_elapsed_ms": 45.567678003862966,
+            "rss_kib": 20876.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.492112999999997,
+              "elapsedMS": 2.494866006600205,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.504,
+            "process_elapsed_ms": 46.730969996133354,
+            "rss_kib": 20576.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.9403289999999984,
+              "elapsedMS": 2.9437009943649173,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.074,
+            "process_elapsed_ms": 47.241966996807605,
+            "rss_kib": 20428.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.295393,
+              "elapsedMS": 2.299002000654582,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.89,
+            "process_elapsed_ms": 49.15755399997579,
+            "rss_kib": 20664.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.3590850000000003,
+              "elapsedMS": 2.362036000704393,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.413,
+            "process_elapsed_ms": 45.64680800103815,
+            "rss_kib": 20428.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.7658669999999983,
+              "elapsedMS": 2.769295002508443,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.486,
+            "process_elapsed_ms": 46.78940699523082,
+            "rss_kib": 20632.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4134510000000007,
+              "elapsedMS": 2.416180999716744,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.961,
+            "process_elapsed_ms": 45.35706999740796,
+            "rss_kib": 20608.0
+          }
+        ]
+      },
+      "case": "shrink-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 7.4348030000000005,
+              "elapsedMS": 7.438433000061195,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.804,
+            "process_elapsed_ms": 41.20882400457049,
+            "rss_kib": 20836.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.358443000000003,
+              "elapsedMS": 7.361693002167158,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.376,
+            "process_elapsed_ms": 42.08218599524116,
+            "rss_kib": 20884.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.270927000000003,
+              "elapsedMS": 7.273518000147305,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.467,
+            "process_elapsed_ms": 40.4064929971355,
+            "rss_kib": 20864.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.882967000000002,
+              "elapsedMS": 8.886105002602562,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 41.139,
+            "process_elapsed_ms": 42.74918299779529,
+            "rss_kib": 20860.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.556470999999998,
+              "elapsedMS": 7.559601996035781,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.33,
+            "process_elapsed_ms": 41.537040000548586,
+            "rss_kib": 20892.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 8.019635000000001,
+              "elapsedMS": 8.022714995604474,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.238,
+            "process_elapsed_ms": 40.647159999934956,
+            "rss_kib": 20536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.135899000000001,
+              "elapsedMS": 7.1382250025635585,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.991,
+            "process_elapsed_ms": 39.321897995250765,
+            "rss_kib": 20536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.421305000000003,
+              "elapsedMS": 7.424101000651717,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.087,
+            "process_elapsed_ms": 40.29553199507063,
+            "rss_kib": 20576.0
+          },
+          {
+            "phase": {
+              "cpuMS": 6.840245999999998,
+              "elapsedMS": 6.843383001978509,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.408,
+            "process_elapsed_ms": 39.575643997523,
+            "rss_kib": 20536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.071386000000002,
+              "elapsedMS": 7.073972003126983,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.917,
+            "process_elapsed_ms": 39.08208399661817,
+            "rss_kib": 20572.0
+          }
+        ]
+      },
+      "case": "plain-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 5.374462,
+              "elapsedMS": 5.377157998736948,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.307,
+            "process_elapsed_ms": 33.458969002822414,
+            "rss_kib": 18816.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.8763000000000005,
+              "elapsedMS": 4.879149993939791,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.08,
+            "process_elapsed_ms": 34.026396002445836,
+            "rss_kib": 18720.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.964103000000001,
+              "elapsedMS": 4.967451000993606,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.121,
+            "process_elapsed_ms": 32.41942100430606,
+            "rss_kib": 18756.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.143672000000002,
+              "elapsedMS": 5.146310999407433,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.285,
+            "process_elapsed_ms": 32.5185949986917,
+            "rss_kib": 18772.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.766949999999999,
+              "elapsedMS": 4.77034200594062,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.262,
+            "process_elapsed_ms": 32.549456002016086,
+            "rss_kib": 18624.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 5.053630999999999,
+              "elapsedMS": 5.056695998064242,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.688,
+            "process_elapsed_ms": 32.561329993768595,
+            "rss_kib": 18308.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.950780000000002,
+              "elapsedMS": 4.953548006596975,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.749,
+            "process_elapsed_ms": 32.007754998630844,
+            "rss_kib": 18536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.0436010000000016,
+              "elapsedMS": 5.046514997957274,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.175,
+            "process_elapsed_ms": 31.367420000606216,
+            "rss_kib": 18356.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.926685999999999,
+              "elapsedMS": 4.929758993966971,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 34.34,
+            "process_elapsed_ms": 35.70883900101762,
+            "rss_kib": 18228.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.006934000000001,
+              "elapsedMS": 5.00958799966611,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.451,
+            "process_elapsed_ms": 32.98409900162369,
+            "rss_kib": 18364.0
+          }
+        ]
+      },
+      "case": "plain-fallback-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 54.730342,
+              "elapsedMS": 54.732969001634046,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 90.283,
+            "process_elapsed_ms": 91.9382849970134,
+            "rss_kib": 20916.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.801579000000004,
+              "elapsedMS": 52.81345900584711,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 90.823,
+            "process_elapsed_ms": 92.39417399658123,
+            "rss_kib": 20860.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.96779,
+              "elapsedMS": 52.97156199958408,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 89.727,
+            "process_elapsed_ms": 91.48103299958166,
+            "rss_kib": 20596.0
+          },
+          {
+            "phase": {
+              "cpuMS": 54.998022999999996,
+              "elapsedMS": 55.00102099904325,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 92.304,
+            "process_elapsed_ms": 93.6931949981954,
+            "rss_kib": 21024.0
+          },
+          {
+            "phase": {
+              "cpuMS": 55.671490000000006,
+              "elapsedMS": 55.68402400240302,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 96.971,
+            "process_elapsed_ms": 99.1973619966302,
+            "rss_kib": 21020.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 49.763127999999995,
+              "elapsedMS": 49.765797004511114,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.026,
+            "process_elapsed_ms": 87.67275499849347,
+            "rss_kib": 20496.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.645372,
+              "elapsedMS": 52.64814700058196,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 89.58,
+            "process_elapsed_ms": 90.8498140051961,
+            "rss_kib": 20572.0
+          },
+          {
+            "phase": {
+              "cpuMS": 50.73037299999999,
+              "elapsedMS": 50.73265799728688,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.071,
+            "process_elapsed_ms": 87.43910799967125,
+            "rss_kib": 20652.0
+          },
+          {
+            "phase": {
+              "cpuMS": 48.99954400000001,
+              "elapsedMS": 49.00235399691155,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 84.577,
+            "process_elapsed_ms": 85.86355000443291,
+            "rss_kib": 20512.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.573862999999996,
+              "elapsedMS": 52.5769460000447,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 89.442,
+            "process_elapsed_ms": 90.89298299659276,
+            "rss_kib": 20632.0
+          }
+        ]
+      },
+      "case": "mixed-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 3.983544999999998,
+              "elapsedMS": 3.986282004916575,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.291,
+            "process_elapsed_ms": 46.98235799878603,
+            "rss_kib": 20564.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.9031370000000045,
+              "elapsedMS": 3.906066995114088,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.103,
+            "process_elapsed_ms": 46.42920500191394,
+            "rss_kib": 20868.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.043459000000003,
+              "elapsedMS": 4.04694200551603,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 50.404,
+            "process_elapsed_ms": 51.70298900338821,
+            "rss_kib": 20828.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.830283,
+              "elapsedMS": 3.834056005871389,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.118,
+            "process_elapsed_ms": 45.33908599842107,
+            "rss_kib": 20880.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.416199999999999,
+              "elapsedMS": 4.418810996867251,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.988,
+            "process_elapsed_ms": 46.56228000385454,
+            "rss_kib": 20860.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 3.76487,
+              "elapsedMS": 3.7683059999835677,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.229,
+            "process_elapsed_ms": 46.815539004455786,
+            "rss_kib": 20504.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.468590000000002,
+              "elapsedMS": 4.4714309988194145,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.25,
+            "process_elapsed_ms": 47.542498003167566,
+            "rss_kib": 20416.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.9079909999999995,
+              "elapsedMS": 3.9123309979913756,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 51.465,
+            "process_elapsed_ms": 52.793698996538296,
+            "rss_kib": 20584.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.299648999999999,
+              "elapsedMS": 4.303062996768858,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.143,
+            "process_elapsed_ms": 47.55820499849506,
+            "rss_kib": 20528.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.045073000000003,
+              "elapsedMS": 4.047979004099034,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.064,
+            "process_elapsed_ms": 48.380881002231035,
+            "rss_kib": 20544.0
+          }
+        ]
+      },
+      "case": "shrink",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.517809999999999,
+              "elapsedMS": 2.5205920028383844,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.473,
+            "process_elapsed_ms": 46.67512699961662,
+            "rss_kib": 20848.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.741536999999999,
+              "elapsedMS": 2.744242003245745,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.675,
+            "process_elapsed_ms": 46.95708499639295,
+            "rss_kib": 21024.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.445619999999999,
+              "elapsedMS": 2.4480829961248673,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.47,
+            "process_elapsed_ms": 47.66892000043299,
+            "rss_kib": 20940.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4858100000000016,
+              "elapsedMS": 2.4884750018827617,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.32,
+            "process_elapsed_ms": 47.66460699465824,
+            "rss_kib": 20784.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.3282500000000006,
+              "elapsedMS": 2.331103001779411,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.526,
+            "process_elapsed_ms": 46.79603400290944,
+            "rss_kib": 20944.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.690963000000001,
+              "elapsedMS": 2.6935540008707903,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.905,
+            "process_elapsed_ms": 47.109539998928085,
+            "rss_kib": 20544.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.698622000000001,
+              "elapsedMS": 2.701776997128036,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 51.145,
+            "process_elapsed_ms": 52.47946400049841,
+            "rss_kib": 20580.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.468054000000001,
+              "elapsedMS": 2.471571999194566,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.505,
+            "process_elapsed_ms": 48.86714400345227,
+            "rss_kib": 20424.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.5866119999999984,
+              "elapsedMS": 2.589445997728035,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.127,
+            "process_elapsed_ms": 47.45742199884262,
+            "rss_kib": 20596.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.9563709999999994,
+              "elapsedMS": 2.959300996735692,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.455,
+            "process_elapsed_ms": 47.74556199845392,
+            "rss_kib": 20380.0
+          }
+        ]
+      },
+      "case": "shrink-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 6.980351000000002,
+              "elapsedMS": 6.983195002248976,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.725,
+            "process_elapsed_ms": 40.12342100031674,
+            "rss_kib": 20768.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.018344000000003,
+              "elapsedMS": 7.02094699954614,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.545,
+            "process_elapsed_ms": 38.704259000951424,
+            "rss_kib": 20940.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.3419360000000005,
+              "elapsedMS": 7.345408994297031,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.313,
+            "process_elapsed_ms": 39.63808400294511,
+            "rss_kib": 20992.0
+          },
+          {
+            "phase": {
+              "cpuMS": 6.768387000000004,
+              "elapsedMS": 6.770832995243836,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.449,
+            "process_elapsed_ms": 40.64392099826364,
+            "rss_kib": 20860.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.344268000000001,
+              "elapsedMS": 7.346876001975033,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.562,
+            "process_elapsed_ms": 38.78826100117294,
+            "rss_kib": 20872.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 7.107038999999996,
+              "elapsedMS": 7.110482001735363,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.998,
+            "process_elapsed_ms": 40.18510899913963,
+            "rss_kib": 20520.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.843483000000002,
+              "elapsedMS": 7.846438995329663,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.611,
+            "process_elapsed_ms": 40.840495996235404,
+            "rss_kib": 20500.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.648438000000004,
+              "elapsedMS": 7.651558000361547,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.67,
+            "process_elapsed_ms": 39.959859001100995,
+            "rss_kib": 20404.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.484955999999998,
+              "elapsedMS": 7.488326999009587,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.83,
+            "process_elapsed_ms": 41.21914799907245,
+            "rss_kib": 20516.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.204314000000004,
+              "elapsedMS": 7.206663998658769,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.831,
+            "process_elapsed_ms": 39.07061100471765,
+            "rss_kib": 20576.0
+          }
+        ]
+      },
+      "case": "plain-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.9590780000000025,
+              "elapsedMS": 4.96176999877207,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.965,
+            "process_elapsed_ms": 33.198113000253215,
+            "rss_kib": 18840.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.590174999999999,
+              "elapsedMS": 4.5926079983473755,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.39,
+            "process_elapsed_ms": 31.833897999604233,
+            "rss_kib": 18820.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.441979999999999,
+              "elapsedMS": 5.44477400399046,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.976,
+            "process_elapsed_ms": 33.14785000111442,
+            "rss_kib": 18536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.874544999999998,
+              "elapsedMS": 4.87788600003114,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.424,
+            "process_elapsed_ms": 32.739027999923564,
+            "rss_kib": 18772.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.752475999999999,
+              "elapsedMS": 4.817711000214331,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.103,
+            "process_elapsed_ms": 32.403024000814185,
+            "rss_kib": 18664.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.799324,
+              "elapsedMS": 4.803422998520546,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.52,
+            "process_elapsed_ms": 36.949456996808294,
+            "rss_kib": 18284.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.974767000000002,
+              "elapsedMS": 4.977383003279101,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.738,
+            "process_elapsed_ms": 33.28616399812745,
+            "rss_kib": 18328.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.056322999999998,
+              "elapsedMS": 5.059007999079768,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.733,
+            "process_elapsed_ms": 32.868970003619324,
+            "rss_kib": 18532.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.086913999999998,
+              "elapsedMS": 5.089894002594519,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 29.893,
+            "process_elapsed_ms": 31.133429998590145,
+            "rss_kib": 18536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.886050999999999,
+              "elapsedMS": 4.889126001216937,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.583,
+            "process_elapsed_ms": 32.370649998483714,
+            "rss_kib": 18440.0
+          }
+        ]
+      },
+      "case": "plain-fallback-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 58.45121499999999,
+              "elapsedMS": 58.46254499920178,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 100.382,
+            "process_elapsed_ms": 101.82108300068649,
+            "rss_kib": 20968.0
+          },
+          {
+            "phase": {
+              "cpuMS": 62.886354000000004,
+              "elapsedMS": 62.88935700285947,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 111.06,
+            "process_elapsed_ms": 112.64974500227254,
+            "rss_kib": 20960.0
+          },
+          {
+            "phase": {
+              "cpuMS": 54.675867000000004,
+              "elapsedMS": 54.68817700602813,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 98.571,
+            "process_elapsed_ms": 100.27940200234298,
+            "rss_kib": 20956.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.69633699999999,
+              "elapsedMS": 52.69910999777494,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 88.864,
+            "process_elapsed_ms": 90.85114399931626,
+            "rss_kib": 21020.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.738002,
+              "elapsedMS": 52.74076799832983,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 102.428,
+            "process_elapsed_ms": 103.89333800412714,
+            "rss_kib": 21036.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 50.945049999999995,
+              "elapsedMS": 50.94844000268495,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 89.429,
+            "process_elapsed_ms": 92.01856100116856,
+            "rss_kib": 20496.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.06016499999999,
+              "elapsedMS": 52.062684000702575,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 98.219,
+            "process_elapsed_ms": 99.73007300141035,
+            "rss_kib": 20552.0
+          },
+          {
+            "phase": {
+              "cpuMS": 50.853232,
+              "elapsedMS": 50.85584200423909,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.422,
+            "process_elapsed_ms": 88.82421900489135,
+            "rss_kib": 20800.0
+          },
+          {
+            "phase": {
+              "cpuMS": 49.94824299999999,
+              "elapsedMS": 49.95135400531581,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.9,
+            "process_elapsed_ms": 88.65568100009114,
+            "rss_kib": 20732.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.73361499999999,
+              "elapsedMS": 51.73688799550291,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 89.481,
+            "process_elapsed_ms": 91.333680000389,
+            "rss_kib": 20648.0
+          }
+        ]
+      },
+      "case": "mixed-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.0707429999999984,
+              "elapsedMS": 4.073475000041071,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.055,
+            "process_elapsed_ms": 48.48203800065676,
+            "rss_kib": 21052.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.8508099999999996,
+              "elapsedMS": 3.85366100090323,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.34,
+            "process_elapsed_ms": 44.66697500174632,
+            "rss_kib": 20864.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.294304000000002,
+              "elapsedMS": 4.297642997698858,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.91,
+            "process_elapsed_ms": 47.40319400298176,
+            "rss_kib": 20800.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.036576,
+              "elapsedMS": 4.039683997689281,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.161,
+            "process_elapsed_ms": 45.56127300020307,
+            "rss_kib": 20936.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.01669,
+              "elapsedMS": 4.0189869978348725,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.464,
+            "process_elapsed_ms": 46.99747899576323,
+            "rss_kib": 20564.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 3.928634,
+              "elapsedMS": 3.9319650022662245,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.563,
+            "process_elapsed_ms": 43.953002998023294,
+            "rss_kib": 20576.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.253856000000001,
+              "elapsedMS": 4.2562749949865974,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.616,
+            "process_elapsed_ms": 45.89546199713368,
+            "rss_kib": 20532.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.7448149999999987,
+              "elapsedMS": 3.747748996829614,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.042,
+            "process_elapsed_ms": 44.219174997124355,
+            "rss_kib": 20536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.910289000000001,
+              "elapsedMS": 3.9128070056904107,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.714,
+            "process_elapsed_ms": 43.90176800370682,
+            "rss_kib": 20544.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.7227770000000002,
+              "elapsedMS": 3.725362999830395,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.157,
+            "process_elapsed_ms": 45.37714900652645,
+            "rss_kib": 20384.0
+          }
+        ]
+      },
+      "case": "shrink",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.5796759999999996,
+              "elapsedMS": 2.582380999228917,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.924,
+            "process_elapsed_ms": 47.38199800340226,
+            "rss_kib": 20836.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.404416999999999,
+              "elapsedMS": 2.4069829960353673,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.077,
+            "process_elapsed_ms": 47.25171199970646,
+            "rss_kib": 20880.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4709950000000003,
+              "elapsedMS": 2.4736929990467615,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.962,
+            "process_elapsed_ms": 45.2740629989421,
+            "rss_kib": 20896.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.545200999999997,
+              "elapsedMS": 2.5483909994363785,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.194,
+            "process_elapsed_ms": 47.39722399972379,
+            "rss_kib": 20848.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.38145,
+              "elapsedMS": 2.3847789998399094,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.493,
+            "process_elapsed_ms": 47.08710099657765,
+            "rss_kib": 20828.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.465120000000001,
+              "elapsedMS": 2.4681699942448176,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.611,
+            "process_elapsed_ms": 47.83118999330327,
+            "rss_kib": 20336.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.331246000000002,
+              "elapsedMS": 2.33419900177978,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.595,
+            "process_elapsed_ms": 46.12573499616701,
+            "rss_kib": 20452.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.201833000000001,
+              "elapsedMS": 3.206150999176316,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 48.136,
+            "process_elapsed_ms": 49.48881499876734,
+            "rss_kib": 20576.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.5744860000000007,
+              "elapsedMS": 2.577227001893334,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.278,
+            "process_elapsed_ms": 46.4433300003293,
+            "rss_kib": 20424.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.409787,
+              "elapsedMS": 2.4130320016411133,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.227,
+            "process_elapsed_ms": 47.622129997762386,
+            "rss_kib": 20396.0
+          }
+        ]
+      },
+      "case": "shrink-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 7.108204,
+              "elapsedMS": 7.111389000783674,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.037,
+            "process_elapsed_ms": 40.50677500345046,
+            "rss_kib": 20832.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.559095000000002,
+              "elapsedMS": 7.561942002212163,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 41.67,
+            "process_elapsed_ms": 42.93386099743657,
+            "rss_kib": 20880.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.001981000000001,
+              "elapsedMS": 7.004623003012966,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.201,
+            "process_elapsed_ms": 39.4278200037661,
+            "rss_kib": 20784.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.444702000000001,
+              "elapsedMS": 8.46894399728626,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.999,
+            "process_elapsed_ms": 40.273975995660294,
+            "rss_kib": 20928.0
+          },
+          {
+            "phase": {
+              "cpuMS": 6.855323999999996,
+              "elapsedMS": 6.8581610030378215,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.823,
+            "process_elapsed_ms": 39.99935399770038,
+            "rss_kib": 20796.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 7.443209999999999,
+              "elapsedMS": 7.446059003996197,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.256,
+            "process_elapsed_ms": 41.62698399886722,
+            "rss_kib": 20520.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.552106000000003,
+              "elapsedMS": 7.554816998890601,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.346,
+            "process_elapsed_ms": 39.56189699965762,
+            "rss_kib": 20496.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.472650999999997,
+              "elapsedMS": 8.475834998534992,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 41.214,
+            "process_elapsed_ms": 42.48858999926597,
+            "rss_kib": 20500.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.638216999999999,
+              "elapsedMS": 7.6410149995354,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.326,
+            "process_elapsed_ms": 40.620686995680444,
+            "rss_kib": 20440.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.042284000000004,
+              "elapsedMS": 8.066002999839839,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.771,
+            "process_elapsed_ms": 40.99243200471392,
+            "rss_kib": 20360.0
+          }
+        ]
+      },
+      "case": "plain-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 5
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.729489999999999,
+              "elapsedMS": 4.73196100210771,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 33.033,
+            "process_elapsed_ms": 34.444257005816326,
+            "rss_kib": 18756.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.608381999999999,
+              "elapsedMS": 5.611815002339426,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.167,
+            "process_elapsed_ms": 33.69005999411456,
+            "rss_kib": 18640.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.522702999999999,
+              "elapsedMS": 4.524682997725904,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.037,
+            "process_elapsed_ms": 31.225534999975935,
+            "rss_kib": 18688.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.911835999999999,
+              "elapsedMS": 4.914848002954386,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.441,
+            "process_elapsed_ms": 32.67898299964145,
+            "rss_kib": 18748.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.774669000000002,
+              "elapsedMS": 4.777169997396413,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.852,
+            "process_elapsed_ms": 32.22194899717579,
+            "rss_kib": 18600.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.926628999999998,
+              "elapsedMS": 4.929419999825768,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.984,
+            "process_elapsed_ms": 32.19607299979543,
+            "rss_kib": 18212.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.028125000000001,
+              "elapsedMS": 5.030640997574665,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 29.849,
+            "process_elapsed_ms": 31.12892699573422,
+            "rss_kib": 18316.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.259136000000001,
+              "elapsedMS": 5.262020000373013,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.221,
+            "process_elapsed_ms": 33.564940000360366,
+            "rss_kib": 18300.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.767811000000001,
+              "elapsedMS": 5.770686002506409,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 32.734,
+            "process_elapsed_ms": 34.04933399724541,
+            "rss_kib": 18412.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.1984509999999995,
+              "elapsedMS": 5.201180996664334,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 30.871,
+            "process_elapsed_ms": 32.11079900211189,
+            "rss_kib": 18476.0
+          }
+        ]
+      },
+      "case": "plain-fallback-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 5
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 51.052639,
+              "elapsedMS": 51.06330499984324,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 89.087,
+            "process_elapsed_ms": 90.43052600463852,
+            "rss_kib": 20884.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.68899,
+              "elapsedMS": 51.69256400404265,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.949,
+            "process_elapsed_ms": 89.27356600179337,
+            "rss_kib": 20600.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.086510999999994,
+              "elapsedMS": 51.08939700585324,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.09,
+            "process_elapsed_ms": 87.29602299717953,
+            "rss_kib": 20992.0
+          },
+          {
+            "phase": {
+              "cpuMS": 63.799071999999995,
+              "elapsedMS": 63.802435994148254,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 102.963,
+            "process_elapsed_ms": 104.4037899991963,
+            "rss_kib": 20944.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.36661199999999,
+              "elapsedMS": 51.369562999752816,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.723,
+            "process_elapsed_ms": 88.08204699744238,
+            "rss_kib": 20900.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 52.09975300000001,
+              "elapsedMS": 52.12317300174618,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 87.475,
+            "process_elapsed_ms": 88.91498199955095,
+            "rss_kib": 20596.0
+          },
+          {
+            "phase": {
+              "cpuMS": 59.172244,
+              "elapsedMS": 59.175536000111606,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 95.474,
+            "process_elapsed_ms": 96.88597900094464,
+            "rss_kib": 20664.0
+          },
+          {
+            "phase": {
+              "cpuMS": 62.92399699999999,
+              "elapsedMS": 62.92714500159491,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 113.152,
+            "process_elapsed_ms": 114.6477220027009,
+            "rss_kib": 20680.0
+          },
+          {
+            "phase": {
+              "cpuMS": 76.219921,
+              "elapsedMS": 76.22311700106366,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 134.219,
+            "process_elapsed_ms": 138.70738799596438,
+            "rss_kib": 20524.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.354713,
+              "elapsedMS": 52.378900996700395,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 89.607,
+            "process_elapsed_ms": 91.15870199457277,
+            "rss_kib": 20528.0
+          }
+        ]
+      },
+      "case": "mixed-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 5
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.952663999999999,
+              "elapsedMS": 4.955108001013286,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.907,
+            "process_elapsed_ms": 46.17245400004322,
+            "rss_kib": 20876.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.040243000000002,
+              "elapsedMS": 4.0433750036754645,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.075,
+            "process_elapsed_ms": 47.38733699923614,
+            "rss_kib": 20988.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.6062359999999987,
+              "elapsedMS": 3.6089280038140714,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.487,
+            "process_elapsed_ms": 44.72658099984983,
+            "rss_kib": 20564.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.8513090000000005,
+              "elapsedMS": 3.8543310001841746,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.478,
+            "process_elapsed_ms": 45.94910000014352,
+            "rss_kib": 20884.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.7874060000000003,
+              "elapsedMS": 3.7906750003458,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.589,
+            "process_elapsed_ms": 44.06373500387417,
+            "rss_kib": 20992.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.002297999999998,
+              "elapsedMS": 4.00488699960988,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.542,
+            "process_elapsed_ms": 44.94155300199054,
+            "rss_kib": 20408.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.793323999999997,
+              "elapsedMS": 3.796092001721263,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.083,
+            "process_elapsed_ms": 46.63651499868138,
+            "rss_kib": 20332.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.8763729999999987,
+              "elapsedMS": 3.8790770049672574,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.826,
+            "process_elapsed_ms": 44.02060199936386,
+            "rss_kib": 20536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.7103169999999976,
+              "elapsedMS": 3.712974998052232,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.649,
+            "process_elapsed_ms": 45.12672599958023,
+            "rss_kib": 20396.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.065486,
+              "elapsedMS": 4.068542999448255,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.723,
+            "process_elapsed_ms": 44.25522500241641,
+            "rss_kib": 20536.0
+          }
+        ]
+      },
+      "case": "shrink",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 5
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.4116599999999995,
+              "elapsedMS": 2.4141690009855665,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.058,
+            "process_elapsed_ms": 47.46143399825087,
+            "rss_kib": 20836.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.410502000000002,
+              "elapsedMS": 2.4132659964379855,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 54.28,
+            "process_elapsed_ms": 57.61367699597031,
+            "rss_kib": 20884.0
+          },
+          {
+            "phase": {
+              "cpuMS": 6.737654000000003,
+              "elapsedMS": 6.741270000929944,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 75.803,
+            "process_elapsed_ms": 77.61025299987523,
+            "rss_kib": 20856.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.731408999999997,
+              "elapsedMS": 2.7344670015736483,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.477,
+            "process_elapsed_ms": 49.20224400120787,
+            "rss_kib": 20932.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.9282890000000004,
+              "elapsedMS": 2.9317059961613268,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.478,
+            "process_elapsed_ms": 46.752426998864394,
+            "rss_kib": 20884.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.669457,
+              "elapsedMS": 2.6720780006144196,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.803,
+            "process_elapsed_ms": 45.05973300547339,
+            "rss_kib": 20596.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.479408999999998,
+              "elapsedMS": 2.482260999386199,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 48.085,
+            "process_elapsed_ms": 49.45011000381783,
+            "rss_kib": 20660.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.5609680000000004,
+              "elapsedMS": 2.564417001849506,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 48.484,
+            "process_elapsed_ms": 50.131073003285564,
+            "rss_kib": 20744.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.7014750000000016,
+              "elapsedMS": 2.7052969962824136,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 49.308,
+            "process_elapsed_ms": 50.75119700632058,
+            "rss_kib": 20632.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.296936999999999,
+              "elapsedMS": 2.299605999724008,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.134,
+            "process_elapsed_ms": 47.42760400404222,
+            "rss_kib": 20564.0
+          }
+        ]
+      },
+      "case": "shrink-unique",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 5
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 7.242914999999999,
+              "elapsedMS": 7.245736000186298,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 38.786,
+            "process_elapsed_ms": 40.15075600182172,
+            "rss_kib": 20772.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.220613000000002,
+              "elapsedMS": 8.223243996326346,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 47.348,
+            "process_elapsed_ms": 48.53719899983844,
+            "rss_kib": 20808.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.462945999999998,
+              "elapsedMS": 7.465632996172644,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.146,
+            "process_elapsed_ms": 40.49532600038219,
+            "rss_kib": 20468.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.512723000000003,
+              "elapsedMS": 8.51589000376407,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.684,
+            "process_elapsed_ms": 41.09181799867656,
+            "rss_kib": 20848.0
+          },
+          {
+            "phase": {
+              "cpuMS": 6.789548000000003,
+              "elapsedMS": 6.79809400025988,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.913,
+            "process_elapsed_ms": 44.4469280046178,
+            "rss_kib": 20928.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 6.999198000000002,
+              "elapsedMS": 7.001988000411075,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.835,
+            "process_elapsed_ms": 41.426980002142955,
+            "rss_kib": 20608.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.2766129999999976,
+              "elapsedMS": 7.279329998709727,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.06,
+            "process_elapsed_ms": 45.69674799859058,
+            "rss_kib": 20576.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.444132999999995,
+              "elapsedMS": 8.449184999335557,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.326,
+            "process_elapsed_ms": 43.71819100197172,
+            "rss_kib": 20536.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.361720999999998,
+              "elapsedMS": 7.364286000665743,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 39.921,
+            "process_elapsed_ms": 41.33719600213226,
+            "rss_kib": 20548.0
+          },
+          {
+            "phase": {
+              "cpuMS": 11.666346,
+              "elapsedMS": 11.669486993923783,
+              "fittingShapes": 100,
+              "scenario": "plain-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 48.401,
+            "process_elapsed_ms": 49.958522999077104,
+            "rss_kib": 20412.0
+          }
+        ]
+      },
+      "case": "plain-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 6
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 5.512087000000002,
+              "elapsedMS": 5.515182005183306,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 33.886,
+            "process_elapsed_ms": 35.41743099776795,
+            "rss_kib": 18644.0
+          },
+          {
+            "phase": {
+              "cpuMS": 8.132366000000001,
+              "elapsedMS": 8.135951997246593,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 50.128,
+            "process_elapsed_ms": 51.40065900195623,
+            "rss_kib": 18556.0
+          },
+          {
+            "phase": {
+              "cpuMS": 11.989605000000001,
+              "elapsedMS": 11.99369099776959,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 51.403,
+            "process_elapsed_ms": 57.05558499903418,
+            "rss_kib": 18820.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.416043000000002,
+              "elapsedMS": 5.41885999700753,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 56.934,
+            "process_elapsed_ms": 59.57210499764187,
+            "rss_kib": 18788.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.345897000000003,
+              "elapsedMS": 5.348962004063651,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.05,
+            "process_elapsed_ms": 46.660919993883,
+            "rss_kib": 18772.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 5.6059470000000005,
+              "elapsedMS": 5.609788997389842,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 37.299,
+            "process_elapsed_ms": 39.36516400426626,
+            "rss_kib": 18400.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.711417999999999,
+              "elapsedMS": 5.714578001061454,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 33.954,
+            "process_elapsed_ms": 35.42953400028637,
+            "rss_kib": 18400.0
+          },
+          {
+            "phase": {
+              "cpuMS": 5.714336,
+              "elapsedMS": 5.7168739949702285,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 31.913,
+            "process_elapsed_ms": 33.28411200345727,
+            "rss_kib": 18228.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.1823399999999955,
+              "elapsedMS": 7.185738999396563,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 40.242,
+            "process_elapsed_ms": 41.665425000246614,
+            "rss_kib": 18532.0
+          },
+          {
+            "phase": {
+              "cpuMS": 7.8305919999999976,
+              "elapsedMS": 7.834885000193026,
+              "fittingShapes": 100,
+              "scenario": "plain-fallback-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.553,
+            "process_elapsed_ms": 45.81264200533042,
+            "rss_kib": 18532.0
+          }
+        ]
+      },
+      "case": "plain-fallback-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 6
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 119.98373399999998,
+              "elapsedMS": 119.98613500327338,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 179.449,
+            "process_elapsed_ms": 181.1651800016989,
+            "rss_kib": 21024.0
+          },
+          {
+            "phase": {
+              "cpuMS": 77.82014099999999,
+              "elapsedMS": 77.82354100345401,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 165.602,
+            "process_elapsed_ms": 167.05071800242877,
+            "rss_kib": 20940.0
+          },
+          {
+            "phase": {
+              "cpuMS": 60.945986000000005,
+              "elapsedMS": 60.948678001295775,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 108.747,
+            "process_elapsed_ms": 111.33717699703993,
+            "rss_kib": 21008.0
+          },
+          {
+            "phase": {
+              "cpuMS": 53.573518,
+              "elapsedMS": 53.577127000608016,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 91.694,
+            "process_elapsed_ms": 93.27671799837844,
+            "rss_kib": 20896.0
+          },
+          {
+            "phase": {
+              "cpuMS": 52.60799000000001,
+              "elapsedMS": 52.61088399856817,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 90.243,
+            "process_elapsed_ms": 91.60177900048438,
+            "rss_kib": 20920.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 50.64552600000001,
+              "elapsedMS": 50.657338004384656,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.992,
+            "process_elapsed_ms": 88.29951799998526,
+            "rss_kib": 20800.0
+          },
+          {
+            "phase": {
+              "cpuMS": 50.76225399999999,
+              "elapsedMS": 50.76421699777711,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.437,
+            "process_elapsed_ms": 87.7805560012348,
+            "rss_kib": 20556.0
+          },
+          {
+            "phase": {
+              "cpuMS": 49.536568,
+              "elapsedMS": 49.53928300528787,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 83.633,
+            "process_elapsed_ms": 85.23028100171359,
+            "rss_kib": 20648.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.18341699999999,
+              "elapsedMS": 51.186411998060066,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 84.587,
+            "process_elapsed_ms": 86.01585399446776,
+            "rss_kib": 20496.0
+          },
+          {
+            "phase": {
+              "cpuMS": 51.059707,
+              "elapsedMS": 51.06256600265624,
+              "fittingShapes": 100,
+              "scenario": "mixed-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 86.654,
+            "process_elapsed_ms": 87.88943700346863,
+            "rss_kib": 20676.0
+          }
+        ]
+      },
+      "case": "mixed-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 6
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 3.7446019999999995,
+              "elapsedMS": 3.7481040053535253,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.448,
+            "process_elapsed_ms": 45.86690699943574,
+            "rss_kib": 20872.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.841711000000001,
+              "elapsedMS": 3.844249004032463,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.212,
+            "process_elapsed_ms": 44.47243500180775,
+            "rss_kib": 20860.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.016370000000002,
+              "elapsedMS": 4.019205996883102,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.005,
+            "process_elapsed_ms": 45.33748300309526,
+            "rss_kib": 20864.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.9761170000000012,
+              "elapsedMS": 3.9789439979358576,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 42.433,
+            "process_elapsed_ms": 43.913139998039696,
+            "rss_kib": 20900.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.6803209999999966,
+              "elapsedMS": 3.6830230019404553,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.769,
+            "process_elapsed_ms": 47.20158199779689,
+            "rss_kib": 20980.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 4.779373,
+              "elapsedMS": 4.781739997270051,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.529,
+            "process_elapsed_ms": 45.907498002634384,
+            "rss_kib": 20444.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.119380999999998,
+              "elapsedMS": 4.1226910034311,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.817,
+            "process_elapsed_ms": 46.030498000618536,
+            "rss_kib": 20368.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.725743,
+              "elapsedMS": 3.728527000930626,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.246,
+            "process_elapsed_ms": 45.51039500074694,
+            "rss_kib": 20368.0
+          },
+          {
+            "phase": {
+              "cpuMS": 4.299108999999999,
+              "elapsedMS": 4.302551998989657,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.836,
+            "process_elapsed_ms": 45.274757998413406,
+            "rss_kib": 20544.0
+          },
+          {
+            "phase": {
+              "cpuMS": 3.882205999999999,
+              "elapsedMS": 3.8849589982419275,
+              "fittingShapes": 100,
+              "scenario": "shrink",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.878,
+            "process_elapsed_ms": 45.185036993643735,
+            "rss_kib": 20368.0
+          }
+        ]
+      },
+      "case": "shrink",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 6
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.7521169999999984,
+              "elapsedMS": 2.755070003331639,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 46.424,
+            "process_elapsed_ms": 47.72177700215252,
+            "rss_kib": 20876.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.447653000000001,
+              "elapsedMS": 2.450526000757236,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.836,
+            "process_elapsed_ms": 45.02561700064689,
+            "rss_kib": 20900.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.8078129999999994,
+              "elapsedMS": 2.810320998833049,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 48.408,
+            "process_elapsed_ms": 49.904413004696835,
+            "rss_kib": 20876.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4982379999999997,
+              "elapsedMS": 2.5012670012074523,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.206,
+            "process_elapsed_ms": 46.47197300073458,
+            "rss_kib": 20880.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4630669999999992,
+              "elapsedMS": 2.466045996698085,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.417,
+            "process_elapsed_ms": 46.97218799992697,
+            "rss_kib": 20780.0
+          }
+        ]
+      },
+      "candidate": {
+        "samples": [
+          {
+            "phase": {
+              "cpuMS": 2.544229000000002,
+              "elapsedMS": 2.547042000514921,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.41,
+            "process_elapsed_ms": 46.801046999462415,
+            "rss_kib": 20680.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.376564999999997,
+              "elapsedMS": 2.3797250032657757,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.49,
+            "process_elapsed_ms": 45.69350800011307,
+            "rss_kib": 20608.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4789799999999986,
+              "elapsedMS": 2.48174700391246,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 45.571,
+            "process_elapsed_ms": 46.847247998812236,
+            "rss_kib": 20604.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.343274999999999,
+              "elapsedMS": 2.3463640027330257,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 43.768,
+            "process_elapsed_ms": 45.40642000210937,
+            "rss_kib": 20552.0
+          },
+          {
+            "phase": {
+              "cpuMS": 2.4683180000000005,
+              "elapsedMS": 2.471468993462622,
+              "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+              "fittingShapes": 0,
+              "scenario": "shrink-unique",
+              "shapes": 100
+            },
+            "process_cpu_ms": 44.307,
+            "process_elapsed_ms": 45.54899899812881,
+            "rss_kib": 20752.0
+          }
+        ]
+      },
+      "case": "shrink-unique",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 6
+    }
+  ],
+  "preservation": [
+    {
+      "case": "plain-unique",
+      "deck_sha256": "73d6ea0bce00cdf679a68910c022efcd8a24fb69851611ededd81a11c82e8b29",
+      "result": {
+        "fittingShapes": 100,
+        "scenario": "plain-unique",
+        "shapes": 100
+      }
+    },
+    {
+      "case": "plain-fallback-unique",
+      "deck_sha256": "73d6ea0bce00cdf679a68910c022efcd8a24fb69851611ededd81a11c82e8b29",
+      "result": {
+        "fittingShapes": 100,
+        "scenario": "plain-fallback-unique",
+        "shapes": 100
+      }
+    },
+    {
+      "case": "mixed-unique",
+      "deck_sha256": "26f7c091d5acc61c005c733cdb157a21fcab5d25ab53fa5a307973074041e9d7",
+      "result": {
+        "fittingShapes": 100,
+        "scenario": "mixed-unique",
+        "shapes": 100
+      }
+    },
+    {
+      "case": "shrink",
+      "deck_sha256": "56161e95f5c23c5ebefee72206cb5cad79bf3ba472e6e03f9b7586355becfc78",
+      "result": {
+        "fittingShapes": 100,
+        "scenario": "shrink",
+        "shapes": 100
+      }
+    },
+    {
+      "case": "shrink-unique",
+      "deck_sha256": "997172555fb5f6992d49510476e4b3ef1fba4210cc248e78d98d41492f5c749d",
+      "result": {
+        "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+        "fittingShapes": 0,
+        "scenario": "shrink-unique",
+        "shapes": 100
+      }
+    }
+  ],
+  "processes_per_variant": 5,
+  "warmup": [
+    {
+      "baseline": {
+        "phase": {
+          "cpuMS": 7.628493,
+          "elapsedMS": 7.632510001712944,
+          "fittingShapes": 100,
+          "scenario": "plain-unique",
+          "shapes": 100
+        },
+        "process_cpu_ms": 45.752,
+        "process_elapsed_ms": 47.494701997493394,
+        "rss_kib": 20792.0
+      },
+      "candidate": {
+        "phase": {
+          "cpuMS": 7.048462000000002,
+          "elapsedMS": 7.051170003251173,
+          "fittingShapes": 100,
+          "scenario": "plain-unique",
+          "shapes": 100
+        },
+        "process_cpu_ms": 40.795,
+        "process_elapsed_ms": 42.37006200128235,
+        "rss_kib": 20360.0
+      },
+      "case": "plain-unique"
+    },
+    {
+      "baseline": {
+        "phase": {
+          "cpuMS": 5.236471,
+          "elapsedMS": 5.239466998318676,
+          "fittingShapes": 100,
+          "scenario": "plain-fallback-unique",
+          "shapes": 100
+        },
+        "process_cpu_ms": 31.324,
+        "process_elapsed_ms": 32.661652003298514,
+        "rss_kib": 18600.0
+      },
+      "candidate": {
+        "phase": {
+          "cpuMS": 5.0759289999999995,
+          "elapsedMS": 5.078795998997521,
+          "fittingShapes": 100,
+          "scenario": "plain-fallback-unique",
+          "shapes": 100
+        },
+        "process_cpu_ms": 32.493,
+        "process_elapsed_ms": 33.7177649998921,
+        "rss_kib": 18284.0
+      },
+      "case": "plain-fallback-unique"
+    },
+    {
+      "baseline": {
+        "phase": {
+          "cpuMS": 58.172454,
+          "elapsedMS": 58.174960999167524,
+          "fittingShapes": 100,
+          "scenario": "mixed-unique",
+          "shapes": 100
+        },
+        "process_cpu_ms": 93.34,
+        "process_elapsed_ms": 95.04763800214278,
+        "rss_kib": 20920.0
+      },
+      "candidate": {
+        "phase": {
+          "cpuMS": 49.369786000000005,
+          "elapsedMS": 49.372600005881395,
+          "fittingShapes": 100,
+          "scenario": "mixed-unique",
+          "shapes": 100
+        },
+        "process_cpu_ms": 85.669,
+        "process_elapsed_ms": 87.50396100367652,
+        "rss_kib": 20596.0
+      },
+      "case": "mixed-unique"
+    },
+    {
+      "baseline": {
+        "phase": {
+          "cpuMS": 4.266157,
+          "elapsedMS": 4.269327000656631,
+          "fittingShapes": 100,
+          "scenario": "shrink",
+          "shapes": 100
+        },
+        "process_cpu_ms": 44.864,
+        "process_elapsed_ms": 46.39020399918081,
+        "rss_kib": 20896.0
+      },
+      "candidate": {
+        "phase": {
+          "cpuMS": 5.217466000000001,
+          "elapsedMS": 5.220573999395128,
+          "fittingShapes": 100,
+          "scenario": "shrink",
+          "shapes": 100
+        },
+        "process_cpu_ms": 49.794,
+        "process_elapsed_ms": 51.22283400123706,
+        "rss_kib": 20488.0
+      },
+      "case": "shrink"
+    },
+    {
+      "baseline": {
+        "phase": {
+          "cpuMS": 2.6218619999999992,
+          "elapsedMS": 2.625476998218801,
+          "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+          "fittingShapes": 0,
+          "scenario": "shrink-unique",
+          "shapes": 100
+        },
+        "process_cpu_ms": 46.025,
+        "process_elapsed_ms": 48.16970899992157,
+        "rss_kib": 20852.0
+      },
+      "candidate": {
+        "phase": {
+          "cpuMS": 2.3136830000000006,
+          "elapsedMS": 2.316621998033952,
+          "error": "\u2018Measured text 0 Measured text 0 Measured text 0 Measured text 0 Measur\u2019 does not fit at a readable size. Use a roomier layout or split this slide.",
+          "fittingShapes": 0,
+          "scenario": "shrink-unique",
+          "shapes": 100
+        },
+        "process_cpu_ms": 47.878,
+        "process_elapsed_ms": 49.34615499951178,
+        "rss_kib": 20548.0
+      },
+      "case": "shrink-unique"
+    }
+  ]
+}

@@ -6,6 +6,10 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Shared rich-text layout reuses each source run's resolved font metrics when
+  measuring wrapped fragments, preserving current font/content checks and exact
+  output. No additional cache or font policy is introduced; see the
+  [preservation and Release comparison](docs/TEXT-LAYOUT-20261017.md).
 - Table continuation composition resolves its shared template style once per
   operation for native tables and captions. Fresh font/content checks and saved
   output remain unchanged; the [Release comparison](docs/TABLE-COMPOSITION-20261017.md)

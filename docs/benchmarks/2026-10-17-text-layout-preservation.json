@@ -1,0 +1,1843 @@
+{
+  "build_arguments": {
+    "baseline": {
+      "Rostrum": [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-O",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-module-cache-path",
+        "/workspace/rostrum/.build/x86_64-unknown-linux-gnu/release/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "rostrum",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "RostrumLayout": [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-O",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-module-cache-path",
+        "/workspace/rostrum/.build/x86_64-unknown-linux-gnu/release/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "rostrum",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ]
+    },
+    "candidate": {
+      "Rostrum": [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-O",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-module-cache-path",
+        "/workspace/rostrum/.build/x86_64-unknown-linux-gnu/release/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "rostrum",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "RostrumLayout": [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-O",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-module-cache-path",
+        "/workspace/rostrum/.build/x86_64-unknown-linux-gnu/release/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "rostrum",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ]
+    }
+  },
+  "build_provenance": {
+    "baseline": {
+      "binaries": {
+        "baseline": "5f394eaa53b2a407e694e1e57711e6a069c522eae36053f9787f6be118352992",
+        "baseline-fitting": "ee03db1566df1c2602d1aea911b872dc72135a64f60f4aa5d662c60f28521305",
+        "baseline-headers": "0630d3c6ea11b39d6715a86719911494c9bd428ac0b17b799734dd436197c989",
+        "baseline-snapshot": "625c660002ffe51501a5160bb86edbce987952b6a3797a19a7cbd0e982b269e2",
+        "baseline-spans": "759d682a53ce3de23ef0750f2bdb6084eb2c7d566ee5cf9061218daa451dde8d",
+        "baseline-vertical": "9499ac2fbf434c96e28ae5499c254c4a1492f0824063a75e94c42082d57af28d"
+      },
+      "commit": "91fcb55ceaca41c702a906d6ea7d9764c6343a69",
+      "source_dirty": false,
+      "source_hashes": [
+        {
+          "path": "Sources/LecternIR/DeckIR.swift",
+          "sha256": "9241940b1838db4258f8830c24f37e6f057f6bfc5ebaacc577c3df7ddc1133c0"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartCacheRepair.swift",
+          "sha256": "29ea3b40edb93f89c85d7eb52dd9e6fa22b5e2c2a5ec73a213cfadec6af2d193"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartCacheWorkbook.swift",
+          "sha256": "485694a3d4f367c459254b9471e0354542425a95be99ccda293086317dc0531a"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartData.swift",
+          "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartReader.swift",
+          "sha256": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartSeriesEditing.swift",
+          "sha256": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartWorkbook.swift",
+          "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartWorkbookReader.swift",
+          "sha256": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartXML.swift",
+          "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/Charts.swift",
+          "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ComboChartData.swift",
+          "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+        },
+        {
+          "path": "Sources/Rostrum/Core/RostrumError.swift",
+          "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+        },
+        {
+          "path": "Sources/Rostrum/Core/Units.swift",
+          "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/ColorMath.swift",
+          "sha256": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/Drawing.swift",
+          "sha256": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/DrawingColor.swift",
+          "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/Geometry.swift",
+          "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/GradientStops.swift",
+          "sha256": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/ImageSniffer.swift",
+          "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/ArabicJoining.swift",
+          "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/ArabicLayoutTables.swift",
+          "sha256": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/ArabicTextShaper.swift",
+          "sha256": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/FontFaceKey.swift",
+          "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/FontLayoutTables.swift",
+          "sha256": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/FontLibrary.swift",
+          "sha256": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/FontMetrics.swift",
+          "sha256": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/MarkPositioning.swift",
+          "sha256": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/PreparedFont.swift",
+          "sha256": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/ShapedGlyphRun.swift",
+          "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/TextMeasurer.swift",
+          "sha256": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/TextShaper.swift",
+          "sha256": "06462c96d3d0ef883ad46d4b4c44ffa9f05be7f2c0ebdda3f6be225146d1306a"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/ContentTypes.swift",
+          "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/OPCArchive.swift",
+          "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/OPCPackage.swift",
+          "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/PackURI.swift",
+          "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/Relationships.swift",
+          "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/AnnotationDependencies.swift",
+          "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/AnnotationImport.swift",
+          "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/BackgroundResolver.swift",
+          "sha256": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/BuiltInTableStyle.swift",
+          "sha256": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/CommentEditing.swift",
+          "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Comments.swift",
+          "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Components.swift",
+          "sha256": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DeckExport.swift",
+          "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DeckMerge.swift",
+          "sha256": "a469986af885706217489bb0cf105bcb2802acce16c0c736f8db93e17876f4bc"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DeckOutline.swift",
+          "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DeckStyle.swift",
+          "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Design.swift",
+          "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DocumentProperties.swift",
+          "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/EmbeddedFontImport.swift",
+          "sha256": "f1f6035482326237e58bc14c7ee96666cfe382257df4e0ef5c1fa9a6da8152e6"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/FontEmbedding.swift",
+          "sha256": "1bdf5c1b286e615c3aff8090163cfc4cda58fe82b67f8264627550afb05026bd"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/FontEmbeddingPlan.swift",
+          "sha256": "7e07c1493a81947400ab0a0d91edce2624eda09b7b567a64b57c6ba9a57f5df0"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/HeadersFooters.swift",
+          "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ImageFill.swift",
+          "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Layouts.swift",
+          "sha256": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift",
+          "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/LegacyComments.swift",
+          "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Media.swift",
+          "sha256": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/MinimalTemplate.swift",
+          "sha256": "d11d5c5310f1614a66521f6ede0d28cd5239cec1311dfe346345661f8bc06eed"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Notes.swift",
+          "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/NotesImportGeometry.swift",
+          "sha256": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/NotesPageRenderer.swift",
+          "sha256": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/NotesPageTemplate.swift",
+          "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/OutlineImageFills.swift",
+          "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/PictureCrop.swift",
+          "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Pictures.swift",
+          "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Presentation.swift",
+          "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/PublishedLayouts.swift",
+          "sha256": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RenderDiagnostics.swift",
+          "sha256": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RenderImageResources.swift",
+          "sha256": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RenderTextAttributes.swift",
+          "sha256": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+          "sha256": "769151dacb524985bb86825c64aed33dee97d5fb2685a9822213cf0ab4934527"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RichTextPreparation.swift",
+          "sha256": "a566c575a7a2754323288a634740b19d026a7a540dcf3078cb9922918574f1a3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGCustomGeometry.swift",
+          "sha256": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift",
+          "sha256": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGImagePlacement.swift",
+          "sha256": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGPaint.swift",
+          "sha256": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGPresetGeometry.swift",
+          "sha256": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+          "sha256": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGRichText.swift",
+          "sha256": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGShadow.swift",
+          "sha256": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Sections.swift",
+          "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ShapeAppearance.swift",
+          "sha256": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ShapeKind.swift",
+          "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ShapeTransform.swift",
+          "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ShapeTypes.swift",
+          "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Shapes.swift",
+          "sha256": "c319d1ee4a1f0afe4df7fba7149c063899be996daff2133effa66353ff1311d3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Slide.swift",
+          "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SlideAnnotations.swift",
+          "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SlideBuilders.swift",
+          "sha256": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SlideMasters.swift",
+          "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Slides.swift",
+          "sha256": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SmartArt.swift",
+          "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+          "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableBorderSegments.swift",
+          "sha256": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableCellFormatting.swift",
+          "sha256": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableDoubleBorder.swift",
+          "sha256": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableEditing.swift",
+          "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableGridSnapshot.swift",
+          "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableLayoutSource.swift",
+          "sha256": "1919ed9e96badc1e35d8ae91606151c52fcdf85d3116830748746fcf8b9b0d5a"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableStyleImport.swift",
+          "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+          "sha256": "9c24b8814c05984b1167061560d2de630f72c2de29a9d93f9b51b8475e84ad56"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableStyling.swift",
+          "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Tables.swift",
+          "sha256": "98b29d0b1a5ea29ba01e48d40f87ea4f47800383a52cda42fc93471bd109a801"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+          "sha256": "7aa27bb6775926aa1c646433315a0fbfa47bcd384b4b8c964654a789ab744f09"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Text.swift",
+          "sha256": "db17e2ad61df9e9d9180d4cb2301da41e551a6162e33881d35236933b2c06169"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Theme.swift",
+          "sha256": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Validation.swift",
+          "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+        },
+        {
+          "path": "Sources/Rostrum/Schema/GeneratedSchema.swift",
+          "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+        },
+        {
+          "path": "Sources/Rostrum/Schema/OXMLHelpers.swift",
+          "sha256": "f30ef480475252569a33f345fc004238e8e38863610c9c5ee886725402d23050"
+        },
+        {
+          "path": "Sources/Rostrum/Schema/PresetGeometry.swift",
+          "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+        },
+        {
+          "path": "Sources/Rostrum/XML/XML.swift",
+          "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/CRC32.swift",
+          "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/Deflate.swift",
+          "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/Inflate.swift",
+          "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/ZipReader.swift",
+          "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/ZipWriter.swift",
+          "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+        },
+        {
+          "path": "Sources/RostrumLayout/AuthoredLayoutEngine.swift",
+          "sha256": "7d2eb25eb12ad2e8321179acb92fa0cf8647a01f7163f186c64ac3a353f2da5d"
+        },
+        {
+          "path": "Sources/RostrumLayout/MeasuredPaginator.swift",
+          "sha256": "df682b359da8ef38d6a1eeefbe70f98e1cb2077f6002efc2799fd283669582d9"
+        },
+        {
+          "path": "Sources/RostrumLayout/StructuredLayout.swift",
+          "sha256": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850"
+        },
+        {
+          "path": "Sources/RostrumLayout/TableCellPreparation.swift",
+          "sha256": "ad1c50cd7efbe97a600abbf9677b8af3f462fa20afb968bbc44229b2c51de53b"
+        },
+        {
+          "path": "Sources/RostrumLayout/TableColumnSizing.swift",
+          "sha256": "d2050969dca61518d8690d7796c56984a1dec85e191b9e3d39608f6f7e938adc"
+        },
+        {
+          "path": "Sources/RostrumLayout/TableLayoutEngine.swift",
+          "sha256": "a0bb5085edef04cc7a2e3f9defca433813b0639d55ff7dc6df3e7e0696ff318e"
+        },
+        {
+          "path": "Sources/RostrumLayout/TableRowGroups.swift",
+          "sha256": "6b9156bd9c4677e9facacb9a79808a44f4eb4c7a5087884e3c95450f52f335b0"
+        },
+        {
+          "path": "Sources/RostrumLayout/TemplateLayoutEngine.swift",
+          "sha256": "8299d85224f88062517d1f8e3995491e177b99d713f7a9156423df948ca602ba"
+        },
+        {
+          "path": "Sources/RostrumLayout/TemplateTableContent.swift",
+          "sha256": "f1a2b70c7cf60604f6a9598845d17af15d59ebd69d28bbe16d6a0212b87b8ac4"
+        },
+        {
+          "path": "Sources/RostrumLayout/TemplateTablePagination.swift",
+          "sha256": "ba1d90dcd42bf42f3bb9e071ac47e70f2a2ee6faadacffa1c3dfe41d4cf35e49"
+        },
+        {
+          "path": "Sources/RostrumLayout/TemplateTextContext.swift",
+          "sha256": "ee97e7e7816bfd594d2b70b7a67bbe48f331379a5332db5d3062f3ec464cfdb3"
+        }
+      ]
+    },
+    "candidate": {
+      "binaries": {
+        "candidate": "cf772f6d59940cda0a7113d456da7673474da043dd71d2f72b8d43ea3db961fc",
+        "candidate-fitting": "fbdf323488c141222e1b5d87e3f24f5a8856ca008b566b0209d5421a917c16b4",
+        "candidate-headers": "0b0668d805b9eeb0deaebef92f1482c56fd067bc710a56acdb784a4048b2167d",
+        "candidate-snapshot": "35ac908f865ab123862af3570d5845c445e2dd6172be8eb8dc4d59b18470911a",
+        "candidate-spans": "388b373f61bfc92a51fb4999e3af67a53fed3627f3209abe84e1e267a0c6ded7",
+        "candidate-vertical": "e20e351a6c4b3a58a2b29f27ab804ff3c5b8fe232606e32d4962b2723d632dbf"
+      },
+      "commit": "91fcb55ceaca41c702a906d6ea7d9764c6343a69",
+      "source_dirty": true,
+      "source_hashes": [
+        {
+          "path": "Sources/LecternIR/DeckIR.swift",
+          "sha256": "9241940b1838db4258f8830c24f37e6f057f6bfc5ebaacc577c3df7ddc1133c0"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartCacheRepair.swift",
+          "sha256": "29ea3b40edb93f89c85d7eb52dd9e6fa22b5e2c2a5ec73a213cfadec6af2d193"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartCacheWorkbook.swift",
+          "sha256": "485694a3d4f367c459254b9471e0354542425a95be99ccda293086317dc0531a"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartData.swift",
+          "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartReader.swift",
+          "sha256": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartSeriesEditing.swift",
+          "sha256": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartWorkbook.swift",
+          "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartWorkbookReader.swift",
+          "sha256": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ChartXML.swift",
+          "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/Charts.swift",
+          "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+        },
+        {
+          "path": "Sources/Rostrum/Charts/ComboChartData.swift",
+          "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+        },
+        {
+          "path": "Sources/Rostrum/Core/RostrumError.swift",
+          "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+        },
+        {
+          "path": "Sources/Rostrum/Core/Units.swift",
+          "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/ColorMath.swift",
+          "sha256": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/Drawing.swift",
+          "sha256": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/DrawingColor.swift",
+          "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/Geometry.swift",
+          "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/GradientStops.swift",
+          "sha256": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf"
+        },
+        {
+          "path": "Sources/Rostrum/Drawing/ImageSniffer.swift",
+          "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/ArabicJoining.swift",
+          "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/ArabicLayoutTables.swift",
+          "sha256": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/ArabicTextShaper.swift",
+          "sha256": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/FontFaceKey.swift",
+          "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/FontLayoutTables.swift",
+          "sha256": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/FontLibrary.swift",
+          "sha256": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/FontMetrics.swift",
+          "sha256": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/MarkPositioning.swift",
+          "sha256": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/PreparedFont.swift",
+          "sha256": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/ShapedGlyphRun.swift",
+          "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/TextMeasurer.swift",
+          "sha256": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba"
+        },
+        {
+          "path": "Sources/Rostrum/Fonts/TextShaper.swift",
+          "sha256": "06462c96d3d0ef883ad46d4b4c44ffa9f05be7f2c0ebdda3f6be225146d1306a"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/ContentTypes.swift",
+          "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/OPCArchive.swift",
+          "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/OPCPackage.swift",
+          "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/PackURI.swift",
+          "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+        },
+        {
+          "path": "Sources/Rostrum/OPC/Relationships.swift",
+          "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/AnnotationDependencies.swift",
+          "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/AnnotationImport.swift",
+          "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/BackgroundResolver.swift",
+          "sha256": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/BuiltInTableStyle.swift",
+          "sha256": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/CommentEditing.swift",
+          "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Comments.swift",
+          "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Components.swift",
+          "sha256": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DeckExport.swift",
+          "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DeckMerge.swift",
+          "sha256": "a469986af885706217489bb0cf105bcb2802acce16c0c736f8db93e17876f4bc"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DeckOutline.swift",
+          "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DeckStyle.swift",
+          "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Design.swift",
+          "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/DocumentProperties.swift",
+          "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/EmbeddedFontImport.swift",
+          "sha256": "f1f6035482326237e58bc14c7ee96666cfe382257df4e0ef5c1fa9a6da8152e6"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/FontEmbedding.swift",
+          "sha256": "1bdf5c1b286e615c3aff8090163cfc4cda58fe82b67f8264627550afb05026bd"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/FontEmbeddingPlan.swift",
+          "sha256": "7e07c1493a81947400ab0a0d91edce2624eda09b7b567a64b57c6ba9a57f5df0"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/HeadersFooters.swift",
+          "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ImageFill.swift",
+          "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Layouts.swift",
+          "sha256": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift",
+          "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/LegacyComments.swift",
+          "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Media.swift",
+          "sha256": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/MinimalTemplate.swift",
+          "sha256": "d11d5c5310f1614a66521f6ede0d28cd5239cec1311dfe346345661f8bc06eed"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Notes.swift",
+          "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/NotesImportGeometry.swift",
+          "sha256": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/NotesPageRenderer.swift",
+          "sha256": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/NotesPageTemplate.swift",
+          "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/OutlineImageFills.swift",
+          "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/PictureCrop.swift",
+          "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Pictures.swift",
+          "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Presentation.swift",
+          "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/PublishedLayouts.swift",
+          "sha256": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RenderDiagnostics.swift",
+          "sha256": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RenderImageResources.swift",
+          "sha256": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RenderTextAttributes.swift",
+          "sha256": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+          "sha256": "e290e6eff2aa1f48a54d9db94f8439d121b771e2aeeeda26124abb36d6f3af32"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/RichTextPreparation.swift",
+          "sha256": "a566c575a7a2754323288a634740b19d026a7a540dcf3078cb9922918574f1a3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGCustomGeometry.swift",
+          "sha256": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift",
+          "sha256": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGImagePlacement.swift",
+          "sha256": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGPaint.swift",
+          "sha256": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGPresetGeometry.swift",
+          "sha256": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+          "sha256": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGRichText.swift",
+          "sha256": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SVGShadow.swift",
+          "sha256": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Sections.swift",
+          "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ShapeAppearance.swift",
+          "sha256": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ShapeKind.swift",
+          "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ShapeTransform.swift",
+          "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/ShapeTypes.swift",
+          "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Shapes.swift",
+          "sha256": "c319d1ee4a1f0afe4df7fba7149c063899be996daff2133effa66353ff1311d3"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Slide.swift",
+          "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SlideAnnotations.swift",
+          "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SlideBuilders.swift",
+          "sha256": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SlideMasters.swift",
+          "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Slides.swift",
+          "sha256": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/SmartArt.swift",
+          "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+          "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableBorderSegments.swift",
+          "sha256": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableCellFormatting.swift",
+          "sha256": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableDoubleBorder.swift",
+          "sha256": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableEditing.swift",
+          "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableGridSnapshot.swift",
+          "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableLayoutSource.swift",
+          "sha256": "1919ed9e96badc1e35d8ae91606151c52fcdf85d3116830748746fcf8b9b0d5a"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableStyleImport.swift",
+          "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+          "sha256": "9c24b8814c05984b1167061560d2de630f72c2de29a9d93f9b51b8475e84ad56"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TableStyling.swift",
+          "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Tables.swift",
+          "sha256": "98b29d0b1a5ea29ba01e48d40f87ea4f47800383a52cda42fc93471bd109a801"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+          "sha256": "7aa27bb6775926aa1c646433315a0fbfa47bcd384b4b8c964654a789ab744f09"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Text.swift",
+          "sha256": "db17e2ad61df9e9d9180d4cb2301da41e551a6162e33881d35236933b2c06169"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Theme.swift",
+          "sha256": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a"
+        },
+        {
+          "path": "Sources/Rostrum/Presentation/Validation.swift",
+          "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+        },
+        {
+          "path": "Sources/Rostrum/Schema/GeneratedSchema.swift",
+          "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+        },
+        {
+          "path": "Sources/Rostrum/Schema/OXMLHelpers.swift",
+          "sha256": "f30ef480475252569a33f345fc004238e8e38863610c9c5ee886725402d23050"
+        },
+        {
+          "path": "Sources/Rostrum/Schema/PresetGeometry.swift",
+          "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+        },
+        {
+          "path": "Sources/Rostrum/XML/XML.swift",
+          "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/CRC32.swift",
+          "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/Deflate.swift",
+          "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/Inflate.swift",
+          "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/ZipReader.swift",
+          "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+        },
+        {
+          "path": "Sources/Rostrum/Zip/ZipWriter.swift",
+          "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+        },
+        {
+          "path": "Sources/RostrumLayout/AuthoredLayoutEngine.swift",
+          "sha256": "7d2eb25eb12ad2e8321179acb92fa0cf8647a01f7163f186c64ac3a353f2da5d"
+        },
+        {
+          "path": "Sources/RostrumLayout/MeasuredPaginator.swift",
+          "sha256": "df682b359da8ef38d6a1eeefbe70f98e1cb2077f6002efc2799fd283669582d9"
+        },
+        {
+          "path": "Sources/RostrumLayout/StructuredLayout.swift",
+          "sha256": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850"
+        },
+        {
+          "path": "Sources/RostrumLayout/TableCellPreparation.swift",
+          "sha256": "ad1c50cd7efbe97a600abbf9677b8af3f462fa20afb968bbc44229b2c51de53b"
+        },
+        {
+          "path": "Sources/RostrumLayout/TableColumnSizing.swift",
+          "sha256": "d2050969dca61518d8690d7796c56984a1dec85e191b9e3d39608f6f7e938adc"
+        },
+        {
+          "path": "Sources/RostrumLayout/TableLayoutEngine.swift",
+          "sha256": "a0bb5085edef04cc7a2e3f9defca433813b0639d55ff7dc6df3e7e0696ff318e"
+        },
+        {
+          "path": "Sources/RostrumLayout/TableRowGroups.swift",
+          "sha256": "6b9156bd9c4677e9facacb9a79808a44f4eb4c7a5087884e3c95450f52f335b0"
+        },
+        {
+          "path": "Sources/RostrumLayout/TemplateLayoutEngine.swift",
+          "sha256": "8299d85224f88062517d1f8e3995491e177b99d713f7a9156423df948ca602ba"
+        },
+        {
+          "path": "Sources/RostrumLayout/TemplateTableContent.swift",
+          "sha256": "f1a2b70c7cf60604f6a9598845d17af15d59ebd69d28bbe16d6a0212b87b8ac4"
+        },
+        {
+          "path": "Sources/RostrumLayout/TemplateTablePagination.swift",
+          "sha256": "ba1d90dcd42bf42f3bb9e071ac47e70f2a2ee6faadacffa1c3dfe41d4cf35e49"
+        },
+        {
+          "path": "Sources/RostrumLayout/TemplateTextContext.swift",
+          "sha256": "ee97e7e7816bfd594d2b70b7a67bbe48f331379a5332db5d3062f3ec464cfdb3"
+        }
+      ]
+    }
+  },
+  "calibri": [
+    {
+      "deck_sha256": "77d7e596eafc28b022d9a41907b89c31748b4709b56b165a486e58b627313c0e",
+      "name": "4x3-external",
+      "preserved_files": [
+        "deck.pptx",
+        "input.potx",
+        "merged-geometry.json",
+        "merged-source.json",
+        "slide-1-diagnostics.json",
+        "slide-1.svg",
+        "slide-2-diagnostics.json",
+        "slide-2.svg",
+        "slide-3-diagnostics.json",
+        "slide-3.svg",
+        "slide-4-diagnostics.json",
+        "slide-4.svg",
+        "slide-5-diagnostics.json",
+        "slide-5.svg",
+        "slide-6-diagnostics.json",
+        "slide-6.svg",
+        "slide-7-diagnostics.json",
+        "slide-7.svg",
+        "slide-8-diagnostics.json",
+        "slide-8.svg",
+        "slide-9-diagnostics.json",
+        "slide-9.svg",
+        "text-geometry.json"
+      ]
+    },
+    {
+      "deck_sha256": "9e6df92dfe5dba8cc67738112f925ccb0ff4febfa79d49937896b15e747efe5a",
+      "name": "4x3-embedded",
+      "preserved_files": [
+        "deck.pptx",
+        "input.potx",
+        "merged-geometry.json",
+        "merged-source.json",
+        "slide-1-diagnostics.json",
+        "slide-1.svg",
+        "slide-2-diagnostics.json",
+        "slide-2.svg",
+        "slide-3-diagnostics.json",
+        "slide-3.svg",
+        "slide-4-diagnostics.json",
+        "slide-4.svg",
+        "slide-5-diagnostics.json",
+        "slide-5.svg",
+        "slide-6-diagnostics.json",
+        "slide-6.svg",
+        "slide-7-diagnostics.json",
+        "slide-7.svg",
+        "slide-8-diagnostics.json",
+        "slide-8.svg",
+        "slide-9-diagnostics.json",
+        "slide-9.svg",
+        "text-geometry.json"
+      ]
+    },
+    {
+      "deck_sha256": "c8c76ed1409d23a7fa674ab5a0ede70a39a941eac0e31c42b4372f75e1c5f151",
+      "name": "16x9-external",
+      "preserved_files": [
+        "deck.pptx",
+        "input.potx",
+        "merged-geometry.json",
+        "merged-source.json",
+        "slide-1-diagnostics.json",
+        "slide-1.svg",
+        "slide-2-diagnostics.json",
+        "slide-2.svg",
+        "slide-3-diagnostics.json",
+        "slide-3.svg",
+        "slide-4-diagnostics.json",
+        "slide-4.svg",
+        "slide-5-diagnostics.json",
+        "slide-5.svg",
+        "slide-6-diagnostics.json",
+        "slide-6.svg",
+        "slide-7-diagnostics.json",
+        "slide-7.svg",
+        "text-geometry.json"
+      ]
+    },
+    {
+      "deck_sha256": "13ced94f23236a8ef39444c26a1f0de05028111046c99556b99fc1e455eae7d2",
+      "name": "16x9-embedded",
+      "preserved_files": [
+        "deck.pptx",
+        "input.potx",
+        "merged-geometry.json",
+        "merged-source.json",
+        "slide-1-diagnostics.json",
+        "slide-1.svg",
+        "slide-2-diagnostics.json",
+        "slide-2.svg",
+        "slide-3-diagnostics.json",
+        "slide-3.svg",
+        "slide-4-diagnostics.json",
+        "slide-4.svg",
+        "slide-5-diagnostics.json",
+        "slide-5.svg",
+        "slide-6-diagnostics.json",
+        "slide-6.svg",
+        "slide-7-diagnostics.json",
+        "slide-7.svg",
+        "text-geometry.json"
+      ]
+    }
+  ],
+  "historical_font_availability": [
+    {
+      "bold": false,
+      "exact_uploaded_face_available": true,
+      "family": "Arial",
+      "required_sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+    },
+    {
+      "bold": true,
+      "exact_uploaded_face_available": false,
+      "family": "Arial",
+      "required_sha256": "d72db21f9242aedd6b917d8549ad5921766b24d5f8d0becfda2ff4c620b3c2e0"
+    },
+    {
+      "bold": false,
+      "exact_uploaded_face_available": false,
+      "family": "Calibri",
+      "required_sha256": "ea801e1f869b55464339058b1d4263d07cc074a18e20aa3ee1d07901423dee53"
+    },
+    {
+      "bold": true,
+      "exact_uploaded_face_available": false,
+      "family": "Calibri",
+      "required_sha256": "ac1cf97565de97cdc322228d875dc18c1131656c5138173e2c6d8ac7a37aa7f2"
+    }
+  ],
+  "native_count": 104,
+  "native_files": [
+    {
+      "exact_bytes": true,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/saved.pptx",
+      "sha256": "38838af96364e7944f39a2c2529266874c583dab8d7da3cf2d010ead18884e15"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/slide-0.svg",
+      "sha256": "4aa363e23270d11797ce3d13b814304d4e56692ec75c7adccc63c23430363638"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/slide-1-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/slide-1.svg",
+      "sha256": "8faf780390518eda5876373d5d3cd9e31cd4859245f35f93f75a395cc7e158d7"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/slide-2-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/slide-2.svg",
+      "sha256": "4d2d5a9f4e1abb24a37c39529fb7c09ffe6333f790e1af44bfed0450bea37e4c"
+    },
+    {
+      "exact_bytes": false,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/slide-3-issues.json",
+      "sha256": "9fe6838dfbf17676bff0873745acbb62cd83ffd8a77a58bf4af7b9a2a7193f95"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBodyAlignment/native-body-alignment-v1.pptx/slide-3.svg",
+      "sha256": "023d2191c0a694820a4ff2bbc8b6020abae11f6c60bc85650787bef93a4abc3a"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBreakMetrics/native-break-metrics-v1.pptx/saved.pptx",
+      "sha256": "39b223c8feff73793c7cb684b4c43c25b419e24f05ccf3f2bb6ff1836664c30e"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBreakMetrics/native-break-metrics-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBreakMetrics/native-break-metrics-v1.pptx/slide-0.svg",
+      "sha256": "72bd41caaf98f118227fc16ba503103231a92bcd045ecdc45e358eeafe9d60c4"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBreakMetrics/native-break-metrics-v1.pptx/slide-1-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBreakMetrics/native-break-metrics-v1.pptx/slide-1.svg",
+      "sha256": "ba64990d80343a1ca73084cd6f843497a1d774fa3c57612b6d0a039684160eb2"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBreakMetrics/native-break-metrics-v1.pptx/slide-2-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeBreakMetrics/native-break-metrics-v1.pptx/slide-2.svg",
+      "sha256": "300ec8f627567f20ada1e3aa30e5e5e9a60793bbfe83cbb42b4ff8643ffd3b9f"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx/saved.pptx",
+      "sha256": "59d5acb1d25e0b93db0794b964f37fc2b744751eb704533a493e881e1beec995"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx/slide-0.svg",
+      "sha256": "7da49ffb6cf20a1deac629f68effd140cea1aca61013d59873ebea378f1e63f9"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx/slide-1-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx/slide-1.svg",
+      "sha256": "359e10365ec8007605ddf25e60c940c99f9f7a60fbec14b2dc0cab94c560de03"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx/saved.pptx",
+      "sha256": "47dc045dbf5854700dfddfeec7f22827d72e5cb5cc3b5d0b4995dfbc5655fb0f"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx/slide-0.svg",
+      "sha256": "7d15ff78251f564a063352f5606c66fad8e40bbaf4df1cca41b45b65b55e9d94"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx/slide-1-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx/slide-1.svg",
+      "sha256": "aff62aaddeda6b54e23e29874f2d401de534f5948fd2de91a3e1e0404163a350"
+    },
+    {
+      "exact_bytes": false,
+      "file": "NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx/slide-2-issues.json",
+      "sha256": "34ca20c7afa66c464793ebaa41562b74f95d3b450697c6a37c2bfd71823d394e"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx/slide-2.svg",
+      "sha256": "bf040594fd628c2e20ee5905d3bdf0bb860a6a8a35cc6a40972b29ba9d21b8bb"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/kerning/native-paint-omitted-kern-v2.pptx/saved.pptx",
+      "sha256": "b268b32c6d67680961af0665410f6c541d67dc293700bdb67626f87d6d7f5201"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/kerning/native-paint-omitted-kern-v2.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/kerning/native-paint-omitted-kern-v2.pptx/slide-0.svg",
+      "sha256": "b9529c8e01e7fb84a237f37abeb82d6a9bcbf9faa66037ba897afe776bff20a8"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/primary/native-paint-placement-v2.pptx/saved.pptx",
+      "sha256": "09f2b4aa1bb3eca33fdf94d066b1355c929b5326b420c1e9551de9d78f617684"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/primary/native-paint-placement-v2.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/primary/native-paint-placement-v2.pptx/slide-0.svg",
+      "sha256": "ef12aea65ac0c2889fed47e7df025ff930c1fc77449ee0d5b9934d1461a9ba5d"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/primary/native-paint-placement-v2.pptx/slide-1-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/primary/native-paint-placement-v2.pptx/slide-1.svg",
+      "sha256": "40c97615e81b2dd9aaccc4f5be3a86e33dd7c1f92f28e621b4a936f52726259f"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/primary/native-paint-placement-v2.pptx/slide-2-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeGlyphPlacement/primary/native-paint-placement-v2.pptx/slide-2.svg",
+      "sha256": "3d4ace802018ab470cce0052289f8b52ee225c482c90cbeeed73a4c51954e18e"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/saved.pptx",
+      "sha256": "f4f3f84ea755a811c72f84ad7ce5523dbb6c9e0cf3a968793a254739abec232d"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/slide-0.svg",
+      "sha256": "5a5c8dcb4fdb102c440aaa34aee446b72a83040bd04aa5c7139f1284362e9772"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/slide-1-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/slide-1.svg",
+      "sha256": "1cc92df5927d3b919496f8b21a2ef8644a7419e472ff200999adaf9d4449475d"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/slide-2-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/slide-2.svg",
+      "sha256": "3d14362a4899114762f3854ca36302a8bda78f8f554ddc42882ad28b153aef14"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/slide-3-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLigatureLayout/native-ligatures-regular-table.pptx/slide-3.svg",
+      "sha256": "94d5c05a049459dffc73150d7fda2b02083fd5ae5668ff304ab5d5b276e0b35c"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/saved.pptx",
+      "sha256": "60d81800160213de5915d8a5ef9110805632e5e74002e7a1671784343d445718"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-0.svg",
+      "sha256": "73cf2564aad7302fde46af6b90290f857ca7fef0149f5c97854fe370a82e3f07"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-1-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-1.svg",
+      "sha256": "8c640490b252e8ecf5ab7d206633ea04d35670b73c29d8c19cb551939f270b04"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-2-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-2.svg",
+      "sha256": "de9ff25b928c56477bd9eaa75a564799415a9ae662a3959dde200125b6965b5d"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-3-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-3.svg",
+      "sha256": "ad051ca8d271c45e55ffc61493cd2c3bd5ba90c6947bb9ca87575b036f8da9aa"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-4-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-4.svg",
+      "sha256": "110d8c65d7dad2a1b5489ca15273b2cfd0353af6d3080727701deb17721b5ac8"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-5-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-5.svg",
+      "sha256": "59c395407669ec532f5f11ff72e48c4b3f076ce1ec3f117fc80169b78e2fd15c"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-6-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/base/native-spacing-metrics-v1.pptx/slide-6.svg",
+      "sha256": "6ea5a29781200fd073288e2dc4ac4fafb85eb98ce80c6ae5294a719e3efe2fb5"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/compatibility/native-spacing-final-v1.pptx/saved.pptx",
+      "sha256": "b620178f980ebd7d07f51099014187325130deb2fe61cb37265631556717cbbc"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/compatibility/native-spacing-final-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/compatibility/native-spacing-final-v1.pptx/slide-0.svg",
+      "sha256": "70ac9f2dcc7fa4b830ce496f904cfe57817bf7cdc897e16a596cc4ef8147e8fb"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/descent/native-spacing-descent-v1.pptx/saved.pptx",
+      "sha256": "b4cd62a0422160b0c1245a8d38128a17e0accc6c7a14b9780f5751b57f04a21c"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/descent/native-spacing-descent-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/descent/native-spacing-descent-v1.pptx/slide-0.svg",
+      "sha256": "d3399d5e64181fb2e1886cdf8d0c1e7db3346012c8f5c4c571b2de49e91af9b0"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/followup/native-spacing-followup-v1.pptx/saved.pptx",
+      "sha256": "dbebcda257cdd5adc6543f68b64e93ba5173aaa5fb496479db4838ac57c05f3c"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/followup/native-spacing-followup-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/followup/native-spacing-followup-v1.pptx/slide-0.svg",
+      "sha256": "180d225716316b45d6d1c30c981f46c61b5c8de6c99f02af3ed86325febbb035"
+    },
+    {
+      "exact_bytes": false,
+      "file": "NativeLineSpacing/followup/native-spacing-followup-v1.pptx/slide-1-issues.json",
+      "sha256": "906246c0deb8ab2d0b316b7da96f478a45c2552e37638444e42a07aa63966973"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/followup/native-spacing-followup-v1.pptx/slide-1.svg",
+      "sha256": "c652e2c65186d999f7f1d775433df54dd3d5c55f37914f6f357569d294fb2b8d"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx/saved.pptx",
+      "sha256": "6ffa955077bbce28ec4666396c19b84a7ee2eab227a720c48e4d483ef760bffa"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx/slide-0.svg",
+      "sha256": "a2aaf56a3a67323b03d8de36424cc82e0e25c32bab3ccc3a9a80fbc16cf86d09"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/percentage-anchor/native-spacing-percentage-anchor-v1.pptx/saved.pptx",
+      "sha256": "673111dcee078df1858f01b31b77e5a605c35bf754323eee7f9434cb3a67e3db"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/percentage-anchor/native-spacing-percentage-anchor-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/percentage-anchor/native-spacing-percentage-anchor-v1.pptx/slide-0.svg",
+      "sha256": "122a8c6cae0ef3cc40ed317580ef815b2a7778a2f506fb0459bec8eda50fee8c"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx/saved.pptx",
+      "sha256": "40bd626c039a6743612ea0b2920e6acfa254e29314ca54bbf7fd247b8c7f93ad"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx/slide-0.svg",
+      "sha256": "87195a2afab9fe0c26fd8ec6eb442d997b28d8c19ea556e0cda0303f1ddcc6c7"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx/saved.pptx",
+      "sha256": "fb073b86c2304cb12bbdac58df1e3b9cc48c6a710693c39a27bc909557cf73a1"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx/slide-0.svg",
+      "sha256": "4be0ff37cea630d7fe78ee719d21cb992ccb5656817a7c9adc336b317609d530"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/scale/native-spacing-scale-v1.pptx/saved.pptx",
+      "sha256": "f6536e3db39cac1e174b28bf886e827183ecd983097e81519537753a8fc8b1d8"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/scale/native-spacing-scale-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeLineSpacing/scale/native-spacing-scale-v1.pptx/slide-0.svg",
+      "sha256": "a01b60277d6d8cc9fdf46be2fe41dcbdb94b947041fd59677d9b545e8f245a62"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/followup/native-list-markers-followup-v1.pptx/saved.pptx",
+      "sha256": "179c21610c14f480a091cd935e8a58840b76bde75d44e1e83a1452444620ee11"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/followup/native-list-markers-followup-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/followup/native-list-markers-followup-v1.pptx/slide-0.svg",
+      "sha256": "d13aa85c5707e0dddf6fb12c491853a2b2de66d4af39191d983200d34098ad08"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/native-list-markers-v2.pptx/saved.pptx",
+      "sha256": "c577f0ee4031d5a057f55250c388c2122a5442cb6ddeb84be48117693950002b"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/native-list-markers-v2.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/native-list-markers-v2.pptx/slide-0.svg",
+      "sha256": "4eef145e2f6a1fb776cb6078d785e73128623b97fd0ba0347576bd50c36daae3"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/native-list-markers-v2.pptx/slide-1-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/native-list-markers-v2.pptx/slide-1.svg",
+      "sha256": "0b6a145d9bdc80f9d9c681bb411c459521c4425d55c5ec22c12998142cf83f40"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/native-list-markers-v2.pptx/slide-2-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeListMarkers/native-list-markers-v2.pptx/slide-2.svg",
+      "sha256": "b10fe02b242846875a786a3f8136a47f098b49f4375db421dbb27004be8fecfd"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeMixedFaceSpacing/anchors/native-mixed-face-spacing-anchors-v1.pptx/saved.pptx",
+      "sha256": "7899e5321f4cfec1ce445ca055c99ea79d58c44237b8538aec49eb692e7c5c06"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeMixedFaceSpacing/anchors/native-mixed-face-spacing-anchors-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeMixedFaceSpacing/anchors/native-mixed-face-spacing-anchors-v1.pptx/slide-0.svg",
+      "sha256": "cac679b78794755486aa7669c58036c29082842f54520f8cc3c9f1b060018ece"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeMixedFaceSpacing/base/native-mixed-face-spacing-v1.pptx/saved.pptx",
+      "sha256": "11034c004850f06f8e0e80bd2ec9b20e4ec515c6bc925c8792a1c875100f2d48"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeMixedFaceSpacing/base/native-mixed-face-spacing-v1.pptx/slide-0-issues.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "exact_bytes": true,
+      "file": "NativeMixedFaceSpacing/base/native-mixed-face-spacing-v1.pptx/slide-0.svg",
+      "sha256": "288a11141a2e3524d1bfbe41f9f97df23cf438900c67689ec87645235df95eaa"
+    }
+  ],
+  "native_inputs": [
+    "Tests/RostrumTests/Fixtures/NativeBodyAlignment/native-body-alignment-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeBreakMetrics/native-break-metrics-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeGlyphPlacement/autofit/native-paint-autofit-controls-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/native-paint-eligibility-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeGlyphPlacement/kerning/native-paint-omitted-kern-v2.pptx",
+    "Tests/RostrumTests/Fixtures/NativeGlyphPlacement/primary/native-paint-placement-v2.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLigatureLayout/native-ligatures-regular-table.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/base/native-spacing-metrics-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/compatibility/native-spacing-final-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/descent/native-spacing-descent-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/followup/native-spacing-followup-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/fractional/native-spacing-fractional-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/percentage-anchor/native-spacing-percentage-anchor-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction-anchor/native-spacing-reduction-anchor-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/reduction/native-spacing-reduction-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeLineSpacing/scale/native-spacing-scale-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeListMarkers/followup/native-list-markers-followup-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeListMarkers/native-list-markers-v2.pptx",
+    "Tests/RostrumTests/Fixtures/NativeMixedFaceSpacing/anchors/native-mixed-face-spacing-anchors-v1.pptx",
+    "Tests/RostrumTests/Fixtures/NativeMixedFaceSpacing/base/native-mixed-face-spacing-v1.pptx"
+  ],
+  "snapshot_count": 1248,
+  "snapshot_sha256": "8a5a9eec8b4a9d7f940fb04cc3ad628a36e8dcca86db480a66431350ab8215d0",
+  "source_hashes": [
+    {
+      "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+      "sha256": "e290e6eff2aa1f48a54d9db94f8439d121b771e2aeeeda26124abb36d6f3af32"
+    },
+    {
+      "path": "docs/benchmarks/2026-10-12-prepared-fitting-snapshot.swift",
+      "sha256": "d65fdcc06bf9731ece4261665b8df8576e9448c37fcc82008f16386e82742882"
+    }
+  ]
+}
