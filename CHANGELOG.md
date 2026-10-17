@@ -6,6 +6,10 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Table continuation composition resolves its shared template style once per
+  operation for native tables and captions. Fresh font/content checks and saved
+  output remain unchanged; the [Release comparison](docs/TABLE-COMPOSITION-20261017.md)
+  records CPU, elapsed time, memory and adverse controls.
 - `TemplateTableContent.headerRowCount` repeats a complete header prefix on every
   continuation, including vertical/rectangular header merges. Width search reserves
   all header rows; merges across the header/body boundary and oversized headers

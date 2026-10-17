@@ -102,6 +102,44 @@ import Testing
         #expect(try deck.serializedData() == before)
     }
 
+    @Test func repeatedPageStylesRefreshBetweenCompositionCalls() throws {
+        let deck = try fixture(), engine = TemplateLayoutEngine(presentation: deck)
+        let directory = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("RostrumTests/Fixtures/NativeGlyphPlacement/eligibility/fonts")
+        for face in ["DejaVuSans", "DejaVuSans-Bold", "DejaVuSans-Oblique"] {
+            try deck.fonts.register(contentsOf: directory.appendingPathComponent(face + ".ttf"),
+                aliases: ["First body", "Second body"])
+        }
+        let caption = "A current template style on every continuation."
+        let plan = try engine.planTablePages(title: "Styles", table: .init(rows: rows), caption: caption)
+        #expect(plan.pages.count > 2)
+        var groups: [(font: String, slides: [Slide])] = []
+        // Same metrics, changed typeface identity: composition must resolve the
+        // current theme even when the existing page geometry remains valid.
+        for font in ["First body", "Second body"] {
+            deck.theme.minorFont = font
+            groups.append((font, try engine.composeTablePages(plan)))
+        }
+        let saved = try Presentation(data: deck.serializedData())
+        var index = 1
+        for group in groups {
+            for _ in group.slides {
+                let slide = try saved.slides[index]; index += 1
+                let tables = slide.shapes.all.compactMap { ($0 as? TableFrame)?.table }
+                let native = try #require(tables.first)
+                for row in 0..<native.rowCount {
+                    for column in 0..<native.columnCount {
+                        let runs = try native.cell(row, column).textFrame.paragraphs.flatMap(\.runs)
+                        #expect(!runs.isEmpty && runs.allSatisfy { $0.fontName == group.font })
+                    }
+                }
+                let captionShape = slide.shapes.all.first { $0.textFrame?.text == caption }
+                let text = try #require(captionShape?.textFrame)
+                #expect(text.paragraphs.flatMap(\.runs).allSatisfy { $0.fontName == group.font })
+            }
+        }
+    }
+
     @Test func headerOnlyAndSinglePageStayNative() throws {
         let deck = try fixture(), engine = TemplateLayoutEngine(presentation: deck)
         for values in [[["Header"]], [["Header"], ["Body"]]] {

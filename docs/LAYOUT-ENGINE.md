@@ -175,6 +175,9 @@ subsequent merged/unmerged comparison and the measured memory tradeoff.
 Single-slide composition freshly measures the accepted widths. Pagination
 composition repeats the bounded search with live fonts/styles and verifies the
 accepted widths, row heights and page boundaries before inserting any slides.
+The common template style is resolved once within that composition call and
+reused for tables and captions; a later call resolves current styles again.
+See the [composition profile and preservation comparison](TABLE-COMPOSITION-20261017.md).
 Measurement has an explicit performance cost; see the
 [Release measurements and saved-file evidence](TABLE-COLUMNS-20261012.md).
 Shaping diagnostics and native PowerPoint visual acceptance remain separate from
