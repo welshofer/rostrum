@@ -162,6 +162,9 @@ python3 Tools/preview-profile/run-font-resources.py --binary .build/font-resourc
 
 This measures CPU, elapsed and process peak RSS, checks exact SVG reconstruction,
 and retains input/source/executable hashes. It does not measure WebKit performance.
+For a baseline/candidate comparison with exact prepared-document/resource
+preservation and a launcher that avoids inherited collector RSS, use the
+[preparation follow-up](../../docs/PREVIEW-PREPARATION-20261016.md#reproduction).
 
 ### Standard post-pull check
 

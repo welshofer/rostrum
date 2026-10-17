@@ -93,4 +93,44 @@ import Testing
         #expect(result.svg.contains(bytes.base64EncodedString()))
         #expect(restore(result) == mixed && store.retainedBytes <= 60)
     }
+
+    @Test func markersAtEveryByteAlignmentAndTruncatedTailsStayLossless() {
+        for offset in 0..<16 {
+            for length in 1...25 {
+                let source = String(repeating: " ", count: offset)
+                    + svg(rule(Data(repeating: 42, count: length)))
+                    + String(repeating: "<", count: length)
+                let prepared = PreviewFontResources().prepare(svg: source)
+                #expect(prepared.resources.count == 1)
+                #expect(Data(restore(prepared).utf8) == Data(source.utf8))
+            }
+        }
+        let complete = svg(rule(Data([1, 2, 3])))
+        let styleEnd = complete.range(of: "</style>")!.upperBound
+        for end in complete.indices where end < styleEnd {
+            let truncated = String(complete[..<end])
+            let prepared = PreviewFontResources().prepare(svg: truncated)
+            #expect(prepared.svg == truncated && prepared.resources.isEmpty)
+        }
+    }
+
+    @Test func largeSimilarFontsKeepExactIdentityAcrossAliasesAndEviction() {
+        let first = Data(repeating: 42, count: 65_536)
+        var changed = first
+        changed[32_768] = 43
+        let store = PreviewFontResources(capacity: 2, byteLimit: 400_000)
+        let source = svg(rule(first) + rule(changed, face: 2) + rule(first, face: 3, bold: true))
+        let prepared = store.prepare(svg: source)
+        #expect(prepared.resources.count == 2 && store.decodedResources == 2)
+        #expect(Set(prepared.resources.map(\.data)) == [first, changed])
+        #expect(Data(restore(prepared).utf8) == Data(source.utf8))
+        let again = store.prepare(svg: source)
+        #expect(again.svg == prepared.svg && store.decodedResources == 2)
+        #expect(store.retainedBytes <= 400_000)
+        _ = store.prepare(svg: svg(rule(Data(repeating: 7, count: 65_536))))
+        #expect(Data(restore(prepared).utf8) == Data(source.utf8))
+        let refreshed = store.prepare(svg: source)
+        #expect(Data(restore(refreshed).utf8) == Data(source.utf8))
+        #expect(store.retainedBytes <= 400_000)
+    }
 }

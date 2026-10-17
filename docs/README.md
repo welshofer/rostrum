@@ -63,6 +63,9 @@ links both gains and measured costs. The [preview pipeline record](PREVIEW-PIPEL
 adds per-stage CPU/elapsed, paired artifact checks and the native bitmap measurement boundary.
 The [font-resource loading experiment](PREVIEW-FONT-RESOURCES-20261015.md) records
 the opt-in WebKit transport, its preparation costs and the native comparison gate.
+The [preparation follow-up](PREVIEW-PREPARATION-20261016.md) profiles repeated
+scanning/hashing, retains paired CPU/elapsed/RSS results and exact resource
+preservation, and extends the caller-font merged-table review corpus.
 
 The [roadmap](../ROADMAP.md) tracks remaining work; [PLAN.md](../PLAN.md) tracks
 the current fidelity/performance milestones. Historical publication evidence

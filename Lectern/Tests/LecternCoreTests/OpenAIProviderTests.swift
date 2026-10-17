@@ -122,9 +122,20 @@ import Testing
     }
 
     @Test func aServerFaultIsRetriedRatherThanEndingTheDraft() async throws {
-        let attempts = AttemptCounter()
-        let provider = OpenAIProvider(apiKey: "k", send: { _ in
-            if attempts.next() == 1 { return (Data(), Self.http(500)) }
+        let attempts = AttemptCounter(), waits = AttemptCounter(), seen = SentRequest()
+        let start = Date(timeIntervalSince1970: 0)
+        let budget = ReasoningEffort.medium.timeout
+        let provider = OpenAIProvider(apiKey: "k",
+            now: { start.addingTimeInterval(Double(waits.count) * 2) },
+            wait: { seconds in
+                #expect(seconds == 2)
+                _ = waits.next()
+            }, send: { request in
+            seen.record(request)
+            if attempts.next() == 1 {
+                #expect(request.timeoutInterval == budget)
+                return (Data(), Self.http(500))
+            }
             return (Data(self.response(deck: self.deck).utf8), Self.http(200))
         })
 
@@ -132,6 +143,8 @@ import Testing
 
         #expect(draft.json.contains("\"title\""))
         #expect(attempts.count == 2)
+        #expect(waits.count == 1)
+        #expect(seen.value?.timeoutInterval == budget - 2)
     }
 }
 

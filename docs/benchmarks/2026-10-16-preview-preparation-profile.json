@@ -1,0 +1,81 @@
+{
+  "scope": "Temporary clock instrumentation, diagnostic only; timers add overhead. Two runs of the same 28 SVGs. Stage totals cover both preparation passes.",
+  "baselineSourceHash": "47a33a72db51748622b05b67ca5d155b284abaee5b11ec98525341d51827214d",
+  "instrumentedSourceHash": "0e9086997781e24e5a595be2aaf4c137eec7966d713ba0e2e771a930179723b6",
+  "samples": [
+    {
+      "operations": {
+        "decodedResources": 3,
+        "mode": "shared",
+        "peakRSSBytes": 159248384,
+        "retainedBytes": 4442287,
+        "samples": [
+          {
+            "cpuSeconds": 0.338399,
+            "elapsedSeconds": 0.33840280400181655,
+            "fontBytesIfRequestedEverySlide": 53306624,
+            "htmlBytes": 43927613
+          },
+          {
+            "cpuSeconds": 0.385589,
+            "elapsedSeconds": 0.38569496700074524,
+            "fontBytesIfRequestedEverySlide": 53306624,
+            "htmlBytes": 43927613
+          }
+        ]
+      },
+      "stages": {
+        "active-insert": 0.12066000000000006,
+        "active-lookup": 0.02837300000000002,
+        "cache-insert": 0.0048130000000000004,
+        "cache-lookup": 0.05891599999999999,
+        "decode": 0.007268999999999999,
+        "key-copy": 0.020098000000000008,
+        "rebuild": 0.033715000000000016,
+        "scan-;base64,": 0.00016299999999999965,
+        "scan-)": 0.19694800000000007,
+        "scan-) format('truetype');}": 0.00010899999999999979,
+        "scan-</style>": 0.129359,
+        "scan-<style type=\"text/css\">": 0.06593000000000003,
+        "scan-data:font/": 9.599999999999983e-05
+      }
+    },
+    {
+      "operations": {
+        "decodedResources": 3,
+        "mode": "shared",
+        "peakRSSBytes": 159252480,
+        "retainedBytes": 4442287,
+        "samples": [
+          {
+            "cpuSeconds": 0.288122,
+            "elapsedSeconds": 0.2882361959927948,
+            "fontBytesIfRequestedEverySlide": 53306624,
+            "htmlBytes": 43927613
+          },
+          {
+            "cpuSeconds": 0.247335,
+            "elapsedSeconds": 0.2473312310030451,
+            "fontBytesIfRequestedEverySlide": 53306624,
+            "htmlBytes": 43927613
+          }
+        ]
+      },
+      "stages": {
+        "active-insert": 0.08434499999999996,
+        "active-lookup": 0.026150000000000014,
+        "cache-insert": 0.0022800000000000003,
+        "cache-lookup": 0.04998699999999996,
+        "decode": 0.006861,
+        "key-copy": 0.015143999999999998,
+        "rebuild": 0.027621,
+        "scan-;base64,": 0.00013399999999999973,
+        "scan-)": 0.11026999999999999,
+        "scan-) format('truetype');}": 9.899999999999983e-05,
+        "scan-</style>": 0.10700500000000002,
+        "scan-<style type=\"text/css\">": 0.049945,
+        "scan-data:font/": 0.00013899999999999988
+      }
+    }
+  ]
+}

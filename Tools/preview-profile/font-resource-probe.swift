@@ -46,12 +46,31 @@ import Darwin
                                    "decodedResources":store.decodedResources,"peakRSSBytes":peakRSSBytes]
         print(String(decoding: try JSONSerialization.data(withJSONObject:report,options:[.sortedKeys]),as:UTF8.self))
         if CommandLine.arguments.contains("verify") {
-            for svg in svgs {
+            // Optional, untimed evidence for comparing implementations. Only
+            // the random store namespace is normalized; IDs and ordering stay.
+            let output = CommandLine.arguments.firstIndex(of: "artifacts").map {
+                URL(fileURLWithPath: CommandLine.arguments[$0 + 1], isDirectory: true)
+            }
+            if let output { try FileManager.default.createDirectory(at: output, withIntermediateDirectories: false) }
+            for (index, svg) in svgs.enumerated() {
                 let prepared = store.prepare(svg: svg)
                 let restored = prepared.resources.reduce(prepared.svg) { result,r in
                     result.replacingOccurrences(of:r.url + ")",with:"data:\(r.mimeType);base64,\(r.data.base64EncodedString()))")
                 }
                 guard Data(restored.utf8) == Data(svg.utf8) else { fatalError("Output changed") }
+                if let output {
+                    var normalized = prepared.svg
+                    for resource in prepared.resources {
+                        let id = URL(string: resource.url)!.lastPathComponent
+                        normalized = normalized.replacingOccurrences(of: resource.url + ")",
+                            with: "\(PreviewFontResources.scheme)://store/\(id))")
+                        try resource.data.write(to: output.appendingPathComponent("font-\(id).bin"))
+                    }
+                    try Data(normalized.utf8).write(to: output.appendingPathComponent("slide-\(index + 1).svg"))
+                    let inventory = prepared.resources.map { ["id": URL(string: $0.url)!.lastPathComponent, "mime": $0.mimeType] }
+                    try JSONSerialization.data(withJSONObject: inventory, options: [.sortedKeys])
+                        .write(to: output.appendingPathComponent("slide-\(index + 1)-resources.json"))
+                }
             }
         }
     }

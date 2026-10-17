@@ -47,6 +47,16 @@ struct Page: Codable {
     let columnWidthsEMU: [Int]
     let rowHeightsEMU: [Int]
 }
+struct Merge: Codable {
+    let row: Int; let column: Int; let rowSpan: Int; let columnSpan: Int
+    init(_ value: TableMergeRegion) {
+        row = value.row; column = value.column; rowSpan = value.rowSpan; columnSpan = value.columnSpan
+    }
+}
+struct MergedSource: Codable {
+    let rows: [[String]]
+    let merges: [Merge]
+}
 struct Problems: Codable, Equatable {
     let layoutUnresolved: Bool
     let masterUnresolved: Bool
@@ -58,13 +68,14 @@ struct Problems: Codable, Equatable {
     }
 }
 struct Report: Encodable {
-    let schemaVersion = 1
+    let schemaVersion = 2
     let family: String
     let faces: [Face]
     let aspect: String
     let fontMode: String
     let slideCount: Int
     let pages: [Page]
+    let mergedPages: [Page]
     let phases: [String: Timing]
     let portableChecks: [String]
     let powerpointSlideView = "pending"
@@ -225,11 +236,35 @@ func run() throws {
             caption: "Exact rows, repeated header, full-size cells.", preferredTypes: ["obj"], layoutURI: layoutURI)
     }
     let tableSlides = try timer.measure("tableComposeWithFreshChecks") { try engine.composeTablePages(tablePlan) }
+    let mergedStart = deck.slideCount
+    var mergedRows = [["Group", "Evidence", "State"]]
+    var merges: [TableMergeRegion] = []
+    for group in 1...6 {
+        let row = mergedRows.count
+        mergedRows += [["Group \(group)", "Exact source observation \(group).", "Ready"],
+                       ["", "Every original word stays editable.", "Reviewed"],
+                       ["A connected summary preserves the complete source for group \(group).", "", ""],
+                       ["", "", "Saved"]]
+        merges += [.init(row: row, column: 0, rowSpan: 2, columnSpan: 1),
+                   .init(row: row + 1, column: 2, rowSpan: 2, columnSpan: 1),
+                   .init(row: row + 2, column: 0, rowSpan: 2, columnSpan: 2)]
+    }
+    let mergedPlan = try timer.measure("mergedTablePlan") {
+        try engine.planTablePages(title: "Merged groups stay together",
+            table: .init(rows: mergedRows, columnWeights: [1, 2.5, 1], columnSizing: .measured(), merges: merges),
+            caption: "Merged cells stay together. All source text remains editable.", layoutURI: layoutURI)
+    }
+    _ = try timer.measure("mergedTableComposeWithFreshChecks") { try engine.composeTablePages(mergedPlan) }
     for index in 0..<deck.slideCount { try deck.slides[index].setNotes("Native fidelity fixture: slide \(index + 1). Preserve these exact notes.") }
-    try deck.setSections([("Typography", 0), ("Tables", 1)])
+    try deck.setSections([("Typography", 0), ("Tables", 1), ("Merged tables", mergedStart)])
     let pages = try tablePlan.pages.enumerated().map { index, page in
         let geometry = try need(page.slide.tableLayout, "Table geometry missing")
         return Page(slide: index + 2, sourceRows: Array(page.bodyRows),
+            columnWidthsEMU: geometry.columnWidths.map(\.rawValue), rowHeightsEMU: geometry.rowHeights.map(\.rawValue))
+    }
+    let mergedPages = try mergedPlan.pages.enumerated().map { index, page in
+        let geometry = try need(page.slide.tableLayout, "Merged geometry missing")
+        return Page(slide: mergedStart + index + 1, sourceRows: Array(page.bodyRows),
             columnWidthsEMU: geometry.columnWidths.map(\.rawValue), rowHeightsEMU: geometry.rowHeights.map(\.rawValue))
     }
     let saved = try timer.measure("save") { try deck.serializedData() }
@@ -266,6 +301,35 @@ func run() throws {
         try require(nativeRows.compactMap { $0[attribute: "h"].flatMap(Int.init) } == page.rowHeightsEMU, "Row heights changed")
         try require(descendants(tbl, "a:gridCol").compactMap { $0[attribute: "w"].flatMap(Int.init) } == page.columnWidthsEMU, "Column widths changed")
     }
+    try require(mergedPages.flatMap(\.sourceRows) == Array(1...24), "Merged pagination lost source rows")
+    for (index, page) in mergedPages.enumerated() {
+        try require((page.sourceRows.first! - 1) % 4 == 0 && page.sourceRows.last! % 4 == 0,
+            "Connected merged rows split between pages")
+        let slide = try reopened.slides[page.slide - 1]
+        let frame = try need(slide.shapes.all.compactMap { $0 as? TableFrame }.first, "Merged table frame missing")
+        let table = try need(frame.table, "Merged table missing")
+        let expected = merges.filter { page.sourceRows.contains($0.row) }.map {
+            TableMergeRegion(row: $0.row - page.sourceRows[0] + 1, column: $0.column, rowSpan: $0.rowSpan, columnSpan: $0.columnSpan)
+        }
+        try require(try table.mergedRegions == expected, "Native merge topology changed")
+        let values = try (0..<table.rowCount).map { row in try (0..<table.columnCount).map { try table.cell(row, $0).text } }
+        try require(values == [mergedRows[0]] + page.sourceRows.map { mergedRows[$0] }, "Merged source text changed")
+        let measured = try TableLayoutEngine(presentation: reopened).plan(table)
+        try require(measured.fits && measured.columnWidths.map(\.rawValue) == page.columnWidthsEMU, "Merged cells cannot be measured")
+        let xml = try need(descendants(try slide.part.dom(), "a:tbl").first, "Merged table XML missing")
+        try require(xml.children(named: "a:tr").compactMap { $0[attribute: "h"].flatMap(Int.init) } == page.rowHeightsEMU,
+            "Merged saved row heights changed")
+        for cell in measured.cells where !cell.isMergeContinuation {
+            let height = page.rowHeightsEMU[cell.row..<(cell.row + cell.rowSpan)].reduce(0, +)
+            let width = page.columnWidthsEMU[cell.column..<(cell.column + cell.columnSpan)].reduce(0, +)
+            let body = try need(table.cell(cell.row, cell.column).existingTextFrame, "Merged body missing")
+            try require(cell.requiredHeight.rawValue <= height && body.fitText(in: Rect(x: .zero, y: .zero,
+                width: EMU(width), height: EMU(height)), fonts: reopened.fonts, theme: slide.master?.theme).fits,
+                "Saved merged text overflows its combined area")
+        }
+        let caption = try need(mergedPlan.pages[index].slide.captionFrame, "Merged caption missing")
+        try require(frame.frame.maxY + .points(8) <= caption.y, "Merged table overlaps its caption")
+    }
     for index in 0..<reopened.slideCount {
         let slide = try reopened.slides[index]
         try require(slide.notesText == "Native fidelity fixture: slide \(index + 1). Preserve these exact notes.", "Notes changed")
@@ -275,19 +339,22 @@ func run() throws {
             }
         }
     }
-    try require(reopened.sections.map(\.name) == ["Typography", "Tables"], "Sections changed")
-    try require(reopened.sections.map(\.slideIndices) == [[0], Array(1..<reopened.slideCount)], "Section membership changed")
+    try require(reopened.sections.map(\.name) == ["Typography", "Tables", "Merged tables"], "Sections changed")
+    try require(reopened.sections.map(\.slideIndices) == [[0], Array(1..<mergedStart), Array(mergedStart..<reopened.slideCount)], "Section membership changed")
     try FileManager.default.createDirectory(at: output, withIntermediateDirectories: false)
     try templateData.write(to: output.appendingPathComponent("input.potx"))
     try saved.write(to: output.appendingPathComponent("deck.pptx"))
     try geometry.write(to: output.appendingPathComponent("text-geometry.json"))
+    try write(MergedSource(rows: mergedRows, merges: merges.map(Merge.init)), output.appendingPathComponent("merged-source.json"))
+    try write(mergedPages, output.appendingPathComponent("merged-geometry.json"))
     for (index, rendered) in after.enumerated() {
         try Data(rendered.svg.utf8).write(to: output.appendingPathComponent("slide-\(index + 1).svg"))
         try write(Problems(rendered.problems), output.appendingPathComponent("slide-\(index + 1)-diagnostics.json"))
     }
     let report = Report(family: input.family, faces: identities, aspect: args[2], fontMode: args[3], slideCount: reopened.slideCount,
-        pages: pages, phases: timer.phases, portableChecks: ["deterministic-save", "saved-svg-and-ordered-diagnostics", "template-parts-unchanged",
-            "template-bindings", "required-attribute-lint", "inherited-text-and-soft-breaks", "mixed-runs", "text-fit-and-line-geometry", "all-source-rows", "column-widths-and-row-heights", "notes-and-sections", "shape-bounds"])
+        pages: pages, mergedPages: mergedPages, phases: timer.phases, portableChecks: ["deterministic-save", "saved-svg-and-ordered-diagnostics", "template-parts-unchanged",
+            "template-bindings", "required-attribute-lint", "inherited-text-and-soft-breaks", "mixed-runs", "text-fit-and-line-geometry", "all-source-rows", "column-widths-and-row-heights", "notes-and-sections", "shape-bounds",
+            "merged-source-rows-and-topology", "connected-row-boundaries", "merged-cell-fit-and-caption-bounds"])
     try write(report, output.appendingPathComponent("report.json"))
     print("\(args[2]) \(args[3]): \(reopened.slideCount) slides; portable checks passed; native review pending")
 }

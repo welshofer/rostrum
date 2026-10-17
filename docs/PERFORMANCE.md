@@ -2,6 +2,13 @@
 
 ## Latest reconciled measurements
 
+The [shared-font preparation follow-up](PREVIEW-PREPARATION-20261016.md) measures
+52.7%/55.6% lower median paired first/repeat preparation CPU on the supplied
+28-slide SVG corpus. All five pairs improve and 68 prepared-document/resource
+artifacts match across the four workloads. Small adverse samples are retained;
+peak RSS is essentially unchanged. This optimizes an opt-in experiment, not
+normal app loading, and establishes no native WebKit or visible-frame speedup.
+
 The [font-registration record](FONT-REGISTRATION-20261015.md) removes the second
 parse of faces already validated by Lectern. On five fixed Linux Release probes,
 first registration CPU falls 30–40% for available fonts and second fresh

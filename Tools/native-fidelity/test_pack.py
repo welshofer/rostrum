@@ -10,6 +10,7 @@ import unittest
 from unittest.mock import patch
 import xml.etree.ElementTree as ET
 import zipfile
+from pptx import Presentation
 
 from run import collect, command_output
 
@@ -92,6 +93,32 @@ class FidelityPackTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("already exists", result.stderr)
 
+    def test_merged_groups_keep_native_topology_content_and_geometry(self):
+        for profile in self.manifest["profiles"]:
+            case = self.output / profile["samples"][0]["directory"]
+            report = json.loads((case / "report.json").read_text())
+            source = json.loads((case / "merged-source.json").read_text())
+            pages = json.loads((case / "merged-geometry.json").read_text())
+            self.assertEqual(pages, report["mergedPages"])
+            self.assertGreater(len(pages), 1)
+            self.assertEqual([row for page in pages for row in page["sourceRows"]], list(range(1, 25)))
+            deck = Presentation(case / "deck.pptx")
+            for page in pages:
+                first, last = page["sourceRows"][0], page["sourceRows"][-1]
+                self.assertEqual((first - 1) % 4, 0)
+                self.assertEqual(last % 4, 0)
+                table, = [shape.table for shape in deck.slides[page["slide"] - 1].shapes if shape.has_table]
+                self.assertEqual([row.height for row in table.rows], page["rowHeightsEMU"])
+                self.assertEqual([column.width for column in table.columns], page["columnWidthsEMU"])
+                self.assertEqual([[cell.text for cell in row.cells] for row in table.rows],
+                                 [source["rows"][0]] + [source["rows"][i] for i in page["sourceRows"]])
+                expected = {(m["row"] - first + 1, m["column"]): (m["rowSpan"], m["columnSpan"])
+                            for m in source["merges"] if first <= m["row"] <= last}
+                actual = {(r, c): (table.cell(r, c).span_height, table.cell(r, c).span_width)
+                          for r in range(len(table.rows)) for c in range(len(table.columns))
+                          if table.cell(r, c).is_merge_origin}
+                self.assertEqual(actual, expected)
+
     def assert_invalid_font(self, change, message):
         with tempfile.TemporaryDirectory(dir=self.directory) as temporary:
             directory = Path(temporary)
@@ -129,12 +156,23 @@ class FidelityPackTests(unittest.TestCase):
             for preview in evidence["previews"]:
                 self.assertAlmostEqual(preview["width"] / preview["height"],
                                        4 / 3 if profile["name"].startswith("4x3") else 16 / 9)
-            self.assertEqual([s["name"] for s in evidence["sections"]], ["Typography", "Tables"])
-            self.assertEqual([s["slideIndices"] for s in evidence["sections"]], [[0], list(range(1, total))])
-            rows = [row for slide in evidence["slides"] for table in slide["tables"] for row in table["rows"][1:]]
+            pack_case = self.output / profile["samples"][0]["directory"]
+            pack_report = json.loads((pack_case / "report.json").read_text())
+            merged_start = pack_report["mergedPages"][0]["slide"] - 1
+            self.assertEqual([s["name"] for s in evidence["sections"]], ["Typography", "Tables", "Merged tables"])
+            self.assertEqual([s["slideIndices"] for s in evidence["sections"]],
+                             [[0], list(range(1, merged_start)), list(range(merged_start, total))])
+            rows = [row for slide in evidence["slides"][:merged_start] for table in slide["tables"] for row in table["rows"][1:]]
             expected = [[f"Record {i}", f"Exact source evidence {i} stays editable and wraps at full size.", "Reviewed"]
                         for i in range(1, 25)]
             self.assertEqual(rows, expected)
+            merged_rows = [row for slide in evidence["slides"][merged_start:] for table in slide["tables"] for row in table["rows"][1:]]
+            merged_source = json.loads((pack_case / "merged-source.json").read_text())
+            self.assertEqual(merged_rows, merged_source["rows"][1:])
+            for row in merged_rows:
+                for text in row:
+                    if text:
+                        self.assertIn(text, markdown)
             for row in expected:
                 self.assertIn(" | ".join(row), markdown)
             for slide in evidence["slides"]:

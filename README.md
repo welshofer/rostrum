@@ -143,10 +143,10 @@ listed above, replace the dependency with a reviewed revision, for example:
 
 ```swift
 .package(url: "https://github.com/welshofer/rostrum",
-         revision: "e6290707fc4d9f07ff0271ea56803bae89425072")
+         revision: "bbde5fc7dbb6a854e5cd41e6a6df976b70edb622")
 ```
 
-That revision includes the enhancements documented here. Use `branch: "main"`
+That revision includes the library capabilities described above. Use `branch: "main"`
 instead to track development, and update your package resolution deliberately.
 Lectern uses the local checkout automatically; it has no separate Rostrum version
 to bump. See [pull and rebuild](Lectern/README.md#pull-and-rebuild).
@@ -161,8 +161,13 @@ readable fit constraints, measured object captions and lossless text partitionin
 Table planning resolves native cell styles and rich text before choosing row
 heights. `TemplateTableContent(rows:columnSizing:)` with `.measured()` enables
 bounded column search; `planTablePages` / `composeTablePages` create editable continuations with
-repeated headers and reserved captions. Horizontal spans are supported; vertical
-spans and native table autofit remain outside this layout profile.
+repeated headers and reserved captions. Horizontal, vertical and rectangular
+merges are supported; connected body-row groups stay together across pages.
+Multi-row repeated headers and native table autofit remain outside this profile.
+
+The [caller-font fidelity pack](Tools/native-fidelity/README.md) exercises text
+and merged-table continuations at both slide ratios, retaining exact geometry
+and separate PowerPoint slide-view/export review status.
 
 Table previews resolve native and embedded custom styles, padding, vertical
 alignment, fills and supported border joins. Newly authored table cells center

@@ -17,7 +17,25 @@ public final class PreviewFontResources {
 
     public static let scheme = "lectern-preview-font"
     public static let defaultByteLimit = 32 * 1024 * 1024
-    private let cache: CostLimitedCache<String, Resource>
+    // Exact encoded bytes are the identity. Hash once per candidate rather than
+    // rescanning a multi-megabyte String on every dictionary/LRU operation.
+    // A hash collision still requires complete byte equality.
+    private struct Key: Hashable {
+        let bytes: Data
+        let fingerprint: Int
+        init(_ source: UnsafeBufferPointer<UInt8>) {
+            let raw = UnsafeRawBufferPointer(source)
+            var hasher = Hasher()
+            hasher.combine(bytes: raw)
+            fingerprint = hasher.finalize()
+            bytes = Data(raw)
+        }
+        func hash(into hasher: inout Hasher) { hasher.combine(fingerprint) }
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.fingerprint == rhs.fingerprint && lhs.bytes == rhs.bytes
+        }
+    }
+    private let cache: CostLimitedCache<Key, Resource>
     private let namespace = UUID().uuidString.lowercased()
     private var nextID: UInt64 = 0
     public private(set) var decodedResources = 0
@@ -46,6 +64,17 @@ public final class PreviewFontResources {
             guard !needle.isEmpty, from <= to - needle.count else { return nil }
             var index = from
             while index <= to - needle.count {
+                // Skip eight bytes when none can begin the marker. Unaligned
+                // loads stay inside the supplied range, including short tails.
+                // This keeps large base64 payloads out of the byte-at-a-time loop.
+                if index <= to - 8 {
+                    let word = UnsafeRawBufferPointer(bytes).loadUnaligned(fromByteOffset: index, as: UInt64.self)
+                        ^ (UInt64(needle[0]) &* 0x0101010101010101)
+                    if (word &- 0x0101010101010101) & ~word & 0x8080808080808080 == 0 {
+                        index += 8
+                        continue
+                    }
+                }
                 if bytes[index] == needle[0] {
                     var offset = 1
                     while offset < needle.count && bytes[index + offset] == needle[offset] { offset += 1 }
@@ -58,7 +87,7 @@ public final class PreviewFontResources {
         let styleStart = Array("<style type=\"text/css\">".utf8), styleEnd = Array("</style>".utf8)
         let separator = Array(";base64,".utf8), dataStart = Array("data:font/".utf8)
         var replacements: [(Range<Int>, String)] = []
-        var active: [String: Resource] = [:]
+        var active: [Key: Resource] = [:]
         var activeCost = 0
         var search = 0
         while let style = find(styleStart, from: search, to: bytes.count),
@@ -99,7 +128,7 @@ public final class PreviewFontResources {
                     guard let lastValue = base64Value(bytes[payloadEnd - (doublePadding ? 3 : 2)]),
                           lastValue & (doublePadding ? 15 : 3) == 0 else { continue }
                 }
-                let key = String(decoding: bytes[range], as: UTF8.self)
+                let key = Key(UnsafeBufferPointer(rebasing: bytes[range]))
                 if let hit = active[key] {
                     replacements.append((range, hit.url)); continue
                 }
