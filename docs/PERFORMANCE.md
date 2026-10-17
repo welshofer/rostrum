@@ -2,6 +2,16 @@
 
 ## Latest reconciled measurements
 
+The [table measurement follow-up](TABLE-MEASUREMENT-20261017.md) reuses exact
+style bytes and immutable input-key hashes inside each operation. Seven paired
+Linux Release runs measure 7.98% lower small-plain planning CPU (3.01% process
+CPU), 7.07% lower large-plain process CPU and 19.33% lower repeated-text process
+CPU. Large column-span and measured rotated controls are roughly unchanged.
+Peak RSS changes remain small, with slight increases in some rotated controls.
+All 388 horizontal/rotated artifacts, 1,248 detailed snapshots, 84 prior Calibri
+artifacts and both accepted rotated decks plus their ten SVGs match. All controls
+and individual adverse pairs remain in the report; no native Mac speedup is claimed.
+
 The [rotated table-text expansion](TABLE-ROTATED-TEXT-20261017.md) preserves
 264 existing control artifacts, 84 accepted Calibri artifacts and every existing
 field in 1,248 detailed layout/shaping snapshots. Five alternating Linux Release

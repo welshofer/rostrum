@@ -50,6 +50,9 @@ The libraries impose no font-family policy. Applications register the faces they
 intend to use; redistributable test fonts exist to make fixtures repeatable.
 Font substitution and preview fallback do not establish the source font's fidelity.
 
+The [table measurement follow-up](TABLE-MEASUREMENT-20261017.md) documents
+operation-local style-byte and key-hash reuse with output-preservation checks.
+
 ## Reading the evidence
 
 Format support, saved-content preservation, preview fidelity and native PowerPoint

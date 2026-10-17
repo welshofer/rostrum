@@ -1,0 +1,2310 @@
+{
+  "baseline": {
+    "cases": [
+      {
+        "kind": "plain",
+        "profiles": [
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_serialization": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.09386099999997555,
+              "horizontal_layout": 3.853998000000047,
+              "inputs": 2.205800000000046,
+              "measurement_lookup": 0.3511639999999616,
+              "prepare_text": 0.13683400000004298,
+              "resolve": 1.782447999999981,
+              "source_cell": 0.366564000000011,
+              "style_serialization": 0.6031070000000724,
+              "table_plan": 7.547563000000004
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_serialization": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.045583999999976754,
+              "horizontal_layout": 4.389936999999918,
+              "inputs": 2.3684459999999206,
+              "measurement_lookup": 0.38198500000000735,
+              "prepare_text": 0.10275599999998519,
+              "resolve": 1.9036299999999926,
+              "source_cell": 0.3910719999999728,
+              "style_serialization": 0.5510889999999691,
+              "table_plan": 8.392001999999998
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_serialization": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.0423550000000148,
+              "horizontal_layout": 3.612465000000043,
+              "inputs": 2.913060000000101,
+              "measurement_lookup": 0.5387340000000549,
+              "prepare_text": 0.2736399999999435,
+              "resolve": 2.067863999999979,
+              "source_cell": 0.6363929999999698,
+              "style_serialization": 0.5556230000000681,
+              "table_plan": 8.173151999999988
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_serialization": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.04399999999998272,
+              "horizontal_layout": 3.9741379999999538,
+              "inputs": 2.2520079999999325,
+              "measurement_lookup": 0.49165100000006134,
+              "prepare_text": 0.10059699999993654,
+              "resolve": 1.899402999999964,
+              "source_cell": 0.5114360000001454,
+              "style_serialization": 0.6915529999998,
+              "table_plan": 7.762725000000003
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_serialization": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.04778899999996611,
+              "horizontal_layout": 5.622875999999934,
+              "inputs": 2.6542929999997114,
+              "measurement_lookup": 0.6345909999998014,
+              "prepare_text": 0.11143700000008039,
+              "resolve": 2.0600350000000134,
+              "source_cell": 0.33726300000010667,
+              "style_serialization": 1.10372100000005,
+              "table_plan": 10.082187999999988
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "pages": 4,
+            "plan_cpu_ms": 10.176248999999999,
+            "plan_ms": 10.173642002046108,
+            "trial": 0
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 9.760421000000001,
+            "plan_ms": 9.759623996913433,
+            "trial": 1
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 9.935317999999995,
+            "plan_ms": 9.93248800188303,
+            "trial": 2
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.982191999999998,
+            "plan_ms": 8.98165600001812,
+            "trial": 3
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 11.772435000000002,
+            "plan_ms": 11.769795998930931,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "plain",
+        "profiles": [
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_serialization": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.9371809999999527,
+              "horizontal_layout": 115.73774899999896,
+              "inputs": 167.91446599999938,
+              "measurement_lookup": 17.73882700000035,
+              "prepare_text": 85.10852199999923,
+              "resolve": 69.25592100000057,
+              "source_cell": 13.928155000000096,
+              "style_serialization": 26.10007700000066,
+              "table_plan": 332.58095599999996
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_serialization": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.45911199999989094,
+              "horizontal_layout": 108.38700600000067,
+              "inputs": 162.3814469999901,
+              "measurement_lookup": 17.090898999998274,
+              "prepare_text": 88.25664199999846,
+              "resolve": 61.80445299999968,
+              "source_cell": 13.06597300000476,
+              "style_serialization": 23.130293000001586,
+              "table_plan": 316.7306809999999
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_serialization": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.6002969999998413,
+              "horizontal_layout": 109.74762899999496,
+              "inputs": 159.25441499999658,
+              "measurement_lookup": 15.581595000003176,
+              "prepare_text": 87.43544900000018,
+              "resolve": 59.09525900000165,
+              "source_cell": 11.754894999997077,
+              "style_serialization": 21.835880000005204,
+              "table_plan": 313.21696399999985
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_serialization": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.4955139999999574,
+              "horizontal_layout": 123.9560469999833,
+              "inputs": 168.14519300001666,
+              "measurement_lookup": 19.03017100001557,
+              "prepare_text": 92.37872200000379,
+              "resolve": 62.83410000000163,
+              "source_cell": 13.416835000019091,
+              "style_serialization": 22.575323000012304,
+              "table_plan": 343.28589699999975
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_serialization": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.5073529999990569,
+              "horizontal_layout": 123.24122199999647,
+              "inputs": 182.7085549999888,
+              "measurement_lookup": 16.400465999996868,
+              "prepare_text": 103.37802300000271,
+              "resolve": 66.1509699999981,
+              "source_cell": 12.258624999989706,
+              "style_serialization": 26.19992199999865,
+              "table_plan": 354.7417010000013
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 356.412661,
+            "plan_ms": 356.41636800020933,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 334.58738000000005,
+            "plan_ms": 335.3146999999881,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 330.15250100000003,
+            "plan_ms": 330.1536789983511,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 362.012111,
+            "plan_ms": 362.00350599735975,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 373.8427230000002,
+            "plan_ms": 373.8422380015254,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "profiles": [
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_serialization": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.28604399999999686,
+              "horizontal_layout": 14.2872710000001,
+              "inputs": 2.035858999999963,
+              "measurement_lookup": 0.5835909999999487,
+              "prepare_text": 0.11606299999999692,
+              "resolve": 1.32108899999999,
+              "source_cell": 0.3251549999999419,
+              "style_serialization": 0.43530800000000625,
+              "table_plan": 19.293613999999984
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_serialization": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.07291299999998557,
+              "horizontal_layout": 14.68672500000001,
+              "inputs": 2.1592709999999613,
+              "measurement_lookup": 0.6021740000000548,
+              "prepare_text": 0.08889700000001,
+              "resolve": 1.6858669999999947,
+              "source_cell": 0.4806199999999592,
+              "style_serialization": 0.5742090000000957,
+              "table_plan": 19.38794200000001
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_serialization": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.07608999999999355,
+              "horizontal_layout": 16.724255000000014,
+              "inputs": 1.7414790000000693,
+              "measurement_lookup": 0.5604669999999885,
+              "prepare_text": 0.08302399999993781,
+              "resolve": 1.3014220000000165,
+              "source_cell": 0.2918769999999995,
+              "style_serialization": 0.4731059999999445,
+              "table_plan": 21.145650999999972
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_serialization": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.14385599999998533,
+              "horizontal_layout": 16.220784999999992,
+              "inputs": 2.4787410000001415,
+              "measurement_lookup": 1.120308000000307,
+              "prepare_text": 0.2008949999999743,
+              "resolve": 1.9328440000000597,
+              "source_cell": 0.325227999999953,
+              "style_serialization": 0.724861999999959,
+              "table_plan": 22.101521000000005
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_serialization": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.07345700000003319,
+              "horizontal_layout": 14.96908800000024,
+              "inputs": 2.0149670000006523,
+              "measurement_lookup": 0.5679739999997651,
+              "prepare_text": 0.08416999999998609,
+              "resolve": 1.529502999999906,
+              "source_cell": 0.3590260000000711,
+              "style_serialization": 0.6479580000000453,
+              "table_plan": 19.529346999999973
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "pages": 4,
+            "plan_cpu_ms": 21.634982,
+            "plan_ms": 21.633547000586987,
+            "trial": 0
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 20.895969,
+            "plan_ms": 20.894731000065804,
+            "trial": 1
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 22.668385999999998,
+            "plan_ms": 22.66771300137043,
+            "trial": 2
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 23.88210099999999,
+            "plan_ms": 23.8892760053277,
+            "trial": 3
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 21.329215999999988,
+            "plan_ms": 21.32762599736452,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "profiles": [
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_serialization": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 1.45529700000003,
+              "horizontal_layout": 647.9056530000007,
+              "inputs": 129.24295200000003,
+              "measurement_lookup": 27.055894999991963,
+              "prepare_text": 57.31343399999966,
+              "resolve": 53.502610999999554,
+              "source_cell": 11.168268999999569,
+              "style_serialization": 19.489955999999417,
+              "table_plan": 873.0802899999995
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_serialization": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.6963130000010551,
+              "horizontal_layout": 625.7892540000063,
+              "inputs": 128.33622700000785,
+              "measurement_lookup": 35.34532099999399,
+              "prepare_text": 48.84579699999995,
+              "resolve": 61.5947549999953,
+              "source_cell": 11.664667999999551,
+              "style_serialization": 23.192030999996746,
+              "table_plan": 849.8133040000007
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_serialization": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.6695440000003146,
+              "horizontal_layout": 570.1355089999902,
+              "inputs": 125.3554660000018,
+              "measurement_lookup": 24.002497999984143,
+              "prepare_text": 52.78054599999973,
+              "resolve": 53.977776000004496,
+              "source_cell": 11.079181000001881,
+              "style_serialization": 19.746559000005618,
+              "table_plan": 776.7279729999989
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_serialization": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 1.0876370000005409,
+              "horizontal_layout": 579.0738420000098,
+              "inputs": 122.19956500002809,
+              "measurement_lookup": 24.863049000003684,
+              "prepare_text": 47.80805800000644,
+              "resolve": 57.64694200000713,
+              "source_cell": 12.969887999991897,
+              "style_serialization": 21.443004999995537,
+              "table_plan": 786.9304270000002
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_serialization": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.6689380000011624,
+              "horizontal_layout": 566.6833280000351,
+              "inputs": 123.92471999998133,
+              "measurement_lookup": 24.336550999990777,
+              "prepare_text": 47.644113999992896,
+              "resolve": 59.27301500001431,
+              "source_cell": 11.714144999996734,
+              "style_serialization": 22.012929000001805,
+              "table_plan": 770.6028820000006
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 901.154061,
+            "plan_ms": 901.1719530001283,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 871.1586319999999,
+            "plan_ms": 871.1653240025043,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 797.2603470000001,
+            "plan_ms": 797.2581890001893,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 806.62363,
+            "plan_ms": 806.6756270006299,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 789.5900890000003,
+            "plan_ms": 789.6068959981203,
+            "trial": 4
+          }
+        ]
+      }
+    ],
+    "source_hashes": [
+      {
+        "path": "Sources/LecternIR/DeckIR.swift",
+        "sha256": "9241940b1838db4258f8830c24f37e6f057f6bfc5ebaacc577c3df7ddc1133c0"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheRepair.swift",
+        "sha256": "29ea3b40edb93f89c85d7eb52dd9e6fa22b5e2c2a5ec73a213cfadec6af2d193"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheWorkbook.swift",
+        "sha256": "485694a3d4f367c459254b9471e0354542425a95be99ccda293086317dc0531a"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartData.swift",
+        "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartReader.swift",
+        "sha256": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartSeriesEditing.swift",
+        "sha256": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbook.swift",
+        "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbookReader.swift",
+        "sha256": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartXML.swift",
+        "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/Charts.swift",
+        "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ComboChartData.swift",
+        "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+      },
+      {
+        "path": "Sources/Rostrum/Core/RostrumError.swift",
+        "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+      },
+      {
+        "path": "Sources/Rostrum/Core/Units.swift",
+        "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ColorMath.swift",
+        "sha256": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Drawing.swift",
+        "sha256": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/DrawingColor.swift",
+        "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Geometry.swift",
+        "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/GradientStops.swift",
+        "sha256": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ImageSniffer.swift",
+        "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicJoining.swift",
+        "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicLayoutTables.swift",
+        "sha256": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicTextShaper.swift",
+        "sha256": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontFaceKey.swift",
+        "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLayoutTables.swift",
+        "sha256": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLibrary.swift",
+        "sha256": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontMetrics.swift",
+        "sha256": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/MarkPositioning.swift",
+        "sha256": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/PreparedFont.swift",
+        "sha256": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ShapedGlyphRun.swift",
+        "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextMeasurer.swift",
+        "sha256": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextShaper.swift",
+        "sha256": "06462c96d3d0ef883ad46d4b4c44ffa9f05be7f2c0ebdda3f6be225146d1306a"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/ContentTypes.swift",
+        "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCArchive.swift",
+        "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCPackage.swift",
+        "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/PackURI.swift",
+        "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/Relationships.swift",
+        "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationDependencies.swift",
+        "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationImport.swift",
+        "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BackgroundResolver.swift",
+        "sha256": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BuiltInTableStyle.swift",
+        "sha256": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/CommentEditing.swift",
+        "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Comments.swift",
+        "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Components.swift",
+        "sha256": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckExport.swift",
+        "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckMerge.swift",
+        "sha256": "a469986af885706217489bb0cf105bcb2802acce16c0c736f8db93e17876f4bc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckOutline.swift",
+        "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckStyle.swift",
+        "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Design.swift",
+        "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DocumentProperties.swift",
+        "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/EmbeddedFontImport.swift",
+        "sha256": "f1f6035482326237e58bc14c7ee96666cfe382257df4e0ef5c1fa9a6da8152e6"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbedding.swift",
+        "sha256": "1bdf5c1b286e615c3aff8090163cfc4cda58fe82b67f8264627550afb05026bd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbeddingPlan.swift",
+        "sha256": "7e07c1493a81947400ab0a0d91edce2624eda09b7b567a64b57c6ba9a57f5df0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/HeadersFooters.swift",
+        "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ImageFill.swift",
+        "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Layouts.swift",
+        "sha256": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift",
+        "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyComments.swift",
+        "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Media.swift",
+        "sha256": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/MinimalTemplate.swift",
+        "sha256": "d11d5c5310f1614a66521f6ede0d28cd5239cec1311dfe346345661f8bc06eed"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Notes.swift",
+        "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesImportGeometry.swift",
+        "sha256": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageRenderer.swift",
+        "sha256": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageTemplate.swift",
+        "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/OutlineImageFills.swift",
+        "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PictureCrop.swift",
+        "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Pictures.swift",
+        "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Presentation.swift",
+        "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PublishedLayouts.swift",
+        "sha256": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderDiagnostics.swift",
+        "sha256": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderImageResources.swift",
+        "sha256": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderTextAttributes.swift",
+        "sha256": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+        "sha256": "4ae69fc01d8e7d62bc75709be3064e3d4bd66ac3c72a2f8889dca5878de1af5e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextPreparation.swift",
+        "sha256": "a566c575a7a2754323288a634740b19d026a7a540dcf3078cb9922918574f1a3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGCustomGeometry.swift",
+        "sha256": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift",
+        "sha256": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGImagePlacement.swift",
+        "sha256": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPaint.swift",
+        "sha256": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPresetGeometry.swift",
+        "sha256": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+        "sha256": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRichText.swift",
+        "sha256": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGShadow.swift",
+        "sha256": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Sections.swift",
+        "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeAppearance.swift",
+        "sha256": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeKind.swift",
+        "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTransform.swift",
+        "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTypes.swift",
+        "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Shapes.swift",
+        "sha256": "c319d1ee4a1f0afe4df7fba7149c063899be996daff2133effa66353ff1311d3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slide.swift",
+        "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideAnnotations.swift",
+        "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideBuilders.swift",
+        "sha256": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideMasters.swift",
+        "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slides.swift",
+        "sha256": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SmartArt.swift",
+        "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+        "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderSegments.swift",
+        "sha256": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableCellFormatting.swift",
+        "sha256": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableDoubleBorder.swift",
+        "sha256": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableEditing.swift",
+        "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableGridSnapshot.swift",
+        "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableLayoutSource.swift",
+        "sha256": "ef9731a9fcc2ff0f20eb91a5c896fb258d24dc69f8a38c1e67fde81d43a02f58"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleImport.swift",
+        "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+        "sha256": "9c24b8814c05984b1167061560d2de630f72c2de29a9d93f9b51b8475e84ad56"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyling.swift",
+        "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Tables.swift",
+        "sha256": "98b29d0b1a5ea29ba01e48d40f87ea4f47800383a52cda42fc93471bd109a801"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+        "sha256": "7aa27bb6775926aa1c646433315a0fbfa47bcd384b4b8c964654a789ab744f09"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Text.swift",
+        "sha256": "db17e2ad61df9e9d9180d4cb2301da41e551a6162e33881d35236933b2c06169"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Theme.swift",
+        "sha256": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Validation.swift",
+        "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/GeneratedSchema.swift",
+        "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/OXMLHelpers.swift",
+        "sha256": "f30ef480475252569a33f345fc004238e8e38863610c9c5ee886725402d23050"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/PresetGeometry.swift",
+        "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+      },
+      {
+        "path": "Sources/Rostrum/XML/XML.swift",
+        "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/CRC32.swift",
+        "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Deflate.swift",
+        "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Inflate.swift",
+        "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipReader.swift",
+        "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipWriter.swift",
+        "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+      },
+      {
+        "path": "Sources/RostrumLayout/AuthoredLayoutEngine.swift",
+        "sha256": "7d2eb25eb12ad2e8321179acb92fa0cf8647a01f7163f186c64ac3a353f2da5d"
+      },
+      {
+        "path": "Sources/RostrumLayout/MeasuredPaginator.swift",
+        "sha256": "df682b359da8ef38d6a1eeefbe70f98e1cb2077f6002efc2799fd283669582d9"
+      },
+      {
+        "path": "Sources/RostrumLayout/RotatedTableCellMeasurement.swift",
+        "sha256": "b544284f5e9e1a1944bd85f7e65125deecb92135f84dfd04eafea139aebddb24"
+      },
+      {
+        "path": "Sources/RostrumLayout/StructuredLayout.swift",
+        "sha256": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableCellPreparation.swift",
+        "sha256": "428bf7ff411d9eb47ae672f56b840d9de99263c58e7f9b410bb743281fc25976"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableColumnSizing.swift",
+        "sha256": "d2050969dca61518d8690d7796c56984a1dec85e191b9e3d39608f6f7e938adc"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableLayoutEngine.swift",
+        "sha256": "40fe0fe623fabdba0092df959977093236275c9c0638a60d122cffc4334ef5ae"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableRowGroups.swift",
+        "sha256": "6b9156bd9c4677e9facacb9a79808a44f4eb4c7a5087884e3c95450f52f335b0"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateLayoutEngine.swift",
+        "sha256": "7d29da38466e85376211f9db58da63dfc4d587999525152d00259e3a67008671"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTableContent.swift",
+        "sha256": "8c719d3b0df8dfdced64d277656374436ac039bd0bff7f6214f51b07218e6653"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTablePagination.swift",
+        "sha256": "97348a4d28794591ca9ba0b4f7ccfb43201807a69fbf5a94d221fe37d1f428f6"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTextContext.swift",
+        "sha256": "ee97e7e7816bfd594d2b70b7a67bbe48f331379a5332db5d3062f3ec464cfdb3"
+      }
+    ]
+  },
+  "candidate": {
+    "cases": [
+      {
+        "kind": "plain",
+        "profiles": [
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_bytes_read": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.09507299999997798,
+              "horizontal_layout": 3.6419680000000056,
+              "inputs": 2.1492310000001282,
+              "measurement_lookup": 0.30629700000005045,
+              "prepare_text": 0.11655899999998098,
+              "resolve": 1.2999729999999872,
+              "source_cell": 0.4117889999999562,
+              "style_bytes_read": 0.19175000000005582,
+              "table_plan": 7.435033999999995
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_bytes_read": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.06424300000000471,
+              "horizontal_layout": 4.0009039999999345,
+              "inputs": 1.3712050000000175,
+              "measurement_lookup": 0.2932290000000677,
+              "prepare_text": 0.08165499999999071,
+              "resolve": 1.044096999999958,
+              "source_cell": 0.33718899999998087,
+              "style_bytes_read": 0.06205100000003938,
+              "table_plan": 6.656876999999994
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_bytes_read": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.047806999999977506,
+              "horizontal_layout": 3.998820999999971,
+              "inputs": 1.3695229999999015,
+              "measurement_lookup": 0.3013390000001337,
+              "prepare_text": 0.08264700000001568,
+              "resolve": 0.9819950000000048,
+              "source_cell": 0.3404889999999483,
+              "style_bytes_read": 0.06223200000001583,
+              "table_plan": 6.820270000000001
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_bytes_read": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.04477899999999124,
+              "horizontal_layout": 4.129533999999893,
+              "inputs": 1.8135940000000232,
+              "measurement_lookup": 0.314144000000141,
+              "prepare_text": 0.08745999999997878,
+              "resolve": 1.4599860000000149,
+              "source_cell": 0.36071500000004164,
+              "style_bytes_read": 0.06317200000009393,
+              "table_plan": 7.5496550000000155
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 203,
+              "inputs": 525,
+              "measurement_lookup": 525,
+              "prepare_text": 75,
+              "resolve": 75,
+              "source_cell": 291,
+              "style_bytes_read": 291,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.048700000000010846,
+              "horizontal_layout": 3.934036999999904,
+              "inputs": 1.8437719999998023,
+              "measurement_lookup": 0.29756899999998154,
+              "prepare_text": 0.08726699999998289,
+              "resolve": 1.1495290000000722,
+              "source_cell": 0.3417459999999721,
+              "style_bytes_read": 0.06209299999994755,
+              "table_plan": 7.477190999999976
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "pages": 4,
+            "plan_cpu_ms": 10.919334,
+            "plan_ms": 10.917982004582882,
+            "trial": 0
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.441263000000006,
+            "plan_ms": 8.440324999392033,
+            "trial": 1
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.111367999999999,
+            "plan_ms": 8.110755003988743,
+            "trial": 2
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 9.105707999999993,
+            "plan_ms": 9.105020999908447,
+            "trial": 3
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 8.786578000000006,
+            "plan_ms": 8.78387700021267,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "plain",
+        "profiles": [
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_bytes_read": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 1.6060989999999578,
+              "horizontal_layout": 109.28525199999743,
+              "inputs": 142.13325800000206,
+              "measurement_lookup": 12.483601000000554,
+              "prepare_text": 83.95787800000042,
+              "resolve": 45.20056900000009,
+              "source_cell": 13.775783999999895,
+              "style_bytes_read": 2.8410010000005883,
+              "table_plan": 294.2045409999999
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_bytes_read": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.49835400000011987,
+              "horizontal_layout": 109.41625499998895,
+              "inputs": 144.13269700000086,
+              "measurement_lookup": 13.41169099998956,
+              "prepare_text": 85.0849099999993,
+              "resolve": 45.90775400000058,
+              "source_cell": 13.184615999998698,
+              "style_bytes_read": 3.1054419999974243,
+              "table_plan": 295.89617899999996
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_bytes_read": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.45908300000007785,
+              "horizontal_layout": 109.66010600000197,
+              "inputs": 142.88009399999942,
+              "measurement_lookup": 15.011186000004386,
+              "prepare_text": 86.64017800000101,
+              "resolve": 44.13068399999975,
+              "source_cell": 13.561624999993455,
+              "style_bytes_read": 2.906952999994587,
+              "table_plan": 295.794619
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_bytes_read": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.4560460000002422,
+              "horizontal_layout": 110.22011600000508,
+              "inputs": 144.8020299999905,
+              "measurement_lookup": 11.741032000009,
+              "prepare_text": 83.67524100000173,
+              "resolve": 47.41340299999422,
+              "source_cell": 14.274677999994992,
+              "style_bytes_read": 2.7861729999951876,
+              "table_plan": 296.65378299999963
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 7035,
+              "inputs": 21021,
+              "measurement_lookup": 21021,
+              "prepare_text": 3003,
+              "resolve": 3003,
+              "source_cell": 12003,
+              "style_bytes_read": 12003,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.513046999999915,
+              "horizontal_layout": 106.94483600000353,
+              "inputs": 139.33141399997135,
+              "measurement_lookup": 12.556194999994204,
+              "prepare_text": 83.74513499999944,
+              "resolve": 43.618825999984665,
+              "source_cell": 13.21481100001165,
+              "style_bytes_read": 3.139053000016247,
+              "table_plan": 287.0193139999999
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 318.032084,
+            "plan_ms": 318.0708810016513,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 319.98722000000004,
+            "plan_ms": 319.9807420000434,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 319.37039400000003,
+            "plan_ms": 319.37883099913597,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 315.03748999999993,
+            "plan_ms": 315.0879699960351,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 305.9483660000001,
+            "plan_ms": 305.94100300222635,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "profiles": [
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_bytes_read": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.12945800000001384,
+              "horizontal_layout": 15.136319000000036,
+              "inputs": 1.747195000000083,
+              "measurement_lookup": 0.4529019999999768,
+              "prepare_text": 0.09646099999999436,
+              "resolve": 1.2307530000000106,
+              "source_cell": 0.3811190000000195,
+              "style_bytes_read": 0.05556100000003639,
+              "table_plan": 19.37029899999999
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_bytes_read": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.07006800000000624,
+              "horizontal_layout": 13.639427999999917,
+              "inputs": 1.3362229999999755,
+              "measurement_lookup": 0.43097700000002703,
+              "prepare_text": 0.06577699999998998,
+              "resolve": 0.9336160000000078,
+              "source_cell": 0.31240899999996685,
+              "style_bytes_read": 0.05558499999995803,
+              "table_plan": 17.066893
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_bytes_read": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.1694589999999465,
+              "horizontal_layout": 15.264866000000339,
+              "inputs": 1.3492360000000474,
+              "measurement_lookup": 0.5327400000002314,
+              "prepare_text": 0.06406799999997759,
+              "resolve": 0.9064360000000988,
+              "source_cell": 0.3265109999999112,
+              "style_bytes_read": 0.05532099999990692,
+              "table_plan": 19.36889699999999
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_bytes_read": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.07312399999996444,
+              "horizontal_layout": 14.844153000000134,
+              "inputs": 1.448736999999653,
+              "measurement_lookup": 0.4521339999998446,
+              "prepare_text": 0.06506800000005342,
+              "resolve": 1.0096190000000291,
+              "source_cell": 0.33503399999995054,
+              "style_bytes_read": 0.057408000000052084,
+              "table_plan": 18.684932999999972
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 477,
+              "inputs": 819,
+              "measurement_lookup": 819,
+              "prepare_text": 66,
+              "resolve": 66,
+              "source_cell": 258,
+              "style_bytes_read": 258,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.08031099999998048,
+              "horizontal_layout": 16.255366000000166,
+              "inputs": 1.7923480000000183,
+              "measurement_lookup": 0.4393549999999351,
+              "prepare_text": 0.06490099999992083,
+              "resolve": 1.260786999999965,
+              "source_cell": 0.3276759999997978,
+              "style_bytes_read": 0.3874699999997233,
+              "table_plan": 20.493703999999937
+            }
+          }
+        ],
+        "rows": 24,
+        "samples": [
+          {
+            "pages": 4,
+            "plan_cpu_ms": 22.518866000000003,
+            "plan_ms": 22.517025001347065,
+            "trial": 0
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 18.574625999999995,
+            "plan_ms": 18.573743999004364,
+            "trial": 1
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 21.038085000000002,
+            "plan_ms": 21.037489995360374,
+            "trial": 2
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 20.410931000000005,
+            "plan_ms": 20.410383000969887,
+            "trial": 3
+          },
+          {
+            "pages": 4,
+            "plan_cpu_ms": 21.844849999999994,
+            "plan_ms": 21.844124995172024,
+            "trial": 4
+          }
+        ]
+      },
+      {
+        "kind": "spans",
+        "profiles": [
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_bytes_read": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 2.5305079999999123,
+              "horizontal_layout": 587.4879270000021,
+              "inputs": 117.9124980000142,
+              "measurement_lookup": 17.786003999999828,
+              "prepare_text": 58.898018999999834,
+              "resolve": 41.44716200000027,
+              "source_cell": 13.803750000000747,
+              "style_bytes_read": 2.6308660000002604,
+              "table_plan": 782.0059129999999
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_bytes_read": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 1.2265819999990981,
+              "horizontal_layout": 594.4283320000043,
+              "inputs": 119.69933100002186,
+              "measurement_lookup": 20.999568999990743,
+              "prepare_text": 62.04617200000598,
+              "resolve": 41.43861799999877,
+              "source_cell": 12.523192000002496,
+              "style_bytes_read": 2.811128000002327,
+              "table_plan": 793.5013950000002
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_bytes_read": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.7280410000014399,
+              "horizontal_layout": 572.1718929999943,
+              "inputs": 106.81666600000108,
+              "measurement_lookup": 17.396858999985625,
+              "prepare_text": 49.81434300000319,
+              "resolve": 40.36719999999423,
+              "source_cell": 12.441220000008116,
+              "style_bytes_read": 2.4928610000099525,
+              "table_plan": 752.720047999999
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_bytes_read": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 2.523173000000952,
+              "horizontal_layout": 642.193922999983,
+              "inputs": 107.821611999987,
+              "measurement_lookup": 18.782105000022057,
+              "prepare_text": 50.580888999985746,
+              "resolve": 38.83412399999679,
+              "source_cell": 11.939027999970222,
+              "style_bytes_read": 2.655254000046625,
+              "table_plan": 835.3034980000011
+            }
+          },
+          {
+            "calls": {
+              "final_constraints_and_columns": 18,
+              "horizontal_layout": 18043,
+              "inputs": 32029,
+              "measurement_lookup": 32029,
+              "prepare_text": 2669,
+              "resolve": 2669,
+              "source_cell": 10670,
+              "style_bytes_read": 10670,
+              "table_plan": 18
+            },
+            "cpu_ms": {
+              "final_constraints_and_columns": 0.7316260000006878,
+              "horizontal_layout": 586.5496229999931,
+              "inputs": 103.69630199999847,
+              "measurement_lookup": 18.30027400004974,
+              "prepare_text": 48.50901600000907,
+              "resolve": 38.068865000014284,
+              "source_cell": 11.793006000018067,
+              "style_bytes_read": 2.5602379999772893,
+              "table_plan": 763.5968309999989
+            }
+          }
+        ],
+        "rows": 1000,
+        "samples": [
+          {
+            "pages": 167,
+            "plan_cpu_ms": 805.0455039999999,
+            "plan_ms": 805.052542001009,
+            "trial": 0
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 817.9271449999999,
+            "plan_ms": 817.9479959979653,
+            "trial": 1
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 773.0544299999997,
+            "plan_ms": 773.0544809997082,
+            "trial": 2
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 855.8963210000002,
+            "plan_ms": 855.9037249982357,
+            "trial": 3
+          },
+          {
+            "pages": 167,
+            "plan_cpu_ms": 790.6535330000002,
+            "plan_ms": 790.6591660007834,
+            "trial": 4
+          }
+        ]
+      }
+    ],
+    "source_hashes": [
+      {
+        "path": "Sources/LecternIR/DeckIR.swift",
+        "sha256": "9241940b1838db4258f8830c24f37e6f057f6bfc5ebaacc577c3df7ddc1133c0"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheRepair.swift",
+        "sha256": "29ea3b40edb93f89c85d7eb52dd9e6fa22b5e2c2a5ec73a213cfadec6af2d193"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheWorkbook.swift",
+        "sha256": "485694a3d4f367c459254b9471e0354542425a95be99ccda293086317dc0531a"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartData.swift",
+        "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartReader.swift",
+        "sha256": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartSeriesEditing.swift",
+        "sha256": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbook.swift",
+        "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbookReader.swift",
+        "sha256": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartXML.swift",
+        "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/Charts.swift",
+        "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ComboChartData.swift",
+        "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+      },
+      {
+        "path": "Sources/Rostrum/Core/RostrumError.swift",
+        "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+      },
+      {
+        "path": "Sources/Rostrum/Core/Units.swift",
+        "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ColorMath.swift",
+        "sha256": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Drawing.swift",
+        "sha256": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/DrawingColor.swift",
+        "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Geometry.swift",
+        "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/GradientStops.swift",
+        "sha256": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ImageSniffer.swift",
+        "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicJoining.swift",
+        "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicLayoutTables.swift",
+        "sha256": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicTextShaper.swift",
+        "sha256": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontFaceKey.swift",
+        "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLayoutTables.swift",
+        "sha256": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLibrary.swift",
+        "sha256": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontMetrics.swift",
+        "sha256": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/MarkPositioning.swift",
+        "sha256": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/PreparedFont.swift",
+        "sha256": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ShapedGlyphRun.swift",
+        "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextMeasurer.swift",
+        "sha256": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextShaper.swift",
+        "sha256": "06462c96d3d0ef883ad46d4b4c44ffa9f05be7f2c0ebdda3f6be225146d1306a"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/ContentTypes.swift",
+        "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCArchive.swift",
+        "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCPackage.swift",
+        "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/PackURI.swift",
+        "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/Relationships.swift",
+        "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationDependencies.swift",
+        "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationImport.swift",
+        "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BackgroundResolver.swift",
+        "sha256": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BuiltInTableStyle.swift",
+        "sha256": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/CommentEditing.swift",
+        "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Comments.swift",
+        "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Components.swift",
+        "sha256": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckExport.swift",
+        "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckMerge.swift",
+        "sha256": "a469986af885706217489bb0cf105bcb2802acce16c0c736f8db93e17876f4bc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckOutline.swift",
+        "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckStyle.swift",
+        "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Design.swift",
+        "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DocumentProperties.swift",
+        "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/EmbeddedFontImport.swift",
+        "sha256": "f1f6035482326237e58bc14c7ee96666cfe382257df4e0ef5c1fa9a6da8152e6"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbedding.swift",
+        "sha256": "1bdf5c1b286e615c3aff8090163cfc4cda58fe82b67f8264627550afb05026bd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbeddingPlan.swift",
+        "sha256": "7e07c1493a81947400ab0a0d91edce2624eda09b7b567a64b57c6ba9a57f5df0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/HeadersFooters.swift",
+        "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ImageFill.swift",
+        "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Layouts.swift",
+        "sha256": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift",
+        "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyComments.swift",
+        "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Media.swift",
+        "sha256": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/MinimalTemplate.swift",
+        "sha256": "d11d5c5310f1614a66521f6ede0d28cd5239cec1311dfe346345661f8bc06eed"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Notes.swift",
+        "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesImportGeometry.swift",
+        "sha256": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageRenderer.swift",
+        "sha256": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageTemplate.swift",
+        "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/OutlineImageFills.swift",
+        "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PictureCrop.swift",
+        "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Pictures.swift",
+        "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Presentation.swift",
+        "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PublishedLayouts.swift",
+        "sha256": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderDiagnostics.swift",
+        "sha256": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderImageResources.swift",
+        "sha256": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderTextAttributes.swift",
+        "sha256": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+        "sha256": "4ae69fc01d8e7d62bc75709be3064e3d4bd66ac3c72a2f8889dca5878de1af5e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextPreparation.swift",
+        "sha256": "a566c575a7a2754323288a634740b19d026a7a540dcf3078cb9922918574f1a3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGCustomGeometry.swift",
+        "sha256": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift",
+        "sha256": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGImagePlacement.swift",
+        "sha256": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPaint.swift",
+        "sha256": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPresetGeometry.swift",
+        "sha256": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+        "sha256": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRichText.swift",
+        "sha256": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGShadow.swift",
+        "sha256": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Sections.swift",
+        "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeAppearance.swift",
+        "sha256": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeKind.swift",
+        "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTransform.swift",
+        "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTypes.swift",
+        "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Shapes.swift",
+        "sha256": "c319d1ee4a1f0afe4df7fba7149c063899be996daff2133effa66353ff1311d3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slide.swift",
+        "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideAnnotations.swift",
+        "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideBuilders.swift",
+        "sha256": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideMasters.swift",
+        "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slides.swift",
+        "sha256": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SmartArt.swift",
+        "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+        "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderSegments.swift",
+        "sha256": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableCellFormatting.swift",
+        "sha256": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableDoubleBorder.swift",
+        "sha256": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableEditing.swift",
+        "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableGridSnapshot.swift",
+        "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableLayoutSource.swift",
+        "sha256": "43610777af3b24fe2105670e65dd0424408f08c2cd08a410f676bc7f21ea6350"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleImport.swift",
+        "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+        "sha256": "855d903e3c667354ea9ce1b5335906ff5748720ba9208352ca827e79079a91cf"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyling.swift",
+        "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Tables.swift",
+        "sha256": "98b29d0b1a5ea29ba01e48d40f87ea4f47800383a52cda42fc93471bd109a801"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+        "sha256": "7aa27bb6775926aa1c646433315a0fbfa47bcd384b4b8c964654a789ab744f09"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Text.swift",
+        "sha256": "db17e2ad61df9e9d9180d4cb2301da41e551a6162e33881d35236933b2c06169"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Theme.swift",
+        "sha256": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Validation.swift",
+        "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/GeneratedSchema.swift",
+        "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/OXMLHelpers.swift",
+        "sha256": "f30ef480475252569a33f345fc004238e8e38863610c9c5ee886725402d23050"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/PresetGeometry.swift",
+        "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+      },
+      {
+        "path": "Sources/Rostrum/XML/XML.swift",
+        "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/CRC32.swift",
+        "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Deflate.swift",
+        "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Inflate.swift",
+        "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipReader.swift",
+        "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipWriter.swift",
+        "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+      },
+      {
+        "path": "Sources/RostrumLayout/AuthoredLayoutEngine.swift",
+        "sha256": "7d2eb25eb12ad2e8321179acb92fa0cf8647a01f7163f186c64ac3a353f2da5d"
+      },
+      {
+        "path": "Sources/RostrumLayout/MeasuredPaginator.swift",
+        "sha256": "df682b359da8ef38d6a1eeefbe70f98e1cb2077f6002efc2799fd283669582d9"
+      },
+      {
+        "path": "Sources/RostrumLayout/RotatedTableCellMeasurement.swift",
+        "sha256": "b544284f5e9e1a1944bd85f7e65125deecb92135f84dfd04eafea139aebddb24"
+      },
+      {
+        "path": "Sources/RostrumLayout/StructuredLayout.swift",
+        "sha256": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableCellPreparation.swift",
+        "sha256": "9d04a240c847a971b2c97c5a44e547747adf4d71858a4270a66e34003cae4ff9"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableColumnSizing.swift",
+        "sha256": "d2050969dca61518d8690d7796c56984a1dec85e191b9e3d39608f6f7e938adc"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableLayoutEngine.swift",
+        "sha256": "40fe0fe623fabdba0092df959977093236275c9c0638a60d122cffc4334ef5ae"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableRowGroups.swift",
+        "sha256": "6b9156bd9c4677e9facacb9a79808a44f4eb4c7a5087884e3c95450f52f335b0"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateLayoutEngine.swift",
+        "sha256": "7d29da38466e85376211f9db58da63dfc4d587999525152d00259e3a67008671"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTableContent.swift",
+        "sha256": "8c719d3b0df8dfdced64d277656374436ac039bd0bff7f6214f51b07218e6653"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTablePagination.swift",
+        "sha256": "97348a4d28794591ca9ba0b4f7ccfb43201807a69fbf5a94d221fe37d1f428f6"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTextContext.swift",
+        "sha256": "ee97e7e7816bfd594d2b70b7a67bbe48f331379a5332db5d3062f3ec464cfdb3"
+      }
+    ]
+  }
+}

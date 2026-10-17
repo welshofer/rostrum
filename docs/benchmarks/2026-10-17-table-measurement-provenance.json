@@ -1,0 +1,1173 @@
+{
+  "additional_binary_hashes": [
+    {
+      "path": "/workspace/table-overhead/baseline-rotated",
+      "sha256": "aa52c414c967df3dd9e2365291834dc3bcc4e0b7d48cbfdacc5847ee34f63d9a"
+    },
+    {
+      "path": "/workspace/table-overhead/candidate-rotated",
+      "sha256": "6982b0f9d776772cdfb6e4529a101f9675179031c9449886ddcfd51a37f35568"
+    },
+    {
+      "path": "/workspace/table-overhead/review",
+      "sha256": "2185ecb0c6e207700dd39cbcf26d5c860ec1a82b8c255d5bef945ae752d293bd"
+    }
+  ],
+  "baseline": {
+    "binaries": {
+      "candidate": "a897ee900c1c7a6f55b23293d196ac65f9f288f3725b0be5f20b4e0f23f1943e",
+      "candidate-fitting": "b0dc36bcdfea8272621587e46c29d272cbbef4045f0156fac657484e8238fa4c",
+      "candidate-headers": "b850b5a517169895be45ec568f17a4154dbcb26cb688403fd69e8a325f1e42f6",
+      "candidate-snapshot": "ad20f5ca7deea689cb2336a16a771430d2fda1ba81854ec30a756a6662d2be22",
+      "candidate-spans": "48b6b5e515fb096b324151a4c34595164673ca4fcbc20e43e4eb11635a02c037",
+      "candidate-vertical": "cc147ebe2bb52161e7b02768b5a7f4fe28a1c2bc9a9c2960a07f4a8396a6dda9"
+    },
+    "historical_build_checkout_commit": "fd605f2745fb3af8394f9d68fe1b1d4b711093c7",
+    "historical_build_source_dirty": true,
+    "source_hashes": [
+      {
+        "path": "Sources/LecternIR/DeckIR.swift",
+        "sha256": "9241940b1838db4258f8830c24f37e6f057f6bfc5ebaacc577c3df7ddc1133c0"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheRepair.swift",
+        "sha256": "29ea3b40edb93f89c85d7eb52dd9e6fa22b5e2c2a5ec73a213cfadec6af2d193"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheWorkbook.swift",
+        "sha256": "485694a3d4f367c459254b9471e0354542425a95be99ccda293086317dc0531a"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartData.swift",
+        "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartReader.swift",
+        "sha256": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartSeriesEditing.swift",
+        "sha256": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbook.swift",
+        "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbookReader.swift",
+        "sha256": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartXML.swift",
+        "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/Charts.swift",
+        "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ComboChartData.swift",
+        "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+      },
+      {
+        "path": "Sources/Rostrum/Core/RostrumError.swift",
+        "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+      },
+      {
+        "path": "Sources/Rostrum/Core/Units.swift",
+        "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ColorMath.swift",
+        "sha256": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Drawing.swift",
+        "sha256": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/DrawingColor.swift",
+        "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Geometry.swift",
+        "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/GradientStops.swift",
+        "sha256": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ImageSniffer.swift",
+        "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicJoining.swift",
+        "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicLayoutTables.swift",
+        "sha256": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicTextShaper.swift",
+        "sha256": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontFaceKey.swift",
+        "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLayoutTables.swift",
+        "sha256": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLibrary.swift",
+        "sha256": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontMetrics.swift",
+        "sha256": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/MarkPositioning.swift",
+        "sha256": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/PreparedFont.swift",
+        "sha256": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ShapedGlyphRun.swift",
+        "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextMeasurer.swift",
+        "sha256": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextShaper.swift",
+        "sha256": "06462c96d3d0ef883ad46d4b4c44ffa9f05be7f2c0ebdda3f6be225146d1306a"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/ContentTypes.swift",
+        "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCArchive.swift",
+        "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCPackage.swift",
+        "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/PackURI.swift",
+        "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/Relationships.swift",
+        "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationDependencies.swift",
+        "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationImport.swift",
+        "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BackgroundResolver.swift",
+        "sha256": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BuiltInTableStyle.swift",
+        "sha256": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/CommentEditing.swift",
+        "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Comments.swift",
+        "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Components.swift",
+        "sha256": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckExport.swift",
+        "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckMerge.swift",
+        "sha256": "a469986af885706217489bb0cf105bcb2802acce16c0c736f8db93e17876f4bc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckOutline.swift",
+        "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckStyle.swift",
+        "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Design.swift",
+        "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DocumentProperties.swift",
+        "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/EmbeddedFontImport.swift",
+        "sha256": "f1f6035482326237e58bc14c7ee96666cfe382257df4e0ef5c1fa9a6da8152e6"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbedding.swift",
+        "sha256": "1bdf5c1b286e615c3aff8090163cfc4cda58fe82b67f8264627550afb05026bd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbeddingPlan.swift",
+        "sha256": "7e07c1493a81947400ab0a0d91edce2624eda09b7b567a64b57c6ba9a57f5df0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/HeadersFooters.swift",
+        "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ImageFill.swift",
+        "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Layouts.swift",
+        "sha256": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift",
+        "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyComments.swift",
+        "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Media.swift",
+        "sha256": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/MinimalTemplate.swift",
+        "sha256": "d11d5c5310f1614a66521f6ede0d28cd5239cec1311dfe346345661f8bc06eed"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Notes.swift",
+        "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesImportGeometry.swift",
+        "sha256": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageRenderer.swift",
+        "sha256": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageTemplate.swift",
+        "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/OutlineImageFills.swift",
+        "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PictureCrop.swift",
+        "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Pictures.swift",
+        "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Presentation.swift",
+        "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PublishedLayouts.swift",
+        "sha256": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderDiagnostics.swift",
+        "sha256": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderImageResources.swift",
+        "sha256": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderTextAttributes.swift",
+        "sha256": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+        "sha256": "4ae69fc01d8e7d62bc75709be3064e3d4bd66ac3c72a2f8889dca5878de1af5e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextPreparation.swift",
+        "sha256": "a566c575a7a2754323288a634740b19d026a7a540dcf3078cb9922918574f1a3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGCustomGeometry.swift",
+        "sha256": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift",
+        "sha256": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGImagePlacement.swift",
+        "sha256": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPaint.swift",
+        "sha256": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPresetGeometry.swift",
+        "sha256": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+        "sha256": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRichText.swift",
+        "sha256": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGShadow.swift",
+        "sha256": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Sections.swift",
+        "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeAppearance.swift",
+        "sha256": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeKind.swift",
+        "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTransform.swift",
+        "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTypes.swift",
+        "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Shapes.swift",
+        "sha256": "c319d1ee4a1f0afe4df7fba7149c063899be996daff2133effa66353ff1311d3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slide.swift",
+        "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideAnnotations.swift",
+        "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideBuilders.swift",
+        "sha256": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideMasters.swift",
+        "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slides.swift",
+        "sha256": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SmartArt.swift",
+        "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+        "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderSegments.swift",
+        "sha256": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableCellFormatting.swift",
+        "sha256": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableDoubleBorder.swift",
+        "sha256": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableEditing.swift",
+        "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableGridSnapshot.swift",
+        "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableLayoutSource.swift",
+        "sha256": "ef9731a9fcc2ff0f20eb91a5c896fb258d24dc69f8a38c1e67fde81d43a02f58"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleImport.swift",
+        "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+        "sha256": "9c24b8814c05984b1167061560d2de630f72c2de29a9d93f9b51b8475e84ad56"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyling.swift",
+        "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Tables.swift",
+        "sha256": "98b29d0b1a5ea29ba01e48d40f87ea4f47800383a52cda42fc93471bd109a801"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+        "sha256": "7aa27bb6775926aa1c646433315a0fbfa47bcd384b4b8c964654a789ab744f09"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Text.swift",
+        "sha256": "db17e2ad61df9e9d9180d4cb2301da41e551a6162e33881d35236933b2c06169"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Theme.swift",
+        "sha256": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Validation.swift",
+        "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/GeneratedSchema.swift",
+        "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/OXMLHelpers.swift",
+        "sha256": "f30ef480475252569a33f345fc004238e8e38863610c9c5ee886725402d23050"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/PresetGeometry.swift",
+        "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+      },
+      {
+        "path": "Sources/Rostrum/XML/XML.swift",
+        "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/CRC32.swift",
+        "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Deflate.swift",
+        "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Inflate.swift",
+        "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipReader.swift",
+        "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipWriter.swift",
+        "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+      },
+      {
+        "path": "Sources/RostrumLayout/AuthoredLayoutEngine.swift",
+        "sha256": "7d2eb25eb12ad2e8321179acb92fa0cf8647a01f7163f186c64ac3a353f2da5d"
+      },
+      {
+        "path": "Sources/RostrumLayout/MeasuredPaginator.swift",
+        "sha256": "df682b359da8ef38d6a1eeefbe70f98e1cb2077f6002efc2799fd283669582d9"
+      },
+      {
+        "path": "Sources/RostrumLayout/RotatedTableCellMeasurement.swift",
+        "sha256": "b544284f5e9e1a1944bd85f7e65125deecb92135f84dfd04eafea139aebddb24"
+      },
+      {
+        "path": "Sources/RostrumLayout/StructuredLayout.swift",
+        "sha256": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableCellPreparation.swift",
+        "sha256": "428bf7ff411d9eb47ae672f56b840d9de99263c58e7f9b410bb743281fc25976"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableColumnSizing.swift",
+        "sha256": "d2050969dca61518d8690d7796c56984a1dec85e191b9e3d39608f6f7e938adc"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableLayoutEngine.swift",
+        "sha256": "40fe0fe623fabdba0092df959977093236275c9c0638a60d122cffc4334ef5ae"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableRowGroups.swift",
+        "sha256": "6b9156bd9c4677e9facacb9a79808a44f4eb4c7a5087884e3c95450f52f335b0"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateLayoutEngine.swift",
+        "sha256": "7d29da38466e85376211f9db58da63dfc4d587999525152d00259e3a67008671"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTableContent.swift",
+        "sha256": "8c719d3b0df8dfdced64d277656374436ac039bd0bff7f6214f51b07218e6653"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTablePagination.swift",
+        "sha256": "97348a4d28794591ca9ba0b4f7ccfb43201807a69fbf5a94d221fe37d1f428f6"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTextContext.swift",
+        "sha256": "ee97e7e7816bfd594d2b70b7a67bbe48f331379a5332db5d3062f3ec464cfdb3"
+      }
+    ],
+    "verified_against_commit": "6bd5ca166aaf3c9c31547faf257a3e63bb9aa186"
+  },
+  "baseline_commit": "6bd5ca166aaf3c9c31547faf257a3e63bb9aa186",
+  "candidate": {
+    "binaries": {
+      "candidate": "ffcc499d3772ebeb9acd69c4f57d9afaca026099ae3c710b8e9d203b676f4445",
+      "candidate-fitting": "6e241a017bc6f1b03eb41722f3312c62bd779c152578d21d4222e43c8a433b17",
+      "candidate-headers": "a906c6cb4c63ed41f5ac7478ce41488f3fc401a6bf075825f6734eed051d5d4e",
+      "candidate-snapshot": "cef0c76d4606170a45400dcb420e35125a8853308af1c9e102cc9c84993e9db7",
+      "candidate-spans": "6c13ae58331a4873b38887867a1fd5e357d21ae6583e1367b075a8f859057010",
+      "candidate-vertical": "11e78d762356e07a0cafc0d6cf4dc49f6852d2feaf02c1089ccff02596d21e65"
+    },
+    "commit": "6bd5ca166aaf3c9c31547faf257a3e63bb9aa186",
+    "source_dirty": true,
+    "source_hashes": [
+      {
+        "path": "Sources/LecternIR/DeckIR.swift",
+        "sha256": "9241940b1838db4258f8830c24f37e6f057f6bfc5ebaacc577c3df7ddc1133c0"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheRepair.swift",
+        "sha256": "29ea3b40edb93f89c85d7eb52dd9e6fa22b5e2c2a5ec73a213cfadec6af2d193"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartCacheWorkbook.swift",
+        "sha256": "485694a3d4f367c459254b9471e0354542425a95be99ccda293086317dc0531a"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartData.swift",
+        "sha256": "cbca590ea28280b73040f9649853dcd95c088c2b43c35a27caa84fdb24f860b1"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartReader.swift",
+        "sha256": "9dabadd987b1d2973928187bf9ac41cfecf875ecd6f1ed003ffb668ae2e0e5cb"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartSeriesEditing.swift",
+        "sha256": "4d559abef6e0e4f12b9840a2f8212fffb9900a5fb32c88fc27d162705f164969"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbook.swift",
+        "sha256": "3f19e3a3c1a5042b57f78f845385c56a9b29ca230d0cf8935290de73cff6a3c3"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartWorkbookReader.swift",
+        "sha256": "b0c5b7332d40a13d429ebd65bbc0f47790e788006f6390744510da5958f34f5d"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ChartXML.swift",
+        "sha256": "9f3bfe17ea3d6d8c7243634df71c186b718fd42e524b5607aac94dcc5123b223"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/Charts.swift",
+        "sha256": "f9ed03b6f3a04f1c63c9188cc13188e72bcb2dbe6a826fb1be58aa2102c5a1d2"
+      },
+      {
+        "path": "Sources/Rostrum/Charts/ComboChartData.swift",
+        "sha256": "7a809a3ebc4192e37f6b87957a39adc3e905fe39e6d51807914cae20602a24df"
+      },
+      {
+        "path": "Sources/Rostrum/Core/RostrumError.swift",
+        "sha256": "af6cedb594cd046b657a2fc4cdddf950dc44bc0511518af7f597afed96a98378"
+      },
+      {
+        "path": "Sources/Rostrum/Core/Units.swift",
+        "sha256": "b010eaa7e7e8b511ad4ba24121d8b2b88cba87840a1b14d77b8daf60bc89ec96"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ColorMath.swift",
+        "sha256": "823297429e59c9be0a7be20c2fd1d8b8233c0f6bc3958fd01639288a0082da24"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Drawing.swift",
+        "sha256": "f11c323f8b462b7798fed6b2d8f338fcd4543e0d448237449bcbd582ec3d14d4"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/DrawingColor.swift",
+        "sha256": "f8ef853f1bca278f73bf57ee4a354297241db9f06bbdbac2a5ee9e250bd43407"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/Geometry.swift",
+        "sha256": "547225790e7ace1e1cb791ce3bebe08cf61518e3c26f6b0ea4334f05e2f5d5f2"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/GradientStops.swift",
+        "sha256": "776c5ec44936c7a8d638ec05c231f4b3e41e4307b7dc626f414d3360aae9a8cf"
+      },
+      {
+        "path": "Sources/Rostrum/Drawing/ImageSniffer.swift",
+        "sha256": "e86720740964d74d6ec41b353f993c614b7beffbfa4e4b049135780ca7a696dc"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicJoining.swift",
+        "sha256": "8c39c28dc63d13fc9e0b5da13eddde1a82f3281557ccab081b673a3505dba6c1"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicLayoutTables.swift",
+        "sha256": "70a1aef607301856f6fd1bbff6b10d462f84312b630e52531b7ad00a747a98ec"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ArabicTextShaper.swift",
+        "sha256": "e5612180cc8422502a7025355a144056d5b88a4246d24d7a02be725b0018551a"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontFaceKey.swift",
+        "sha256": "ea719131bb5fece2c5e6ae70549b86a38addb5d211f1d6928eb1db140bc2e643"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLayoutTables.swift",
+        "sha256": "25622c4fc501dff87ffdc49608f73e28108f14590bcd568dbf515c1575ab0262"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontLibrary.swift",
+        "sha256": "cf122c12ec6312ee8165ea43f03ba9592a2ee1b5ecbc3454057c5ab8a3eac02c"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/FontMetrics.swift",
+        "sha256": "aab3ec3ecdf54a6f7e823f63f460763d8f95017094010f851af700a0649c23b7"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/MarkPositioning.swift",
+        "sha256": "6fdb701635fd6b3a3a355cc9e6aaa5c411d77b889dce4e7dcb64d3c550b29903"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/PreparedFont.swift",
+        "sha256": "b3f0f15b43efdc57b7e812183e8def5a4c58b41cc702922946439e5175824a30"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/ShapedGlyphRun.swift",
+        "sha256": "5a225d16e81a86611f17de73d6c8b7d324e9f418ff4698b04cac67f0fdfdfc9d"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextMeasurer.swift",
+        "sha256": "7b91f7d2d1fdc14c1c7b8a4c40dd08939c4ba9720cab2bb469310736b0de51ba"
+      },
+      {
+        "path": "Sources/Rostrum/Fonts/TextShaper.swift",
+        "sha256": "06462c96d3d0ef883ad46d4b4c44ffa9f05be7f2c0ebdda3f6be225146d1306a"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/ContentTypes.swift",
+        "sha256": "fcda4718822eeef91f6f7a320225f2c34b2aa4a57891403c85c9aa2766d969e3"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCArchive.swift",
+        "sha256": "92e0fe2b5ae742d7027fd7171175a51e97347a27acfef4cefc16ec2eb1b75234"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/OPCPackage.swift",
+        "sha256": "1b9807005a806767002e4774d0e4db8d74841cd098a662848d16578faff7c725"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/PackURI.swift",
+        "sha256": "42b8af32de5837a66a661e669ab68ac983b623e942499e967602a14286858442"
+      },
+      {
+        "path": "Sources/Rostrum/OPC/Relationships.swift",
+        "sha256": "7b179c47ab42e6f7841030968301512274e6afb6f5a0c4b110026c90b701d663"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationDependencies.swift",
+        "sha256": "d5f4bca7bbdea1419ab00d2eaa8179e8200e26e02eee11f6b9be3c9f098a20a9"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/AnnotationImport.swift",
+        "sha256": "72a7122a6bf125669eb463c2cfea66e6e1e6250e5fa51f188d2f791ac902d82e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BackgroundResolver.swift",
+        "sha256": "93498a53daa95fed0b34f36d82f89fdce992b89d8fe0c783b054ffdd480c49c3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/BuiltInTableStyle.swift",
+        "sha256": "d01f377b2862805a44bd2134a235a928798a16dc16855bf82b09bd083a51c886"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/CommentEditing.swift",
+        "sha256": "b5944c5bb95b90bd8f5c18c6cf15ed3cafdee2adbaed8cd615aa428752cea35b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Comments.swift",
+        "sha256": "938d2e307360e6306f32f0d99546f5f364942fecbab9b15794b361dabe48a5fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Components.swift",
+        "sha256": "a0cc660f9b875f120fee3706a379854523eeaf456fd78c130843214ea7c6f746"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckExport.swift",
+        "sha256": "ce8991cc3130e9464e5ed48546c6e66c2031c343a4056c8943557ba035db985c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckMerge.swift",
+        "sha256": "a469986af885706217489bb0cf105bcb2802acce16c0c736f8db93e17876f4bc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckOutline.swift",
+        "sha256": "c0fbfd72067843951327e0bb05fc3ee1bbe0e6bce9cdecc8b4f327d193d0d409"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DeckStyle.swift",
+        "sha256": "fa017e8442f67e5e7ac84d12807a6d5342fa6503acf697679f4c0e2b86df0d7a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Design.swift",
+        "sha256": "3254827ddb4cf8d4de75db8abdd7f07941b6d4fb32ac1fe6772a5948f6496acd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/DocumentProperties.swift",
+        "sha256": "4e3e600c9509cd387f16937249cb6e12cd1a31eec3a55cf604c527f41a5845b1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/EmbeddedFontImport.swift",
+        "sha256": "f1f6035482326237e58bc14c7ee96666cfe382257df4e0ef5c1fa9a6da8152e6"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbedding.swift",
+        "sha256": "1bdf5c1b286e615c3aff8090163cfc4cda58fe82b67f8264627550afb05026bd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/FontEmbeddingPlan.swift",
+        "sha256": "7e07c1493a81947400ab0a0d91edce2624eda09b7b567a64b57c6ba9a57f5df0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/HeadersFooters.swift",
+        "sha256": "44facebfdbfd2e197ff709c94ce04de638646eab495477a8e749d4c8d32d4122"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ImageFill.swift",
+        "sha256": "f3a47a6b37ab7ebc4df3fd97ba31ee150f5b0af3fdeb3e64c48fe11a20361dff"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Layouts.swift",
+        "sha256": "504030c31d26d762aaa992d824297373befeeee342870e1d32f6608ec8bf0c91"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyAnnotationImport.swift",
+        "sha256": "dd0a8479b022b75972e857938324337f12a3235ae0cd1b7ee20e458faec39565"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/LegacyComments.swift",
+        "sha256": "50e54a34dfd5cb696571512b2a3b99293971da8a3e2532cebe7827146c20792d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Media.swift",
+        "sha256": "c25c1d80613257d7fd34979fb603e6ea78bb87f9a32b07fd1eaf47791c48a2f8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/MinimalTemplate.swift",
+        "sha256": "d11d5c5310f1614a66521f6ede0d28cd5239cec1311dfe346345661f8bc06eed"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Notes.swift",
+        "sha256": "63b2f743ee9a31cd42d999c67becb0acc44b1ee3e8873e8f13d772374ff318dd"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesImportGeometry.swift",
+        "sha256": "11e0058b68983d3105474c7899e648a7fd1d66648c00199469995ae83c6e2666"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageRenderer.swift",
+        "sha256": "9d9d72a46d1521bf6b42d49330d73a9be3e5e7dc79f86e6a0bc672ff2e90cc5b"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/NotesPageTemplate.swift",
+        "sha256": "6c5f487160fddb7d54cdc4160b5769e6d7fd89d58b5f87c076d83962323bb687"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/OutlineImageFills.swift",
+        "sha256": "d0fc8572619178cf06f53d29ca6463b09c34ff215054e45c5d52c59df492f2f3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PictureCrop.swift",
+        "sha256": "9cae4437b777e7d95b5874763cf5fcf30ea05fdea2ee06e7558d125ea6f0a384"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Pictures.swift",
+        "sha256": "3690e5d377b7e5a73e8b805b22820921b5ce4d9adff7431c8d374a02ba54eac4"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Presentation.swift",
+        "sha256": "5cc59981a64e35c5922cb016928e5c15377308123e90f1f2c83087c6e7e2087e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/PublishedLayouts.swift",
+        "sha256": "210ad6f50ed18c4a3cee296dfe126d1759b3ed3c8f7397d03cf17baaf9e08774"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderDiagnostics.swift",
+        "sha256": "e963d0e68547efe4229de358d16d51e755edb62c41311bcff693a345662dc370"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderImageResources.swift",
+        "sha256": "f395c8838809a40982d2571ebac7232e3891d6d358673aa596f6542c8244fc34"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RenderTextAttributes.swift",
+        "sha256": "824d127766740e24703c74e5fdb88e7c366a37f883efedfc4c295333398d09fa"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextLayout.swift",
+        "sha256": "4ae69fc01d8e7d62bc75709be3064e3d4bd66ac3c72a2f8889dca5878de1af5e"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/RichTextPreparation.swift",
+        "sha256": "a566c575a7a2754323288a634740b19d026a7a540dcf3078cb9922918574f1a3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGCustomGeometry.swift",
+        "sha256": "616c465bc924167048a30f95e81a3c92a48d847580c7405922b6cfa0071cd6da"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGEmbeddedImage.swift",
+        "sha256": "df3d3ffc869bcbf64a80e1dcda1dacdbdb478960c998fde9f6ea1bbaf1d6d095"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGImagePlacement.swift",
+        "sha256": "e884cdfc45b98d535aecd0576a52fc2d85661492ec7002213d5443ed4db7c8f1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPaint.swift",
+        "sha256": "829d30eed3f4c48559793476927229d7da717d74a8318de28e0852f0dc059ad5"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGPresetGeometry.swift",
+        "sha256": "8eb3258798f9384c7c1bab747ca62676e28f966c6f23d8e18a6adbc3d114ad97"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRenderer.swift",
+        "sha256": "8d8180b80ee38609b2e7bdbcf9cc1cddf8c3117dde7ddde8024a73363e47c81c"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGRichText.swift",
+        "sha256": "c2057060e536ebda1e9b4a56d3170cc5912c1858a184ff0891de6597382393fe"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SVGShadow.swift",
+        "sha256": "5d5ced38c88caf8738fdf8047d39997e5303b904e74ab7bf5770ee5b0a9dd3ba"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Sections.swift",
+        "sha256": "bf42a641b7585d542b267372745d8ad5576e52dfa97482622253e5e0aa9390c1"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeAppearance.swift",
+        "sha256": "bd738e23daed81d17a80dddddd76a9af2b7c4ad2933c27176a7db191c147d7dc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeKind.swift",
+        "sha256": "033e9a08454b870c8b6d4abd8286c8211d6f8cf97f6b8dabf312d52fd1c43406"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTransform.swift",
+        "sha256": "a7435b46c46eede1afd9354da72fd681ecb07c767ffbc529c23a0f98831bddc3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/ShapeTypes.swift",
+        "sha256": "979f6ef5e508499e6c46b97f8c99daf37bac641ce10d6c4023adca396d819009"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Shapes.swift",
+        "sha256": "c319d1ee4a1f0afe4df7fba7149c063899be996daff2133effa66353ff1311d3"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slide.swift",
+        "sha256": "23ff87256f0e6f1478a087165d39a5423a78690c65bd1070d6329773ed6edcdc"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideAnnotations.swift",
+        "sha256": "d8c9b4c0df4beec8c6d67a337967a5c73d3f90bf2bf6f977ae73b1eac0609930"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideBuilders.swift",
+        "sha256": "07d13c886952060130afdcdc1ca819e74de0f1c4d3ca7b7238c6acc8c538ba4a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SlideMasters.swift",
+        "sha256": "b5a4f831f810b9f2cafee7f517e2493f9c40cab0c9499e9bc2c3f3df951d54d0"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Slides.swift",
+        "sha256": "062c2bb25130d60ee1224b044facb276833b8453faf0f607fb60bdc254a9596d"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/SmartArt.swift",
+        "sha256": "3ed186c946e82ce50614970fece632d335fad7cbf8611b851261a2ad912856fb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderPaintCache.swift",
+        "sha256": "b0493c0e8a5e737f15fe1065ec5d3376aef520b367f8e1533153d63acbfc3559"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableBorderSegments.swift",
+        "sha256": "43d97e5954cb41628c9c67389bda1e378fdb27400ee6b08819062c10eafd8820"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableCellFormatting.swift",
+        "sha256": "bca107a3188a759ea63f4b9a0091d5b4fa0a9a8eac17e5f1bbc07e773de5e091"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableDoubleBorder.swift",
+        "sha256": "3d631f341e3d776bc4fedc56999bc8d9fb1a0622fb2e2d6f90df8368c7e2785f"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableEditing.swift",
+        "sha256": "1719823efbbd0836040d6218044316e392e5862221098696984196aea7cbfcf8"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableGridSnapshot.swift",
+        "sha256": "ff12c1dc6c74ee23f2e2a411460c21f40a437b356ec8f4672abe79e14e0ef0d2"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableLayoutSource.swift",
+        "sha256": "43610777af3b24fe2105670e65dd0424408f08c2cd08a410f676bc7f21ea6350"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleImport.swift",
+        "sha256": "fbe071a16da8d38273f13158e70decf256d130b8f56917fa93bc00a93197a5bb"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyleResolver.swift",
+        "sha256": "855d903e3c667354ea9ce1b5335906ff5748720ba9208352ca827e79079a91cf"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TableStyling.swift",
+        "sha256": "a1323960c65c6b156c0f9e80f5fa97e72a1149c1d1e8c54f4066bc3e4b008173"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Tables.swift",
+        "sha256": "98b29d0b1a5ea29ba01e48d40f87ea4f47800383a52cda42fc93471bd109a801"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/TemplateAuthoring.swift",
+        "sha256": "7aa27bb6775926aa1c646433315a0fbfa47bcd384b4b8c964654a789ab744f09"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Text.swift",
+        "sha256": "db17e2ad61df9e9d9180d4cb2301da41e551a6162e33881d35236933b2c06169"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Theme.swift",
+        "sha256": "42d77782c3a980b441e31707aee8f428e5187353350d8ab85a0f73d5cb212b9a"
+      },
+      {
+        "path": "Sources/Rostrum/Presentation/Validation.swift",
+        "sha256": "c4bd0b0fcf7f9f86fbbe2731b0471eecdaea6310a55d5ccd456ce8da4a416a89"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/GeneratedSchema.swift",
+        "sha256": "8adc2f63d1d60967cdd3a832130fb9d66f6c8700b0bc8b91312516f830578c66"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/OXMLHelpers.swift",
+        "sha256": "f30ef480475252569a33f345fc004238e8e38863610c9c5ee886725402d23050"
+      },
+      {
+        "path": "Sources/Rostrum/Schema/PresetGeometry.swift",
+        "sha256": "7022671c98ae8c2fd911cbc370d443d0a19f2377582ccfd4d6a6ccdf0ee67931"
+      },
+      {
+        "path": "Sources/Rostrum/XML/XML.swift",
+        "sha256": "915e62e00fdcae8294b63ec42572477b2941f8bf9dcb3bfccd40a3986008fea2"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/CRC32.swift",
+        "sha256": "a729e3a29ac2d58487ff9bb7f456313e25a63319969b1daa075aae12e871cb6f"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Deflate.swift",
+        "sha256": "1ca03e09b06bbdd9cfdecff9d44b960d32f940f28ff0952b8e10036705dd4dbc"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/Inflate.swift",
+        "sha256": "9d15f7b038cf0a9e8c6465bbf554dff589cfdc6c45118247be6aad7a9dd96894"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipReader.swift",
+        "sha256": "4a4ecf89d166bb4411cf5d78f218eb94f4a75b91fd7f799df32f108e514fc7f8"
+      },
+      {
+        "path": "Sources/Rostrum/Zip/ZipWriter.swift",
+        "sha256": "17bd477838671ac21bb5393ffdca07892ef7e49e6a000d965279b215444762b0"
+      },
+      {
+        "path": "Sources/RostrumLayout/AuthoredLayoutEngine.swift",
+        "sha256": "7d2eb25eb12ad2e8321179acb92fa0cf8647a01f7163f186c64ac3a353f2da5d"
+      },
+      {
+        "path": "Sources/RostrumLayout/MeasuredPaginator.swift",
+        "sha256": "df682b359da8ef38d6a1eeefbe70f98e1cb2077f6002efc2799fd283669582d9"
+      },
+      {
+        "path": "Sources/RostrumLayout/RotatedTableCellMeasurement.swift",
+        "sha256": "b544284f5e9e1a1944bd85f7e65125deecb92135f84dfd04eafea139aebddb24"
+      },
+      {
+        "path": "Sources/RostrumLayout/StructuredLayout.swift",
+        "sha256": "c8cf5a03b3f4bdf2332f0b9180544c3675c0787e435117395ff67ae52a0ce850"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableCellPreparation.swift",
+        "sha256": "9d04a240c847a971b2c97c5a44e547747adf4d71858a4270a66e34003cae4ff9"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableColumnSizing.swift",
+        "sha256": "d2050969dca61518d8690d7796c56984a1dec85e191b9e3d39608f6f7e938adc"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableLayoutEngine.swift",
+        "sha256": "40fe0fe623fabdba0092df959977093236275c9c0638a60d122cffc4334ef5ae"
+      },
+      {
+        "path": "Sources/RostrumLayout/TableRowGroups.swift",
+        "sha256": "6b9156bd9c4677e9facacb9a79808a44f4eb4c7a5087884e3c95450f52f335b0"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateLayoutEngine.swift",
+        "sha256": "7d29da38466e85376211f9db58da63dfc4d587999525152d00259e3a67008671"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTableContent.swift",
+        "sha256": "8c719d3b0df8dfdced64d277656374436ac039bd0bff7f6214f51b07218e6653"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTablePagination.swift",
+        "sha256": "97348a4d28794591ca9ba0b4f7ccfb43201807a69fbf5a94d221fe37d1f428f6"
+      },
+      {
+        "path": "Sources/RostrumLayout/TemplateTextContext.swift",
+        "sha256": "ee97e7e7816bfd594d2b70b7a67bbe48f331379a5332db5d3062f3ec464cfdb3"
+      }
+    ]
+  },
+  "compiler_arguments": {
+    "baseline": {
+      "Rostrum": [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-O",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-module-cache-path",
+        "/workspace/rostrum/.build/x86_64-unknown-linux-gnu/release/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "rostrum",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "RostrumLayout": [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-O",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-module-cache-path",
+        "/workspace/rostrum/.build/x86_64-unknown-linux-gnu/release/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "rostrum",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ]
+    },
+    "candidate": {
+      "Rostrum": [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-O",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-module-cache-path",
+        "/workspace/rostrum/.build/x86_64-unknown-linux-gnu/release/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "rostrum",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "RostrumLayout": [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-O",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-module-cache-path",
+        "/workspace/rostrum/.build/x86_64-unknown-linux-gnu/release/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "rostrum",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ]
+    }
+  },
+  "notes": "Normal Release sources verified by path/digest; no builds or tests during final timings. Profile instrumentation is separate. Baseline binaries retained from PR82 and source-verified against merged main. Historical baseline build fields describe the pre-commit PR82 working tree; every runtime source digest was subsequently checked against merged main 6bd5ca1. They do not identify a second performance baseline."
+}

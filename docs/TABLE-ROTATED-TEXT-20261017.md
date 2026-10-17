@@ -71,9 +71,11 @@ can be used with the separate review generator below. Neither choice changes
 library font policy. The generated Deck IR does not yet expose these native cell
 directions; the capability is available to library callers and Templates Lab.
 
-Live PowerPoint for Mac slide-view and PDF-export acceptance of these new cases
-remains pending. Earlier Calibri acceptance does not qualify this new layout.
-Portable fit, preserved XML and successful app compilation are separate evidence.
+The user reported “Decks look good” for the delivered rotated-table review pack
+on October 17, 2026. This records pack-level visual acceptance against the exact
+hashes below. The reply did not identify the app version or separate slide-view
+and PDF-export checks; those specific native checks remain unrecorded. Portable
+fit, preserved XML and successful app compilation are separate evidence.
 
 ## Separate Calibri review files
 
@@ -82,7 +84,8 @@ with two- and three-row merged headers, quarter-turn labels, continuations and
 captions. Independent read-back checks retain every source group, direction,
 merge and table boundary. Representative portable previews were visually
 inspected with the existing hash-verified exact-font adapter. They are not
-PowerPoint screenshots; native slide-view/PDF acceptance remains pending.
+PowerPoint screenshots. The user subsequently accepted the delivered pack as
+recorded above; separate native slide-view/PDF evidence remains unrecorded.
 
 | File | SHA-256 |
 | --- | --- |
