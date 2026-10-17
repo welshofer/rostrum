@@ -12,13 +12,16 @@ struct TableRowGroups: Sendable {
     private init(ends: [Int: Int]) { self.ends = ends }
 
     // Call after validating native topology or TemplateTableContent.
-    init(merges: [TableMergeRegion]) throws {
+    init(merges: [TableMergeRegion], headerRowCount: Int = 1) throws {
         let spans = merges.filter { $0.rowSpan > 1 }.sorted { $0.row < $1.row }
-        guard spans.first?.row != 0 else {
-            throw LayoutError.cannotFit("A vertical merge cannot cross the single repeated header row. Use single-slide composition or keep row zero separate.")
-        }
         var ends: [Int: Int] = [:], start = -1, end = -1
         for span in spans {
+            if span.row < headerRowCount {
+                guard span.rowSpan <= headerRowCount - span.row else {
+                    throw LayoutError.cannotFit("A vertical merge cannot cross the repeated header/body boundary. Use single-slide composition or keep the complete merge inside the header or body.")
+                }
+                continue
+            }
             if span.row < end { end = max(end, span.row + span.rowSpan) }
             else {
                 if start >= 0 { ends[start] = end }
@@ -42,8 +45,8 @@ struct TableRowGroups: Sendable {
         return total
     }
 
-    func unplaceableCount(heights: [EMU], capacity: EMU) -> Int {
-        var row = 1, count = 0
+    func unplaceableCount(heights: [EMU], capacity: EMU, startingAt: Int = 1) -> Int {
+        var row = startingAt, count = 0
         while row < heights.count {
             let end = end(startingAt: row)
             if height(row..<end, in: heights, capacity: capacity) == nil { count += 1 }

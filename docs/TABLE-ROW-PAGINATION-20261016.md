@@ -1,5 +1,8 @@
 # Template tables with vertical merges — 2026-10-16
 
+Follow-up: [configurable multi-row headers](TABLE-REPEATED-HEADERS-20261016.md)
+extends the single-header behavior measured in this report.
+
 `TemplateTableContent` accepts vertical and rectangular merges for single-slide
 composition and continued native tables. Covered cells must be exactly empty;
 overlap, invalid dimensions and source text in a covered cell are refused before

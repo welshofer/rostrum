@@ -209,7 +209,7 @@ Planning is read-only, and fresh operations observe current fonts, content and
 styles. Width trials reuse text measurements but recompute row constraints.
 `TemplateTableContent` accepts the same rectangular merges. Pagination keeps
 connected body-row groups together; a group must fit with its repeated header.
-Vertical merges crossing row zero require single-slide composition. See
+Vertical merges crossing the repeated header/body boundary require single-slide composition. See
 [measurement evidence](TABLE-VERTICAL-SPANS-20261016.md) and
 [template composition and pagination](TABLE-ROW-PAGINATION-20261016.md).
 
@@ -241,9 +241,9 @@ let pages = try engine.composeTablePages(continuation)
 For `TemplateTableContent`, nonoverlapping, in-bounds rectangles with positive
 row/column spans and at least one span greater than one are accepted. Covered
 input strings must be exactly empty, including no whitespace; invalid content
-fails before slide insertion. Horizontal header spans repeat on every page,
+fails before slide insertion. Merges wholly inside the header prefix repeat on every page,
 and body spans move with their complete connected row group. Vertical merges
-across row zero are supported only by single-slide composition. Native merge
+across the header/body boundary are supported only by single-slide composition. Native merge
 flags are written in one validated batch, retaining the full physical grid.
 
 Measured width trials include every anchored span's combined width in their
@@ -266,8 +266,8 @@ for page in pages { try page.setNotes("Original speaker notes.") }
 ```
 
 This API accepts `TemplateTableContent`: a rectangular string grid with optional
-horizontal, vertical or rectangular merges, with the first
-row repeated as a native header on every slide. It chooses one compatible layout,
+horizontal, vertical or rectangular merges. `headerRowCount` selects the leading
+rows repeated on every slide (default `1`, valid from `1` through `rows.count`). It chooses one compatible layout,
 preferring fewer pages and then the existing composition score. Optional
 `masterURI` and `layoutURI` restrict selection. Column widths are computed from
 the entire input and stay fixed across pages. Full-size row measurements include
@@ -277,20 +277,47 @@ The title and caption repeat on every page. Unlike single-slide `compose`,
 `composeTablePages` also writes the caption into its reserved frame.
 
 `continuation.pages` exposes each slide plan and its `bodyRows` range into the
-original `content.rows` array, excluding header index zero. Each body row occurs
+original `content.rows` array, excluding the leading `headerRowCount` rows. Each
+page also exposes `headerRowCount`; local rows before that count are the repeated
+header, followed by the original source `bodyRows`. Each body row occurs
 once in order. Intersecting row spans in different columns connect transitively;
 page boundaries and width-search scores use those same indivisible groups. A
 header-only table creates one page. A header, body row or connected group too
 tall to fit throws without shrinking, splitting or discarding text. A vertical
-merge crossing the single repeated header requires single-slide composition.
+merge crossing the header/body boundary requires single-slide composition.
+Width-search scoring reserves the sum of all header row heights on every page.
+A header-only grid emits one page with an empty body range.
 Cell diagnostics remain available through each page's `slide.tableLayout`.
+
+For a two-row header with a vertical label and a grouped heading:
+
+```swift
+let grouped = TemplateTableContent(
+    rows: [["Source", "Evidence", ""],
+           ["", "Observation", "State"],
+           ["R1", "Exact original observation", "Ready"]],
+    columnSizing: .measured(),
+    merges: [.init(row: 0, column: 0, rowSpan: 2, columnSpan: 1),
+             .init(row: 0, column: 1, rowSpan: 1, columnSpan: 2)],
+    headerRowCount: 2)
+let groupedPlan = try engine.planTablePages(title: "Evidence", table: grouped)
+let groupedSlides = try engine.composeTablePages(groupedPlan)
+```
+
+Header count is a pagination policy, not a styling override. DrawingML's native
+`firstRow` region still applies only to row zero; additional header rows retain
+native whole-table, band and edge styles. Vertical/rectangular header merges keep
+the anchor's native style. This API does not manufacture additional header styles.
+The conservative band/edge measurement envelope also covers these extra header
+rows. Existing callers retain one-row-header behavior and output.
 
 Composition remeasures live fonts/styles and checks all pages before inserting
 slides. Changed page boundaries, row heights or reserved frames require a new
 plan. Fit rejection leaves the deck unchanged; this is not a transaction for
 arbitrary package I/O failures. Measurement is bounded per cell style, and
 partitioning visits each row once using integer EMU arithmetic. Plans and
-prospective native cells use memory proportional to the input.
+prospective native cells use memory proportional to the input and emitted pages,
+including a copy of the repeated header on every page.
 
 Callers attach notes, sections, provenance and recovery identities to the returned
 slides using the source row ranges. This API does not paginate existing imported
@@ -299,8 +326,10 @@ Lectern's generation and recovery layer now consumes this API and manages its ow
 continuation groups, notes, sections and source-note overflow; see the
 [production integration record](LECTERN-TABLES-20261013.md). The
 Templates Library Lab runs the public API through export, inspection and reopen
-for both canvas sizes. Native PowerPoint acceptance remains pending. See
-[the pagination evidence](TABLE-PAGINATION-20261012.md).
+for both canvas sizes, including `repeated-headers-output.pptx`. The earlier
+Calibri pack has [user-reported native acceptance](POWERPOINT-REVIEW-20261016.md);
+new repeated-header examples remain pending native review. See
+[repeated-header evidence](TABLE-REPEATED-HEADERS-20261016.md).
 
 ### Measurement contract
 

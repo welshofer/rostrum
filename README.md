@@ -139,15 +139,15 @@ choose the products your target uses:
 
 The [complete package example](docs/GETTING-STARTED.md#install-with-swift-package-manager)
 is ready to copy. Version 1.0 includes both products. For the post-1.0 capabilities
-listed above, replace the dependency with a reviewed revision, for example:
+listed above and the multi-row header API below, track `main` or pin a reviewed
+commit containing the capability you need:
 
 ```swift
 .package(url: "https://github.com/welshofer/rostrum",
-         revision: "bbde5fc7dbb6a854e5cd41e6a6df976b70edb622")
+         branch: "main")
 ```
 
-That revision includes the library capabilities described above. Use `branch: "main"`
-instead to track development, and update your package resolution deliberately.
+Update your package resolution deliberately; use `revision:` to pin a reviewed commit.
 Lectern uses the local checkout automatically; it has no separate Rostrum version
 to bump. See [pull and rebuild](Lectern/README.md#pull-and-rebuild).
 
@@ -163,11 +163,15 @@ heights. `TemplateTableContent(rows:columnSizing:)` with `.measured()` enables
 bounded column search; `planTablePages` / `composeTablePages` create editable continuations with
 repeated headers and reserved captions. Horizontal, vertical and rectangular
 merges are supported; connected body-row groups stay together across pages.
-Multi-row repeated headers and native table autofit remain outside this profile.
+`headerRowCount` repeats a complete leading header block, including vertical and
+rectangular header merges. Merges cannot cross the header/body boundary. Native
+table autofit remains outside this profile; see the [layout guide](docs/LAYOUT-ENGINE.md#table-continuations-in-templates).
 
 The [caller-font fidelity pack](Tools/native-fidelity/README.md) exercises text
 and merged-table continuations at both slide ratios, retaining exact geometry
-and separate PowerPoint slide-view/export review status.
+and separate PowerPoint slide-view/export review status. The delivered Calibri
+pack has [user-reported PowerPoint acceptance](docs/POWERPOINT-REVIEW-20261016.md);
+new multi-row header cases still need native review.
 
 Table previews resolve native and embedded custom styles, padding, vertical
 alignment, fills and supported border joins. Newly authored table cells center

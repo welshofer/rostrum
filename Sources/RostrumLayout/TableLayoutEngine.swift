@@ -109,8 +109,8 @@ public final class TableLayoutEngine {
                  maximumHeight: maximumHeight, theme: theme, pagination: false)
     }
 
-    // Pagination repeats row zero and may move body rows between band/edge
-    // regions. Measure each distinct effective style once per cell, reserving
+    // Pagination keeps native first-row styling and may move body rows between
+    // band/edge regions. Additional header rows use the same conservative envelope. Measure each distinct effective style once per cell, reserving
     // the largest height. This bounded envelope keeps partitioning linear.
     func plan(_ table: Table, columnWidths: [EMU]?, minimumRowHeight: EMU,
               maximumHeight: EMU? = nil, theme: Theme?, pagination: Bool,

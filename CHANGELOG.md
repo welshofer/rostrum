@@ -6,6 +6,16 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- `TemplateTableContent.headerRowCount` repeats a complete header prefix on every
+  continuation, including vertical/rectangular header merges. Width search reserves
+  all header rows; merges across the header/body boundary and oversized headers
+  refuse before mutation. The default remains one row with unchanged native styling.
+  Lectern's Templates Lab exercises saved headers, body groups and Inspect/export
+  at both slide ratios. See [usage and evidence](docs/TABLE-REPEATED-HEADERS-20261016.md).
+- Record the user's PowerPoint acceptance of the delivered Calibri review pack
+  against exact deck/font hashes. New cases and PDF/image export remain separate;
+  see the [review record](docs/POWERPOINT-REVIEW-20261016.md).
+
 - Shared-font preview preparation skips marker-free bytes in bounded word loads
   and reuses exact-byte key hashes. Paired Linux Release probes preserve prepared
   documents and font resources while reducing preparation CPU; normal app loading
@@ -14,11 +24,11 @@ the conformance documentation separately describes rendering limitations.
 - The caller-font fidelity pack now includes connected vertical/rectangular
   merged tables, saved geometry, independent native-grid readback and Lectern
   Inspect/export checks in every aspect/font-storage profile. This extends the
-  review corpus; PowerPoint visual acceptance remains pending.
+  review corpus; the delivered Calibri pack has the user-reported acceptance above.
 
 - Compose vertical and rectangular template-table merges and paginate connected
   body-row groups without splitting cells. Width search scores the same groups;
-  oversized groups, vertical header merges and covered source text are refused
+  oversized groups, merges across the header/body boundary and covered source text are refused
   before adding slides. Lectern's Templates Lab exercises saved continuations
   and production Inspect/export on both canvas ratios. Generated IR still does
   not express merged cells; native PowerPoint acceptance remains separate.

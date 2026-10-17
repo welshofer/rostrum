@@ -11,7 +11,7 @@ notes, sections, unrelated package parts and deterministic output.
 
 ## First milestone: native text/table regression pack
 
-Status: **in progress**.
+Status: **portable pack validated and delivered Calibri pack accepted by the user in PowerPoint; native UI/export evidence incomplete**.
 
 - [x] Build a repeatable, offline pack using explicit caller-supplied font files
   and font identities. Include installed/external and embedded-font cases,
@@ -24,6 +24,7 @@ Status: **in progress**.
   of Git. Missing required faces must not silently become a passing exact-font case.
 - [x] Exercise the pack through production LecternCore Inspect and export as well
   as the library, retaining deterministic artifacts and verifying source content.
+- [x] Record the user's pack-level PowerPoint acceptance against the delivered Calibri hashes; see the review record below.
 - [ ] Review the same pack in Lectern's native UI, including WebKit thumbnails.
 - [ ] Capture PowerPoint for Mac slide-view and PDF/image-export evidence for
   the same saved bytes and fonts. Extend the existing native corpus; keep these
@@ -195,7 +196,7 @@ app-hosted tests and live PowerPoint acceptance remain separate.
 
 ## Next layout milestone: multi-row merged cells
 
-Status: **portable measurement and connected-row pagination validated; native PowerPoint acceptance pending**.
+Status: **portable measurement and connected-row pagination validated; delivered Calibri pack accepted by the user in PowerPoint, export evidence pending**.
 
 - [x] Measure vertical/rectangular merge anchors across their combined width;
   distribute height deficits across spanned rows deterministically.
@@ -239,13 +240,40 @@ The normal app remains on inline font loading. This Linux environment can
 prepare and test the candidate but cannot establish native visual acceptance.
 See [preparation measurements and native commands](docs/PREVIEW-PREPARATION-20261016.md).
 
+## Multi-row repeated headers (2026-10-16)
+
+Status: **portable implementation, full local gate, both Lab ratios and Release preservation/resource comparison validated; new native PowerPoint review pending**.
+
+- [x] Add an explicit header-row count with the existing one-row default.
+- [x] Repeat native header merges and refuse merges crossing the header/body boundary.
+- [x] Reserve the entire header prefix in page partitioning and width-search scoring.
+- [x] Verify saved/reopened grids, body order, diagnostics, caption bounds and fresh checks.
+- [x] Exercise the capability in Lectern's Templates Lab and production Inspect/export.
+- [x] Compare existing default output exactly and measure Release CPU, elapsed and peak RSS.
+- [x] Include the new regressions in optimized Linux and Apple CI. The full local portable gate passes; green Apple checks are required before merge.
+- [ ] Obtain native PowerPoint review of the new header cases.
+
+The [repeated-header report](docs/TABLE-REPEATED-HEADERS-20261016.md) retains
+142 unchanged control artifacts, 44 repeatable new artifacts and all resource
+samples, including the 4–5% plain-composition slowdowns. No general speedup claim.
+
+## Calibri pack acceptance (2026-10-16)
+
+The user reports: “Decks look great in PowerPoint. Proceed.” Record this as
+pack-level visual acceptance of the four delivered Calibri decks at `837e2bc`,
+with exact deck/font hashes in the [review record](docs/POWERPOINT-REVIEW-20261016.md).
+No separate per-profile verdict, PowerPoint version or PDF/image export accompanied
+this message. The broader native evidence checklist above remains open where it
+requires those details. This acceptance covers the delivered connected-body-merge
+cases; it does not extend to new multi-row headers, chart repair or WebKit transport.
+
 ## Subsequent scope
 
 These are known gaps, not promises that the first milestone implements them:
 
 | Area | Remaining work |
 | --- | --- |
-| Table layout | Multi-row repeated headers, rotated/vertical text, dynamic fields and native table autofit |
+| Table layout | Rotated/vertical text, dynamic fields and native table autofit; multi-row headers tracked above |
 | Imported artwork | Custom arcs, bent/curved connectors and broader effects |
 | Typography | Full bidirectional and complex-script layout; broader native autofit equivalence |
 | Charts | Date/number formatting, broader workbook references and advanced layouts |

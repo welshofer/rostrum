@@ -33,7 +33,7 @@ not a download of the newest Library Lab results.
 | Prepared shrink trials | Existing fit APIs reuse scale-independent preparation within each body; each trial still measures scaled geometry | [Prepared fitting](PREPARED-FITTING-20261012.md) |
 | Native table row planning | `TableLayoutEngine.plan` reports cell geometry and diagnostics without editing the table | [Row layout](TABLE-LAYOUT-20261012.md), [vertical merges](TABLE-VERTICAL-SPANS-20261016.md) |
 | Measured column widths | Choose `TemplateTableContent(rows:columnSizing:)` with `.measured()` and optional constraints | [Column search](TABLE-COLUMNS-20261012.md), [preparation](TABLE-PREPARATION-20261012.md), [fragment reuse](TABLE-SHAPING-20261013.md) |
-| Table pagination and merged cells | `planTablePages` / `composeTablePages` preserve connected row groups, repeated headers, fixed widths and captions | [Pagination](TABLE-PAGINATION-20261012.md), [horizontal spans](TABLE-SPANS-20261012.md), [vertical/rectangular spans](TABLE-ROW-PAGINATION-20261016.md) |
+| Table pagination and merged cells | `planTablePages` / `composeTablePages` preserve connected row groups, repeated headers, fixed widths and captions | [Pagination](TABLE-PAGINATION-20261012.md), [horizontal spans](TABLE-SPANS-20261012.md), [vertical/rectangular spans](TABLE-ROW-PAGINATION-20261016.md), [multi-row headers](TABLE-REPEATED-HEADERS-20261016.md) |
 | Production tables in Lectern | Generate or recover a table deck; use `CompositionRegression --tables` for offline checks | [Lectern tables](LECTERN-TABLES-20261013.md) |
 | Safer font embedding and import | Embed all supplied faces atomically; merge compatible embedded faces during slide import; register separately for measurement | [Font guide](IMPORTING-AND-PREVIEWING.md#embedding-fonts-safely), [embedding checks](FONT-EMBEDDING-20261013.md) |
 | Prepared font registration | Validate one immutable byte/metrics snapshot and register it without parsing again; caller owns retention and refresh | [Prepared fonts](IMPORTING-AND-PREVIEWING.md#reuse-a-validated-font-snapshot) |
@@ -65,7 +65,9 @@ The [font-resource loading experiment](PREVIEW-FONT-RESOURCES-20261015.md) recor
 the opt-in WebKit transport, its preparation costs and the native comparison gate.
 The [preparation follow-up](PREVIEW-PREPARATION-20261016.md) profiles repeated
 scanning/hashing, retains paired CPU/elapsed/RSS results and exact resource
-preservation, and extends the caller-font merged-table review corpus.
+preservation, and extends the caller-font merged-table review corpus. The delivered Calibri
+pack now has [user-reported PowerPoint acceptance](POWERPOINT-REVIEW-20261016.md),
+recorded against exact deck/font hashes; export evidence remains separate.
 
 The [roadmap](../ROADMAP.md) tracks remaining work; [PLAN.md](../PLAN.md) tracks
 the current fidelity/performance milestones. Historical publication evidence
