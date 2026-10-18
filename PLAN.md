@@ -312,7 +312,7 @@ These are known gaps, not promises that the first milestone implements them:
 | Table layout | Stacked/complex vertical text, dynamic fields and native table autofit; multi-row headers tracked above |
 | Imported artwork | Custom arcs, bent/curved connectors and broader effects |
 | Typography | Full bidirectional and complex-script layout; broader native autofit equivalence |
-| Charts | Date/number formatting, broader workbook references and advanced layouts |
+| Charts | Date/conditional formats beyond the numeric subset, broader workbook references and advanced layouts |
 
 ## Working and acceptance rules
 
@@ -392,3 +392,25 @@ The offline `Lectern/scripts/test-layouts.sh` now includes crowded panels.
 Recovery uses saved content without spending another model request.
 Required Linux and Apple PR checks gate the merge; their outcome is recorded
 on the PR. See [the validation report](docs/PANEL-REFLOW-20261018.md).
+
+## Chart and symbol preview fidelity (2026-10-18)
+
+The supplied 33-slide higher-education deck exposed incorrect percentage units,
+missing bar labels/line markers, ignored chart text styling, and misleading
+inspection findings. The original presentation remains outside version control.
+
+- [x] Preserve numeric literals and units; compile formats once per axis/label style.
+- [x] Honor chart text styles and render requested bar labels and line markers.
+- [x] Render three-segment elbow connectors and report actual preview omissions.
+- [x] Add explicit, registered fallback faces for missing standalone symbols,
+  without changing authored fonts or splitting emoji sequences.
+- [x] Group repeated inspector findings and separate unverified native text cases.
+- [x] Add saved/reopened chart and symbol checks to the offline Library Lab.
+- [x] Complete the final portable gate: 1,424 library tests, 371 LecternCore
+  tests, 118 optimized controls, native-pack checks and portable fidelity references.
+- [ ] Pass Apple PR checks (including app and native test-host compilation).
+- [ ] Review the new previews on macOS with the deck's exact fonts.
+
+See [the behavior and validation guide](docs/CHART-PREVIEW-FIDELITY.md).
+Chart collision/layout parity, other chart kinds, and full complex-script shaping
+remain outside this change.

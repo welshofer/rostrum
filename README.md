@@ -180,6 +180,11 @@ and separate PowerPoint slide-view/export review status. The delivered Calibri
 pack has [user-reported PowerPoint acceptance](docs/POWERPOINT-REVIEW-20261016.md);
 new multi-row header and rotated-text cases still need native review.
 
+Chart previews preserve literal percentage/currency units, authored label styles,
+bar values and line markers. Explicit symbol fallback keeps font choices in the
+saved file intact; Lectern groups preview limitations separately from native
+verification notes. See [chart and symbol preview support](docs/CHART-PREVIEW-FIDELITY.md).
+
 Table previews resolve native and embedded custom styles, padding, vertical
 alignment, fills and supported border joins. Newly authored table cells center
 text vertically by default; imported cells retain their saved alignment.

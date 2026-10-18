@@ -7,6 +7,7 @@ public enum FidelityIssueCode: String, Sendable, Codable {
     case gradientApproximation, chartApproximation, graphicPlaceholder
     case unresolvedTableStyle, unavailableImage, unsupportedImage
     case unsupportedTextProperty, omittedShape, unsupportedColor, unsupportedBorder
+    case unverifiedTextLayout
 }
 
 public enum FidelityImpact: String, Sendable, Codable { case approximation, omission, missingResource }
@@ -166,16 +167,36 @@ final class RenderDiagnosticCollector {
         for diagnostic in layout.diagnostics {
             switch diagnostic {
             case .missingGlyph(let scalar):
-                record(.missingGlyph, .missingResource, "No glyph for U+\(String(scalar, radix: 16, uppercase: true)) in the explicit face.")
+                let faces = Set(layout.lines.flatMap(\.spans).filter {
+                    $0.run.text.unicodeScalars.contains { $0.value == scalar }
+                }.map { span in
+                    (span.run.fontFamily ?? "unspecified") + (span.run.bold ? " Bold" : "") + (span.run.italic ? " Italic" : "")
+                }).sorted()
+                let face = faces.isEmpty ? "the explicit face" : faces.joined(separator: ", ")
+                record(.missingGlyph, .missingResource, "No glyph for U+\(String(scalar, radix: 16, uppercase: true)) in \(face).")
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Unregistered font face:"):
                 record(.missingFont, .missingResource, reason)
+            case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Preview symbol U+"):
+                record(.viewerFontDependency, .approximation, reason)
+            case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Native ") && reason.contains("not verified"):
+                record(.unverifiedTextLayout, .approximation, reason)
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification")
                 || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment")
                 || reason.hasPrefix("Native explicit line spacing") || reason.hasPrefix("Native table")
                 || reason.hasPrefix("Native glyph paint"):
                 record(.unsupportedTextProperty, .approximation, reason)
-            default:
-                record(.unsupportedShaping, .approximation, String(describing: diagnostic))
+            case .unsupportedLayoutFeature(let reason):
+                record(.unsupportedShaping, .approximation, reason)
+            case .unsupportedScript(let scalar):
+                record(.unsupportedShaping, .approximation,
+                    "Preview shaping is not supported for U+\(String(scalar, radix: 16, uppercase: true)).")
+            case .unsupportedCombiningSequence:
+                record(.unsupportedShaping, .approximation, "A combining or emoji sequence cannot be positioned faithfully by the preview.")
+            case .unsupportedBidirectionalControl(let scalar):
+                record(.unsupportedShaping, .approximation,
+                    "Bidirectional positioning involving U+\(String(scalar, radix: 16, uppercase: true)) is not supported by the preview.")
+            case .invalidPointSize:
+                record(.unsupportedTextProperty, .approximation, "Text has an invalid point size.")
             }
         }
         if layout.truncated { record(.textTruncated, .omission, "Text exceeds the preview's 64-line bound.") }
@@ -223,6 +244,9 @@ final class RenderDiagnosticCollector {
                     issue(.omittedShape, .omission, "Malformed p:cxnSp has no shape properties.")
                 }
             case "a:prstGeom":
+                // Connector geometry is handled and diagnosed by its own painter.
+                // It never uses the generic shape rectangle fallback.
+                if currentShape.name == "p:cxnSp" { break }
                 let preset = element[attribute: "prst"] ?? "rect"
                 if !SVGPresetGeometry.supported.contains(preset) && !["line", "straightConnector1"].contains(preset) {
                     issue(.unsupportedGeometry, .approximation, "Preset \(preset) is approximated by a rectangle.")
@@ -281,7 +305,7 @@ final class RenderDiagnosticCollector {
                 if element.childElements.contains(where: { $0.name != "a:extLst" }) { issue(.omittedEffect, .omission, "Image effects are not applied.") }
             case "a:graphicData":
                 let uri = element[attribute: "uri"] ?? ""
-                if uri.hasSuffix("/chart") { issue(.chartApproximation, .approximation, "Chart preview approximates axes, labels and formatting; series/point bounds may omit data.") }
+                if uri.hasSuffix("/chart") { issue(.chartApproximation, .approximation, "Chart layout is approximated; PowerPoint positioning and unsupported formatting may differ.") }
                 else if !uri.hasSuffix("/table") && uri != GraphicDataURI.diagram { issue(.graphicPlaceholder, .omission, "Graphic content is represented by a labeled placeholder.") }
             case "a:tbl":
                 if !Self.hasTableStyle(element, package: package) { issue(.unresolvedTableStyle, .approximation, "The table style has no recognized native or embedded definition; preview uses fallback/direct formatting.") }

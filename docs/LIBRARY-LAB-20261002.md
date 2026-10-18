@@ -844,3 +844,12 @@ both ratios, saved IR, reopened native structures, Inspect SVGs and export outpu
 fixture. The [usage guide](GENERATED-LAYOUTS.md) documents item limits, full-grid
 coordinates, font requirements and the post-pull test script. New native visual
 acceptance is pending; prior table review does not certify these new compositions.
+
+## Chart and symbol preview regressions — October 18
+
+Chart gallery now verifies literal-percent tick/value text and authored chart
+font styling after save/reopen. Extraction and honest previews adds an ASCII-only
+licensed outline fixture plus an explicit registered checkmark fallback, retains
+the substitution diagnostic, and verifies that reopening preserves the text/font
+and reproduces the SVG with the same policy. Both use the ordinary Lab
+inspection/export pipeline. See [support boundaries](CHART-PREVIEW-FIDELITY.md).

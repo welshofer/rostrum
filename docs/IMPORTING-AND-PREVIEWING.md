@@ -188,3 +188,13 @@ exact-font desktop evidence from readable Arial-fallback device acceptance.
 Its [performance result](PERFORMANCE.md) measures warm library SVG rendering at
 a specific optimization checkpoint, excluding viewer rasterization and startup.
 Private decks, proprietary fonts and private screenshots remain outside Git.
+
+## Chart labels and missing symbols
+
+Chart numeric units, text styles, bar labels, line markers and three-segment
+connectors are covered by the [chart preview guide](CHART-PREVIEW-FIDELITY.md).
+`FontLibrary.previewSymbolFallbackFamilies` is an opt-in ordered list of
+registered families for missing standalone symbols. The preview reports every
+substitution and preserves authored font names and text in the saved package.
+Lectern groups repeated verification notes separately from preview limitations;
+raw diagnostics and strict-rendering checks remain available.

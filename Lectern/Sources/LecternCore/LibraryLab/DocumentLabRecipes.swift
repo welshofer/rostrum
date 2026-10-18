@@ -139,6 +139,10 @@ enum DocumentLabRecipes {
             let slide = index == 0 ? try deck.slides[0] : try deck.slides.add()
             try LibraryLabSupport.text("\(kind) · \(options.text)", on: slide)
             var kindOptions = styles
+            if kind == .barClustered {
+                kindOptions.dataLabels = .init(showValue: true, numberFormat: "0\"%\"", position: "outEnd")
+                kindOptions.valueAxis.numberFormat = "0\"%\""
+            }
             if kind == .barPercentStacked {
                 kindOptions.valueAxis = .init(min: 0, max: 1, majorUnit: 0.25,
                                               numberFormat: "0%", title: "Share", gridlines: true)
@@ -185,6 +189,12 @@ enum DocumentLabRecipes {
                 let plot = try chart.part.dom().firstChild(named: "c:chart")?.firstChild(named: "c:plotArea")?.firstChild(named: "c:\(plotType)")
                 let settingMatches = setting.map { plot?.firstChild(named: "c:\($0.name)")?[attribute: "val"] == $0.value } ?? true
                 checks.append(.init("\(kind) plot identity survives", chart.plotType == plotType && settingMatches, "Native plot type, stacking mode or radar style matches the requested kind."))
+                if kind == .barClustered {
+                    let svg = try reopened.renderSVG(slideAt: index)
+                    let value = data.series[0].values.compactMap { $0 }.first ?? 0
+                    checks.append(.init("Literal percent chart preview", svg.contains(">12%</text>") && !svg.contains(">1200%</text>") && svg.contains(">\(Int(value))%</text>"), "Saved/reopened axis ticks and above-bar value labels preserve literal percent units."))
+                    checks.append(.init("Chart preview honors typography", svg.contains("font-size=\"14\"") && svg.contains("Arial, sans-serif") && svg.contains("#" + color(options).hex), "Chart labels carry the authored family, size, and color."))
+                }
                 if kind == .pie || kind == .doughnut {
                     checks.append(.init("\(kind) percent labels survive", plot?.firstChild(named: "c:dLbls")?.firstChild(named: "c:showPercent")?[attribute: "val"] == "1", "Pie and doughnut show percentages alongside category labels."))
                 }

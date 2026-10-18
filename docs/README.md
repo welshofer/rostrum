@@ -15,6 +15,7 @@ not a download of the newest Library Lab results.
 | Plan tables, fit text, fill a template or paginate | [Layout engine](LAYOUT-ENGINE.md) |
 | Generate cards, columns, numbered steps and structured tables | [Generated layouts](GENERATED-LAYOUTS.md) |
 | Edit slides, charts, images, notes, comments and sections | [Cookbook](COOKBOOK.md) |
+| Understand chart labels, numeric units, connectors, and symbol previews | [Chart preview fidelity](CHART-PREVIEW-FIDELITY.md) |
 | Register or embed fonts, import slides, render SVG and interpret diagnostics | [Importing and previewing](IMPORTING-AND-PREVIEWING.md) |
 | Pull, build and exercise the libraries through the app | [Lectern](../Lectern/README.md#pull-and-rebuild) |
 | Run fixed production fixtures or replay saved content offline | [Composition regression](../Lectern/Tools/CompositionRegression/README.md) |

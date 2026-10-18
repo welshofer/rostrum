@@ -6,6 +6,13 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Correct chart preview percentage scaling and quoted units; honor chart text
+  styles, render bar labels and line markers, and draw three-segment elbow
+  connectors. Add explicit registered fallback faces for missing standalone
+  symbols. Lectern discovers chart fonts and groups repeated preview findings,
+  separating unverified native text cases from concrete limitations. Saved
+  content remains unchanged. See [support and checks](docs/CHART-PREVIEW-FIDELITY.md).
+
 - Add measured editable `PanelLayout` cards, three-column panels and numbered
   steps. Lectern exposes all three through generation, template composition,
   recovery and the offline Generated layouts Lab. Optional `IRTable` additional
