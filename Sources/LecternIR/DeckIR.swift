@@ -164,6 +164,7 @@ public struct Body: Codable, Sendable, Equatable {
     public var source: String?                // citation / provenance, bottom-left
     public var milestones: [IRMilestone]?     // timeline
     public var quadrants: [IRQuadrant]?       // quadrant (exactly four)
+    public var panels: [IRPanel]?             // cards / threeColumn / numberedSteps
     public var xAxis: String?                 // quadrant axis captions
     public var yAxis: String?
 
@@ -175,7 +176,8 @@ public struct Body: Codable, Sendable, Equatable {
                 table: IRTable? = nil, claim: String? = nil, band: String? = nil,
                 lead: String? = nil, source: String? = nil,
                 milestones: [IRMilestone]? = nil,
-                quadrants: [IRQuadrant]? = nil, xAxis: String? = nil, yAxis: String? = nil) {
+                quadrants: [IRQuadrant]? = nil, xAxis: String? = nil, yAxis: String? = nil,
+                panels: [IRPanel]? = nil) {
         self.subtitle = subtitle; self.items = items; self.kicker = kicker
         self.bullets = bullets; self.left = left; self.right = right
         self.quote = quote; self.attribution = attribution; self.value = value
@@ -184,7 +186,7 @@ public struct Body: Codable, Sendable, Equatable {
         self.claim = claim; self.band = band
         self.lead = lead; self.source = source
         self.milestones = milestones; self.quadrants = quadrants
-        self.xAxis = xAxis; self.yAxis = yAxis
+        self.xAxis = xAxis; self.yAxis = yAxis; self.panels = panels
     }
 }
 
@@ -196,16 +198,49 @@ public struct IRDiagram: Codable, Sendable, Equatable {
     public init(kind: String, items: [String]) { self.kind = kind; self.items = items }
 }
 
-/// A table on a `table` slide: `headers` is the header row, `rows` the body.
-/// Ragged rows are padded when rendered, so a short row costs a cell, not the
-/// slide.
+/// A native table. Coordinates index `grid`: first header, additional headers,
+/// then body rows. Covered merge cells must be empty. Optional fields preserve
+/// the original single-header JSON contract when absent.
 public struct IRTable: Codable, Sendable, Equatable {
     public var headers: [String]
     public var rows: [[String]]
-    public init(headers: [String], rows: [[String]]) { self.headers = headers; self.rows = rows }
+    public var additionalHeaders: [[String]]?
+    public var merges: [IRTableMerge]?
+    public var textDirections: [IRTableTextDirection]?
+    public init(headers: [String], rows: [[String]], additionalHeaders: [[String]]? = nil,
+                merges: [IRTableMerge]? = nil, textDirections: [IRTableTextDirection]? = nil) {
+        self.headers = headers; self.rows = rows; self.additionalHeaders = additionalHeaders
+        self.merges = merges; self.textDirections = textDirections
+    }
+    public var headerRowCount: Int { 1 + (additionalHeaders?.count ?? 0) }
+    public var grid: [[String]] { [headers] + (additionalHeaders ?? []) + rows }
+}
 
-    /// Header row followed by the body rows — what the builder takes.
-    public var grid: [[String]] { [headers] + rows }
+public struct IRTableMerge: Codable, Sendable, Equatable {
+    public var row: Int
+    public var column: Int
+    public var rowSpan: Int
+    public var columnSpan: Int
+    public init(row: Int, column: Int, rowSpan: Int, columnSpan: Int) {
+        self.row = row; self.column = column; self.rowSpan = rowSpan; self.columnSpan = columnSpan
+    }
+}
+
+public struct IRTableTextDirection: Codable, Sendable, Equatable {
+    public enum Direction: String, Codable, Sendable { case horizontal, vertical, vertical270 }
+    public var row: Int
+    public var column: Int
+    public var direction: Direction
+    public init(row: Int, column: Int, direction: Direction) {
+        self.row = row; self.column = column; self.direction = direction
+    }
+}
+
+/// A headed text panel; order is meaningful for numberedSteps.
+public struct IRPanel: Codable, Sendable, Equatable {
+    public var heading: String
+    public var detail: String
+    public init(heading: String, detail: String) { self.heading = heading; self.detail = detail }
 }
 
 /// One marker on a `timeline` slide: a short `label` (a date or phase) and the
@@ -264,7 +299,7 @@ public struct Column: Codable, Sendable, Equatable {
 public enum SlideLayoutKind: Sendable, Equatable {
     case title, agenda, sectionHeader, bullets, twoColumn, comparison, quote, bigNumber, closing
     case chart, metrics, bands, diagram, table, timeline, quadrant
-    case imageLeft, imageRight, statement, callout
+    case imageLeft, imageRight, statement, callout, cards, threeColumn, numberedSteps
     case unknown(String)
 
     public init(_ raw: String) {
@@ -289,6 +324,9 @@ public enum SlideLayoutKind: Sendable, Equatable {
         case "imageRight": self = .imageRight
         case "statement": self = .statement
         case "callout": self = .callout
+        case "cards": self = .cards
+        case "threeColumn": self = .threeColumn
+        case "numberedSteps": self = .numberedSteps
         default: self = .unknown(raw)
         }
     }
@@ -299,7 +337,7 @@ public enum SlideLayoutKind: Sendable, Equatable {
     public static let knownCases: [SlideLayoutKind] = [
         .title, .agenda, .sectionHeader, .bullets, .twoColumn, .comparison, .quote,
         .bigNumber, .closing, .chart, .metrics, .bands, .diagram, .table, .timeline,
-        .quadrant, .imageLeft, .imageRight, .statement, .callout,
+        .quadrant, .imageLeft, .imageRight, .statement, .callout, .cards, .threeColumn, .numberedSteps,
     ]
 
     /// The vocabulary name — the inverse of `init(_:)`.
@@ -325,6 +363,9 @@ public enum SlideLayoutKind: Sendable, Equatable {
         case .imageRight: return "imageRight"
         case .statement: return "statement"
         case .callout: return "callout"
+        case .cards: return "cards"
+        case .threeColumn: return "threeColumn"
+        case .numberedSteps: return "numberedSteps"
         case .unknown(let raw): return raw
         }
     }

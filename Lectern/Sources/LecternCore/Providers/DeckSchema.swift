@@ -54,11 +54,26 @@ enum DeckSchema {
             ],
             "required": ["kind", "items"],
         ]
+        let coordinate: [String: Any] = ["type": "integer", "minimum": 0]
+        let span: [String: Any] = ["type": "integer", "minimum": 1]
+        let merge: [String: Any] = ["type": "object", "properties": [
+            "row": coordinate, "column": coordinate, "rowSpan": span, "columnSpan": span],
+            "required": ["row", "column", "rowSpan", "columnSpan"]]
+        let direction: [String: Any] = ["type": "object", "properties": [
+            "row": coordinate, "column": coordinate,
+            "direction": ["type": "string", "enum": ["horizontal", "vertical", "vertical270"]]],
+            "required": ["row", "column", "direction"]]
         let table: [String: Any] = [
             "type": "object",
             "description": "table layout — a real matrix of short values (plans, specs, milestones), never prose",
             "properties": [
                 "headers": ["type": "array", "items": str("a column header, 1–3 words")],
+                "additionalHeaders": ["type": "array", "items": strings,
+                    "description": "Optional extra header rows repeated on every page. Grid row zero is headers; these rows precede body rows."],
+                "merges": ["type": "array", "items": merge,
+                    "description": "Optional nonoverlapping rectangles in the complete zero-based grid. Covered cells must be empty. Never cross the header/body boundary."],
+                "textDirections": ["type": "array", "items": direction,
+                    "description": "Optional unique cell directions; use merge anchors only. vertical/vertical270 turn labels 90/270 degrees."],
                 "rows": ["type": "array",
                          "items": ["type": "array", "items": str("one cell, a few words at most")],
                          "description": "each row has one cell per header, in the same order"],
@@ -103,6 +118,8 @@ enum DeckSchema {
                                "description": "timeline layout — 3 to 5 milestones in time order"],
                 "quadrants": ["type": "array", "items": quadrant,    // quadrant
                               "description": "quadrant layout — EXACTLY four, in reading order: top-left, top-right, bottom-left, bottom-right"],
+                "panels": ["type": "array", "items": quadrant, "minItems": 2, "maxItems": 4,
+                    "description": "cards: 2–4 parallel concepts; threeColumn: exactly 3; numberedSteps: 2–4 ordered actions. Headings and short details remain editable."],
                 "xAxis": str("quadrant layout — what the horizontal axis measures"),
                 "yAxis": str("quadrant layout — what the vertical axis measures"),
             ],
@@ -123,11 +140,7 @@ enum DeckSchema {
                 "sectionId": str(),
                 "layout": [
                     "type": "string",
-                    "enum": ["title", "agenda", "sectionHeader", "bullets",
-                             "twoColumn", "comparison", "quote", "bigNumber", "closing",
-                             "chart", "metrics", "bands", "diagram", "table",
-                             "timeline", "quadrant", "imageLeft", "imageRight",
-                             "statement", "callout"],
+                    "enum": SlideLayoutKind.knownCases.map(\.name),
                 ],
                 "title": str(),
                 "body": body,

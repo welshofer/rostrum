@@ -2,6 +2,14 @@
 
 ## Latest reconciled measurements
 
+The [generated-layout integration](GENERATED-LAYOUTS-20261017.md) preserves all
+45 single-render and 450 batched production control artifacts. Seven paired
+Linux Release batches retain −1.75% to +2.19% process CPU changes, including a
+small template slowdown; peak RSS remains nearly unchanged. Both the noisier
+single-render comparison and every adverse sample are retained. The new paired
+16:9/4:3 review decks take median 831 ms CPU, 865 ms elapsed and 48.38 MiB peak RSS
+in fresh processes. This is a capability expansion, not a speedup claim.
+
 The [table measurement follow-up](TABLE-MEASUREMENT-20261017.md) reuses exact
 style bytes and immutable input-key hashes inside each operation. Seven paired
 Linux Release runs measure 7.98% lower small-plain planning CPU (3.01% process

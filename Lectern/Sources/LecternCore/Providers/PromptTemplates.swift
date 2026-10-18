@@ -30,8 +30,17 @@ public enum PromptTemplates {
         - callout          body: { band, bullets: [...] }   (a plated line — an equation, definition or threshold — with the argument for it beneath)
         - timeline         body: { milestones: [{ label, detail }] }   (3–5, in time order; label is a date or phase)
         - quadrant         body: { quadrants: [{ heading, detail }], xAxis?, yAxis? }   (EXACTLY 4, reading order: TL, TR, BL, BR)
+        - cards            body: { panels: [{ heading, detail }] }   (2–4 parallel ideas in a card grid)
+        - threeColumn      body: { panels: [{ heading, detail }] }   (EXACTLY 3 pillars or alternatives in open columns)
+        - numberedSteps    body: { panels: [{ heading, detail }] }   (2–4 ordered actions in numbered rows)
+                             Keep panel headings short and details to one or two sentences. Never invent content to fill a layout.
         - table            body: { table: { headers: [string], rows: [[string]] } }
-                             2–5 columns, 2–6 body rows; every cell a few words at most — specs, plans, milestones, never prose
+                             2–5 columns, 2–6 body rows; every cell a few words at most — specs, plans, milestones, never prose.
+                             Optional additionalHeaders: [[string]], merges: [{ row, column, rowSpan, columnSpan }],
+                             textDirections: [{ row, column, direction: horizontal|vertical|vertical270 }].
+                             Coordinates use the complete zero-based grid: headers, additionalHeaders, rows.
+                             Covered merge cells must be empty; merges cannot overlap or cross from headers into body.
+                             Use rotated labels only when they improve readability; omit all optional fields for ordinary tables.
         - diagram          body: { diagram: { kind: process|pyramid|cycle, items: [string] } }
                              process = sequential steps; pyramid = hierarchy/ladder (base→peak); each item short "Label — detail"
         - closing          body: { callToAction?, contact? }  (at most one, last)
@@ -189,7 +198,10 @@ public enum PromptTemplates {
         - Match form to content: quantities → chart (bar for comparisons, line for
           trends, pie for shares); 2–4 figures → metrics; one figure → bigNumber;
           sequential steps or hierarchy → diagram; parallel concepts → bands;
-          two sides → comparison. Do not invent data to fill a layout.
+          two sides → comparison; three pillars → threeColumn; parallel ideas → cards;
+          ordered actions with explanations → numberedSteps. Panel layouts use
+          body.panels: [{ heading, detail }] (2–4 panels, exactly 3 for threeColumn).
+          Do not invent data to fill a layout.
         - Vary the composition. Prefer at most two plain bullets slides, never
           consecutive. Prefer no more than about one quarter bands and one sixth
           diagrams; avoid repeating a diagram kind. These are variety preferences,

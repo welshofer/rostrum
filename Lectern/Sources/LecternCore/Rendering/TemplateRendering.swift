@@ -111,7 +111,8 @@ enum TemplateRendering {
         let body = input.body
         var columns = textColumns(input)
         let structure = structuredContent(input)
-        let object: String? = input.kind == .chart ? "chart" : (input.kind == .table ? "tbl" : (structure == nil ? nil : "obj"))
+        let panel = PanelRendering.content(input)
+        let object: String? = input.kind == .chart ? "chart" : (input.kind == .table ? "tbl" : (structure == nil && panel == nil ? nil : "obj"))
         if object != nil { columns = [] }
         let source = object == nil ? "" : [body?.kicker, body?.lead, body?.source, input.kind == .quadrant ? body?.xAxis : nil, input.kind == .quadrant ? body?.yAxis : nil]
             .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
@@ -126,29 +127,33 @@ enum TemplateRendering {
         default: preferred = image == nil ? ["obj", "tx"] : ["picTx", "objTx", "obj"]
         }
         let title = input.title ?? body?.claim ?? body?.quote ?? ""
+        let validateObject: ((Rect, DeckStyle) throws -> Void)?
+        if let panel {
+            validateObject = { frame, style in try PanelLayout.validate(kind: panel.0, items: panel.1, in: frame, style: style, engine: engine) }
+        } else if let structure {
+            validateObject = { frame, style in try StructuredLayout.validate(kind: structure.0, items: structure.1, in: frame, style: style, engine: engine) }
+        } else { validateObject = nil }
         let plan: TemplateSlidePlan
         do {
             plan = try engine.plan(title: title, columns: columns, preferredTypes: preferred, object: object,
-                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, table: input.kind == .table ? body?.table.map { TemplateTableContent(rows: $0.grid) } : nil, validateObject: structure.map { structure in
-                                       { frame, style in try StructuredLayout.validate(kind: structure.0, items: structure.1,
-                                           in: frame, style: style, engine: engine) }
-                                   })
+                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, table: input.kind == .table ? try body?.table.map { try $0.layoutContent() } : nil, validateObject: validateObject)
         } catch {
             // A single-body corporate layout can still express two columns as
             // two headed sections. Preserve every paragraph and report the change.
             guard columns.count > 1 else { throw error }
             columns = [columns.flatMap { $0 }]
             plan = try engine.plan(title: title, columns: columns, preferredTypes: preferred, object: object,
-                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, table: input.kind == .table ? body?.table.map { TemplateTableContent(rows: $0.grid) } : nil, validateObject: structure.map { structure in
-                                       { frame, style in try StructuredLayout.validate(kind: structure.0, items: structure.1,
-                                           in: frame, style: style, engine: engine) }
-                                   })
+                                   picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, table: input.kind == .table ? try body?.table.map { try $0.layoutContent() } : nil, validateObject: validateObject)
             warnings.append("\(title): the template uses one content region; columns were arranged as headed sections.")
         }
         let slide = try engine.compose(plan, title: title, columns: columns)
         if let slot = plan.objectSlot, let objectFrame = plan.objectFrame {
             let style = engine.objectStyle(layout: plan.layout, slot: slot.index)
-            if let structure {
+            if let panel {
+                let shape = try PanelLayout.compose(kind: panel.0, items: panel.1,
+                    in: objectFrame, on: slide, style: style, engine: engine)
+                try slide.replacePlaceholder(index: slot.index, with: shape)
+            } else if let structure {
                 let shape = try StructuredLayout.compose(kind: structure.0, items: structure.1,
                     in: objectFrame, on: slide, style: style, engine: engine)
                 try slide.replacePlaceholder(index: slot.index, with: shape)

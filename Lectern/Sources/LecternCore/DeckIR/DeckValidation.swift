@@ -86,6 +86,8 @@ public struct DeckValidator: Sendable {
                     s.layout = "bullets"
                 }
             case .table where (s.body?.table?.rows ?? []).isEmpty:
+                if let table = s.body?.table,
+                   table.additionalHeaders != nil || table.merges != nil || table.textDirections != nil { break }
                 if s.body?.bullets != nil {
                     warnings.append("slide \"\(s.id)\": table without rows downgraded to bullets")
                     s.layout = "bullets"
@@ -227,10 +229,17 @@ public struct DeckValidator: Sendable {
         case .quadrant:
             // A 2x2 with a hole in it is a different diagram.
             if (body?.quadrants ?? []).count != 4 { return "quadrant requires exactly four quadrants" }
+        case .cards, .threeColumn, .numberedSteps:
+            let panels = body?.panels ?? []
+            let allowed = slide.kind == .threeColumn ? 3...3 : 2...4
+            if !allowed.contains(panels.count) { return "\(slide.layout) requires \(allowed.lowerBound)–\(allowed.upperBound) body.panels" }
+            if panels.contains(where: { $0.heading.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) {
+                return "Every panel requires a heading"
+            }
         case .table:
             guard let table = body?.table else { return "table requires body.table" }
             if table.headers.isEmpty { return "table requires body.table.headers" }
-            if table.rows.isEmpty { return "table requires at least one body row" }
+            if let problem = table.structureProblem { return problem }
         case .title, .sectionHeader, .closing:
             break                                   // all payload fields optional
         case .unknown:

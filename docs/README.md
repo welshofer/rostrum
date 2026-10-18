@@ -13,6 +13,7 @@ not a download of the newest Library Lab results.
 | --- | --- |
 | Install, create a deck, save and reopen it | [Getting started](GETTING-STARTED.md) |
 | Plan tables, fit text, fill a template or paginate | [Layout engine](LAYOUT-ENGINE.md) |
+| Generate cards, columns, numbered steps and structured tables | [Generated layouts](GENERATED-LAYOUTS.md) |
 | Edit slides, charts, images, notes, comments and sections | [Cookbook](COOKBOOK.md) |
 | Register or embed fonts, import slides, render SVG and interpret diagnostics | [Importing and previewing](IMPORTING-AND-PREVIEWING.md) |
 | Pull, build and exercise the libraries through the app | [Lectern](../Lectern/README.md#pull-and-rebuild) |
@@ -34,7 +35,7 @@ not a download of the newest Library Lab results.
 | Native table row planning | `TableLayoutEngine.plan` reports cell geometry and diagnostics without editing the table | [Row layout](TABLE-LAYOUT-20261012.md), [vertical merges](TABLE-VERTICAL-SPANS-20261016.md) |
 | Measured column widths | Choose `TemplateTableContent(rows:columnSizing:)` with `.measured()` and optional constraints | [Column search](TABLE-COLUMNS-20261012.md), [preparation](TABLE-PREPARATION-20261012.md), [fragment reuse](TABLE-SHAPING-20261013.md) |
 | Table pagination and merged cells | `planTablePages` / `composeTablePages` preserve connected row groups, repeated headers, fixed widths and captions | [Pagination](TABLE-PAGINATION-20261012.md), [horizontal spans](TABLE-SPANS-20261012.md), [vertical/rectangular spans](TABLE-ROW-PAGINATION-20261016.md), [multi-row headers](TABLE-REPEATED-HEADERS-20261016.md) |
-| Production tables in Lectern | Generate or recover a table deck; use `CompositionRegression --tables` for offline checks | [Lectern tables](LECTERN-TABLES-20261013.md) |
+| Production tables and layout variety in Lectern | Generate or recover merged/rotated tables with repeated headers, or choose cards, three columns and numbered steps; `test-layouts.sh` exercises them offline | [Usage](GENERATED-LAYOUTS.md), [validation](GENERATED-LAYOUTS-20261017.md), [earlier tables](LECTERN-TABLES-20261013.md) |
 | Shared text-layout reuse | Existing fitting, table measurement and SVG rendering reuse resolved run metrics during line measurement, with fresh checks on each operation | [Preservation and performance](TEXT-LAYOUT-20261017.md) |
 | Table composition reuse | Existing `composeTablePages` calls share resolved template styles within one operation while retaining fresh validation | [Composition profile and comparison](TABLE-COMPOSITION-20261017.md) |
 | Safer font embedding and import | Embed all supplied faces atomically; merge compatible embedded faces during slide import; register separately for measurement | [Font guide](IMPORTING-AND-PREVIEWING.md#embedding-fonts-safely), [embedding checks](FONT-EMBEDDING-20261013.md) |

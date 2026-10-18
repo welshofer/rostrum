@@ -813,8 +813,8 @@ lookup. The existing Templates Lab remains the library API demonstration;
 `CompositionRegression --tables` exercises app generation offline. Saved-file
 checks cover the inspector/exporter, exact ordered rows, section membership,
 recovery comments and identities, and refusal to erase old continuation pages.
-Generated IR does not express merged cells; vertical spans and native table autofit
-remain outside this path. PowerPoint visual acceptance remains a separate check.
+Generated IR now carries rectangular merges, extra header rows and cell directions;
+native table autofit remains outside this path. PowerPoint visual acceptance remains a separate check.
 
 
 ## October 17 rotated table labels
@@ -832,3 +832,15 @@ view/PDF acceptance and app-hosted execution remain separate from portable check
 
 See [the support and validation record](TABLE-ROTATED-TEXT-20261017.md) for the
 post-pull test command and exact-font review generator.
+
+
+## Generated layouts and advanced tables
+
+The offline `generatedLayouts` recipe exercises `PanelLayout.frames`, `validate`
+and `compose`, plus the same table preparation used by production generation.
+It retains cards, three columns, numbered steps and connected merged tables in
+both ratios, saved IR, reopened native structures, Inspect SVGs and export output.
+`CompositionRegression --layouts` exercises the full generation/recovery source
+fixture. The [usage guide](GENERATED-LAYOUTS.md) documents item limits, full-grid
+coordinates, font requirements and the post-pull test script. New native visual
+acceptance is pending; prior table review does not certify these new compositions.

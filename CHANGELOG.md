@@ -6,6 +6,14 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Add measured editable `PanelLayout` cards, three-column panels and numbered
+  steps. Lectern exposes all three through generation, template composition,
+  recovery and the offline Generated layouts Lab. Optional `IRTable` additional
+  headers, merges and cell directions reach production pagination, preserving
+  connected groups and repeated headers. Existing JSON inputs keep their defaults.
+  Run `Lectern/scripts/test-layouts.sh` after pulling for focused checks and a
+  review pack. See [usage and support boundaries](docs/GENERATED-LAYOUTS.md).
+
 - Table measurement reuses exact effective-style bytes and immutable cell-key
   hashes within each operation, retaining fresh font/content checks and bounded
   caches. See the [profile, preservation and Release comparison](docs/TABLE-MEASUREMENT-20261017.md).

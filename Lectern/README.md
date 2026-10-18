@@ -509,9 +509,9 @@ Exports retain the template library, including every used master and layout.
 The generator supplies concise content to `RostrumLayout`. Text occupies inherited
 placeholders; charts and tables are native editable objects. Generated images are
 inserted only when the selected layout offers a picture placeholder. Missing picture
-slots and conversion of structured content to template text produce warnings. Metrics,
-diagrams, timelines, quadrants and bands currently become text within native template
-content regions; they are not reconstructed as native diagrams. Wrapped text uses safe
+slots produce warnings. Metrics, diagrams, timelines, quadrants, bands and the new
+card/column/numbered-step panels become measured, editable shapes and text inside
+native template content regions. They are not native SmartArt objects. Wrapped text uses safe
 space below its placeholder when the template allows flow. Template shrink-to-fit
 settings use native font scaling without replacing inherited fonts. Neither operation
 changes the template's master or layout parts. Content that still cannot fit stops
@@ -589,3 +589,25 @@ swift run -c release --package-path Lectern CompositionRegression /tmp/lectern-t
 The output contains PPTX files, saved content and a read-back manifest. The
 inspector and exporter retain every continuation page. Passing structural checks
 is separate from visual acceptance in PowerPoint for Mac.
+
+
+## Layout variety and advanced generated tables
+
+The generation vocabulary now has 23 layouts, including **cards** (2–4 concepts),
+**threeColumn** (three pillars or alternatives), and **numberedSteps** (2–4 ordered
+steps). Each uses `body.panels: [{ heading, detail }]`. Generation prompts and the
+provider schema include them. Templates keep their original fonts and artwork.
+Oversized panel text refuses with a fitting error; these layouts do not paginate
+or truncate individual panels.
+
+Generated tables accept optional `additionalHeaders`, rectangular `merges`, and
+`textDirections`. Measured pagination repeats every header row and keeps connected
+body groups together. Saved-content recovery retains these fields and remaps
+source coordinates on each continuation. Existing plain table JSON is unchanged.
+See [the contract and examples](../docs/GENERATED-LAYOUTS.md).
+
+After pulling, run `Lectern/scripts/test-layouts.sh` from the repository root.
+It runs focused regressions and writes an offline deck, SVGs, diagnostics and a
+saved-content snapshot without model calls. Append a caller `.potx` or `design.md`
+after the output directory to test your typography. In the app, use Library Lab →
+**Generated layouts and advanced tables** for 4:3 and 16:9 examples.

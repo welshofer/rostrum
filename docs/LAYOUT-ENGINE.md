@@ -24,6 +24,7 @@ and [conformance record](CONFORMANCE.md).
 | `TableLayoutEngine` in `RostrumLayout` | Measure native cell styles and rich text at caller-selected column widths | Returns a read-only row plan and cell issues; no shrinking or pagination |
 | `AuthoredLayoutEngine` in `RostrumLayout` | Check and fit design-authored text regions, then publish a reusable layout | May adjust authored typography and spacing; not used to rewrite imported templates |
 | `StructuredLayout` in `RostrumLayout` | Preflight and compose editable metrics, process, cycle, pyramid, timeline, quadrant and band structures | Adds native shapes and text inside the chosen region |
+| `PanelLayout` in `RostrumLayout` | Measure headed cards, three open columns and numbered rows with caller typography | Refuses overflow before writing native text/shapes; [contract](GENERATED-LAYOUTS.md) |
 | `MeasuredPaginator` in `RostrumLayout` | Partition ordered content according to a caller's actual fit predicate | Returns partitions without dropping or reordering content |
 
 ```mermaid

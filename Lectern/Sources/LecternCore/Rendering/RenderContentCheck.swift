@@ -89,14 +89,53 @@ public struct RenderContentCheck: Sendable, Codable {
                     row.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } + Array(repeating: "", count: width - row.count)
                 }
                 let tables = pages.flatMap(\.tables)
-                let headersMatch = !tables.isEmpty && tables.allSatisfy { $0.rows.first == grid.first }
-                let body = tables.flatMap { $0.rows.dropFirst() }
-                if !headersMatch || body != Array(grid.dropFirst()) {
+                let headersMatch = !tables.isEmpty && tables.allSatisfy { Array($0.rows.prefix(table.headerRowCount)) == Array(grid.prefix(table.headerRowCount)) }
+                let body = tables.flatMap { $0.rows.dropFirst(table.headerRowCount) }
+                if !headersMatch || body != Array(grid.dropFirst(table.headerRowCount)) {
                     result.issues.append("Slide \(slide.id): native table cells changed.")
+                }
+                // Ordinary tables keep their existing read-back behavior. Rich
+                // inputs additionally verify topology and every anchor direction.
+                if table.additionalHeaders != nil || table.merges != nil || table.textDirections != nil {
+                    if try !tableStructureMatches(table, pages: pages, in: presentation) {
+                        result.issues.append("Slide \(slide.id): native table merges or text directions changed.")
+                    }
                 }
             }
         }
         return result
+    }
+
+    private static func tableStructureMatches(_ expected: IRTable, pages: [SlideOutline], in deck: Presentation) throws -> Bool {
+        guard expected.structureProblem == nil else { return false }
+        let grid = try expected.layoutContent().rows
+        var cursor = expected.headerRowCount
+        var found = false
+        for page in pages {
+            for table in try deck.slides[page.number - 1].shapes.all.compactMap({ ($0 as? TableFrame)?.table }) {
+                found = true
+                let count = table.rowCount - expected.headerRowCount
+                guard count > 0, cursor <= grid.count, count <= grid.count - cursor else { return false }
+                let local = expected.page(bodyRows: cursor..<(cursor + count), paddedGrid: grid)
+                let regions = try table.mergedRegions
+                let actualMerges = regions.map { IRTableMerge(row: $0.row, column: $0.column, rowSpan: $0.rowSpan, columnSpan: $0.columnSpan) }
+                func ordered(_ values: [IRTableMerge]) -> [IRTableMerge] {
+                    values.sorted { $0.row == $1.row ? $0.column < $1.column : $0.row < $1.row }
+                }
+                guard ordered(actualMerges) == ordered(local.merges ?? []) else { return false }
+                let directions = Dictionary(grouping: local.textDirections ?? [], by: \.row)
+                for row in local.grid.indices {
+                    for column in local.grid[row].indices {
+                        if let merge = regions.first(where: { row >= $0.row && row < $0.row + $0.rowSpan && column >= $0.column && column < $0.column + $0.columnSpan }),
+                           row != merge.row || column != merge.column { continue }
+                        let direction = directions[row]?.first { $0.column == column }?.direction.native ?? .horizontal
+                        if try table.cell(row, column).textDirection != direction { return false }
+                    }
+                }
+                cursor += count
+            }
+        }
+        return found && cursor == grid.count
     }
 
     private static func words(_ value: String) -> [String] {
@@ -114,7 +153,7 @@ public struct RenderContentCheck: Sendable, Codable {
         else if let array = value as? [Any] {
             for (index, item) in array.enumerated() { collect(item, path: "\(path)[\(index)]", into: &output) }
         } else if let object = value as? [String: Any] {
-            for key in object.keys.sorted() where key != "kind" {
+            for key in object.keys.sorted() where key != "kind" && !(path == "body.table" && key == "textDirections") {
                 collect(object[key]!, path: "\(path).\(key)", into: &output)
             }
         }
