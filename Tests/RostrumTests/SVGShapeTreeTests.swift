@@ -99,6 +99,14 @@ import Testing
         #expect(result.problems.messages.contains { $0.contains("curved connectors") })
     }
 
+    @Test func bentConnectorIsReportedOnceAsAStraightLine() throws {
+        let deck = try Presentation()
+        try append(connector("bentConnector3"), to: deck.slides[0].part)
+        let result = try deck.renderSVGReportingProblems(slideAt: 0)
+        #expect(result.problems.messages == [SlideRenderProblems.bentConnectorMessage])
+        #expect(result.problems.fidelityIssues.map(\.code) == [.unsupportedGeometry])
+    }
+
     @Test func malformedAndDeepGroupsStayBoundedAndExplainMissingContent() throws {
         let deck = try Presentation()
         try append(group(shape(), childWidth: 0), to: deck.slides[0].part)

@@ -438,6 +438,9 @@ public struct TextShaper: Sendable {
     private static func isCommon(_ v: UInt32) -> Bool {
         v < 0x41 || (0x5B...0x60).contains(v) || (0x7B...0xBF).contains(v)
             || (0x2000...0x206F).contains(v) || (0x3000...0x303F).contains(v)
+            // Superscripts, currency, letterlike, arrows, math, technical, box
+            // drawing, geometric shapes, symbols and dingbats: no script shaping.
+            || (0x2070...0x2BFF).contains(v)
             || (0xFF01...0xFF65).contains(v)
     }
 }

@@ -271,14 +271,7 @@ struct InspectorView: View {
         Card(title: "FINDINGS", systemImage: "exclamationmark.triangle") {
             VStack(alignment: .leading, spacing: 10) {
                 if !inspection.previewWarnings.isEmpty {
-                    DisclosureGroup("Preview limitations (\(inspection.previewWarnings.count))") {
-                        Text("These affect Lectern’s preview. The original PowerPoint content is preserved.")
-                            .font(.caption).foregroundStyle(.secondary)
-                        ForEach(inspection.previewWarnings, id: \.self) {
-                            Text($0).font(.caption).foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                    }
+                    PreviewLimitationsView(warnings: inspection.previewWarnings, slideCount: inspection.slideCount)
                 }
                 if !inspection.schemaIssues.isEmpty {
                     DisclosureGroup("\(inspection.schemaIssues.count) schema issue(s)") {

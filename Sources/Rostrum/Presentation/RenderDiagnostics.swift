@@ -165,20 +165,48 @@ final class RenderDiagnosticCollector {
     func text(_ layout: RichTextLayout) {
         for diagnostic in layout.diagnostics {
             switch diagnostic {
-            case .missingGlyph(let scalar):
-                record(.missingGlyph, .missingResource, "No glyph for U+\(String(scalar, radix: 16, uppercase: true)) in the explicit face.")
+            case .missingGlyph:
+                record(.missingGlyph, .missingResource, Self.message(for: diagnostic))
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Unregistered font face:"):
                 record(.missingFont, .missingResource, reason)
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification")
                 || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment")
                 || reason.hasPrefix("Native explicit line spacing") || reason.hasPrefix("Native table")
                 || reason.hasPrefix("Native glyph paint"):
-                record(.unsupportedTextProperty, .approximation, reason)
+                record(.unsupportedTextProperty, .approximation, Self.message(for: diagnostic))
             default:
-                record(.unsupportedShaping, .approximation, String(describing: diagnostic))
+                record(.unsupportedShaping, .approximation, Self.message(for: diagnostic))
             }
         }
         if layout.truncated { record(.textTruncated, .omission, "Text exceeds the preview's 64-line bound.") }
+    }
+
+    /// Reader-facing text for shaping gaps. The diagnostic values themselves
+    /// stay precise for callers; only the preview report is worded here.
+    static func message(for diagnostic: ShapingDiagnostic) -> String {
+        func character(_ scalar: UInt32) -> String {
+            let code = String(format: "U+%04X", scalar)
+            guard let value = Unicode.Scalar(scalar), !value.properties.isWhitespace,
+                  value.properties.generalCategory != .control, value.properties.generalCategory != .format
+            else { return code }
+            return "‘\(Character(value))’ (\(code))"
+        }
+        switch diagnostic {
+        case .unsupportedScript(let scalar):
+            return "Preview positions \(character(scalar)) approximately; this script is not shaped natively."
+        case .unsupportedBidirectionalControl(let scalar):
+            return "Preview ignores the bidirectional control \(character(scalar))."
+        case .unsupportedCombiningSequence:
+            return "Preview positions combining marks approximately."
+        case .missingGlyph(let scalar):
+            return "No glyph for \(character(scalar)) in the explicit face."
+        case .invalidPointSize:
+            return "Text with an invalid point size is measured approximately."
+        case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Native advance rounding"):
+            return "Preview spaces text containing non-ASCII characters approximately."
+        case .unsupportedLayoutFeature(let reason):
+            return reason.hasSuffix(".") ? reason : reason + "."
+        }
     }
 
     /// Inspect only the shapes selected for rendering, not hidden placeholders.
@@ -224,7 +252,12 @@ final class RenderDiagnosticCollector {
                 }
             case "a:prstGeom":
                 let preset = element[attribute: "prst"] ?? "rect"
-                if !SVGPresetGeometry.supported.contains(preset) && !["line", "straightConnector1"].contains(preset) {
+                if currentShape.name == "p:cxnSp" {
+                    // Connectors are stroked between their frame corners, never filled.
+                    if !["line", "straightConnector1"].contains(preset) {
+                        issue(.unsupportedGeometry, .approximation, SlideRenderProblems.bentConnectorMessage)
+                    }
+                } else if !SVGPresetGeometry.supported.contains(preset) && !["line", "straightConnector1"].contains(preset) {
                     issue(.unsupportedGeometry, .approximation, "Preset \(preset) is approximated by a rectangle.")
                 } else if element.firstChild(named: "a:avLst")?.children(named: "a:gd").contains(where: { guide in
                     let formula = (guide[attribute: "fmla"] ?? "").split(whereSeparator: \.isWhitespace)

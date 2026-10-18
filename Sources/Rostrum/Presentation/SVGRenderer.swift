@@ -282,7 +282,7 @@ struct SVGRenderer {
         let width = max(1, line?.coordinate("w") ?? 12700)
         let preset = properties.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "line"
         if preset != "line" && preset != "straightConnector1" {
-            problems.record("Preview approximates bent or curved connectors with straight lines.")
+            problems.record(SlideRenderProblems.bentConnectorMessage)
         }
         var attrs = "stroke=\"\(color)\" stroke-width=\"\(width)\" fill=\"none\""
         if let dash = line?.firstChild(named: "a:prstDash")?[attribute: "val"], dash != "solid" {
@@ -1840,8 +1840,10 @@ public struct SlideRenderProblems: Sendable, Equatable {
     public var messages: [String] {
         (layoutUnresolved ? ["Preview could not load the slide layout."] : [])
         + (masterUnresolved ? ["Preview could not load the slide master."] : [])
-        + unsupportedContent + Array(Set(fidelityIssues.map(\.message))).sorted()
+        + unsupportedContent + Set(fidelityIssues.map(\.message)).subtracting(unsupportedContent).sorted()
     }
+
+    static let bentConnectorMessage = "Preview approximates bent or curved connectors with straight lines."
 
     /// No detected problems; not a guarantee of PowerPoint rendering equivalence.
     public var isEmpty: Bool { messages.isEmpty && fidelityIssues.isEmpty }
