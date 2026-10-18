@@ -4,7 +4,7 @@ import Rostrum
 @testable import LecternCore
 
 @Suite struct PlatformLabRecipesTests {
-    private static let ids: [LibraryDemoID] = [.imageOwners, .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tableJoinProfiles, .partialTableStyles, .tableTransitions, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering]
+    private static let ids: [LibraryDemoID] = [.imageOwners, .generatedLayouts, .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tableJoinProfiles, .partialTableStyles, .tableTransitions, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering]
 
     @Test(arguments: ids, [false, true])
     func everyRecipeExecutesSerializesAndVerifies(id: LibraryDemoID, alternative: Bool) throws {
@@ -21,7 +21,11 @@ import Rostrum
         #expect(try reopened.serializedData() == bytes)
         let issues = try reopened.validate()
         #expect(issues.isEmpty, "\(id.rawValue): \(issues)")
-        #expect(draft.before != nil && draft.before != bytes)
+        if id == .generatedLayouts {
+            #expect(draft.before == nil) // This recipe authors a new deck from saved content.
+        } else {
+            #expect(draft.before != nil && draft.before != bytes)
+        }
         for (name, data) in draft.extraFiles {
             #expect(!name.contains("/") && !name.contains("\\") && !data.isEmpty)
             if name.hasSuffix(".potx") { #expect(try Presentation(data: data).documentKind == .template) }

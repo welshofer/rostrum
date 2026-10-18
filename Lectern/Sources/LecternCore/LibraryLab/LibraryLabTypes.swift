@@ -7,7 +7,7 @@ public enum LibraryDemoID: String, CaseIterable, Codable, Sendable, Identifiable
     case imageOwners, slides, layouts, importedFidelity, shapes, fillsAndLines, text, fontsAndFitting, paragraphLayout, listMarkers, textAlignment, mixedFaceSpacing, tabLayout, pictures
     case tableStructure, tableStyles, tableAppearance, tableDefaults, tableJoinProfiles, partialTableStyles, tableTransitions, charts, chartEditing, chartCacheRepair, smartArt
     case notes, comments, sections, slideImport, theme, templates, design
-    case mediaAndAttachments, package, extractionAndRendering
+    case mediaAndAttachments, package, extractionAndRendering, generatedLayouts
     public var id: String { rawValue }
 }
 

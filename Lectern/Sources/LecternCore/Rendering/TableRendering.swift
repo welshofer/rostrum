@@ -38,9 +38,8 @@ enum TableRendering {
                 result.deck.slides.append(original); continue
             }
             // Retain ragged input cells, including values beyond the headers.
-            let width = table.grid.map(\.count).max() ?? 0
-            let rows = table.grid.map { $0 + Array(repeating: "", count: width - $0.count) }
-            let content = TemplateTableContent(rows: rows, columnSizing: .measured())
+            let content = try table.layoutContent()
+            let rows = content.rows
             let title = original.title ?? ""
             let caption = [original.body?.kicker, original.body?.lead, original.body?.source]
                 .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
@@ -64,7 +63,7 @@ enum TableRendering {
             for (index, page) in pagination.pages.enumerated() {
                 var slide = original
                 if index > 0 { slide.id = uniqueID(original.id + "-continued-\(index + 1)") }
-                slide.body?.table = IRTable(headers: rows[0], rows: page.bodyRows.map { rows[$0] })
+                slide.body?.table = table.page(bodyRows: page.bodyRows, paddedGrid: rows)
                 if spilledCaption != nil {
                     slide.body?.kicker = nil; slide.body?.lead = nil
                     slide.body?.source = pagination.caption

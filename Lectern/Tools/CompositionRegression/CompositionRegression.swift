@@ -49,7 +49,7 @@ import LecternCore
     static func run() async throws {
         let args = Array(CommandLine.arguments.dropFirst())
         guard let output = args.first else {
-            throw Failure.usage("Usage: CompositionRegression OUTPUT [template.potx | design.md ...] [--tables | --replay deck.json]")
+            throw Failure.usage("Usage: CompositionRegression OUTPUT [template.potx | design.md ...] [--tables | --layouts | --replay deck.json]")
         }
         let root = URL(fileURLWithPath: output)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
@@ -58,6 +58,8 @@ import LecternCore
         while i < args.count {
             if args[i] == "--tables" {
                 deck = tableFixture(); images = [:]; i += 1
+            } else if args[i] == "--layouts" {
+                deck = LibraryLab.generatedLayoutExample(); images = [:]; i += 1
             } else if args[i] == "--replay" {
                 guard i + 1 < args.count else { throw Failure.usage("--replay requires a saved-content file") }
                 let data = try Data(contentsOf: URL(fileURLWithPath: args[i + 1]))

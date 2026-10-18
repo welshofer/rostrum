@@ -194,7 +194,7 @@ public enum LibraryLab {
             try DrawingLabRecipes.make(id, options: options)
         case .slides, .charts, .chartEditing, .chartCacheRepair, .smartArt, .notes, .comments, .sections, .slideImport:
             try DocumentLabRecipes.make(id, options: options)
-        case .imageOwners, .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tableJoinProfiles, .partialTableStyles, .tableTransitions, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering:
+        case .generatedLayouts, .imageOwners, .layouts, .fontsAndFitting, .paragraphLayout, .listMarkers, .textAlignment, .mixedFaceSpacing, .tableDefaults, .tableJoinProfiles, .partialTableStyles, .tableTransitions, .tabLayout, .theme, .templates, .design, .mediaAndAttachments, .package, .extractionAndRendering:
             try PlatformLabRecipes.make(id, options: options)
         }
     }

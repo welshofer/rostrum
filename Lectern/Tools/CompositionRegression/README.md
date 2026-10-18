@@ -110,3 +110,12 @@ Append a POTX or design.md path to retain its fonts and styling. The saved-conte
 check concatenates body rows from every native table in the original slide group,
 requires the exact repeated header on each page, and rejects reordered, duplicated
 or missing cells. Source-note pages follow the table group and retain sections.
+
+## Layout variety and advanced tables
+
+`CompositionRegression OUTPUT --layouts [template.potx | design.md ...]` uses
+`LibraryLab.generatedLayoutExample()` to exercise cards, three-column panels,
+numbered steps and a paginated native table with merged cells, two header rows
+and rotated text. Run `Lectern/scripts/test-layouts.sh` from the repository root
+for the focused tests and a normal Release review pack. See the
+[content contract and review workflow](../../../docs/GENERATED-LAYOUTS.md).

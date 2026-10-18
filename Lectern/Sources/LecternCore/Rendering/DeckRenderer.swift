@@ -758,6 +758,8 @@ public actor DeckRenderer {
                 }
             }
             return try deck.bulletSlide(title, flatten(body?.bullets ?? []))
+        case .cards, .threeColumn, .numberedSteps:
+            return try PanelRendering.build(slide, in: deck)
         case .timeline:
             if let milestones = body?.milestones, !milestones.isEmpty {
                 Self.noteOverflow(milestones.count, cap: SlideCapacity.timeline,

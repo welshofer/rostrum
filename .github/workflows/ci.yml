@@ -47,12 +47,14 @@ jobs:
           echo "$RUNNER_TEMP/oracles/bin" >> "$GITHUB_PATH"
       - name: Require oracle dependencies
         run: python3 Tools/conformance/check_dependencies.py
+      - name: Verify test failure annotations
+        run: python3 -m unittest discover -s scripts/tests -p test_ci_test.py
       - name: Swift version
         run: swift --version
       - name: Build
         run: swift build -v
       - name: Test
-        run: swift test
+        run: python3 scripts/ci-test.py swift test
         # The Swift 6.0 toolchain's bundled swift-testing can't compile some
         # `#require` expressions on optional-chained values, so the full suite
         # runs on 6.1+. The Build step above still proves the library itself
@@ -68,7 +70,7 @@ jobs:
             PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
         if: matrix.swift != '6.0'
       - name: Check optimized text preparation
-        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|NativeGlyphPlacementTests|ParagraphJustificationTests|TabLayoutTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|TableVerticalSpanTests|TableVerticalPaginationTests|TableRepeatedHeaderTests|RotatedTableLayoutTests|MeasuredPaginatorTests'
+        run: python3 scripts/ci-test.py swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|NativeGlyphPlacementTests|ParagraphJustificationTests|TabLayoutTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|TableVerticalSpanTests|TableVerticalPaginationTests|TableRepeatedHeaderTests|RotatedTableLayoutTests|PanelLayoutTests|AdvancedTableIRTests|MeasuredPaginatorTests'
         if: matrix.swift != '6.0'
       - name: Retain fidelity evidence
         uses: actions/upload-artifact@v4
@@ -78,8 +80,7 @@ jobs:
           path: .build/fidelity-checks/
           include-hidden-files: true
       - name: Test LecternCore (sample app core)
-        run: swift test
-        working-directory: Lectern
+        run: python3 scripts/ci-test.py swift test --package-path Lectern
         if: matrix.swift != '6.0'
       # Was on the macOS job. It builds and runs library code, so it belongs
       # anywhere the library builds — and losing it would let the README's
@@ -107,10 +108,16 @@ jobs:
           echo "$RUNNER_TEMP/oracles/bin" >> "$GITHUB_PATH"
       - name: Require oracle dependencies
         run: python3 Tools/conformance/check_dependencies.py
+      - name: Verify test failure annotations
+        run: python3 -m unittest discover -s scripts/tests -p test_ci_test.py
       - name: Swift version
         run: swift --version
+      - name: Check generated layouts on Apple text measurement
+        run: python3 scripts/ci-test.py swift test --package-path Lectern --filter GeneratedLayoutTests
+      - name: Test LecternCore (CoreText/CoreGraphics half included)
+        run: python3 scripts/ci-test.py swift test --package-path Lectern
       - name: Test Rostrum (Darwin XML branch)
-        run: swift test
+        run: python3 scripts/ci-test.py swift test
       - name: Check native text/table pack (portable checks only)
         run: |
           swift build --product native-fidelity
@@ -118,7 +125,7 @@ jobs:
           ROSTRUM_LECTERN_INSPECTION_BINARY="$PWD/Lectern/.build/debug/InspectionRegression" \
             PYTHONDONTWRITEBYTECODE=1 python3 Tools/native-fidelity/test_pack.py
       - name: Check optimized text preparation
-        run: swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|NativeGlyphPlacementTests|ParagraphJustificationTests|TabLayoutTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|TableVerticalSpanTests|TableVerticalPaginationTests|TableRepeatedHeaderTests|RotatedTableLayoutTests|MeasuredPaginatorTests'
+        run: python3 scripts/ci-test.py swift test -c release --filter 'PreparedRichTextTests|TextShaperTests|NativeGlyphPlacementTests|ParagraphJustificationTests|TabLayoutTests|TableLayoutEngineTests|TemplateTablePaginationTests|TableColumnSizingTests|TableCellPreparationTests|TableHorizontalSpanTests|TableVerticalSpanTests|TableVerticalPaginationTests|TableRepeatedHeaderTests|RotatedTableLayoutTests|PanelLayoutTests|AdvancedTableIRTests|MeasuredPaginatorTests'
       - name: Check portable fidelity references
         run: bash scripts/check-fidelity.sh
       - name: Retain fidelity evidence
@@ -130,9 +137,6 @@ jobs:
           include-hidden-files: true
       - name: Build and validate the Horseshoe Curve worked example
         run: swift run --package-path Examples/HorseshoeCurve/Builder HorseshoeDeck
-      - name: Test LecternCore (CoreText/CoreGraphics half included)
-        run: swift test
-        working-directory: Lectern
       - name: Build the Lectern app (compiled by nothing else)
         run: |
           brew install xcodegen

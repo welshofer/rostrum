@@ -356,3 +356,21 @@ deck hashes and the limits of the pack-level review.
 
 [Measurements and validation](docs/TABLE-MEASUREMENT-20261017.md) retain the full
 comparison. Required Linux and Apple PR checks must pass before merging.
+
+
+## Generated table integration and layout variety (2026-10-17)
+
+- [x] Extend DeckIR with optional additional header rows, rectangular merges and
+  cell directions; retain plain-input defaults and reject lossy metadata.
+- [x] Preserve full-grid coordinates through page splitting, recovery and read-back.
+- [x] Add measured editable cards, three-column panels and numbered steps to the
+  generation vocabulary, provider schema and template/authored rendering paths.
+- [x] Add an offline Lab recipe in both ratios and a post-pull review script.
+- [x] Complete output-preservation/CPU/elapsed/RSS controls and the full portable gate.
+- [ ] Review the new compositions in PowerPoint; retain slide-view/export evidence.
+
+Required Linux and Apple PR checks gate the merge; their outcome is recorded
+on the PR. See [the usage contract](docs/GENERATED-LAYOUTS.md) and
+[measurements](docs/GENERATED-LAYOUTS-20261017.md). Plain inputs keep their prior
+output; the new layouts are explicitly selected rather than silently reassigning
+existing slides. Native PowerPoint review and native timing remain separate.

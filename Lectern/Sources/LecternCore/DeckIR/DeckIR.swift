@@ -27,7 +27,7 @@ extension SlideLayoutKind {
         // metrics, stacked bands, a diagram. Narrowing any of these breaks the
         // layout rather than reflowing it.
         case .twoColumn, .comparison, .chart, .metrics, .bands, .diagram, .table,
-             .timeline, .quadrant, .callout, .unknown:
+             .timeline, .quadrant, .callout, .cards, .threeColumn, .numberedSteps, .unknown:
             return .none
         }
     }

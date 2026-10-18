@@ -19,17 +19,18 @@ Rostrum adds capabilities outside python-pptx's current scope: slide
 creation and text extraction, **deck merge**, **theme / brand-kit editing**,
 and lossless byte-identical round-trips of the parts you don't touch.
 
-## Two libraries, one document model
+## Libraries with one document model
 
 | Product | Use it for |
 | --- | --- |
 | **`Rostrum`** | Read and save PowerPoint packages; edit slides, tables, images, notes, comments and sections; register fonts; fit rich text; render SVG previews with diagnostics. |
+| **`LecternIR`** | Share the versioned generation contract between consumers; encode semantic slide content and optional native table structure. |
 | **`RostrumLayout`** | Select native template layouts, measure and fill inherited placeholders, compose editable structured content, finish authored slides and paginate without dropping content. Depends on `Rostrum`. |
 
-Both products ship in the same Swift package. The portable libraries use
+All three products ship in the same Swift package. The portable libraries use
 Foundation and have no external package dependencies. The companion
 [Lectern app](Lectern/README.md) demonstrates the libraries on macOS and iOS;
-its **34 offline Library Lab demos** save PowerPoint decks you can inspect.
+its **36 offline Library Lab demos** save PowerPoint decks you can inspect.
 
 Start with [Getting started](docs/GETTING-STARTED.md) for installation, file I/O,
 tables, templates and preview diagnostics. See [Layout engine](docs/LAYOUT-ENGINE.md)
@@ -42,6 +43,10 @@ The following enhancements are on `main` after **1.0.0**. Use a reviewed commit
 revision or the development branch to adopt them; the 1.0 demo download below
 remains a snapshot of that release.
 
+- **More generated layouts:** Lectern offers cards, three-column panels and numbered
+  steps, backed by measured editable `PanelLayout` compositions. Generated tables
+  carry merged cells, multiple repeated headers and 90°/270° labels through
+  saving, recovery and Inspect. See [usage and offline review](docs/GENERATED-LAYOUTS.md).
 - **Measured native tables:** plan row heights from actual cell typography and
   padding, search for column widths, and paginate complete rows with repeated
   headers, stable widths, captions and connected groups of merged rows.
