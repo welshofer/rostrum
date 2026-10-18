@@ -112,6 +112,8 @@ jobs:
         run: python3 -m unittest discover -s scripts/tests -p test_ci_test.py
       - name: Swift version
         run: swift --version
+      - name: Check generated layouts on Apple text measurement
+        run: python3 scripts/ci-test.py swift test --package-path Lectern --filter GeneratedLayoutTests
       - name: Test LecternCore (CoreText/CoreGraphics half included)
         run: python3 scripts/ci-test.py swift test --package-path Lectern
       - name: Test Rostrum (Darwin XML branch)
