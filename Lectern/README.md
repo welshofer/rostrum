@@ -597,8 +597,11 @@ The generation vocabulary now has 23 layouts, including **cards** (2–4 concept
 **threeColumn** (three pillars or alternatives), and **numberedSteps** (2–4 ordered
 steps). Each uses `body.panels: [{ heading, detail }]`. Generation prompts and the
 provider schema include them. Templates keep their original fonts and artwork.
-Oversized panel text refuses with a fitting error; these layouts do not paginate
-or truncate individual panels.
+The strict library panel composer refuses overflow; Lectern reflows it automatically:
+four cards first try two roomier card slides, then full-width headed text and
+measured continuations when needed. Exact detail text, original step numbers,
+notes and sections survive. Saved-content recovery uses the same path without
+another model request; the post-pull layout script includes a crowded-panel pack.
 
 Generated tables accept optional `additionalHeaders`, rectangular `merges`, and
 `textDirections`. Measured pagination repeats every header row and keeps connected

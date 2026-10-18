@@ -286,7 +286,7 @@ public actor DeckRenderer {
             var layoutWarnings: [String] = []
             let templateEngine = TemplateLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
             var deck = try PipelineTrace.measure("layout.templatePreparation") {
-                try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine) } ?? deck
+                try template.map { try TemplateRendering.prepare(deck, in: presentation, template: $0, warnings: &layoutWarnings, engine: templateEngine, layoutVariants: layoutVariants) } ?? deck
             }
             let tables = try PipelineTrace.measure("layout.tables") {
                 try TableRendering.prepare(deck, engine: templateEngine,
@@ -401,7 +401,7 @@ public actor DeckRenderer {
                 }
                 let engine = AuthoredLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
                 for (index, slide) in presentation.slides.enumerated() {
-                    try engine.finish(slide, layoutName: "Lectern — \(deck.slides[index].layout) \(index + 1)")
+                    try AuthoredFurniture.finish(slide, layoutName: "Lectern — \(deck.slides[index].layout) \(index + 1)", engine: engine)
                 }
             }
             composition?.end()

@@ -374,3 +374,21 @@ on the PR. See [the usage contract](docs/GENERATED-LAYOUTS.md) and
 [measurements](docs/GENERATED-LAYOUTS-20261017.md). Plain inputs keep their prior
 output; the new layouts are explicitly selected rather than silently reassigning
 existing slides. Native PowerPoint review and native timing remain separate.
+
+## Crowded-panel generation recovery (2026-10-18)
+
+The first real design-style run exposed a missing connection: one oversized card
+aborted the deck because the new panel layouts bypassed authored pagination.
+
+- [x] Reproduce the failure class with a synthetic, offline “Graduate costs” fixture.
+- [x] Try roomier card pages, then measured full-width headed continuations in both
+  design and template rendering; retain exact words and original step numbers.
+- [x] Exercise saved-content rebuilding and continuation recovery, notes, sections,
+  comments, untouched neighbors, template parts, determinism and saved Inspect.
+- [x] Complete Release preservation/resource controls and the full portable gate.
+- [ ] Confirm the user's recovered deck in Lectern and PowerPoint for Mac.
+
+The offline `Lectern/scripts/test-layouts.sh` now includes crowded panels.
+Recovery uses saved content without spending another model request.
+Required Linux and Apple PR checks gate the merge; their outcome is recorded
+on the PR. See [the validation report](docs/PANEL-REFLOW-20261018.md).

@@ -74,6 +74,12 @@ slide at body-text size. This intentionally permits more output slides than the
 input IR; warnings explain each expansion. Template output retains its separate
 template-aware composition path.
 
+Crowded cards, three-column panels and numbered steps now reflow in both design
+and template paths. `Lectern/scripts/test-layouts.sh` includes a deliberately dense
+panel pack. Check repeated headings with split details and stable step numbers;
+the original panel composer still rejects overflow, while Lectern chooses measured
+continuations. Supplied template artwork and styles remain owned by the template.
+
 For saved-content replay, check every original fact, chart label, image and source
 in the output, and check that continuation pages stay in the correct section.
 Recovery must retain all pages and existing comments. Page-count reduction during

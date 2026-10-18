@@ -19,7 +19,8 @@ enum AuthoredPagination {
         var usedIDs = Set(input.slides.map(\.id)), additions: [String: [String]] = [:]
         for original in input.slides {
             try Task.checkCancellation()
-            let supported = [.bullets, .imageLeft, .imageRight, .agenda, .twoColumn, .comparison].contains(original.kind)
+            let panel = PanelRendering.content(original) != nil
+            let supported = panel || [.bullets, .imageLeft, .imageRight, .agenda, .twoColumn, .comparison].contains(original.kind)
             let hasImage = images[original.id] != nil
             guard supported, try !fits(original, hasImage) else {
                 result.deck.slides.append(original); continue
@@ -30,7 +31,9 @@ enum AuthoredPagination {
             var lines = [base.body?.lead].compactMap { $0 }.filter { !$0.isEmpty }
             base.body?.lead = nil
             var pages: [IRSlide] = []
-            if original.kind == .comparison || original.kind == .twoColumn {
+            if panel {
+                pages = try PanelPagination.reflow(original) { try fits($0, hasImage) }
+            } else if original.kind == .comparison || original.kind == .twoColumn {
                 let left = original.body?.left ?? Column(heading: "", bullets: [])
                 let right = original.body?.right ?? Column(heading: "", bullets: [])
                 // Keep each column's heading attached to its content; the IR
@@ -111,7 +114,9 @@ enum AuthoredPagination {
                 // consume another line and invalidate the successful fit.
                 result.deck.slides.append(pages[index])
             }
-            result.warnings.append("\(original.title ?? "Slide"): content flows across \(pages.count) slides to keep it readable.")
+            result.warnings.append(panel
+                ? "\(original.title ?? "Slide"): crowded panels were reflowed across \(pages.count) slides to keep all text readable."
+                : "\(original.title ?? "Slide"): content flows across \(pages.count) slides to keep it readable.")
         }
         result.deck.sections = input.sections?.map { section in
             var section = section
