@@ -26,11 +26,12 @@ enum TemplateRendering {
         #endif
     }
 
-    /// Expand a chart slide only when its complete caption cannot coexist with
-    /// a readable chart in any supplied layout. Retain all text visibly on
-    /// following template slides instead of discarding it or failing the deck.
+    /// Reflow crowded panels and chart captions into supplied template layouts.
+    /// Fit decisions use the same plans as final composition, without allocating
+    /// probe slides or modifying the template's parts and relationships.
     static func prepare(_ input: DeckIR, in deck: Presentation, template: PowerPointTemplate,
-                        warnings: inout [String], engine: TemplateLayoutEngine? = nil) throws -> DeckIR {
+                        warnings: inout [String], engine: TemplateLayoutEngine? = nil,
+                        layoutVariants: [String: Int] = [:]) throws -> DeckIR {
         let engine = engine ?? TemplateLayoutEngine(presentation: deck, measure: measurer)
         var output = input
         output.slides = []
@@ -38,6 +39,45 @@ enum TemplateRendering {
         var expansions: [String: [String]] = [:]
         for slide in input.slides {
             try Task.checkCancellation()
+            if PanelRendering.content(slide) != nil {
+                func fits(_ candidate: IRSlide) throws -> Bool {
+                    try Task.checkCancellation()
+                    do {
+                        let requested = layoutVariants[slide.id] ?? 0
+                        // Recovery applies its choice to the original page;
+                        // newly allocated continuations use the best-fit variant.
+                        for variant in requested == 0 ? [0] : [requested, 0] {
+                            let planned = try plan(candidate, template: template, image: nil, engine: engine,
+                                                   variant: variant).slide
+                            // These are overflow continuations: keep the template's
+                            // existing body scale instead of packing more panels in
+                            // by invoking another round of normal autofit.
+                            if candidate.kind == .bullets {
+                                for slot in planned.textSlots {
+                                    let body = planned.layout.textDefaults(for: slot.index).body
+                                    let stored = Int(body.firstChild(named: "a:normAutofit")?[attribute: "fontScale"] ?? "100000") ?? 100000
+                                    let scale = Double(min(100000, max(100, stored))) / 100000
+                                    if let fit = planned.textFits[slot.index], fit.fontScale + 0.000001 < scale { return false }
+                                }
+                            }
+                        }
+                        return true
+                    } catch is LayoutError { return false }
+                }
+                if try fits(slide) { output.slides.append(slide); continue }
+                var pages = try PanelPagination.reflow(slide, fits: fits)
+                for index in pages.indices {
+                    if index > 0 {
+                        var id = slide.id + "-continued-\(index + 1)"
+                        while usedIDs.contains(id) { id += "-next" }
+                        usedIDs.insert(id); pages[index].id = id
+                        expansions[slide.id, default: []].append(id)
+                    }
+                    output.slides.append(pages[index])
+                }
+                warnings.append("\(slide.title ?? "Slide"): crowded panels were reflowed across \(pages.count) template slides to keep all text readable.")
+                continue
+            }
             guard slide.kind == .chart,
                   let body = slide.body else { output.slides.append(slide); continue }
             let source = [body.kicker, body.lead, body.source].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
@@ -105,17 +145,23 @@ enum TemplateRendering {
         return output
     }
 
-    static func build(_ input: IRSlide, in deck: Presentation, template: PowerPointTemplate,
-                      image: Data?, warnings: inout [String], engine: TemplateLayoutEngine? = nil, variant: Int = 0) throws -> Slide {
-        let engine = engine ?? TemplateLayoutEngine(presentation: deck, measure: measurer)
+    private static func objectCaption(_ input: IRSlide) -> String {
+        let body = input.body
+        return [body?.kicker, body?.lead, body?.source, input.kind == .quadrant ? body?.xAxis : nil, input.kind == .quadrant ? body?.yAxis : nil]
+            .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
+    }
+
+    private static func plan(_ input: IRSlide, template: PowerPointTemplate, image: Data?,
+                             engine: TemplateLayoutEngine, variant: Int) throws
+        -> (slide: TemplateSlidePlan, columns: [[LayoutParagraph]], warnings: [String]) {
+        var warnings: [String] = []
         let body = input.body
         var columns = textColumns(input)
         let structure = structuredContent(input)
         let panel = PanelRendering.content(input)
         let object: String? = input.kind == .chart ? "chart" : (input.kind == .table ? "tbl" : (structure == nil && panel == nil ? nil : "obj"))
         if object != nil { columns = [] }
-        let source = object == nil ? "" : [body?.kicker, body?.lead, body?.source, input.kind == .quadrant ? body?.xAxis : nil, input.kind == .quadrant ? body?.yAxis : nil]
-            .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
+        let source = object == nil ? "" : objectCaption(input)
         let minimumObjectHeight = input.kind == .table ? max(144, Double(body?.table?.grid.count ?? 0) * 24) : 144
         let preferred: [String]
         switch input.kind {
@@ -146,6 +192,20 @@ enum TemplateRendering {
                                    picture: image != nil, masterURI: template.selectedMasterID, objectCaption: source, minimumObjectHeight: minimumObjectHeight, imageAspect: image.flatMap { ImageSniffer.sniff($0) }.map { Double($0.pixelWidth) / Double($0.pixelHeight) }, variant: variant, table: input.kind == .table ? try body?.table.map { try $0.layoutContent() } : nil, validateObject: validateObject)
             warnings.append("\(title): the template uses one content region; columns were arranged as headed sections.")
         }
+        return (plan, columns, warnings)
+    }
+
+    static func build(_ input: IRSlide, in deck: Presentation, template: PowerPointTemplate,
+                      image: Data?, warnings: inout [String], engine: TemplateLayoutEngine? = nil, variant: Int = 0) throws -> Slide {
+        let engine = engine ?? TemplateLayoutEngine(presentation: deck, measure: measurer)
+        let planned = try plan(input, template: template, image: image, engine: engine, variant: variant)
+        warnings += planned.warnings
+        let plan = planned.slide, columns = planned.columns
+        let body = input.body
+        let title = input.title ?? body?.claim ?? body?.quote ?? ""
+        let source = objectCaption(input)
+        let panel = PanelRendering.content(input)
+        let structure = structuredContent(input)
         let slide = try engine.compose(plan, title: title, columns: columns)
         if let slot = plan.objectSlot, let objectFrame = plan.objectFrame {
             let style = engine.objectStyle(layout: plan.layout, slot: slot.index)

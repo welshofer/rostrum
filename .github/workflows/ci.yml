@@ -113,7 +113,7 @@ jobs:
       - name: Swift version
         run: swift --version
       - name: Check generated layouts on Apple text measurement
-        run: python3 scripts/ci-test.py swift test --package-path Lectern --filter GeneratedLayoutTests
+        run: python3 scripts/ci-test.py swift test --package-path Lectern --filter 'GeneratedLayoutTests|PanelPaginationTests|PanelTemplateScaleTests|AuthoredFurnitureTests'
       - name: Test LecternCore (CoreText/CoreGraphics half included)
         run: python3 scripts/ci-test.py swift test --package-path Lectern
       - name: Test Rostrum (Darwin XML branch)

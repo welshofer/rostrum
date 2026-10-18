@@ -34,10 +34,19 @@ Choose layouts for the content, not to meet a variety quota. Existing slides kee
 their selected layouts. These new compositions do not accept image briefs. Their
 headings and details remain native editable text, with caller-selected typefaces.
 `PanelLayout` uses 22-point headings and 18-point details scaled to canvas height;
-it measures complete text before writing shapes. Oversized panels refuse with a
-fitting error: they do not truncate, paginate, or silently shrink. A supplied
-template must offer a compatible object region. Masters, layouts and artwork
-remain unchanged.
+it measures complete text before writing shapes. The library's strict panel
+composer reports content that cannot fit. Lectern handles that result: four
+crowded cards first try two roomier card slides; otherwise panels flow into
+full-width headed text, with measured continuation pages as needed. Long details
+retain their headings on each page, and numbered steps keep their original
+numbers. Leads and sources can flow too. No model call or summarization is involved.
+Already-fitting arrangements stay unchanged. A supplied template provides the
+text layouts for reflow; its masters, layouts and artwork remain unchanged.
+Template continuations retain the existing body-text scale instead of applying
+additional shrink-to-fit. Rejected generated slide-number fields receive explicit
+single-line spacing so a design's caption spacing cannot abort a completed deck.
+An impossible headline or a template with no readable text region can still
+report a fitting error.
 
 Applications can use `PanelKind`, `StructuredItem` and `PanelLayout.frames`,
 `validate` and `compose` directly in `RostrumLayout`. Pass the same
@@ -106,6 +115,22 @@ directory must be new. To use your own template or design:
 
 ```sh
 Lectern/scripts/test-layouts.sh /tmp/lectern-layout-review /path/to/brand.potx
+```
+
+The `crowded-panels` subdirectory contains deliberately dense cards, columns and
+steps that previously stopped the whole deck. Check continuation order, headings,
+step numbers and sources along with the ordinary layout pack.
+
+If an earlier build rejected your deck, rebuild Lectern and use **Recover Saved
+Content…** to open its saved content. Recovery uses the corrected renderer without
+another generation request. Keep the `render-session-*.json` when available: it
+also retains the design, images and template. The `rejected-draft-*.json` retains
+the text and can be rendered with a selected design or template. A command-line
+replay of that raw draft is also available:
+
+```sh
+swift run -c release --package-path Lectern CompositionRegression \
+  /tmp/lectern-recovered --replay /path/to/rejected-draft.json /path/to/design.md
 ```
 
 The lower-level runner is `CompositionRegression OUTPUT --layouts`. The fixture
