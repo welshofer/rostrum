@@ -68,7 +68,7 @@ import Testing
                 let x = direction == "horz" ? 10 * EMU.perPoint : 0
                 let y = (localBaseline + (direction == "horz" ? 20 : 0)) * EMU.perPoint
                 #expect(text[attribute: "transform"] == "translate(\(x),\(y)) scale(12700)")
-                #expect(result.problems.fidelityIssues.map(\.code) == [.unsupportedTextProperty, .unsupportedTextProperty, .missingFont, .viewerFontDependency])
+                #expect(result.problems.fidelityIssues.map(\.code) == [.unsupportedTextProperty, .unverifiedTextLayout, .missingFont, .viewerFontDependency])
                 #expect(try deck.serializedData() == before)
             }
         }

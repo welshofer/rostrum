@@ -85,9 +85,10 @@ struct DeckPreviews {
             try InspectionFonts.families(in: presentation, explicit: explicitFonts)
         }
         _ = PipelineTrace.measure("preview.installedFonts") {
-            InstalledFonts.register(in: presentation, families: families + ["Arial"])
+            InstalledFonts.register(in: presentation, families: families + ["Arial", "Apple Symbols"])
         }
         presentation.fonts.previewFallbackFamily = "Arial"
+        presentation.fonts.previewSymbolFallbackFamilies = ["Apple Symbols", "Arial"]
         let total = presentation.slides.count
         var result = DeckPreviews()
         onProgress(0, total)

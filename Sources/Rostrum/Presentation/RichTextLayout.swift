@@ -294,6 +294,7 @@ public struct RichTextLayout: Sendable {
             func shapePieces() {
                 for piece in pieces {
                     let text = piece.text, metrics = piece.metrics
+                    if let substitution = piece.previewSubstitution { warnings.append(.unsupportedLayoutFeature(substitution)) }
                     source += 1
                     var style = piece.style
                     style.usesStandardLigatures = !nativeLatinLigatures

@@ -11,6 +11,7 @@ extension RichTextLayout {
             let text: String
             var style: ResolvedTextRun
             let metrics: FontMetrics?
+            var previewSubstitution: String? = nil
         }
         struct Paragraph {
             let node: XML.Element
@@ -175,13 +176,42 @@ extension RichTextLayout {
             ? resolve(text: "", properties: emptyDefaults, theme: theme, defaultSize: defaultSize, scale: scale) : nil
         let baseSize = baseStyle?.fontSize ?? bounded(emptyDefaults.lazy.compactMap { $0[attribute: "sz"] }.first.flatMap(Double.init)
             ?? defaultSize * 100, 100...400000) / 100 * scale
-        let pieces = paragraph.childElements.compactMap { piece -> Preparation.Piece? in
-            guard ["a:r", "a:fld", "a:br"].contains(piece.name) else { return nil }
+        let children = paragraph.childElements
+        var pieces: [Preparation.Piece] = []
+        pieces.reserveCapacity(children.count)
+        for piece in children {
+            guard ["a:r", "a:fld", "a:br"].contains(piece.name) else { continue }
             let text = piece.name == "a:br" ? "\n" : (piece.name == "a:fld" && piece[attribute: "type"] == "slidenum" && slideNumber != nil
                 ? String(slideNumber!) : piece.firstChild(named: "a:t")?.textContent ?? "")
             let style = resolve(text: text, properties: [piece.firstChild(named: "a:rPr")].compactMap { $0 } + defaults,
                 theme: theme, defaultSize: defaultSize, scale: scale)
-            return Preparation.Piece(text: text, style: style, metrics: face(style))
+            let metrics = face(style)
+            let original = Preparation.Piece(text: text, style: style, metrics: metrics)
+            guard let fonts, !fonts.previewSymbolFallbackFamilies.isEmpty, let metrics,
+                  let family = style.fontFamily, text.utf8.contains(where: { $0 >= 0x80 }),
+                  text.unicodeScalars.contains(where: { TextShaper.isStandaloneSymbol($0.value) && metrics.glyphID(for: $0) == 0 }) else {
+                pieces.append(original)
+                continue
+            }
+            var pending = ""
+            func flush() {
+                guard !pending.isEmpty else { return }
+                var run = style; run.text = pending
+                pieces.append(Preparation.Piece(text: pending, style: run, metrics: metrics)); pending = ""
+            }
+            for character in text {
+                // Never split a grapheme/emoji sequence into unrelated faces.
+                let scalars = character.unicodeScalars
+                if scalars.count == 1, let scalar = scalars.first, metrics.glyphID(for: scalar) == 0,
+                   let selected = fonts.previewSymbolFace(for: scalar, requested: FontFaceKey(family: family, bold: style.bold, italic: style.italic)) {
+                    flush()
+                    var run = style; run.text = String(character); run.fontFamily = selected.family
+                    run.bold = selected.bold; run.italic = selected.italic
+                    pieces.append(Preparation.Piece(text: run.text, style: run, metrics: fonts.metrics(for: selected),
+                        previewSubstitution: "Preview symbol U+\(String(scalar.value, radix: 16, uppercase: true)) uses registered \(selected.family) because \(family) has no glyph. The document font is unchanged."))
+                } else { pending.append(character) }
+            }
+            flush()
         }
         return Preparation.Paragraph(node: paragraph, level: level, properties: properties,
             defaults: defaults, emptyDefaults: emptyDefaults, indent: indent, left: left, right: right,

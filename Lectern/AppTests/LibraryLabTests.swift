@@ -168,14 +168,16 @@ import Rostrum
         let previewIndex = try #require(inspection.previewSlideNumbers.firstIndex(of: 1))
         let savedSVG = try String(contentsOf: result.directory.appendingPathComponent("previews/slide-01.svg"), encoding: .utf8)
         #expect(savedSVG == inspection.previews[previewIndex])
-        let limitations = result.findings.filter {
-            $0.slideNumber == 1 && ($0.code == "unsupportedTextProperty" || $0.code == "unsupportedShaping")
-                && $0.message.contains("Native")
+        let verificationNotes = result.findings.filter {
+            $0.slideNumber == 1 && $0.code == "unverifiedTextLayout" && $0.message.contains("Native")
         }
-        #expect(!limitations.isEmpty && inspection.hasFindings)
+        #expect(!verificationNotes.isEmpty && inspection.hasFindings)
         let diagnostics = try #require(inspection.previewDiagnostics.first { $0.slideNumber == 1 })
-        for limitation in limitations {
-            #expect(diagnostics.issues.contains { $0.code == limitation.code && $0.message == limitation.message })
+        for note in verificationNotes {
+            #expect(diagnostics.issues.contains { $0.code == note.code && $0.message == note.message })
+            #expect(inspection.previewFindingGroups.contains {
+                $0.isVerificationNote && $0.slides == [1] && $0.message == note.message
+            })
         }
         #expect(!diagnostics.issues.contains { $0.code == "missingFont" })
 

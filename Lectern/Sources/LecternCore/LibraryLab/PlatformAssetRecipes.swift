@@ -136,6 +136,13 @@ extension PlatformLabRecipes {
         var refused = false
         do { _ = try deck.renderSVG(slideAt: 2, strictRendering: true) }
         catch is StrictRenderingError { refused = true }
+        let symbolFont = try resource("RostrumLabLatin", "ttf")
+        try deck.fonts.register(symbolFont)
+        try deck.embedFont("Rostrum Lab Latin", faces: .init(regular: symbolFont))
+        let symbolSlide = try deck.slides.add()
+        try text("HELD ✓", on: symbolSlide, font: "Rostrum Lab Latin")
+        deck.fonts.previewSymbolFallbackFamilies = ["DejaVu Sans"]
+        let symbolPreview = try deck.renderSVGReportingProblems(slideAt: 3)
         let notes = try deck.renderNotesSVGReportingProblems(slideAt: 1)
         let outline = deck.outline(), markdown = deck.outline().markdown(title: label(options))
         let exports = try exportedFiles(deck)
@@ -143,8 +150,10 @@ extension PlatformLabRecipes {
         files["strict-slide.svg"] = Data(strict.utf8)
         files["notes-page.svg"] = Data(notes.svg.utf8)
         files["diagnostic-slide.svg"] = Data(rendered.svg.utf8)
+        files["symbol-fallback.svg"] = Data(symbolPreview.svg.utf8)
         files["outline.md"] = Data(markdown.utf8)
         return LibraryLabDraft(deck: deck, before: before, checks: [
+            .init("Missing symbol uses explicit fallback", symbolPreview.svg.contains("✓") && symbolPreview.problems.fidelityIssues.contains { $0.message.contains("Preview symbol U+2713") } && !symbolPreview.problems.fidelityIssues.contains { $0.code == .missingGlyph }, "An ASCII-only licensed outline fixture keeps its letters; the missing checkmark uses registered DejaVu Sans, with a substitution diagnostic."),
             .init("Strict supported geometry", strict == ordinary && strict.contains("@font-face"), "Known single-scalar ASCII text uses the same font-embedded SVG in ordinary and strict modes."),
             .init("Strict refusal is distinct from rendering", refused && !rendered.problems.isEmpty && rendered.svg.contains("<svg"), "An ordinary diagnostic preview exists; strict mode refuses its known limitations."),
             .init("Explicit fallback stays a preview choice", options.alternative || (rendered.svg.contains("@font-face") && rendered.problems.fidelityIssues.contains { $0.code == .missingFont } && deck.fonts.metrics(for: "Library Lab Unavailable Face") == nil), "The missing face uses the bundled DejaVu font for both measurement and drawing; its original name and missing-font diagnostic remain."),
@@ -154,10 +163,13 @@ extension PlatformLabRecipes {
             _ = reopened.registerEmbeddedFonts()
             let fallbackWasNotSerialized = reopened.fonts.previewFallbackFamily == nil
             reopened.fonts.previewFallbackFamily = "DejaVu Sans"
+            let symbolPolicyNotSerialized = reopened.fonts.previewSymbolFallbackFamilies.isEmpty
+            reopened.fonts.previewSymbolFallbackFamilies = ["DejaVu Sans"]
             let second = try exportedFiles(reopened)
             let chart = reopened.outline().slides.flatMap(\.charts).first
             let changed = Set(second.files.keys).union(exports.files.keys).filter { second.files[$0] != exports.files[$0] }.sorted()
             return [
+                .init("Symbol fallback round trip", try symbolPolicyNotSerialized && reopened.renderSVG(slideAt: 3) == symbolPreview.svg, "The saved font and checkmark text survive; the same explicit preview policy reproduces the same SVG."),
                 .init("Fallback is reproducible without changing the file", try fallbackWasNotSerialized && reopened.renderSVG(slideAt: 2) == rendered.svg, "Reopening retains original font names; explicitly choosing the same preview fallback reproduces the SVG."),
                 .init("Reopened extraction agrees", second.files == exports.files && chart?.grid.count == options.sampleSize + 1, "Markdown/assets/CSV must agree; changed files: \(changed). Chart rows: \(chart?.grid.count ?? -1), expected \(options.sampleSize + 1)."),
                 .init("Reopened strict rendering agrees", try reopened.renderSVG(slideAt: 0, strictRendering: true) == strict, "The embedded font recovers the same strict SVG."),

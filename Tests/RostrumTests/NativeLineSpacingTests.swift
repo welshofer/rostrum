@@ -165,7 +165,7 @@ import Testing
         #expect(layout.diagnostics.contains(.unsupportedLayoutFeature("Native explicit line spacing with multiple font faces on one line is not verified")))
         let collector = RenderDiagnosticCollector()
         collector.text(layout)
-        #expect(collector.issues.contains { $0.code == .unsupportedTextProperty && $0.message.hasPrefix("Native explicit line spacing") })
+        #expect(collector.issues.contains { $0.code == .unverifiedTextLayout && $0.message.hasPrefix("Native explicit line spacing") })
         #expect(!collector.issues.contains { $0.code == .unsupportedShaping && $0.message.contains("Native explicit line spacing") })
     }
     @Test func rejectedAdvanceProfileAlsoRejectsExplicitVerticalCalibration() throws {

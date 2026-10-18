@@ -439,5 +439,14 @@ public struct TextShaper: Sendable {
         v < 0x41 || (0x5B...0x60).contains(v) || (0x7B...0xBF).contains(v)
             || (0x2000...0x206F).contains(v) || (0x3000...0x303F).contains(v)
             || (0xFF01...0xFF65).contains(v)
+            // Standalone mathematical signs, arrows, geometric shapes and
+            // dingbats use ordinary glyph mapping. Emoji sequences/variation
+            // selectors still take the combining-sequence diagnostic path,
+            // and missing glyphs remain explicit errors for the chosen face.
+            || isStandaloneSymbol(v)
+    }
+
+    static func isStandaloneSymbol(_ v: UInt32) -> Bool {
+        (0x2190...0x22FF).contains(v) || (0x25A0...0x25FF).contains(v) || (0x2700...0x27BF).contains(v)
     }
 }

@@ -359,3 +359,17 @@ this evidence. Vector bounds stay .001 pt and RGB .0001. Native glyph x uses
 .025 pt; y separately uses .121 pt to retain the measured print-grid residual;
 size uses .002 pt. This does not loosen the S18 two-axis .025 pt check, establish
 source-outline ink parity, or claim general table fidelity.
+
+## Missing-symbol preview fixture (2026-10-18)
+
+`RostrumLabLatin.ttf` is an ASCII U+0020–U+007E subset of the bundled regular
+`DejaVuSans.ttf`, renamed to Rostrum Lab Latin. It deliberately lacks U+2713 so
+the Extraction recipe can verify explicit symbol fallback with real outlines.
+This is a test asset; it imposes no production font choice. The source license
+and copyright remain in the font and `LICENSE-DejaVu.txt`.
+
+- Source SHA-256: `7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954`.
+- Subset SHA-256: `ed875798bdcde5594a3194ee50ab3f7109b62a97b1d57f9df8a8831dfd8501eb`.
+- Generator: `Tools/typography/make_symbol_preview_fixture.py` (fontTools tooling).
+
+The synthetic check does not establish native PowerPoint visual acceptance.

@@ -104,6 +104,10 @@ public struct DeckInspection: Sendable {
         previewRecords.flatMap { record in record.warnings.map { "Slide \(record.number): \($0)" } }
     }
 
+    public var previewFindingGroups: [PreviewFindingGroup] {
+        PreviewFindingGroup.collect(records: previewRecords, diagnostics: previewDiagnostics)
+    }
+
     public var hasFindings: Bool {
         !schemaIssues.isEmpty || !readWarnings.isEmpty || !outlineWarnings.isEmpty || !previewWarnings.isEmpty
     }

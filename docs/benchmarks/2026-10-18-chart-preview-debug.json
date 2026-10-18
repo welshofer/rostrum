@@ -1,0 +1,167 @@
+{
+  "baselineRevision": "e285cde570c69bc4296a0cc71010f3c4988c9063",
+  "binarySHA256": {
+    "after": "af22840c5a83fec85720d5a48f42822c87571507762052a6b5122d20207872ef",
+    "before": "39de6bff151491102fa80dfe88e3d2a645114c5b4e525e1f6cdda7f1303d2200"
+  },
+  "configuration": "Debug",
+  "inputSHA256": "fddcbe1c3b3f507dfcfd36f73e8219343ad1479575921a9e227807e37c827fea",
+  "medians": {
+    "after": {
+      "elapsedSeconds": 3.824964572006138,
+      "inspectionCPUSeconds": 1.94652,
+      "inspectionSeconds": 1.9465684049937408,
+      "peakRSSKiB": 37008,
+      "processCPUSeconds": 3.748669,
+      "svgCPUSeconds": 0.28566599999999953,
+      "svgElapsedSeconds": 0.28577627197955735
+    },
+    "before": {
+      "elapsedSeconds": 3.661956521013053,
+      "inspectionCPUSeconds": 1.8687289999999999,
+      "inspectionSeconds": 1.8748002570064273,
+      "peakRSSKiB": 37128,
+      "processCPUSeconds": 3.583958,
+      "svgCPUSeconds": 0.23511400000000005,
+      "svgElapsedSeconds": 0.2350577489414718
+    }
+  },
+  "method": "Fresh InspectionRegression processes, one warm-up then five paired alternating samples per build. No concurrent builds/tests. Process CPU and peak RSS from wait4; per-stage CPU/elapsed from PipelineTrace.",
+  "repeatedSVGsIdenticalPerBuild": 33,
+  "samples": [
+    {
+      "elapsedSeconds": 3.825416403997224,
+      "inspectionCPUSeconds": 1.787541,
+      "inspectionSeconds": 1.790165270009311,
+      "iteration": 0,
+      "name": "before",
+      "peakRSSKiB": 37120,
+      "processCPUSeconds": 3.728337,
+      "svgCPUSeconds": 0.22718499999999975,
+      "svgElapsedSeconds": 0.22727405512705445
+    },
+    {
+      "elapsedSeconds": 4.375139301002491,
+      "inspectionCPUSeconds": 2.2634070000000004,
+      "inspectionSeconds": 2.264119899016805,
+      "iteration": 0,
+      "name": "after",
+      "peakRSSKiB": 36644,
+      "processCPUSeconds": 4.284336,
+      "svgCPUSeconds": 0.4811299999999994,
+      "svgElapsedSeconds": 0.47955565704614855
+    },
+    {
+      "elapsedSeconds": 4.56590514202253,
+      "inspectionCPUSeconds": 2.3706910000000003,
+      "inspectionSeconds": 2.370956305996515,
+      "iteration": 1,
+      "name": "after",
+      "peakRSSKiB": 36964,
+      "processCPUSeconds": 4.490518,
+      "svgCPUSeconds": 0.3196819999999976,
+      "svgElapsedSeconds": 0.31966434701462276
+    },
+    {
+      "elapsedSeconds": 4.4073749279777985,
+      "inspectionCPUSeconds": 2.598446,
+      "inspectionSeconds": 2.598660238989396,
+      "iteration": 1,
+      "name": "before",
+      "peakRSSKiB": 37208,
+      "processCPUSeconds": 4.340567,
+      "svgCPUSeconds": 0.6090620000000002,
+      "svgElapsedSeconds": 0.6089718389266636
+    },
+    {
+      "elapsedSeconds": 3.6112770499894395,
+      "inspectionCPUSeconds": 1.8687289999999999,
+      "inspectionSeconds": 1.8748002570064273,
+      "iteration": 2,
+      "name": "before",
+      "peakRSSKiB": 37064,
+      "processCPUSeconds": 3.523452,
+      "svgCPUSeconds": 0.23511400000000005,
+      "svgElapsedSeconds": 0.2350577489414718
+    },
+    {
+      "elapsedSeconds": 3.824964572006138,
+      "inspectionCPUSeconds": 1.722298,
+      "inspectionSeconds": 1.7223999359994195,
+      "iteration": 2,
+      "name": "after",
+      "peakRSSKiB": 37108,
+      "processCPUSeconds": 3.748669,
+      "svgCPUSeconds": 0.26799100000000076,
+      "svgElapsedSeconds": 0.26794396090554073
+    },
+    {
+      "elapsedSeconds": 4.710277575999498,
+      "inspectionCPUSeconds": 2.364789,
+      "inspectionSeconds": 2.3832953479723074,
+      "iteration": 3,
+      "name": "after",
+      "peakRSSKiB": 37008,
+      "processCPUSeconds": 4.619725,
+      "svgCPUSeconds": 0.28566599999999953,
+      "svgElapsedSeconds": 0.28577627197955735
+    },
+    {
+      "elapsedSeconds": 3.4678163979842793,
+      "inspectionCPUSeconds": 1.8351700000000002,
+      "inspectionSeconds": 1.8359126059804112,
+      "iteration": 3,
+      "name": "before",
+      "peakRSSKiB": 37000,
+      "processCPUSeconds": 3.393522,
+      "svgCPUSeconds": 0.22149599999999925,
+      "svgElapsedSeconds": 0.22142870599054731
+    },
+    {
+      "elapsedSeconds": 4.201059580023866,
+      "inspectionCPUSeconds": 2.019923,
+      "inspectionSeconds": 2.020115687017096,
+      "iteration": 4,
+      "name": "before",
+      "peakRSSKiB": 37128,
+      "processCPUSeconds": 4.133677,
+      "svgCPUSeconds": 0.25791200000000014,
+      "svgElapsedSeconds": 0.25779289804631844
+    },
+    {
+      "elapsedSeconds": 3.6098980660026427,
+      "inspectionCPUSeconds": 1.717472,
+      "inspectionSeconds": 1.7185579070064705,
+      "iteration": 4,
+      "name": "after",
+      "peakRSSKiB": 37052,
+      "processCPUSeconds": 3.534654,
+      "svgCPUSeconds": 0.2551320000000008,
+      "svgElapsedSeconds": 0.2550941709196195
+    },
+    {
+      "elapsedSeconds": 3.6972075489757117,
+      "inspectionCPUSeconds": 1.94652,
+      "inspectionSeconds": 1.9465684049937408,
+      "iteration": 5,
+      "name": "after",
+      "peakRSSKiB": 36920,
+      "processCPUSeconds": 3.63848,
+      "svgCPUSeconds": 0.2938269999999996,
+      "svgElapsedSeconds": 0.29376809103996493
+    },
+    {
+      "elapsedSeconds": 3.661956521013053,
+      "inspectionCPUSeconds": 1.653397,
+      "inspectionSeconds": 1.6537206749781035,
+      "iteration": 5,
+      "name": "before",
+      "peakRSSKiB": 37144,
+      "processCPUSeconds": 3.583958,
+      "svgCPUSeconds": 0.22728900000000074,
+      "svgElapsedSeconds": 0.22725627609179355
+    }
+  ],
+  "scope": "Linux Debug headless smoke; five paired runs after one warm-up each, no WebKit or native fonts. Not Release performance evidence.",
+  "toolchain": "Swift 6.1.3, x86_64 Linux"
+}

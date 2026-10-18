@@ -8,7 +8,7 @@ enum InspectionFonts {
     static func families(in deck: Presentation, explicit: Set<String>? = nil, includeNotes: Bool = false) throws -> [String] {
         var families = explicit ?? []
         var types: Set<String> = [ContentType.slideLayout, ContentType.slideMaster, ContentType.theme,
-                                 "application/vnd.openxmlformats-officedocument.themeOverride+xml"]
+                                 ContentType.chart, "application/vnd.openxmlformats-officedocument.themeOverride+xml"]
         // Inspection has already walked the slides. Other saved-deck callers
         // discover the same declarations without extracting the entire outline.
         if explicit == nil {

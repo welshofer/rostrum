@@ -94,9 +94,10 @@ import Testing
         try append(connector("bentConnector3"), to: deck.slides[0].part)
         try append("<p:contentPart/>", to: deck.slides[0].part)
         let result = try deck.renderSVGReportingProblems(slideAt: 0)
-        #expect(result.problems.unsupportedContent.count == 3)
+        #expect(result.problems.unsupportedContent.count == 2)
+        #expect(result.problems.fidelityIssues.filter { $0.code == .unsupportedGeometry && $0.message.contains("curved connector") }.count == 1)
         #expect(!result.problems.isEmpty)
-        #expect(result.problems.messages.contains { $0.contains("curved connectors") })
+        #expect(result.problems.messages.contains { $0.contains("curved connector") })
     }
 
     @Test func malformedAndDeepGroupsStayBoundedAndExplainMissingContent() throws {

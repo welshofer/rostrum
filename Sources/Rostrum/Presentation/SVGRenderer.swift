@@ -281,8 +281,9 @@ struct SVGRenderer {
             ?? colorHex(in: node.firstChild(named: "p:style")?.firstChild(named: "a:lnRef")) ?? "#000000"
         let width = max(1, line?.coordinate("w") ?? 12700)
         let preset = properties.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "line"
-        if preset != "line" && preset != "straightConnector1" {
-            problems.record("Preview approximates bent or curved connectors with straight lines.")
+        if !["line", "straightConnector1", "bentConnector3"].contains(preset) {
+            diagnostics.record(.unsupportedGeometry, .approximation,
+                "Preview approximates this bent or curved connector with a straight line.")
         }
         var attrs = "stroke=\"\(color)\" stroke-width=\"\(width)\" fill=\"none\""
         if let dash = line?.firstChild(named: "a:prstDash")?[attribute: "val"], dash != "solid" {
@@ -316,6 +317,24 @@ struct SVGRenderer {
             let marker = start ? "<g transform=\"rotate(180 5 5)\">\(shape)</g>" : shape
             defs += "<marker id=\"\(id)\" viewBox=\"0 0 10 10\" refX=\"\(start ? 0 : 10)\" refY=\"5\" markerWidth=\"\(markerWidth)\" markerHeight=\"\(markerHeight)\" orient=\"auto\" overflow=\"visible\">\(marker)</marker>"
             attrs += " \(attribute)=\"url(#\(id))\""
+        }
+        if preset == "bentConnector3" {
+            var adjustment = 0.5
+            if let guide = properties.firstChild(named: "a:prstGeom")?.firstChild(named: "a:avLst")?
+                .children(named: "a:gd").first(where: { $0[attribute: "name"] == "adj1" }) {
+                let formula = (guide[attribute: "fmla"] ?? "").split(whereSeparator: \.isWhitespace)
+                if formula.count == 2, formula.first == "val", let value = Double(formula[1]),
+                   value.isFinite, abs(value) <= 1_000_000 {
+                    adjustment = value / 100_000
+                } else {
+                    diagnostics.record(.unsupportedGeometry, .approximation,
+                        "Unsupported connector guide formula uses the default elbow adjustment.")
+                }
+            }
+            if h != 0 || !(0...1).contains(adjustment) {
+                let middle = coord(Double(x) + Double(w) * adjustment)
+                return "<path d=\"M\(x) \(y) H\(middle) V\(y + h) H\(x + w)\" \(attrs)/>"
+            }
         }
         return "<line x1=\"\(x)\" y1=\"\(y)\" x2=\"\(x + w)\" y2=\"\(y + h)\" \(attrs)/>"
     }
@@ -656,11 +675,11 @@ struct SVGRenderer {
     /// already put at the anchor point.
     private func textElement(_ text: String, x: Int, baseline: Int, sizeEMU: Int,
                              fill: String, anchor: String, bold: Bool,
-                             typeface: String?) -> String {
+                             typeface: String?, italic: Bool = false) -> String {
         "<text transform=\"translate(\(x),\(baseline)) scale(\(emuPerPoint))\" "
             + "font-size=\"\(points(sizeEMU))\" fill=\"\(fill)\" text-anchor=\"\(anchor)\""
             + fontFamilyAttr(typeface)
-            + (bold ? " font-weight=\"bold\"" : "") + ">"
+            + (bold ? " font-weight=\"bold\"" : "") + (italic ? " font-style=\"italic\"" : "") + ">"
             + escape(text) + "</text>"
     }
 
@@ -968,6 +987,169 @@ struct SVGRenderer {
     /// All scaling runs in `Double` and lands through `coord`: chart values
     /// come from the file unbounded, and coordinates are only bounded to
     /// ±2^40, so multiplying two of them would overflow `Int`.
+    private struct ChartTextAppearance {
+        var size = 10 * 12700
+        var fill: String
+        var typeface: String?
+        var bold = false
+        var italic = false
+    }
+
+    private func chartTextStyle(_ nodes: [XML.Element?], color: String, size: Int = 127000) -> ChartTextAppearance {
+        var style = ChartTextAppearance(size: size, fill: color)
+        for node in nodes.compactMap({ $0 }) {
+            let paragraph = node.firstChild(named: "a:p")
+            let defaults = paragraph?.firstChild(named: "a:pPr")?.firstChild(named: "a:defRPr")
+            let run = paragraph?.firstChild(named: "a:r")?.firstChild(named: "a:rPr")
+            for properties in [defaults, run].compactMap({ $0 }) {
+                if let size = properties.boundedInt("sz", in: 100...40_000) { style.size = size * 127 }
+                if let fill = colorHex(in: properties.firstChild(named: "a:solidFill")) { style.fill = fill }
+                if let family = properties.firstChild(named: "a:latin")?[attribute: "typeface"] {
+                    style.typeface = family == "+mj-lt" ? theme.majorFont : family == "+mn-lt" ? theme.minorFont : family
+                }
+                if let bold = properties[attribute: "b"] { style.bold = ["1", "true"].contains(bold) }
+                if let italic = properties[attribute: "i"] { style.italic = ["1", "true"].contains(italic) }
+            }
+        }
+        if let family = style.typeface {
+            let face = FontFaceKey(family: family, bold: style.bold, italic: style.italic)
+            style.typeface = diagnostics.embeddedFamily(for: face, fonts: fonts) ?? family
+        }
+        return style
+    }
+
+    private func chartTextElement(_ value: String, x: Double, baseline: Double,
+                                  style: ChartTextAppearance, anchor: String) -> String {
+        textElement(value, x: coord(x), baseline: coord(baseline), sizeEMU: style.size,
+            fill: style.fill, anchor: anchor, bold: style.bold, typeface: style.typeface, italic: style.italic)
+    }
+
+    private func chartNumberFormat(_ code: String) -> ChartNumberFormat {
+        let format = ChartNumberFormat(code)
+        if !format.isSupported {
+            diagnostics.record(.chartApproximation, .approximation,
+                "Chart number format is outside the supported numeric subset; preview uses General formatting.")
+        }
+        return format
+    }
+
+    private struct ChartBarRect {
+        let x: Double, y: Double, width: Double, height: Double
+    }
+    private struct ChartLabel {
+        let hidden: Bool
+        let showValue: Bool, showCategory: Bool, showSeries: Bool
+        let position: String, separator: String
+        let format: ChartNumberFormat
+        let style: ChartTextAppearance
+    }
+    private struct ChartLabels {
+        let standard: ChartLabel
+        let points: [Int: ChartLabel]
+    }
+
+    private func barLabels(plot: XML.Element?, series: [XML.Element], chartText: XML.Element?) -> [ChartLabels] {
+        var formats: [String: ChartNumberFormat] = [:]
+        func label(_ nodes: [XML.Element]) -> ChartLabel {
+            func property(_ name: String) -> XML.Element? {
+                nodes.reversed().lazy.compactMap { $0.firstChild(named: name) }.first
+            }
+            func flag(_ name: String) -> Bool { ["1", "true"].contains(property(name)?[attribute: "val"] ?? "0") }
+            let code = property("c:numFmt")?[attribute: "formatCode"] ?? "General"
+            let format = formats[code] ?? chartNumberFormat(code)
+            formats[code] = format
+            let position = property("c:dLblPos")?[attribute: "val"] ?? "outEnd"
+            if !["outEnd", "inEnd", "inBase", "ctr", "bestFit"].contains(position)
+                || flag("c:showPercent") || property("c:tx") != nil {
+                diagnostics.record(.chartApproximation, .approximation,
+                    "Custom chart label text, percentage labels, or label positions are approximated.")
+            }
+            return ChartLabel(hidden: flag("c:delete"), showValue: flag("c:showVal"),
+                showCategory: flag("c:showCatName"), showSeries: flag("c:showSerName"),
+                position: position, separator: property("c:separator")?.textContent ?? ", ", format: format,
+                style: chartTextStyle([chartText] + nodes.map { $0.firstChild(named: "c:txPr") }, color: "#666666"))
+        }
+        return series.map { series in
+            let nodes = [plot?.firstChild(named: "c:dLbls"), series.firstChild(named: "c:dLbls")].compactMap { $0 }
+            let standard = label(nodes)
+            var overrides: [Int: [XML.Element]] = [:]
+            for node in nodes {
+                for point in node.children(named: "c:dLbl") {
+                    if let index = point.firstChild(named: "c:idx")?.boundedInt("val", in: 0...511) {
+                        overrides[index, default: []].append(point)
+                    }
+                }
+            }
+            var points: [Int: ChartLabel] = [:]
+            for index in overrides.keys.sorted() { points[index] = label(nodes + overrides[index]!) }
+            return ChartLabels(standard: standard, points: points)
+        }
+    }
+
+    private func renderBarLabel(_ labels: ChartLabels, index: Int, value: Double,
+                                category: String, seriesName: String, rect: ChartBarRect, horizontal: Bool) -> String {
+        let label = labels.points[index] ?? labels.standard
+        guard !label.hidden else { return "" }
+        var fields: [String] = []
+        if label.showSeries { fields.append(seriesName) }
+        if label.showCategory { fields.append(category) }
+        if label.showValue { fields.append(label.format.string(value)) }
+        guard !fields.isEmpty else { return "" }
+        let size = Double(label.style.size), gap = 3.0 * Double(emuPerPoint)
+        let centered = label.position == "ctr" || label.position == "bestFit"
+        let inside = label.position == "inEnd", base = label.position == "inBase"
+        var x = rect.x + rect.width / 2, baseline = rect.y + rect.height / 2 + size * 0.3
+        var anchor = "middle"
+        if !centered {
+            if horizontal {
+                let right = base ? value < 0 : value >= 0
+                x = right ? rect.x + rect.width : rect.x
+                let inward = inside || base
+                x += (right == inward ? -gap : gap)
+                anchor = right == inward ? "end" : "start"
+            } else {
+                let top = base ? value < 0 : value >= 0
+                let edge = top ? rect.y : rect.y + rect.height
+                baseline = (top == (inside || base)) ? edge + gap + size * 0.8 : edge - gap
+            }
+        }
+        return chartTextElement(fields.joined(separator: label.separator), x: x, baseline: baseline,
+            style: label.style, anchor: anchor)
+    }
+
+    private func chartMarker(_ node: XML.Element?, inherited: XML.Element?, x: Double, y: Double, defaultColor: String) -> String {
+        guard node != nil || inherited != nil else { return "" }
+        func property(_ name: String) -> XML.Element? {
+            node?.firstChild(named: name) ?? inherited?.firstChild(named: name)
+        }
+        let symbol = property("c:symbol")?[attribute: "val"] ?? "none"
+        guard symbol != "none" else { return "" }
+        let radius = Double((property("c:size")?.boundedInt("val", in: 2...72) ?? 5) * emuPerPoint) / 2
+        let properties = node?.firstChild(named: "c:spPr")
+        let inheritedProperties = inherited?.firstChild(named: "c:spPr")
+        let fillProperties = properties?.firstChild(named: "a:noFill") != nil || properties?.firstChild(named: "a:solidFill") != nil
+            ? properties : inheritedProperties
+        let fill = fillProperties?.firstChild(named: "a:noFill") != nil ? "none"
+            : colorHex(in: fillProperties?.firstChild(named: "a:solidFill")) ?? defaultColor
+        let line = properties?.firstChild(named: "a:ln") ?? inheritedProperties?.firstChild(named: "a:ln")
+        let stroke = line?.firstChild(named: "a:noFill") != nil ? "none"
+            : colorHex(in: line?.firstChild(named: "a:solidFill")) ?? defaultColor
+        let attributes = " fill=\"\(fill)\" stroke=\"\(stroke)\" stroke-width=\"\(max(0, line?.coordinate("w") ?? 12700))\""
+        switch symbol {
+        case "circle", "dot":
+            return "<circle cx=\"\(coord(x))\" cy=\"\(coord(y))\" r=\"\(coord(radius))\"\(attributes)/>"
+        case "square":
+            return "<rect x=\"\(coord(x-radius))\" y=\"\(coord(y-radius))\" width=\"\(coord(2*radius))\" height=\"\(coord(2*radius))\"\(attributes)/>"
+        case "diamond":
+            return "<polygon points=\"\(coord(x)),\(coord(y-radius)) \(coord(x+radius)),\(coord(y)) \(coord(x)),\(coord(y+radius)) \(coord(x-radius)),\(coord(y))\"\(attributes)/>"
+        case "triangle":
+            return "<polygon points=\"\(coord(x)),\(coord(y-radius)) \(coord(x+radius)),\(coord(y+radius)) \(coord(x-radius)),\(coord(y+radius))\"\(attributes)/>"
+        default:
+            diagnostics.record(.chartApproximation, .omission, "Unsupported chart marker symbol is omitted from the preview.")
+            return ""
+        }
+    }
+
     private func renderChart(_ gf: XML.Element, ownedBy owner: Part,
                              x: Int, y: Int, w: Int, h: Int) -> String? {
         guard w > 0, h > 0,
@@ -981,7 +1163,11 @@ struct SVGRenderer {
         guard let kind = chart.plotType else { return nil }
         // A fuzzed file can declare any number of series/points; bound both
         // rather than loop over whatever it claims.
-        let entries = Array(zip(chart.series, chart.seriesElements).filter { !$0.0.values.isEmpty }.prefix(32))
+        let candidates = zip(chart.series, chart.seriesElements).filter { !$0.0.values.isEmpty }
+        let entries = Array(candidates.prefix(32))
+        if candidates.count > 32 {
+            diagnostics.record(.chartApproximation, .omission, "Chart preview shows the first 32 nonempty series; additional series are omitted.")
+        }
         let series = entries.map { $0.0 }
         let styles = entries.map { $0.1 }
         let chartNode = chart.root?.firstChild(named: "c:chart")
@@ -1009,7 +1195,11 @@ struct SVGRenderer {
         let categories = chart.categories
         let pointCount = series.map(\.values.count).max() ?? 0
         let catCount = Swift.min(Swift.max(categories.count, pointCount), 512)
+        if max(categories.count, pointCount) > 512 {
+            diagnostics.record(.chartApproximation, .omission, "Chart preview shows the first 512 categories; additional points are omitted.")
+        }
         guard catCount > 0 else { return nil }
+        let chartText = chart.root?.firstChild(named: "c:txPr")
 
         let fx = Double(x), fy = Double(y), fw = Double(w), fh = Double(h)
         let title = chart.title
@@ -1026,13 +1216,11 @@ struct SVGRenderer {
 
         var out = ""
         if let title {
-            let titlePr = chartNode?.firstChild(named: "c:title")?.firstChild(named: "c:tx")?.firstChild(named: "c:rich")?.firstChild(named: "a:p")
-            let titleStyle = titlePr?.firstChild(named: "a:r")?.firstChild(named: "a:rPr") ?? titlePr?.firstChild(named: "a:pPr")?.firstChild(named: "a:defRPr")
-            let titleSize = (titleStyle?.boundedInt("sz", in: 100...40_000) ?? 1300) * 127
-            out += textElement(clipLabel(title, width: w, sizeEMU: titleSize),
-                               x: coord(fx + fw / 2), baseline: coord(fy + fh * 0.11),
-                               sizeEMU: titleSize, fill: colorHex(in: titleStyle?.firstChild(named: "a:solidFill")) ?? "#666666", anchor: "middle",
-                               bold: ["1", "true"].contains(titleStyle?[attribute: "b"] ?? ""), typeface: titleStyle?.firstChild(named: "a:latin")?[attribute: "typeface"])
+            let node = chartNode?.firstChild(named: "c:title")
+            let style = chartTextStyle([chartText, node?.firstChild(named: "c:txPr"),
+                node?.firstChild(named: "c:tx")?.firstChild(named: "c:rich")], color: "#666666", size: 13 * emuPerPoint)
+            out += chartTextElement(clipLabel(title, width: w, sizeEMU: style.size),
+                x: fx + fw / 2, baseline: fy + fh * 0.11, style: style, anchor: "middle")
         }
 
         switch kind {
@@ -1046,17 +1234,29 @@ struct SVGRenderer {
             let scale = ValueScale(series: series, catCount: catCount, grouping: grouping, axis: axis?.firstChild(named: "c:scaling"))
             let horizontal = kind == "barChart"
                 && plot?.firstChild(named: "c:barDir")?[attribute: "val"] == "bar"
-            out += axes(plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, scale: scale, axis: axis, horizontal: horizontal)
+            out += axes(plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, scale: scale, axis: axis, horizontal: horizontal,
+                        style: chartTextStyle([chartText, axis?.firstChild(named: "c:txPr")], color: "#666666"))
             if kind == "barChart" {
+                let labels = barLabels(plot: plot, series: styles, chartText: chartText)
                 out += barBody(series, catCount: catCount, scale: scale, horizontal: horizontal,
-                               plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, color: color)
+                               plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, color: color,
+                               label: { s, index, rect in
+                    renderBarLabel(labels[s], index: index, value: Self.finite(series[s], index) ?? 0,
+                        category: categories.indices.contains(index) ? categories[index] : "",
+                        seriesName: series[s].name, rect: rect, horizontal: horizontal)
+                })
             } else {
                 let body = lineBody(series, catCount: catCount, scale: scale, filled: kind == "areaChart",
                                 plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, styles: styles, color: { color($0, nil) })
                 out += "<svg x=\"\(plotX)\" y=\"\(plotY)\" width=\"\(plotW)\" height=\"\(plotH)\" viewBox=\"\(plotX) \(plotY) \(plotW) \(plotH)\" overflow=\"hidden\">\(body)</svg>"
             }
-            out += categoryLabels(categories, catCount: catCount, plotX: plotX, plotW: plotW,
-                                  baseY: plotY + plotH, height: fh, horizontal: horizontal, plotY: plotY, plotH: plotH)
+            let categoryAxis = chartNode?.firstChild(named: "c:plotArea")?.firstChild(named: "c:catAx")
+            if categoryAxis?.firstChild(named: "c:delete")?[attribute: "val"] != "1",
+               categoryAxis?.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none" {
+                out += categoryLabels(categories, catCount: catCount, plotX: plotX, plotW: plotW,
+                    baseY: plotY + plotH, height: fh, horizontal: horizontal, plotY: plotY, plotH: plotH,
+                    style: chartTextStyle([chartText, categoryAxis?.firstChild(named: "c:txPr")], color: "#808080"))
+            }
         default:
             return nil          // radar/scatter/bubble/surface → placeholder
         }
@@ -1065,6 +1265,7 @@ struct SVGRenderer {
             let ly = sideLegend ? plotY : legendPosition == "t" ? plotY - fh * 0.11 : plotY + plotH + fh * 0.08
             out += legend(series, x: lx, y: ly, width: sideLegend ? fw * 0.21 : fw, height: fh,
                 labels: ["pieChart", "doughnutChart"].contains(kind) ? categories : nil, vertical: sideLegend,
+                style: chartTextStyle([chartText, legendNode?.firstChild(named: "c:txPr")], color: "#808080"),
                 color: { ["pieChart", "doughnutChart"].contains(kind) ? color(0, $0) : color($0, nil) })
         }
         return out
@@ -1126,7 +1327,7 @@ struct SVGRenderer {
     }
 
     private func axes(plotX: Double, plotY: Double, plotW: Double, plotH: Double,
-                      scale: ValueScale, axis: XML.Element?, horizontal: Bool) -> String {
+                      scale: ValueScale, axis: XML.Element?, horizontal: Bool, style: ChartTextAppearance) -> String {
         guard axis?.firstChild(named: "c:delete")?[attribute: "val"] != "1" else { return "" }
         let zero = horizontal ? plotX + plotW * scale.zeroFraction : plotY + plotH * (1 - scale.zeroFraction)
         var out = horizontal
@@ -1146,12 +1347,7 @@ struct SVGRenderer {
         let gridWidth = max(0, gridLine?.coordinate("w") ?? 6350)
         let stroke = " stroke=\"\(gridColor)\" stroke-width=\"\(gridWidth)\"" + dashAttributes(gridLine, width: gridWidth)
         let format = axis.firstChild(named: "c:numFmt")?[attribute: "formatCode"] ?? "General"
-        let formatter = NumberFormatter(); formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.numberStyle = format.contains("%") ? .percent : .decimal
-        let decimals = format.split(separator: ".", maxSplits: 1).dropFirst().first?.prefix { $0 == "0" || $0 == "#" }.count ?? 0
-        formatter.minimumFractionDigits = min(decimals, 8); formatter.maximumFractionDigits = format == "General" ? 6 : min(decimals, 8)
-        formatter.usesGroupingSeparator = format.contains(",")
-        if format.contains("$") { formatter.positivePrefix = "$"; formatter.negativePrefix = "-$" }
+        let formatter = chartNumberFormat(format)
         for i in 0..<128 {
             let value = start + Double(i) * step
             guard value.isFinite, value <= scale.minimum + scale.range + step * 1e-8 else { break }
@@ -1163,10 +1359,9 @@ struct SVGRenderer {
                     : "<line x1=\"\(coord(plotX))\" y1=\"\(coord(position))\" x2=\"\(coord(plotX + plotW))\" y2=\"\(coord(position))\"\(stroke)/>"
             }
             if axis.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none" {
-                let label = formatter.string(from: NSNumber(value: value)) ?? String(value)
-                out += textElement(label, x: coord(horizontal ? position : plotX - 45_720),
-                    baseline: coord(horizontal ? plotY + plotH + 152_400 : position + 38_100), sizeEMU: 10 * emuPerPoint,
-                    fill: "#666666", anchor: horizontal ? "middle" : "end", bold: false, typeface: nil)
+                out += chartTextElement(formatter.string(value), x: horizontal ? position : plotX - 45_720,
+                    baseline: horizontal ? plotY + plotH + Double(style.size) * 1.2 : position + Double(style.size) * 0.3,
+                    style: style, anchor: horizontal ? "middle" : "end")
             }
         }
         return out
@@ -1174,7 +1369,8 @@ struct SVGRenderer {
 
     private func barBody(_ series: [ChartData.Series], catCount: Int, scale: ValueScale,
                          horizontal: Bool, plotX: Double, plotY: Double,
-                         plotW: Double, plotH: Double, color: (Int, Int?) -> String) -> String {
+                         plotW: Double, plotH: Double, color: (Int, Int?) -> String,
+                         label: (Int, Int, ChartBarRect) -> String) -> String {
         let along = horizontal ? plotH : plotW
         let slot = along / Double(catCount)
         let inset = slot * 0.16
@@ -1182,6 +1378,7 @@ struct SVGRenderer {
         let barWidth = scale.stacked ? bandWidth : Swift.max(1, bandWidth / Double(series.count))
         let zero = scale.zeroFraction
         var out = ""
+        var labels = ""
         var positiveTops = [Double](repeating: 0, count: catCount)
         var negativeTops = [Double](repeating: 0, count: catCount)
 
@@ -1216,13 +1413,17 @@ struct SVGRenderer {
                 if horizontal {
                     out += box(coord(plotX + plotW * lo), coord(bandStart + offset),
                                coord(plotW * (hi - lo)), coord(barWidth), fill: fill)
+                    labels += label(s, index, ChartBarRect(x: plotX + plotW * lo, y: bandStart + offset,
+                        width: plotW * (hi - lo), height: barWidth))
                 } else {
                     out += box(coord(bandStart + offset), coord(plotY + plotH * (1 - hi)),
                                coord(barWidth), coord(plotH * (hi - lo)), fill: fill)
+                    labels += label(s, index, ChartBarRect(x: bandStart + offset, y: plotY + plotH * (1 - hi),
+                        width: barWidth, height: plotH * (hi - lo)))
                 }
             }
         }
-        return out
+        return out + labels
     }
 
     private func lineBody(_ series: [ChartData.Series], catCount: Int, scale: ValueScale,
@@ -1233,12 +1434,21 @@ struct SVGRenderer {
         var out = ""
         for (s, entry) in series.enumerated() {
             var points: [(Double, Double)] = []
+            var markers = ""
+            let seriesMarker = styles[s].firstChild(named: "c:marker")
+            var pointMarkers: [Int: XML.Element] = [:]
+            for point in styles[s].children(named: "c:dPt") {
+                if let index = point.firstChild(named: "c:idx")?.boundedInt("val", in: 0...511),
+                   let marker = point.firstChild(named: "c:marker") { pointMarkers[index] = marker }
+            }
             for index in 0..<catCount {
                 guard let value = Self.finite(entry, index) else { continue }
-                points.append((plotX + step * (Double(index) + 0.5),
-                               plotY + plotH * (1 - scale.fraction(value))))
+                let point = (plotX + step * (Double(index) + 0.5),
+                             plotY + plotH * (1 - scale.fraction(value)))
+                points.append(point)
+                markers += chartMarker(pointMarkers[index], inherited: seriesMarker, x: point.0, y: point.1, defaultColor: color(s))
             }
-            guard points.count > 1 else { continue }
+            guard points.count > 1 else { out += markers; continue }
             let path = points.map { "\(coord($0.0)),\(coord($0.1))" }.joined(separator: " ")
             let color = color(s)
             if filled {
@@ -1254,6 +1464,7 @@ struct SVGRenderer {
             let dash = dashAttributes(ln, width: lineWidth)
             out += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" "
                 + "stroke-width=\"\(lineWidth)\"\(dash) stroke-linejoin=\"round\"/>"
+            out += markers
         }
         return out
     }
@@ -1261,7 +1472,7 @@ struct SVGRenderer {
     private func pieBody(_ entry: ChartData.Series, kind: String,
                          cx: Double, cy: Double, radius: Double, color: (Int) -> String) -> String {
         guard radius > 0 else { return "" }
-        let values = entry.values.enumerated().compactMap { index, value -> (Int, Double)? in
+        let values = entry.values.prefix(512).enumerated().compactMap { index, value -> (Int, Double)? in
             guard let value, value.isFinite, value > 0 else { return nil }; return (index, value)
         }
         let total = values.reduce(0) { $0 + $1.1 }
@@ -1304,27 +1515,35 @@ struct SVGRenderer {
     }
 
     private func categoryLabels(_ categories: [String], catCount: Int, plotX: Double,
-                                plotW: Double, baseY: Double, height: Double, horizontal: Bool, plotY: Double, plotH: Double) -> String {
-        guard !categories.isEmpty, catCount <= 12 else { return "" }
+                                plotW: Double, baseY: Double, height: Double, horizontal: Bool, plotY: Double, plotH: Double,
+                                style: ChartTextAppearance) -> String {
+        guard !categories.isEmpty else { return "" }
+        guard catCount <= 12 else {
+            diagnostics.record(.chartApproximation, .omission, "Chart preview omits category labels above its 12-category label limit.")
+            return ""
+        }
         let step = plotW / Double(catCount)
-        let size = 10 * emuPerPoint
+        let size = style.size
         var out = ""
         for (index, label) in categories.prefix(catCount).enumerated() {
-            out += textElement(clipLabel(label, width: coord(step), sizeEMU: size),
-                               x: coord(horizontal ? plotX - 45_720 : plotX + step * (Double(index) + 0.5)),
-                               baseline: coord(horizontal ? plotY + plotH / Double(catCount) * (Double(catCount - index) - 0.5) + 38_100 : baseY + height * 0.06),
-                               sizeEMU: size, fill: "#808080", anchor: horizontal ? "end" : "middle",
-                               bold: false, typeface: nil)
+            out += chartTextElement(clipLabel(label, width: coord(step), sizeEMU: size),
+                x: horizontal ? plotX - 45_720 : plotX + step * (Double(index) + 0.5),
+                baseline: horizontal ? plotY + plotH / Double(catCount) * (Double(catCount - index) - 0.5) + Double(size) * 0.3
+                    : baseY + max(height * 0.06, Double(size) * 1.2),
+                style: style, anchor: horizontal ? "end" : "middle")
         }
         return out
     }
 
     private func legend(_ series: [ChartData.Series], x: Double, y: Double, width: Double,
-                        height: Double, labels: [String]?, vertical: Bool, color: (Int) -> String) -> String {
+                        height: Double, labels: [String]?, vertical: Bool, style: ChartTextAppearance, color: (Int) -> String) -> String {
         let names = labels ?? series.map(\.name)
+        if names.count > 6 {
+            diagnostics.record(.chartApproximation, .omission, "Chart preview shows the first six legend entries; additional legend labels are omitted.")
+        }
         let entries = Array(names.prefix(6)).enumerated().filter { !$0.element.isEmpty }
         guard !entries.isEmpty else { return "" }
-        let size = 10 * emuPerPoint
+        let size = style.size
         let slot = vertical ? width : width / Double(entries.count)
         let swatch = height * 0.035
         var out = ""
@@ -1333,11 +1552,9 @@ struct SVGRenderer {
             let y = y + (vertical ? Double(slotIndex) * max(height * 0.08, Double(size) * 1.5) : 0)
             out += box(coord(left), coord(y + height * 0.02), coord(swatch), coord(swatch),
                        fill: color(entry.offset))
-            out += textElement(clipLabel(entry.element, width: coord(slot * 0.75), sizeEMU: size),
-                               x: coord(left + swatch * 1.5),
-                               baseline: coord(y + height * 0.02 + swatch * 0.85),
-                               sizeEMU: size, fill: "#808080", anchor: "start",
-                               bold: false, typeface: nil)
+            out += chartTextElement(clipLabel(entry.element, width: coord(slot * 0.75), sizeEMU: size),
+                x: left + swatch * 1.5, baseline: y + height * 0.02 + swatch * 0.85,
+                style: style, anchor: "start")
         }
         return out
     }

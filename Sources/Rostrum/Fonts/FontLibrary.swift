@@ -40,6 +40,22 @@ public final class FontLibrary {
     /// and rendering reports the substitution as a missing-font fidelity issue.
     public var previewFallbackFamily: String?
 
+    /// Ordered, explicitly registered families for standalone symbols missing
+    /// from a preview's requested face. Empty disables symbol substitution.
+    /// Text layout measures and paints the chosen face and reports substitution;
+    /// document XML, authored fonts, and ordinary letters remain unchanged.
+    public var previewSymbolFallbackFamilies: [String] = []
+
+    func previewSymbolFace(for scalar: Unicode.Scalar, requested: FontFaceKey) -> FontFaceKey? {
+        guard TextShaper.isStandaloneSymbol(scalar.value) else { return nil }
+        for family in previewSymbolFallbackFamilies.prefix(8) {
+            for face in [FontFaceKey(family: family, bold: requested.bold, italic: requested.italic), FontFaceKey(family: family)] {
+                if let metrics = byFace[face], metrics.glyphID(for: scalar) != 0 { return face }
+            }
+        }
+        return nil
+    }
+
     public init() {}
 
     /// Register a font from raw bytes under its own family names (`name`
