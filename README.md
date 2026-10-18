@@ -180,6 +180,10 @@ and separate PowerPoint slide-view/export review status. The delivered Calibri
 pack has [user-reported PowerPoint acceptance](docs/POWERPOINT-REVIEW-20261016.md);
 new multi-row header and rotated-text cases still need native review.
 
+Chart previews reserve measured space for titles, axes, legends and labels,
+wrap long categories, and render line and pie labels. Crowded omissions remain
+diagnosed. See [measured chart layout](docs/MEASURED-CHART-LAYOUT-20261018.md).
+
 Chart previews preserve literal percentage/currency units, authored label styles,
 bar values and line markers. Explicit symbol fallback keeps font choices in the
 saved file intact; Lectern groups preview limitations separately from native

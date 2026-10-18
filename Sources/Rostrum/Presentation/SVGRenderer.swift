@@ -980,9 +980,9 @@ struct SVGRenderer {
     private static let chartPalette = ["#4472C4", "#ED7D31", "#A5A5A5", "#FFC000", "#5B9BD5", "#70AD47"]
 
     /// Plot a chart part into `frame`, or nil for a kind we don't draw (the
-    /// caller then falls back to the labeled placeholder). Approximate by
-    /// design — this is a thumbnail renderer — but it plots the chart's real
-    /// categories and series, read back out of the chart XML by `Chart`.
+    /// caller then falls back to the labeled placeholder). Text is measured
+    /// with registered faces; automatic chart geometry still approximates
+    /// PowerPoint. Data and styles come from the saved chart XML.
     ///
     /// All scaling runs in `Double` and lands through `coord`: chart values
     /// come from the file unbounded, and coordinates are only bounded to
@@ -993,6 +993,12 @@ struct SVGRenderer {
         var typeface: String?
         var bold = false
         var italic = false
+        var measurementFamily = "Calibri"
+        var kerningThreshold: Int?
+        var kerning: Bool { kerningThreshold.map { $0 > 0 && size >= $0 * 127 } ?? true }
+        var measurement: ChartTextMeasurer.Style {
+            .init(face: FontFaceKey(family: measurementFamily, bold: bold, italic: italic), size: size, kerning: kerning)
+        }
     }
 
     private func chartTextStyle(_ nodes: [XML.Element?], color: String, size: Int = 127000) -> ChartTextAppearance {
@@ -1009,8 +1015,13 @@ struct SVGRenderer {
                 }
                 if let bold = properties[attribute: "b"] { style.bold = ["1", "true"].contains(bold) }
                 if let italic = properties[attribute: "i"] { style.italic = ["1", "true"].contains(italic) }
+                if let kern = properties.boundedInt("kern", in: 0...400_000) {
+                    style.kerningThreshold = kern
+                }
             }
         }
+        style.measurementFamily = style.typeface ?? theme.minorFont ?? "Calibri"
+        style.typeface = style.measurementFamily
         if let family = style.typeface {
             let face = FontFaceKey(family: family, bold: style.bold, italic: style.italic)
             style.typeface = diagnostics.embeddedFamily(for: face, fonts: fonts) ?? family
@@ -1022,6 +1033,7 @@ struct SVGRenderer {
                                   style: ChartTextAppearance, anchor: String) -> String {
         textElement(value, x: coord(x), baseline: coord(baseline), sizeEMU: style.size,
             fill: style.fill, anchor: anchor, bold: style.bold, typeface: style.typeface, italic: style.italic)
+            .replacingOccurrences(of: "<text ", with: "<text font-kerning=\"\(style.kerning ? "normal" : "none")\" ")
     }
 
     private func chartNumberFormat(_ code: String) -> ChartNumberFormat {
@@ -1038,9 +1050,10 @@ struct SVGRenderer {
     }
     private struct ChartLabel {
         let hidden: Bool
-        let showValue: Bool, showCategory: Bool, showSeries: Bool
+        let showValue: Bool, showCategory: Bool, showSeries: Bool, showPercent: Bool
         let position: String, separator: String
         let format: ChartNumberFormat
+        let percentFormat: ChartNumberFormat
         let style: ChartTextAppearance
     }
     private struct ChartLabels {
@@ -1048,25 +1061,30 @@ struct SVGRenderer {
         let points: [Int: ChartLabel]
     }
 
-    private func barLabels(plot: XML.Element?, series: [XML.Element], chartText: XML.Element?) -> [ChartLabels] {
+    private func chartLabels(plot: XML.Element?, series: [XML.Element], chartText: XML.Element?, kind: String) -> [ChartLabels] {
         var formats: [String: ChartNumberFormat] = [:]
         func label(_ nodes: [XML.Element]) -> ChartLabel {
             func property(_ name: String) -> XML.Element? {
                 nodes.reversed().lazy.compactMap { $0.firstChild(named: name) }.first
             }
             func flag(_ name: String) -> Bool { ["1", "true"].contains(property(name)?[attribute: "val"] ?? "0") }
-            let code = property("c:numFmt")?[attribute: "formatCode"] ?? "General"
+            let explicitCode = property("c:numFmt")?[attribute: "formatCode"]
+            let code = explicitCode ?? "General"
             let format = formats[code] ?? chartNumberFormat(code)
             formats[code] = format
-            let position = property("c:dLblPos")?[attribute: "val"] ?? "outEnd"
-            if !["outEnd", "inEnd", "inBase", "ctr", "bestFit"].contains(position)
-                || flag("c:showPercent") || property("c:tx") != nil {
+            let percentCode = explicitCode ?? "0%"
+            let percentFormat = formats[percentCode] ?? chartNumberFormat(percentCode)
+            formats[percentCode] = percentFormat
+            let position = property("c:dLblPos")?[attribute: "val"] ?? (kind == "lineChart" ? "t" : "outEnd")
+            if !["outEnd", "inEnd", "inBase", "ctr", "bestFit", "t", "b", "l", "r"].contains(position)
+                || (flag("c:showPercent") && !["pieChart", "doughnutChart"].contains(kind)) || property("c:tx") != nil {
                 diagnostics.record(.chartApproximation, .approximation,
-                    "Custom chart label text, percentage labels, or label positions are approximated.")
+                    "Custom chart label text or unsupported label properties are approximated.")
             }
             return ChartLabel(hidden: flag("c:delete"), showValue: flag("c:showVal"),
-                showCategory: flag("c:showCatName"), showSeries: flag("c:showSerName"),
+                showCategory: flag("c:showCatName"), showSeries: flag("c:showSerName"), showPercent: flag("c:showPercent"),
                 position: position, separator: property("c:separator")?.textContent ?? ", ", format: format,
+                percentFormat: percentFormat,
                 style: chartTextStyle([chartText] + nodes.map { $0.firstChild(named: "c:txPr") }, color: "#666666"))
         }
         return series.map { series in
@@ -1086,35 +1104,297 @@ struct SVGRenderer {
         }
     }
 
-    private func renderBarLabel(_ labels: ChartLabels, index: Int, value: Double,
-                                category: String, seriesName: String, rect: ChartBarRect, horizontal: Bool) -> String {
-        let label = labels.points[index] ?? labels.standard
-        guard !label.hidden else { return "" }
-        var fields: [String] = []
-        if label.showSeries { fields.append(seriesName) }
-        if label.showCategory { fields.append(category) }
-        if label.showValue { fields.append(label.format.string(value)) }
-        guard !fields.isEmpty else { return "" }
-        let size = Double(label.style.size), gap = 3.0 * Double(emuPerPoint)
+    private struct ChartPreparedText {
+        let source: String
+        let block: ChartTextMeasurer.Block
+        let style: ChartTextAppearance
+    }
+    private struct ChartPreparedLabel {
+        let text: ChartPreparedText
+        let position: String
+    }
+    private struct ChartTick {
+        let value: Double
+        let text: ChartPreparedText?
+    }
+
+    private func prepareChartText(_ value: String, style: ChartTextAppearance,
+                                  measure: ChartTextMeasurer, width: Double, lines: Int = 3) -> ChartPreparedText? {
+        guard let block = measure.block(value, style: style.measurement, width: width, maxLines: lines) else { return nil }
+        return ChartPreparedText(source: value, block: block, style: style)
+    }
+
+    private func chartTextBlock(_ text: ChartPreparedText, in rect: ChartTextRect,
+                                anchor: String = "start", role: String) -> String {
+        var out = "<g data-rostrum-chart-role=\"\(role)\" data-rostrum-chart-bounds=\"\(coord(rect.x)) \(coord(rect.y)) \(coord(rect.width)) \(coord(rect.height))\">"
+        let x = anchor == "middle" ? rect.x + rect.width / 2 : anchor == "end" ? rect.right : rect.x
+        for (index, line) in text.block.lines.enumerated() {
+            out += chartTextElement(line.text, x: x,
+                baseline: rect.y + text.block.ascent + Double(index) * text.block.lineHeight,
+                style: text.style, anchor: anchor)
+        }
+        return out + "</g>"
+    }
+
+    private func chartOmission(_ role: String) {
+        diagnostics.record(.chartApproximation, .omission,
+            "Chart preview omits \(role) that cannot fit without overlapping or leaving the chart frame. Source content is unchanged.")
+    }
+
+    private func chartTicks(scale: ValueScale, axis: XML.Element?, style: ChartTextAppearance,
+                            measure: ChartTextMeasurer, width: Double) -> [ChartTick] {
+        guard let axis, !["1", "true"].contains(axis.firstChild(named: "c:delete")?[attribute: "val"] ?? "0") else { return [] }
+        let exponent = pow(10, floor(log10(scale.range / 5)))
+        guard exponent.isFinite, exponent > 0 else { return [] }
+        let unit = ([1.0, 2, 5, 10].first { $0 * exponent >= scale.range / 5 } ?? 10) * exponent
+        let requested = axis.firstChild(named: "c:majorUnit")?[attribute: "val"].flatMap(Double.init)
+        let step = requested.flatMap { $0.isFinite && $0 > 0 ? $0 : nil } ?? unit
+        let start = ceil(scale.minimum / step) * step
+        let formatter = chartNumberFormat(axis.firstChild(named: "c:numFmt")?[attribute: "formatCode"] ?? "General")
+        let visible = axis.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none"
+        var ticks: [ChartTick] = []
+        for i in 0..<128 {
+            let value = start + Double(i) * step
+            guard value.isFinite, value <= scale.minimum + scale.range + step * 1e-8 else { break }
+            let text = visible ? prepareChartText(formatter.string(value), style: style, measure: measure, width: width, lines: 2) : nil
+            if visible && text == nil { chartOmission("value-axis labels") }
+            ticks.append(ChartTick(value: value, text: text))
+        }
+        if start + 128 * step <= scale.minimum + scale.range {
+            diagnostics.record(.chartApproximation, .omission, "Chart preview bounds value-axis ticks to 128.")
+        }
+        return ticks
+    }
+
+    private func chartAxisTitle(_ axis: XML.Element?, chartText: XML.Element?,
+                                measure: ChartTextMeasurer, content: inout ChartTextRect, vertical: Bool) -> String {
+        guard !["1", "true"].contains(axis?.firstChild(named: "c:delete")?[attribute: "val"] ?? "0"),
+              let node = axis?.firstChild(named: "c:title") else { return "" }
+        func text(_ node: XML.Element, depth: Int = 0) -> String {
+            guard depth < 32 else { return "" }
+            if node.name == "a:t" || node.name == "c:v" { return node.textContent }
+            return node.childElements.map { text($0, depth: depth + 1) }.joined()
+        }
+        let value = text(node.firstChild(named: "c:tx") ?? node)
+        guard !value.isEmpty else { return "" }
+        let style = chartTextStyle([chartText, node.firstChild(named: "c:txPr"),
+            node.firstChild(named: "c:tx")?.firstChild(named: "c:rich")], color: "#666666")
+        guard let prepared = prepareChartText(value, style: style, measure: measure,
+            width: vertical ? content.height : content.width, lines: 2),
+            prepared.block.height < (vertical ? content.width : content.height) * 0.2 else {
+            chartOmission("axis titles"); return ""
+        }
+        let gap = 6.0 * Double(emuPerPoint), height = prepared.block.height
+        if vertical {
+            let centerY = content.y + content.height / 2
+            let rect = ChartTextRect(x: content.x, y: centerY - prepared.block.width / 2,
+                                     width: height, height: prepared.block.width)
+            var out = "<g data-rostrum-chart-role=\"axis-title\" data-rostrum-chart-bounds=\"\(coord(rect.x)) \(coord(rect.y)) \(coord(rect.width)) \(coord(rect.height))\" transform=\"translate(\(coord(content.x)),\(coord(centerY))) rotate(-90)\">"
+            for (index, line) in prepared.block.lines.enumerated() {
+                out += chartTextElement(line.text, x: 0, baseline: prepared.block.ascent + Double(index) * prepared.block.lineHeight,
+                    style: style, anchor: "middle")
+            }
+            content.x += height + gap; content.width -= height + gap
+            return out + "</g>"
+        }
+        let rect = ChartTextRect(x: content.x, y: content.bottom - height, width: content.width, height: height)
+        content.height -= height + gap
+        return chartTextBlock(prepared, in: rect, anchor: "middle", role: "axis-title")
+    }
+
+    /// Reserve just the rows/column actually occupied by measured entries.
+    private func chartLegend(_ names: [String], position: String, style: ChartTextAppearance,
+                             measure: ChartTextMeasurer, content: inout ChartTextRect,
+                             color: (Int) -> String) -> String {
+        let gap = 4.0 * Double(emuPerPoint), swatch = Double(style.size) * 0.7
+        let vertical = ["l", "r", "tr"].contains(position)
+        let maxWidth = vertical ? content.width * 0.35 : content.width
+        let maxHeight = vertical ? content.height : content.height * 0.3
+        var items: [(Int, ChartPreparedText, ChartTextRect)] = []
+        var x = 0.0, y = 0.0, rowHeight = 0.0, usedWidth = 0.0
+        for (index, name) in names.prefix(512).enumerated() where !name.isEmpty {
+            guard let text = prepareChartText(name, style: style, measure: measure,
+                width: maxWidth - swatch - gap, lines: 3) else { chartOmission("legend entries"); continue }
+            let itemWidth = swatch + gap + text.block.width
+            let itemHeight = max(swatch, text.block.height)
+            if !vertical && x > 0 && x + itemWidth > maxWidth { x = 0; y += rowHeight + gap; rowHeight = 0 }
+            guard y + itemHeight <= maxHeight else { chartOmission("legend entries"); continue }
+            let rect = ChartTextRect(x: x, y: y, width: itemWidth, height: itemHeight)
+            items.append((index, text, rect))
+            usedWidth = max(usedWidth, rect.right)
+            if vertical { y += itemHeight + gap }
+            else { x += itemWidth + gap * 2; rowHeight = max(rowHeight, itemHeight) }
+        }
+        guard !items.isEmpty else { return "" }
+        let usedHeight = items.map { $0.2.bottom }.max() ?? 0
+        let left = vertical && position != "l" ? content.right - usedWidth : content.x
+        let top = !vertical && position != "t" ? content.bottom - usedHeight : content.y
+        var out = ""
+        for (index, text, rect) in items {
+            out += box(coord(left + rect.x), coord(top + rect.y + (rect.height - swatch) / 2),
+                       coord(swatch), coord(swatch), fill: color(index))
+            out += chartTextBlock(text, in: ChartTextRect(x: left + rect.x + swatch + gap,
+                y: top + rect.y, width: text.block.width, height: text.block.height), role: "legend")
+        }
+        if vertical {
+            if position == "l" { content.x += usedWidth + gap * 2 }
+            content.width -= usedWidth + gap * 2
+        } else {
+            if position == "t" { content.y += usedHeight + gap * 2 }
+            content.height -= usedHeight + gap * 2
+        }
+        return out
+    }
+
+    private func prepareChartLabels(_ specs: [ChartLabels], series: [ChartData.Series], categories: [String],
+                                    kind: String, measure: ChartTextMeasurer,
+                                    bounds: ChartTextRect) -> [[Int: ChartPreparedLabel]] {
+        var count = 0
+        let pie = ["pieChart", "doughnutChart"].contains(kind)
+        return series.enumerated().map { s, entry in
+            var result: [Int: ChartPreparedLabel] = [:]
+            let positive = entry.values.prefix(512).compactMap { $0 }.filter { $0.isFinite && $0 > 0 }
+            // Normalize before summing so very large finite pie values remain usable.
+            let largest = positive.max() ?? 1
+            let total = positive.reduce(0) { $0 + $1 / largest }
+            for index in 0..<min(512, entry.values.count) {
+                guard let value = Self.finite(entry, index), !pie || value > 0 else { continue }
+                let spec = specs[s].points[index] ?? specs[s].standard
+                guard !spec.hidden else { continue }
+                var fields: [String] = []
+                if spec.showSeries { fields.append(entry.name) }
+                if spec.showCategory, categories.indices.contains(index) { fields.append(categories[index]) }
+                if spec.showValue { fields.append(spec.format.string(value)) }
+                if spec.showPercent && pie { fields.append(spec.percentFormat.string(total > 0 ? value / largest / total : 0)) }
+                guard !fields.isEmpty else { continue }
+                guard count < 512 else { chartOmission("data labels above the 512-label preview bound"); continue }
+                count += 1
+                guard let text = prepareChartText(fields.joined(separator: spec.separator), style: spec.style,
+                    measure: measure, width: bounds.width * 0.35, lines: 3), text.block.height <= bounds.height * 0.35 else {
+                    chartOmission("data labels"); continue
+                }
+                result[index] = ChartPreparedLabel(text: text, position: spec.position)
+            }
+            return result
+        }
+    }
+
+    private func renderBarLabel(_ label: ChartPreparedLabel?, value: Double, rect: ChartBarRect,
+                                horizontal: Bool, placements: ChartLabelPlacement) -> String {
+        guard let label else { return "" }
+        let width = label.text.block.width, height = label.text.block.height
+        let gap = 3.0 * Double(emuPerPoint)
         let centered = label.position == "ctr" || label.position == "bestFit"
         let inside = label.position == "inEnd", base = label.position == "inBase"
-        var x = rect.x + rect.width / 2, baseline = rect.y + rect.height / 2 + size * 0.3
+        var x = rect.x + (rect.width - width) / 2, y = rect.y + (rect.height - height) / 2
         var anchor = "middle"
         if !centered {
             if horizontal {
                 let right = base ? value < 0 : value >= 0
-                x = right ? rect.x + rect.width : rect.x
-                let inward = inside || base
-                x += (right == inward ? -gap : gap)
-                anchor = right == inward ? "end" : "start"
+                let edge = right ? rect.x + rect.width : rect.x
+                let beforeEdge = right == (inside || base)
+                x = beforeEdge ? edge - gap - width : edge + gap
+                anchor = beforeEdge ? "end" : "start"
             } else {
                 let top = base ? value < 0 : value >= 0
                 let edge = top ? rect.y : rect.y + rect.height
-                baseline = (top == (inside || base)) ? edge + gap + size * 0.8 : edge - gap
+                y = top == (inside || base) ? edge + gap : edge - gap - height
             }
         }
-        return chartTextElement(fields.joined(separator: label.separator), x: x, baseline: baseline,
-            style: label.style, anchor: anchor)
+        let desired = ChartTextRect(x: x, y: y, width: width, height: height)
+        if centered || inside || base {
+            guard ChartTextRect(x: rect.x, y: rect.y, width: rect.width, height: rect.height).contains(desired) else {
+                chartOmission("data labels inside small bars"); return ""
+            }
+        }
+        guard let placed = placements.place([desired]) else { chartOmission("data labels"); return "" }
+        return chartTextBlock(label.text, in: placed, anchor: anchor, role: "data-label")
+    }
+
+    private func renderPointLabel(_ label: ChartPreparedLabel?, x: Double, y: Double,
+                                  placements: ChartLabelPlacement) -> String {
+        guard let label else { return "" }
+        let width = label.text.block.width, height = label.text.block.height, gap = 5.0 * Double(emuPerPoint)
+        let top = ChartTextRect(x: x - width / 2, y: y - gap - height, width: width, height: height)
+        let bottom = ChartTextRect(x: x - width / 2, y: y + gap, width: width, height: height)
+        let left = ChartTextRect(x: x - gap - width, y: y - height / 2, width: width, height: height)
+        let right = ChartTextRect(x: x + gap, y: y - height / 2, width: width, height: height)
+        let center = ChartTextRect(x: x - width / 2, y: y - height / 2, width: width, height: height)
+        let candidates: [ChartTextRect]
+        switch label.position {
+        case "b": candidates = [bottom]
+        case "l": candidates = [left]
+        case "r": candidates = [right]
+        case "ctr": candidates = [center]
+        case "bestFit": candidates = [top, right, bottom, left]
+        default: candidates = [top]
+        }
+        guard let placed = placements.place(candidates) else { chartOmission("data labels"); return "" }
+        return chartTextBlock(label.text, in: placed, anchor: "middle", role: "data-label")
+    }
+
+    private func measuredPie(_ entry: ChartData.Series, kind: String, plot: XML.Element?,
+                             bounds: ChartTextRect, labels: [Int: ChartPreparedLabel], color: (Int) -> String) -> String {
+        let gap = 5.0 * Double(emuPerPoint)
+        let outside = labels.values.filter { !["ctr", "inEnd", "bestFit"].contains($0.position) }
+        let outsideWidth = outside.map { $0.text.block.width }.max() ?? 0
+        let radius = min(bounds.width / 2 - (outsideWidth > 0 ? outsideWidth + gap * 2 : 0), bounds.height / 2 - gap)
+        guard radius > 0 else { chartOmission("pie geometry and labels"); return "" }
+        let cx = bounds.x + bounds.width / 2, cy = bounds.y + bounds.height / 2
+        var entries: [(ChartPreparedLabel, Double, Double, Double)] = []
+        var out = pieBody(entry, kind: kind, plot: plot, cx: cx, cy: cy, radius: radius, color: color,
+            label: { index, angle, r in
+                if let label = labels[index] { entries.append((label, angle, cx + r * cos(angle), cy + r * sin(angle))) }
+            })
+        let placements = ChartLabelPlacement(bounds: bounds)
+        for (label, angle, _, _) in entries where ["ctr", "inEnd", "bestFit"].contains(label.position) {
+            let distance = kind == "doughnutChart" ? radius * 0.79 : radius * 0.60
+            let rect = ChartTextRect(x: cx + distance * cos(angle) - label.text.block.width / 2,
+                y: cy + distance * sin(angle) - label.text.block.height / 2,
+                width: label.text.block.width, height: label.text.block.height)
+            // A rectangle's four corners must fit inside the circle.
+            let inside = [rect.x, rect.right].allSatisfy { x in
+                [rect.y, rect.bottom].allSatisfy { y in hypot(x - cx, y - cy) <= radius }
+            }
+            if inside, let placed = placements.place([rect]) {
+                out += chartTextBlock(label.text, in: placed, anchor: "middle", role: "data-label")
+            } else { chartOmission("pie data labels"); }
+        }
+        for right in [false, true] {
+            let side = entries.enumerated().filter { item in
+                !["ctr", "inEnd", "bestFit"].contains(item.element.0.position) && (cos(item.element.1) >= 0) == right
+            }.sorted {
+                $0.element.3 == $1.element.3 ? $0.offset < $1.offset : $0.element.3 < $1.element.3
+            }
+            var packed: [(ChartPreparedLabel, Double, Double, ChartTextRect)] = []
+            var totalHeight = 0.0
+            for item in side {
+                let (label, _, sx, sy) = item.element
+                let height = label.text.block.height
+                guard totalHeight + height <= bounds.height else { chartOmission("pie data labels"); continue }
+                let x = right ? cx + radius + gap : cx - radius - gap - label.text.block.width
+                let desired = ChartTextRect(x: x, y: sy - height / 2, width: label.text.block.width, height: height)
+                packed.append((label, sx, sy, desired))
+                totalHeight += height + gap
+            }
+            var next = bounds.y
+            for i in packed.indices {
+                packed[i].3.y = max(next, packed[i].3.y)
+                next = packed[i].3.bottom + gap
+            }
+            next = bounds.bottom
+            for i in packed.indices.reversed() {
+                packed[i].3.y = min(packed[i].3.y, next - packed[i].3.height)
+                next = packed[i].3.y - gap
+            }
+            for (label, sx, sy, desired) in packed {
+                guard let rect = placements.place([desired]) else { chartOmission("pie data labels"); continue }
+                let ex = right ? rect.x : rect.right, ey = rect.y + rect.height / 2
+                out += "<polyline points=\"\(coord(sx)),\(coord(sy)) \(coord(ex)),\(coord(ey))\" fill=\"none\" stroke=\"\(label.text.style.fill)\" stroke-width=\"6350\"/>"
+                out += chartTextBlock(label.text, in: rect, anchor: right ? "start" : "end", role: "data-label")
+            }
+        }
+        return out
     }
 
     private func chartMarker(_ node: XML.Element?, inherited: XML.Element?, x: Double, y: Double, defaultColor: String) -> String {
@@ -1200,73 +1480,152 @@ struct SVGRenderer {
         }
         guard catCount > 0 else { return nil }
         let chartText = chart.root?.firstChild(named: "c:txPr")
-
-        let fx = Double(x), fy = Double(y), fw = Double(w), fh = Double(h)
-        let title = chart.title
-        let hasLegend = legendNode != nil
-        let legendPosition = legendNode?.firstChild(named: "c:legendPos")?[attribute: "val"] ?? "r"
-        let sideLegend = hasLegend && ["l", "r", "tr"].contains(legendPosition)
-        let padX = fw * 0.06
-        let padTop = fh * (title == nil ? 0.07 : 0.17) + (hasLegend && legendPosition == "t" ? fh * 0.10 : 0)
-        let padBottom = fh * (hasLegend && legendPosition == "b" ? 0.22 : 0.13)
-        let plotX = fx + padX + (sideLegend && legendPosition == "l" ? fw * 0.22 : 0)
-        let plotY = fy + padTop
-        let plotW = Swift.max(1, fw - padX * 2 - (sideLegend ? fw * 0.22 : 0))
-        let plotH = Swift.max(1, fh - padTop - padBottom)
-
+        let measure = ChartTextMeasurer(fonts: fonts) { code, impact, message in
+            diagnostics.record(code, impact, message)
+        }
+        let gap = 4.0 * Double(emuPerPoint)
+        // Keep an outer text-height inset as well as the measured plot gutters.
+        // Native decks can place independent annotations across the frame edge;
+        // pulling an endpoint tick up to that edge crowds those annotations.
+        let frameStyle = chartTextStyle([chartText], color: "#666666")
+        let textHeight = measure.block("", style: frameStyle.measurement, width: Double(w))?.height ?? 0
+        let margin = min(max(6.0 * Double(emuPerPoint), textHeight), Double(min(w, h)) * 0.05)
+        var content = ChartTextRect(x: Double(x) + margin, y: Double(y) + margin,
+                                   width: Double(w) - 2 * margin, height: Double(h) - 2 * margin)
         var out = ""
-        if let title {
+        if let title = chart.title {
             let node = chartNode?.firstChild(named: "c:title")
             let style = chartTextStyle([chartText, node?.firstChild(named: "c:txPr"),
                 node?.firstChild(named: "c:tx")?.firstChild(named: "c:rich")], color: "#666666", size: 13 * emuPerPoint)
-            out += chartTextElement(clipLabel(title, width: w, sizeEMU: style.size),
-                x: fx + fw / 2, baseline: fy + fh * 0.11, style: style, anchor: "middle")
+            if let text = prepareChartText(title, style: style, measure: measure, width: content.width),
+               text.block.height < content.height * 0.3 {
+                out += chartTextBlock(text, in: ChartTextRect(x: content.x, y: content.y,
+                    width: content.width, height: text.block.height), anchor: "middle", role: "title")
+                content.y += text.block.height + gap * 2
+                content.height -= text.block.height + gap * 2
+            } else { chartOmission("the chart title") }
         }
-
-        switch kind {
-        case "pieChart", "doughnutChart":
-            out += pieBody(series[0], kind: kind, cx: plotX + plotW / 2, cy: plotY + plotH / 2,
-                           radius: Swift.min(plotW, plotH) / 2 * 0.88, color: { color(0, $0) })
-        case "barChart", "lineChart", "areaChart":
-            let plot = chart.plots.first
-            let grouping = plot?.firstChild(named: "c:grouping")?[attribute: "val"] ?? "clustered"
-            let axis = chartNode?.firstChild(named: "c:plotArea")?.firstChild(named: "c:valAx")
-            let scale = ValueScale(series: series, catCount: catCount, grouping: grouping, axis: axis?.firstChild(named: "c:scaling"))
-            let horizontal = kind == "barChart"
-                && plot?.firstChild(named: "c:barDir")?[attribute: "val"] == "bar"
-            out += axes(plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, scale: scale, axis: axis, horizontal: horizontal,
-                        style: chartTextStyle([chartText, axis?.firstChild(named: "c:txPr")], color: "#666666"))
-            if kind == "barChart" {
-                let labels = barLabels(plot: plot, series: styles, chartText: chartText)
-                out += barBody(series, catCount: catCount, scale: scale, horizontal: horizontal,
-                               plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, color: color,
-                               label: { s, index, rect in
-                    renderBarLabel(labels[s], index: index, value: Self.finite(series[s], index) ?? 0,
-                        category: categories.indices.contains(index) ? categories[index] : "",
-                        seriesName: series[s].name, rect: rect, horizontal: horizontal)
+        let pie = ["pieChart", "doughnutChart"].contains(kind)
+        if let legendNode {
+            out += chartLegend(pie ? Array(categories.prefix(catCount)) : series.map(\.name),
+                position: legendNode.firstChild(named: "c:legendPos")?[attribute: "val"] ?? "r",
+                style: chartTextStyle([chartText, legendNode.firstChild(named: "c:txPr")], color: "#808080"),
+                measure: measure, content: &content, color: { pie ? color(0, $0) : color($0, nil) })
+        }
+        let plot = chart.plots.first
+        let specs = chartLabels(plot: plot, series: styles, chartText: chartText, kind: kind)
+        let labels = prepareChartLabels(specs, series: series, categories: categories, kind: kind,
+                                        measure: measure, bounds: content)
+        if pie {
+            out += measuredPie(series[0], kind: kind, plot: plot, bounds: content,
+                               labels: labels[0], color: { color(0, $0) })
+            return out
+        }
+        guard ["barChart", "lineChart", "areaChart"].contains(kind) else { return nil }
+        let plotArea = chartNode?.firstChild(named: "c:plotArea")
+        let axis = plotArea?.firstChild(named: "c:valAx")
+        let categoryAxis = plotArea?.firstChild(named: "c:catAx")
+        let horizontal = kind == "barChart" && plot?.firstChild(named: "c:barDir")?[attribute: "val"] == "bar"
+        let grouping = plot?.firstChild(named: "c:grouping")?[attribute: "val"] ?? "clustered"
+        let scale = ValueScale(series: series, catCount: catCount, grouping: grouping, axis: axis?.firstChild(named: "c:scaling"))
+        out += chartAxisTitle(horizontal ? categoryAxis : axis, chartText: chartText,
+                              measure: measure, content: &content, vertical: true)
+        out += chartAxisTitle(horizontal ? axis : categoryAxis, chartText: chartText,
+                              measure: measure, content: &content, vertical: false)
+        let ticks = chartTicks(scale: scale, axis: axis,
+            style: chartTextStyle([chartText, axis?.firstChild(named: "c:txPr")], color: "#666666"),
+            measure: measure, width: content.width * 0.35)
+        let tickWidth = ticks.compactMap(\.text).map { $0.block.width }.max() ?? 0
+        let tickHeight = ticks.compactMap(\.text).map { $0.block.height }.max() ?? 0
+        let categoryStyle = chartTextStyle([chartText, categoryAxis?.firstChild(named: "c:txPr")], color: "#808080")
+        let categoriesVisible = !["1", "true"].contains(categoryAxis?.firstChild(named: "c:delete")?[attribute: "val"] ?? "0")
+            && categoryAxis?.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none"
+        let flattened = labels.flatMap { $0.values }
+        let outside = flattened.filter { !["ctr", "inEnd", "inBase"].contains($0.position) }
+        let labelWidth = outside.map { $0.text.block.width }.max() ?? 0
+        let labelHeight = outside.map { $0.text.block.height }.max() ?? 0
+        let hasPositive = series.contains { $0.values.prefix(catCount).contains { ($0 ?? 0) >= 0 } }
+        let hasNegative = series.contains { $0.values.prefix(catCount).contains { ($0 ?? 0) < 0 } }
+        let outsideX = horizontal && labelWidth > 0 ? labelWidth + gap : kind == "lineChart" && labelWidth > 0 ? labelWidth + gap : 0
+        let outsideTop = !horizontal && labelHeight > 0 && hasPositive ? labelHeight + gap * 2 : 0
+        let outsideBottom = !horizontal && labelHeight > 0 && (hasNegative || kind == "lineChart") ? labelHeight + gap * 2 : 0
+        let leftOutside = horizontal ? (hasNegative ? outsideX : 0) : outsideX
+        let rightOutside = horizontal ? (hasPositive ? outsideX : 0) : outsideX
+        let leftTick = horizontal ? tickWidth / 2 : tickWidth + (tickWidth > 0 ? gap : 0)
+        let rightTick = horizontal ? tickWidth / 2 : 0
+        let topTick = horizontal ? 0 : tickHeight / 2
+        let bottomTick = horizontal ? tickHeight + (tickHeight > 0 ? gap : 0) : tickHeight / 2
+        var categoryTexts: [(Int, ChartPreparedText)] = []
+        var categoryWidth = 0.0, categoryHeight = 0.0
+        // Each trial reuses measured strings; only the available label slot changes.
+        // Dense axes sample labels in source order instead of overlapping them.
+        if categoriesVisible && !categories.isEmpty {
+            let authoredStride = max(1, categoryAxis?.firstChild(named: "c:tickLblSkip")?.boundedInt("val", in: 1...512) ?? 1)
+            var stride = authoredStride
+            while stride <= 512 {
+                let labelLimit = horizontal ? content.width * 0.30
+                    : max(0, content.width - leftTick - rightTick - leftOutside - rightOutside) / Double(catCount) * Double(stride) - gap
+                var trial: [(Int, ChartPreparedText)] = []
+                var fits = true
+                for index in Swift.stride(from: 0, to: min(catCount, categories.count), by: stride) {
+                    guard let text = prepareChartText(categories[index], style: categoryStyle,
+                        measure: measure, width: labelLimit, lines: 3) else { fits = false; continue }
+                    if horizontal && text.block.height + gap > max(0, content.height - bottomTick) / Double(catCount) * Double(stride) { fits = false }
+                    trial.append((index, text))
+                }
+                categoryTexts = trial
+                if fits || stride >= catCount { break }
+                stride = min(512, max(stride + 1, stride * 2))
+            }
+            let requestedCount = (min(catCount, categories.count) + authoredStride - 1) / authoredStride
+            if categoryTexts.count < requestedCount { chartOmission("category labels") }
+            categoryWidth = horizontal ? (categoryTexts.map { $0.1.block.width }.max() ?? 0) + gap : 0
+            categoryHeight = horizontal ? 0 : (categoryTexts.map { $0.1.block.height }.max() ?? 0) + gap
+        }
+        let left = max(leftTick, categoryWidth) + leftOutside
+        let right = rightTick + rightOutside
+        let top = max(topTick, outsideTop)
+        let bottom = max(bottomTick, categoryHeight) + outsideBottom
+        let area = ChartTextRect(x: content.x + left, y: content.y + top,
+            width: content.width - left - right, height: content.height - top - bottom)
+        guard area.width >= Double(emuPerPoint), area.height >= Double(emuPerPoint) else {
+            chartOmission("the plot because its measured labels leave no plotting area")
+            return out
+        }
+        let labelBounds = ChartTextRect(x: area.x - leftOutside, y: area.y - outsideTop,
+            width: area.width + leftOutside + rightOutside, height: area.height + outsideTop + outsideBottom)
+        let placements = ChartLabelPlacement(bounds: labelBounds)
+        out += measuredAxes(area: area, scale: scale, axis: axis, ticks: ticks, horizontal: horizontal,
+                            labelX: area.x - leftOutside - gap, labelY: area.bottom + outsideBottom + gap, bounds: content)
+        if kind == "barChart" {
+            out += barBody(series, catCount: catCount, scale: scale, horizontal: horizontal,
+                plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height, color: color,
+                label: { s, index, rect in
+                    renderBarLabel(labels[s][index], value: Self.finite(series[s], index) ?? 0,
+                        rect: rect, horizontal: horizontal, placements: placements)
                 })
-            } else {
-                let body = lineBody(series, catCount: catCount, scale: scale, filled: kind == "areaChart",
-                                plotX: plotX, plotY: plotY, plotW: plotW, plotH: plotH, styles: styles, color: { color($0, nil) })
-                out += "<svg x=\"\(plotX)\" y=\"\(plotY)\" width=\"\(plotW)\" height=\"\(plotH)\" viewBox=\"\(plotX) \(plotY) \(plotW) \(plotH)\" overflow=\"hidden\">\(body)</svg>"
-            }
-            let categoryAxis = chartNode?.firstChild(named: "c:plotArea")?.firstChild(named: "c:catAx")
-            if categoryAxis?.firstChild(named: "c:delete")?[attribute: "val"] != "1",
-               categoryAxis?.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none" {
-                out += categoryLabels(categories, catCount: catCount, plotX: plotX, plotW: plotW,
-                    baseY: plotY + plotH, height: fh, horizontal: horizontal, plotY: plotY, plotH: plotH,
-                    style: chartTextStyle([chartText, categoryAxis?.firstChild(named: "c:txPr")], color: "#808080"))
-            }
-        default:
-            return nil          // radar/scatter/bubble/surface → placeholder
+        } else {
+            var decorations = ""
+            let body = lineBody(series, catCount: catCount, scale: scale, filled: kind == "areaChart",
+                plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height,
+                styles: styles, color: { color($0, nil) }, decoration: { s, index, px, py, marker in
+                    guard py >= area.y - 0.01 && py <= area.bottom + 0.01 else { return }
+                    decorations += marker
+                    decorations += renderPointLabel(labels[s][index], x: px, y: py, placements: placements)
+                })
+            out += "<svg x=\"\(area.x)\" y=\"\(area.y)\" width=\"\(area.width)\" height=\"\(area.height)\" viewBox=\"\(area.x) \(area.y) \(area.width) \(area.height)\" overflow=\"hidden\">\(body)</svg>" + decorations
         }
-        if hasLegend {
-            let lx = sideLegend ? (legendPosition == "l" ? fx : plotX + plotW + fw * 0.02) : fx
-            let ly = sideLegend ? plotY : legendPosition == "t" ? plotY - fh * 0.11 : plotY + plotH + fh * 0.08
-            out += legend(series, x: lx, y: ly, width: sideLegend ? fw * 0.21 : fw, height: fh,
-                labels: ["pieChart", "doughnutChart"].contains(kind) ? categories : nil, vertical: sideLegend,
-                style: chartTextStyle([chartText, legendNode?.firstChild(named: "c:txPr")], color: "#808080"),
-                color: { ["pieChart", "doughnutChart"].contains(kind) ? color(0, $0) : color($0, nil) })
+        let categoryPlacements = ChartLabelPlacement(bounds: content)
+        for (index, text) in categoryTexts {
+            let center = horizontal ? area.y + area.height / Double(catCount) * (Double(catCount - index) - 0.5)
+                : area.x + area.width / Double(catCount) * (Double(index) + 0.5)
+            let desired = horizontal
+                ? ChartTextRect(x: area.x - leftOutside - gap - text.block.width, y: center - text.block.height / 2,
+                                width: text.block.width, height: text.block.height)
+                : ChartTextRect(x: center - text.block.width / 2, y: area.bottom + outsideBottom + gap,
+                                width: text.block.width, height: text.block.height)
+            guard let rect = categoryPlacements.place([desired]) else { chartOmission("category labels"); continue }
+            out += chartTextBlock(text, in: rect, anchor: horizontal ? "end" : "middle", role: "category")
         }
         return out
     }
@@ -1290,7 +1649,8 @@ struct SVGRenderer {
             stacked = percent || grouping == "stacked"
             var high = 0.0, low = 0.0
             if percent {
-                high = 100
+                high = 1
+                if series.contains(where: { $0.values.prefix(catCount).contains { ($0 ?? 0) < 0 } }) { low = -1 }
             } else if stacked {
                 for index in 0..<catCount {
                     var positive = 0.0, negative = 0.0
@@ -1326,42 +1686,33 @@ struct SVGRenderer {
         var zeroFraction: Double { fraction(Swift.max(Swift.min(0, minimum + range), minimum)) }
     }
 
-    private func axes(plotX: Double, plotY: Double, plotW: Double, plotH: Double,
-                      scale: ValueScale, axis: XML.Element?, horizontal: Bool, style: ChartTextAppearance) -> String {
-        guard axis?.firstChild(named: "c:delete")?[attribute: "val"] != "1" else { return "" }
-        let zero = horizontal ? plotX + plotW * scale.zeroFraction : plotY + plotH * (1 - scale.zeroFraction)
+    private func measuredAxes(area: ChartTextRect, scale: ValueScale, axis: XML.Element?, ticks: [ChartTick],
+                              horizontal: Bool, labelX: Double, labelY: Double, bounds: ChartTextRect) -> String {
+        guard !["1", "true"].contains(axis?.firstChild(named: "c:delete")?[attribute: "val"] ?? "0") else { return "" }
+        let zero = horizontal ? area.x + area.width * scale.zeroFraction : area.y + area.height * (1 - scale.zeroFraction)
         var out = horizontal
-            ? "<line x1=\"\(coord(zero))\" y1=\"\(coord(plotY))\" x2=\"\(coord(zero))\" y2=\"\(coord(plotY + plotH))\" stroke=\"#BFBFBF\" stroke-width=\"6350\"/>"
-            : "<line x1=\"\(coord(plotX))\" y1=\"\(coord(zero))\" x2=\"\(coord(plotX + plotW))\" y2=\"\(coord(zero))\" stroke=\"#BFBFBF\" stroke-width=\"6350\"/>"
-        guard let axis else { return out }
-        let exponent = pow(10, floor(log10(scale.range / 5)))
-        guard exponent.isFinite, exponent > 0 else { return out }
-        let unit = [1.0, 2, 5, 10].first { $0 * exponent >= scale.range / 5 }! * exponent
-        let requested = axis.firstChild(named: "c:majorUnit")?[attribute: "val"].flatMap(Double.init)
-        let step = requested.flatMap { $0.isFinite && $0 > 0 ? $0 : nil } ?? unit
-        let start = ceil(scale.minimum / step) * step
-        let grid = axis.firstChild(named: "c:majorGridlines")
-        let gridStyle = grid?.firstChild(named: "c:spPr")
-        let gridLine = gridStyle?.firstChild(named: "a:ln")
-        let gridColor = gridLine?.firstChild(named: "a:noFill") != nil ? "none" : colorHex(in: gridLine?.firstChild(named: "a:solidFill")) ?? "#D9D9D9"
-        let gridWidth = max(0, gridLine?.coordinate("w") ?? 6350)
-        let stroke = " stroke=\"\(gridColor)\" stroke-width=\"\(gridWidth)\"" + dashAttributes(gridLine, width: gridWidth)
-        let format = axis.firstChild(named: "c:numFmt")?[attribute: "formatCode"] ?? "General"
-        let formatter = chartNumberFormat(format)
-        for i in 0..<128 {
-            let value = start + Double(i) * step
-            guard value.isFinite, value <= scale.minimum + scale.range + step * 1e-8 else { break }
-            let fraction = scale.fraction(value)
-            let position = horizontal ? plotX + fraction * plotW : plotY + (1 - fraction) * plotH
+            ? "<line x1=\"\(coord(zero))\" y1=\"\(coord(area.y))\" x2=\"\(coord(zero))\" y2=\"\(coord(area.bottom))\" stroke=\"#BFBFBF\" stroke-width=\"6350\"/>"
+            : "<line x1=\"\(coord(area.x))\" y1=\"\(coord(zero))\" x2=\"\(coord(area.right))\" y2=\"\(coord(zero))\" stroke=\"#BFBFBF\" stroke-width=\"6350\"/>"
+        let grid = axis?.firstChild(named: "c:majorGridlines")
+        let gridLine = grid?.firstChild(named: "c:spPr")?.firstChild(named: "a:ln")
+        let color = gridLine?.firstChild(named: "a:noFill") != nil ? "none" : colorHex(in: gridLine?.firstChild(named: "a:solidFill")) ?? "#D9D9D9"
+        let width = max(0, gridLine?.coordinate("w") ?? 6350)
+        let stroke = " stroke=\"\(color)\" stroke-width=\"\(width)\"" + dashAttributes(gridLine, width: width)
+        let placements = ChartLabelPlacement(bounds: bounds)
+        for tick in ticks {
+            let fraction = scale.fraction(tick.value)
+            let position = horizontal ? area.x + fraction * area.width : area.y + (1 - fraction) * area.height
             if grid != nil {
                 out += horizontal
-                    ? "<line x1=\"\(coord(position))\" y1=\"\(coord(plotY))\" x2=\"\(coord(position))\" y2=\"\(coord(plotY + plotH))\"\(stroke)/>"
-                    : "<line x1=\"\(coord(plotX))\" y1=\"\(coord(position))\" x2=\"\(coord(plotX + plotW))\" y2=\"\(coord(position))\"\(stroke)/>"
+                    ? "<line x1=\"\(coord(position))\" y1=\"\(coord(area.y))\" x2=\"\(coord(position))\" y2=\"\(coord(area.bottom))\"\(stroke)/>"
+                    : "<line x1=\"\(coord(area.x))\" y1=\"\(coord(position))\" x2=\"\(coord(area.right))\" y2=\"\(coord(position))\"\(stroke)/>"
             }
-            if axis.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none" {
-                out += chartTextElement(formatter.string(value), x: horizontal ? position : plotX - 45_720,
-                    baseline: horizontal ? plotY + plotH + Double(style.size) * 1.2 : position + Double(style.size) * 0.3,
-                    style: style, anchor: horizontal ? "middle" : "end")
+            if let text = tick.text {
+                let desired = ChartTextRect(x: horizontal ? position - text.block.width / 2 : labelX - text.block.width,
+                    y: horizontal ? labelY : position - text.block.height / 2, width: text.block.width, height: text.block.height)
+                if let rect = placements.place([desired]) {
+                    out += chartTextBlock(text, in: rect, anchor: horizontal ? "middle" : "end", role: "value-axis")
+                } else { chartOmission("value-axis labels") }
             }
         }
         return out
@@ -1384,13 +1735,14 @@ struct SVGRenderer {
 
         for index in 0..<catCount {
             let bandStart = (horizontal ? plotY : plotX) + Double(horizontal ? catCount - index - 1 : index) * slot + inset
+            // Normalize once per category; a finite input near Double.max must
+            // not overflow the percent denominator or erase every segment.
+            let largest = scale.percent ? (series.compactMap { Self.finite($0, index).map(abs) }.max() ?? 0) : 0
+            let total = largest > 0 ? series.reduce(0.0) { $0 + abs(Self.finite($1, index) ?? 0) / largest } : 0
             for (s, entry) in series.enumerated() {
                 guard var value = Self.finite(entry, index) else { continue }
                 if scale.percent {
-                    let total = series.reduce(0.0) { sum, other in
-                        sum + Swift.abs(Self.finite(other, index) ?? 0)
-                    }
-                    value = total > 0 ? value / total * 100 : 0
+                    value = total > 0 ? (value / largest) / total : 0
                 }
                 // Stacked bars grow from the running top of their own sign.
                 let start: Double, end: Double
@@ -1428,13 +1780,13 @@ struct SVGRenderer {
 
     private func lineBody(_ series: [ChartData.Series], catCount: Int, scale: ValueScale,
                           filled: Bool, plotX: Double, plotY: Double,
-                          plotW: Double, plotH: Double, styles: [XML.Element], color: (Int) -> String) -> String {
+                          plotW: Double, plotH: Double, styles: [XML.Element], color: (Int) -> String,
+                          decoration: (Int, Int, Double, Double, String) -> Void) -> String {
         // Points sit at category centers, matching where bars are drawn.
         let step = plotW / Double(catCount)
         var out = ""
         for (s, entry) in series.enumerated() {
             var points: [(Double, Double)] = []
-            var markers = ""
             let seriesMarker = styles[s].firstChild(named: "c:marker")
             var pointMarkers: [Int: XML.Element] = [:]
             for point in styles[s].children(named: "c:dPt") {
@@ -1446,9 +1798,10 @@ struct SVGRenderer {
                 let point = (plotX + step * (Double(index) + 0.5),
                              plotY + plotH * (1 - scale.fraction(value)))
                 points.append(point)
-                markers += chartMarker(pointMarkers[index], inherited: seriesMarker, x: point.0, y: point.1, defaultColor: color(s))
+                decoration(s, index, point.0, point.1,
+                    chartMarker(pointMarkers[index], inherited: seriesMarker, x: point.0, y: point.1, defaultColor: color(s)))
             }
-            guard points.count > 1 else { out += markers; continue }
+            guard points.count > 1 else { continue }
             let path = points.map { "\(coord($0.0)),\(coord($0.1))" }.joined(separator: " ")
             let color = color(s)
             if filled {
@@ -1464,28 +1817,31 @@ struct SVGRenderer {
             let dash = dashAttributes(ln, width: lineWidth)
             out += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" "
                 + "stroke-width=\"\(lineWidth)\"\(dash) stroke-linejoin=\"round\"/>"
-            out += markers
         }
         return out
     }
 
-    private func pieBody(_ entry: ChartData.Series, kind: String,
-                         cx: Double, cy: Double, radius: Double, color: (Int) -> String) -> String {
+    private func pieBody(_ entry: ChartData.Series, kind: String, plot: XML.Element?,
+                         cx: Double, cy: Double, radius: Double, color: (Int) -> String,
+                         label: (Int, Double, Double) -> Void) -> String {
         guard radius > 0 else { return "" }
         let values = entry.values.prefix(512).enumerated().compactMap { index, value -> (Int, Double)? in
             guard let value, value.isFinite, value > 0 else { return nil }; return (index, value)
         }
-        let total = values.reduce(0) { $0 + $1.1 }
+        let largest = values.map(\.1).max() ?? 1
+        let total = values.reduce(0) { $0 + $1.1 / largest }
         guard total.isFinite, total > 0 else { return "" }
         let doughnut = kind == "doughnutChart"
         // Doughnuts are stroked arcs rather than a pie with a punched hole, so
         // they don't need to know the slide background color.
-        let ringWidth = radius * 0.42
+        let hole = Double(plot?.firstChild(named: "c:holeSize")?.boundedInt("val", in: 10...90) ?? 58) / 100
+        let ringWidth = radius * (1 - hole)
         let ringRadius = radius - ringWidth / 2
         var out = ""
-        var angle = -Double.pi / 2
+        var angle = -Double.pi / 2 + Double(plot?.firstChild(named: "c:firstSliceAng")?.boundedInt("val", in: 0...360) ?? 0) * Double.pi / 180
         for (index, value) in values {
-            let sweep = value / total * 2 * Double.pi
+            let sweep = (value / largest) / total * 2 * Double.pi
+            label(index, angle + sweep / 2, radius)
             let end = angle + sweep
             let color = color(index)
             let r = doughnut ? ringRadius : radius
@@ -1512,62 +1868,6 @@ struct SVGRenderer {
             angle = end
         }
         return out
-    }
-
-    private func categoryLabels(_ categories: [String], catCount: Int, plotX: Double,
-                                plotW: Double, baseY: Double, height: Double, horizontal: Bool, plotY: Double, plotH: Double,
-                                style: ChartTextAppearance) -> String {
-        guard !categories.isEmpty else { return "" }
-        guard catCount <= 12 else {
-            diagnostics.record(.chartApproximation, .omission, "Chart preview omits category labels above its 12-category label limit.")
-            return ""
-        }
-        let step = plotW / Double(catCount)
-        let size = style.size
-        var out = ""
-        for (index, label) in categories.prefix(catCount).enumerated() {
-            out += chartTextElement(clipLabel(label, width: coord(step), sizeEMU: size),
-                x: horizontal ? plotX - 45_720 : plotX + step * (Double(index) + 0.5),
-                baseline: horizontal ? plotY + plotH / Double(catCount) * (Double(catCount - index) - 0.5) + Double(size) * 0.3
-                    : baseY + max(height * 0.06, Double(size) * 1.2),
-                style: style, anchor: horizontal ? "end" : "middle")
-        }
-        return out
-    }
-
-    private func legend(_ series: [ChartData.Series], x: Double, y: Double, width: Double,
-                        height: Double, labels: [String]?, vertical: Bool, style: ChartTextAppearance, color: (Int) -> String) -> String {
-        let names = labels ?? series.map(\.name)
-        if names.count > 6 {
-            diagnostics.record(.chartApproximation, .omission, "Chart preview shows the first six legend entries; additional legend labels are omitted.")
-        }
-        let entries = Array(names.prefix(6)).enumerated().filter { !$0.element.isEmpty }
-        guard !entries.isEmpty else { return "" }
-        let size = style.size
-        let slot = vertical ? width : width / Double(entries.count)
-        let swatch = height * 0.035
-        var out = ""
-        for (slotIndex, entry) in entries.enumerated() {
-            let left = x + (vertical ? 0 : slot * Double(slotIndex)) + slot * 0.1
-            let y = y + (vertical ? Double(slotIndex) * max(height * 0.08, Double(size) * 1.5) : 0)
-            out += box(coord(left), coord(y + height * 0.02), coord(swatch), coord(swatch),
-                       fill: color(entry.offset))
-            out += chartTextElement(clipLabel(entry.element, width: coord(slot * 0.75), sizeEMU: size),
-                x: left + swatch * 1.5, baseline: y + height * 0.02 + swatch * 0.85,
-                style: style, anchor: "start")
-        }
-        return out
-    }
-
-    /// Truncate a chart label to one line at the estimated glyph advance. Axis
-    /// and legend labels are single-line by nature — wrapping them would push
-    /// the plot around — so this is the one place an ellipsis is still right.
-    private func clipLabel(_ text: String, width: Int, sizeEMU: Int) -> String {
-        let approxCharWidth = sizeEMU / 2
-        guard approxCharWidth > 0, width > 0 else { return text }
-        let maxChars = Swift.max(1, width / approxCharWidth)
-        guard text.count > maxChars else { return text }
-        return String(text.prefix(Swift.max(1, maxChars - 1))) + "…"
     }
 
     /// Theme accents keep charts on-brand with the deck they live in.

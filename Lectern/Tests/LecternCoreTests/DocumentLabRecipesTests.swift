@@ -95,9 +95,9 @@ import Rostrum
     @Test func galleryContainsEveryPlotFamilyAndTwoAxisCombo() throws {
         let draft = try DocumentLabRecipes.make(.charts, options: .init(sampleSize: 3))
         let reopened = try Presentation(data: draft.deck.serializedData())
-        #expect(reopened.charts.count == 12)
+        #expect(reopened.charts.count == 13)
         #expect(Set(reopened.charts.flatMap(\.plotTypes)) == Set(["barChart", "lineChart", "areaChart", "pieChart", "doughnutChart", "radarChart", "scatterChart", "bubbleChart"]))
-        let combo = try #require(reopened.charts.last)
+        let combo = reopened.charts[11]
         let xml = try combo.part.dom().serialized()
         #expect(combo.isCombo)
         #expect(xml.contains("Secondary units"))

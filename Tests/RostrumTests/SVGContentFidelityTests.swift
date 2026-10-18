@@ -158,9 +158,11 @@ import Testing
         let chart = try #require(deck.slides[1].charts.first)
         try #require(chart.plots.first?.firstChild(named: "c:barDir"))[attribute: "val"] = "bar"
         let svg = try deck.renderSVG(slideAt: 1)
-        let texts = try xml(svg).children(named: "text")
+        let texts = try xml(svg).children(named: "g")
+            .filter { $0[attribute: "data-rostrum-chart-role"] == "category" }
+            .flatMap { $0.children(named: "text") }
         let labels = texts.filter { $0.textContent == "CategoryA" || $0.textContent == "CategoryB" }
-        #expect(labels.count == 2)
+        try #require(labels.count == 2)
         #expect(labels.allSatisfy { $0[attribute: "text-anchor"] == "end" })
         #expect(labels[0][attribute: "transform"] != labels[1][attribute: "transform"])
     }

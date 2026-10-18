@@ -236,6 +236,29 @@ import Testing
         #expect(try deck.validate().isEmpty)
     }
 
+    @Test func explicitAgendaLinkAppearanceSurvivesSaveAndPreview() throws {
+        let deck = try Presentation()
+        let agenda = try deck.bulletSlide("Agenda", ["Results"])
+        let target = try deck.sectionSlide("Results")
+        let run = try #require(agenda.shapes.compactMap(\.textFrame)
+            .flatMap(\.paragraphs).flatMap(\.runs).first { $0.text == "Results" })
+        run.color = Color("17324D")
+        run.underline = false
+        run.setSlideLink(to: target)
+        let bytes = try deck.serializedData()
+        let reopened = try Presentation(data: bytes)
+        let restored = try #require(reopened.slides[1].shapes.compactMap(\.textFrame)
+            .flatMap(\.paragraphs).flatMap(\.runs).first { $0.text == "Results" })
+        #expect(restored.color?.hex == "17324D")
+        #expect(!restored.underline)
+        #expect(restored.hyperlink?.contains("slide") == true)
+        #expect(Color("17324D").contrastRatio(with: .white) >= 4.5)
+        let svg = try reopened.renderSVG(slideAt: 1)
+        #expect(svg.contains("#17324D"))
+        #expect(!svg.contains("underline"))
+        #expect(try reopened.serializedData() == bytes)
+    }
+
     @Test func numericTableColumnsAlignRightAndTextColumnsDoNot() throws {
         let deck = try Presentation()
         let slide = try deck.tableSlide("Plans", rows: [
