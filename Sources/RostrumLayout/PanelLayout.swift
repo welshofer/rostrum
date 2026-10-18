@@ -55,7 +55,8 @@ public enum PanelLayout {
             let needed = sideBySide ? max(hh, dh) : hh + gap + dh
             guard !item.heading.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
                   width > 0, hh.isFinite, dh.isFinite, needed <= cell.height.points - 2 * inset else {
-                throw LayoutError.cannotFit("Panel ‘\(item.heading.prefix(80))’ needs a roomier layout or less content.")
+                let available = cell.height.points - 2 * inset
+                throw LayoutError.cannotFit("\(kind.rawValue) panel ‘\(item.heading.prefix(80))’ needs \(needed.rounded(.up)) pt of height; the frame allows \(available.rounded(.down)) pt. Choose a roomier layout or less content.")
             }
             let heading = Rect(x: cell.x + .points(inset + numberSpace),
                 y: cell.y + .points(sideBySide ? (cell.height.points - hh) / 2 : inset),

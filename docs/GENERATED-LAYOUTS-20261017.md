@@ -57,6 +57,14 @@ catalog. Portable native-pack/fidelity checks and both executable README example
 also pass. macOS/iOS app builds are delegated to required Apple PR checks;
 app-hosted test execution and live PowerPoint review remain separate.
 
+Apple's focused run caught an oversized card in the synthetic 4:3 Lab recipe.
+The demo headline is now “Four checks”, leaving more room below the ordinary
+header; panel text and font sizes are unchanged. Fitting errors report required
+and available heights. CI runs this case early with Apple's text measurement and
+publishes bounded failure details as annotations, retaining the failing exit code.
+The final local panel/generated-layout checks and post-pull script pass; required
+Apple checks gate the merge and their outcome is recorded on the pull request.
+
 ## Performance controls
 
 Baseline: `4af22a1886a39d2fc0673fd46fa88783fcf85cb3`. Both executables were built
@@ -132,6 +140,33 @@ and peak RSS **49,540 KiB** (48.38 MiB). CPU ranges 822.28–895.02 ms; elapsed
 854.42–933.72 ms; RSS 49,372–50,088 KiB. All 20 canonical new-workload artifacts
 match between processes. These are absolute Linux measurements, not comparisons
 to an older renderer that lacks the new content vocabulary.
+
+### Final fixture follow-up
+
+The initial records above remain intact. After shortening the Lab headline and
+adding measured fitting errors, a fresh normal Release candidate was compared
+with the retained baseline in new output directories using ten-render controls.
+The [final batch record](benchmarks/2026-10-17-generated-layouts-final-batch.json.gz)
+preserves source hashes and every sample. All **450 artifacts remain exact**.
+
+| Control | Paired CPU change | Paired elapsed change | Paired peak RSS change |
+| --- | ---: | ---: | ---: |
+| Mixed | −0.88% | −0.41% | +0.18% |
+| Small table | −0.68% | +0.04% | +0.05% |
+| Large table | −1.05% | −0.72% | +0.14% |
+| Template table | +3.58% | +4.79% | +0.31% |
+
+Separate baseline/candidate CPU medians (ms) are 2240.99 → 2219.56,
+438.23 → 440.96, 2558.63 → 2518.92 and 3155.09 → 3342.65 respectively.
+The template cost persists; these results do not establish performance parity.
+The unchanged output and small memory differences do not erase that CPU cost.
+
+The [final new-workload record](benchmarks/2026-10-17-generated-layouts-final-new.json.gz)
+retains the updated demo title, with 20 artifacts identical across processes.
+Median CPU is **747.86 ms**, elapsed **780.39 ms** and peak RSS **49,732 KiB**
+(48.57 MiB). CPU ranges 736.86–879.14 ms; elapsed 767.60–917.77 ms; RSS
+49,384–50,000 KiB. The contact sheets and review hashes above refer to this final
+fixture. Differences from the earlier absolute run are not a speedup claim.
 
 ### Reproduction
 

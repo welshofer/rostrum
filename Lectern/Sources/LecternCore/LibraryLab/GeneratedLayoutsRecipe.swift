@@ -25,7 +25,7 @@ public extension LibraryLab {
                              .init(row: 0, column: 3, direction: .vertical270)])
         let slides = [
             IRSlide(id: "cover", layout: "title", title: "Make room for the idea", body: Body(subtitle: "More ways to compose editable slides")),
-            IRSlide(id: "cards", layout: "cards", title: "Four checks, one clear decision", body: Body(panels: panels + [.init(heading: "Reliability", detail: "Save, reopen and inspect the same deck before accepting it.")])),
+            IRSlide(id: "cards", layout: "cards", title: "Four checks", body: Body(panels: panels + [.init(heading: "Reliability", detail: "Save, reopen and inspect the same deck before accepting it.")])),
             IRSlide(id: "columns", layout: "threeColumn", title: "Three priorities guide the work", body: Body(panels: panels)),
             IRSlide(id: "steps", layout: "numberedSteps", title: "Turn evidence into a finished deck", body: Body(panels: [
                 .init(heading: "Prepare", detail: "Choose content and typography."),
