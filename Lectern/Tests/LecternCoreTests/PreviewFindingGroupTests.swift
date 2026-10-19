@@ -26,4 +26,18 @@ import Rostrum
         #expect(diagnostics.flatMap(\.issues).count == 5)
         #expect(PreviewFindingGroup.collect(records: records, diagnostics: []).allSatisfy { !$0.isVerificationNote })
     }
+
+    @Test func symbolSubstitutionsReadAsOneSentence() {
+        let warnings = [
+            "Preview symbol U+2192 uses registered Apple Symbols because Georgia has no glyph. The document font is unchanged.",
+            "Preview symbol U+2717 uses registered Zapf Dingbats because Georgia has no glyph. The document font is unchanged.",
+            "OS/2 embedding restrictions prevent embedding Zapf Dingbats in SVG.",
+            "OS/2 embedding restrictions prevent embedding Brand Sans in SVG.",
+        ]
+        #expect(PreviewFindingGroup.combiningSymbolSubstitutions(warnings) == [
+            "\u{2192} (U+2192) is drawn with Apple Symbols because Georgia lacks it.",
+            "\u{2717} (U+2717) is drawn with the installed Zapf Dingbats because Georgia lacks it.",
+            "OS/2 embedding restrictions prevent embedding Brand Sans in SVG.",
+        ])
+    }
 }
