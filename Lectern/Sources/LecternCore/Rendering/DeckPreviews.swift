@@ -75,6 +75,11 @@ struct DeckPreviews {
     var slideNumbers: [Int] { records.map(\.number) }
     var warnings: [String] { records.flatMap { r in r.warnings.map { "Slide \(r.number): \($0)" } } }
 
+    /// Preview-only symbol faces, in order. Apple Symbols covers arrows and
+    /// geometric shapes but not the Dingbats block (✓ ✗ ✔), which Zapf Dingbats
+    /// supplies on macOS and iOS. Arial is the portable last resort.
+    static let symbolFallbackFamilies = ["Apple Symbols", "Zapf Dingbats", "Arial"]
+
     /// The shared inspection profile. Callers register embedded fonts first;
     /// exact installed faces then fill any gaps, with an explicit preview-only
     /// fallback. Generation's measurement aliases never enter this registry.
@@ -85,10 +90,10 @@ struct DeckPreviews {
             try InspectionFonts.families(in: presentation, explicit: explicitFonts)
         }
         _ = PipelineTrace.measure("preview.installedFonts") {
-            InstalledFonts.register(in: presentation, families: families + ["Arial", "Apple Symbols"])
+            InstalledFonts.register(in: presentation, families: families + ["Arial"] + symbolFallbackFamilies)
         }
         presentation.fonts.previewFallbackFamily = "Arial"
-        presentation.fonts.previewSymbolFallbackFamilies = ["Apple Symbols", "Arial"]
+        presentation.fonts.previewSymbolFallbackFamilies = symbolFallbackFamilies
         let total = presentation.slides.count
         var result = DeckPreviews()
         onProgress(0, total)

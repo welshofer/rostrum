@@ -66,8 +66,10 @@ ordinary letters and multi-scalar graphemes are not split. Layout measures and
 paints the same selected face, retains a substitution diagnostic, and leaves
 source XML unchanged. A new operation observes changed registration or policy.
 
-Lectern's saved-deck and notes previews register Apple Symbols when available,
-then use Apple Symbols and Arial as their explicit symbol fallback policy.
+Lectern's saved-deck and notes previews register Apple Symbols and Zapf Dingbats
+when available, then use Apple Symbols, Zapf Dingbats and Arial as their explicit
+symbol fallback policy. Apple Symbols has no Dingbats-block glyphs such as ✓
+(U+2713); Zapf Dingbats supplies them.
 Unavailable or unsuitable faces do not make a missing glyph pass silently.
 There is no new font restriction on library users and no automatic OS lookup
 inside Rostrum.

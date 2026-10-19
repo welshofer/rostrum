@@ -56,7 +56,7 @@ import Rostrum
         let bytes = try Data(contentsOf: result.url)
         if mode == "missing" {
             #expect(result.previewDiagnostics.flatMap(\.issues).contains {
-                $0.code == "missingFont" && $0.message.contains("preview uses registered arial")
+                $0.code == "missingFont" && $0.message.contains("preview uses registered Arial")
             })
             // The preview fallback must never rewrite the caller's font names.
             let saved = try Presentation(data: bytes)

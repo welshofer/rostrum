@@ -21,7 +21,7 @@ import Testing
         let rendered = try deck.renderSVGReportingProblems(slideAt: 0)
         #expect(rendered.svg.contains("measured fallback")) // metric-only fixture uses explicit viewer family
         try expectExplicitScalarPositions(rendered.svg)
-        #expect(rendered.problems.fidelityIssues.contains { $0.code == .missingFont && $0.message.contains("measured fallback") })
+        #expect(rendered.problems.fidelityIssues.contains { $0.code == .missingFont && $0.message.contains("Measured Fallback") })
         #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
         #expect(try deck.serializedData() == bytes)
         #expect(try deck.renderSVG(slideAt: 0) == rendered.svg)

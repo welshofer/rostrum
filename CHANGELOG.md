@@ -12,6 +12,8 @@ the conformance documentation separately describes rendering limitations.
   symbols. Lectern discovers chart fonts and groups repeated preview findings,
   separating unverified native text cases from concrete limitations. Saved
   content remains unchanged. See [support and checks](docs/CHART-PREVIEW-FIDELITY.md).
+- Lectern previews fall back to Zapf Dingbats for Dingbats-block symbols such
+  as ✓, which Apple Symbols and Arial lack.
 
 - Add measured editable `PanelLayout` cards, three-column panels and numbered
   steps. Lectern exposes all three through generation, template composition,

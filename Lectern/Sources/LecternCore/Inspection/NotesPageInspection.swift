@@ -36,9 +36,9 @@ extension DeckInspector {
         _ = deck.registerEmbeddedFonts()
         let explicit = DeckDetailExtractor.declaredFonts(in: try slide.part.dom())
         let families = try InspectionFonts.families(in: deck, explicit: explicit, includeNotes: true)
-        _ = InstalledFonts.register(in: deck, families: families + ["Arial", "Apple Symbols"])
+        _ = InstalledFonts.register(in: deck, families: families + ["Arial"] + DeckPreviews.symbolFallbackFamilies)
         deck.fonts.previewFallbackFamily = "Arial"
-        deck.fonts.previewSymbolFallbackFamilies = ["Apple Symbols", "Arial"]
+        deck.fonts.previewSymbolFallbackFamilies = DeckPreviews.symbolFallbackFamilies
         try Task.checkCancellation()
         let result = try deck.renderNotesSVGReportingProblems(slideAt: slideNumber - 1, pixelWidth: 960)
         try Task.checkCancellation()
