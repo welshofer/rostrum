@@ -152,7 +152,9 @@ import Rostrum
         }
         let saved = try Data(contentsOf: result.afterURL)
         let deck = try Presentation(contentsOf: result.afterURL)
-        #expect(deck.slides.count == 1 && deck.registerEmbeddedFonts() == ["DejaVu Sans"])
+        // Slide 1 is the Unicode fitting sample; slide 2 is the authored-fitting demonstration.
+        #expect(deck.slides.count == 2)
+        #expect(deck.registerEmbeddedFonts() == ["DejaVu Sans"])
         let embedded = try #require(deck.fonts.data(for: .init(family: "DejaVu Sans")))
         #expect(!embedded.isEmpty)
         let box = try #require(deck.slides[0].shapes.all.first)
@@ -164,7 +166,7 @@ import Rostrum
         await context.app.inspect(deckAt: result.afterURL).value
         #expect(context.app.phase == .inspected)
         let inspection = try #require(context.app.inspection)
-        #expect(inspection.slideCount == 1 && inspection.embeddedFonts == ["DejaVu Sans"])
+        #expect(inspection.slideCount == 2 && inspection.embeddedFonts == ["DejaVu Sans"])
         let previewIndex = try #require(inspection.previewSlideNumbers.firstIndex(of: 1))
         let savedSVG = try String(contentsOf: result.directory.appendingPathComponent("previews/slide-01.svg"), encoding: .utf8)
         #expect(savedSVG == inspection.previews[previewIndex])
@@ -184,13 +186,14 @@ import Rostrum
         let task = try #require(context.app.exportInspected(into: root.appendingPathComponent("Export")))
         await task.value
         #expect(context.app.exportProblem == nil)
-        #expect(context.app.exportSummary == "1 slide · 0 media files · 0 chart CSVs")
+        #expect(context.app.exportSummary == "2 slides · 0 media files · 0 chart CSVs")
         let directory = try #require(context.app.exportedDirectory)
         let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         let markdown = try Data(contentsOf: #require(files.first { $0.pathExtension == "md" }))
         #expect(markdown.range(of: Data(expectedBody.utf8)) != nil)
         let reopened = try Presentation(contentsOf: result.afterURL)
-        #expect(reopened.slides.count == 1 && reopened.registerEmbeddedFonts() == ["DejaVu Sans"])
+        #expect(reopened.slides.count == 2)
+        #expect(reopened.registerEmbeddedFonts() == ["DejaVu Sans"])
         #expect(reopened.fonts.data(for: .init(family: "DejaVu Sans")) == embedded)
         #expect(try Data(contentsOf: result.afterURL) == saved && reopened.serializedData() == saved)
         // Passing preservation and diagnosed previews does not establish native
