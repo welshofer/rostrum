@@ -19,7 +19,12 @@ import Rostrum
         let deck = try Presentation(data: before)
         _ = deck.registerEmbeddedFonts()
         let explicit = DeckDetailExtractor.declaredFonts(in: try deck.slides[0].part.dom())
-        _ = InstalledFonts.register(in: deck, families: try InspectionFonts.families(in: deck, explicit: explicit, includeNotes: true))
+        let families = try InspectionFonts.families(in: deck, explicit: explicit, includeNotes: true)
+        // Compare the same explicit preview policy, including its diagnostic
+        // font names when the host has no installed fallback fonts.
+        _ = InstalledFonts.register(in: deck, families: families + ["Arial"] + DeckPreviews.symbolFallbackFamilies)
+        deck.fonts.previewFallbackFamily = "Arial"
+        deck.fonts.previewSymbolFallbackFamilies = DeckPreviews.symbolFallbackFamilies
         let reference = try deck.renderNotesSVGReportingProblems(slideAt: 0, pixelWidth: 960)
         #expect(preview.fileURL == url && preview.slideNumber == 1)
         #expect(preview.svg == reference.svg)
