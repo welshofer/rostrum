@@ -88,10 +88,18 @@ final class RenderDiagnosticCollector {
     /// the SVG does not accidentally pick a similarly named platform font.
     func embeddedFamily(for face: FontFaceKey, fonts: FontLibrary) -> String? {
         let resourceFace = fonts.previewFace(for: face) ?? face
+        // Face keys are case-folded; messages use a registered font's own name,
+        // or the caller's spelling of a configured fallback registered by alias.
+        func name(_ key: FontFaceKey) -> String {
+            let names = ((fonts.metrics(for: key) ?? fonts.metrics(for: key.family))?.familyNames ?? [])
+                + [fonts.previewFallbackFamily].compactMap { $0 } + fonts.previewSymbolFallbackFamilies
+            return names.first { $0.lowercased() == key.family } ?? key.family
+        }
+        let requested = name(face), resource = name(resourceFace)
         if resourceFace.family != face.family {
-            record(.missingFont, .missingResource, "Requested font \(face.family) is unavailable; preview uses registered \(resourceFace.family). The document font is unchanged.")
+            record(.missingFont, .missingResource, "Requested font \(requested) is unavailable; preview uses registered \(resource). The document font is unchanged.")
         } else if resourceFace != face {
-            record(.viewerFontDependency, .approximation, "Requested style of \(face.family) is unavailable; using its registered regular face with viewer style synthesis.")
+            record(.viewerFontDependency, .approximation, "Requested style of \(requested) is unavailable; using its registered regular face with viewer style synthesis.")
         }
         if let existing = resolvedFaces[face] { return existing }
         if let missing = unavailableFaces[face] { record(missing.0, missing.1, missing.2); return nil }
@@ -101,17 +109,17 @@ final class RenderDiagnosticCollector {
             return nil
         }
         guard let data = fonts.data(for: resourceFace) else {
-            return unavailable(.viewerFontDependency, .approximation, "No embeddable registered font resource for \(face.family).")
+            return unavailable(.viewerFontDependency, .approximation, "No embeddable registered font resource for \(requested).")
         }
         if let restriction = EOTLite.fsType(of: data), restriction & 0x0202 != 0 {
-            return unavailable(.fontEmbeddingRestricted, .missingResource, "OS/2 embedding restrictions prevent embedding \(face.family) in SVG.")
+            return unavailable(.fontEmbeddingRestricted, .missingResource, "OS/2 embedding restrictions prevent embedding \(requested) in SVG.")
         }
         let signature = Array(data.prefix(4))
         guard signature != [0x74, 0x74, 0x63, 0x66] else {
-            return unavailable(.unsupportedFontEmbedding, .approximation, "Collection-face extraction is required before embedding \(face.family) in SVG.")
+            return unavailable(.unsupportedFontEmbedding, .approximation, "Collection-face extraction is required before embedding \(requested) in SVG.")
         }
         guard fonts.metrics(for: resourceFace)?.hasOutlines == true else {
-            return unavailable(.unsupportedFontEmbedding, .missingResource, "Font \(face.family) has metrics but no supported outline tables for SVG.")
+            return unavailable(.unsupportedFontEmbedding, .missingResource, "Font \(requested) has metrics but no supported outline tables for SVG.")
         }
         if let shared = embeddedFaces.first(where: { $0.data == data && $0.bold == resourceFace.bold && $0.italic == resourceFace.italic }) {
             resolvedFaces[face] = shared.family

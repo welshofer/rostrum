@@ -205,10 +205,13 @@ extension RichTextLayout {
                 if scalars.count == 1, let scalar = scalars.first, metrics.glyphID(for: scalar) == 0,
                    let selected = fonts.previewSymbolFace(for: scalar, requested: FontFaceKey(family: family, bold: style.bold, italic: style.italic)) {
                     flush()
-                    var run = style; run.text = String(character); run.fontFamily = selected.family
+                    // Face keys are case-folded; show and paint the font's own family name.
+                    let selectedMetrics = fonts.metrics(for: selected)
+                    let name = selectedMetrics?.familyNames.first { $0.lowercased() == selected.family } ?? selected.family
+                    var run = style; run.text = String(character); run.fontFamily = name
                     run.bold = selected.bold; run.italic = selected.italic
-                    pieces.append(Preparation.Piece(text: run.text, style: run, metrics: fonts.metrics(for: selected),
-                        previewSubstitution: "Preview symbol U+\(String(scalar.value, radix: 16, uppercase: true)) uses registered \(selected.family) because \(family) has no glyph. The document font is unchanged."))
+                    pieces.append(Preparation.Piece(text: run.text, style: run, metrics: selectedMetrics,
+                        previewSubstitution: "Preview symbol U+\(String(scalar.value, radix: 16, uppercase: true)) uses registered \(name) because \(family) has no glyph. The document font is unchanged."))
                 } else { pending.append(character) }
             }
             flush()
