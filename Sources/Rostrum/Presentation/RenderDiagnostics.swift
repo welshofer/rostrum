@@ -179,7 +179,10 @@ final class RenderDiagnosticCollector {
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Preview symbol U+"):
                 record(.viewerFontDependency, .approximation, reason)
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Native ") && reason.contains("not verified"):
-                record(.unverifiedTextLayout, .approximation, reason)
+                let note = reason.hasPrefix("Native advance rounding")
+                    ? "Native character spacing is verified only for plain ASCII text; other characters use measured spacing"
+                    : reason
+                record(.unverifiedTextLayout, .approximation, note.hasSuffix(".") ? note : note + ".")
             case .unsupportedLayoutFeature(let reason) where reason.hasPrefix("Paragraph alignment") || reason.hasPrefix("Justification")
                 || reason.hasPrefix("Tab alignment") || reason.hasPrefix("Unknown tab alignment")
                 || reason.hasPrefix("Native explicit line spacing") || reason.hasPrefix("Native table")

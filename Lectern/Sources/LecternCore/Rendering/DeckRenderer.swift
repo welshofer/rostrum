@@ -48,6 +48,10 @@ public struct DeckResult: Sendable, Equatable {
     /// Known limitations and failures in the SVG previews. Kept apart from
     /// model warnings, XML validation, font measurement and dropped content.
     public let previewDiagnostics: [SlidePreviewDiagnostics]
+    /// The same grouped preview findings the inspector shows for this deck.
+    public var previewFindingGroups: [PreviewFindingGroup] {
+        PreviewFindingGroup.collect(records: previewRecords, diagnostics: previewDiagnostics)
+    }
     /// Content the model asked for that did not make it onto the slide — the
     /// 5th metric and the 6th process step past a builder's capacity, or an
     /// image that was generated and then failed to place. A third bucket

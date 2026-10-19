@@ -773,9 +773,9 @@ struct ResultView: View {
                     }
             }
             if !result.previewWarnings.isEmpty {
-                DisclosureGroup("Preview limitations (\(result.previewWarnings.count))") {
-                    Text("These affect the preview, not the saved PowerPoint content.").font(.caption)
-                    ForEach(result.previewWarnings, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
+                VStack(alignment: .leading, spacing: 6) {
+                    PreviewFindingsView(groups: result.previewFindingGroups,
+                                        limitationNote: "These affect the preview, not the saved PowerPoint content.")
                 }
                 .frame(maxWidth: 420)
             }
