@@ -98,9 +98,13 @@ Table previews resolve merged cells, direct padding/fills/edge borders and embed
 table-style regions. All 74 built-in Office style definitions are available when a deck stores only
 a style ID; native whole-slide equivalence still has open acceptance gaps. Classic chart previews honor explicit series/point colors,
 line width/dashes, legend presence/position, linear value-axis bounds, major gridlines
-and bounded numeric formats with quoted/escaped units. Chart text styles, bar data
-labels and explicit line markers are supported; advanced chart layouts and number
-format expressions remain approximate. See [chart preview support](CHART-PREVIEW-FIDELITY.md).
+and bounded numeric formats with quoted/escaped units. Chart previews use registered
+font advances and line metrics to reserve space for titles, axes, legends and
+bar/line/pie data labels. Long names wrap; crowded omissions are diagnosed.
+Explicit line markers and pie percentage labels are supported. Manual layout,
+native collision parity and advanced number formats remain approximate. See
+[chart preview support](CHART-PREVIEW-FIDELITY.md) and
+[measured chart layout](MEASURED-CHART-LAYOUT-20261018.md).
 Source parts are preserved unchanged.
 
 ## Acceptance priorities

@@ -9,7 +9,17 @@ import Rostrum
         try deck.slides[0].shapes.addChart(.barClustered,
             data: ChartData(categories: ["North", "South"], series: [.init(name: "Revenue", values: [12, 24])]),
             frame: Rect(x: .inches(1), y: .inches(1), width: .inches(7), height: .inches(4)))
-        let expectedPreview = try deck.renderSVG(slideAt: 0, pixelWidth: 640)
+        let url = try write(deck, named: "Workbook-only.pptx")
+        defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
+        // Both versions must use inspection's installed fonts and native
+        // measurement adapter, so only the source of chart data differs.
+        let expected = try DeckInspector.inspect(deckAt: url)
+        let expectedPreview = try #require(expected.previewRecords.first?.svg)
+        #expect(expected.previewRecords.count == 1)
+        for label in ["North", "South"] {
+            let hasLabel = expectedPreview.contains(">\(label)</text>")
+            #expect(hasLabel, "Missing category: \(label)")
+        }
         let chart = try #require(deck.charts.first)
         var stack = [try chart.part.dom()]
         while let element = stack.popLast() {
@@ -20,8 +30,7 @@ import Rostrum
             stack.append(contentsOf: element.childElements)
         }
         chart.part.markDirty()
-        let url = try write(deck, named: "Workbook-only.pptx")
-        defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
+        try deck.serializedData().write(to: url)
         let before = try Data(contentsOf: url)
         let result = try DeckInspector.inspect(deckAt: url)
         let inspected = try #require(result.charts.first)
@@ -29,7 +38,8 @@ import Rostrum
         #expect(inspected.series.first?.name == "Revenue")
         #expect(inspected.series.first?.values == [12, 24])
         #expect(!inspected.canReplaceData)
-        #expect(result.previews == [expectedPreview])
+        // Keep byte-exact parity without dumping embedded font data on failure.
+        #expect(result.previews.elementsEqual([expectedPreview]))
         #expect(try Data(contentsOf: url) == before)
     }
 
