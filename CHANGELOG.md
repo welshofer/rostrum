@@ -20,6 +20,7 @@ the conformance documentation separately describes rendering limitations.
   content remains unchanged. See [support and checks](docs/CHART-PREVIEW-FIDELITY.md).
 - Lectern previews fall back to Zapf Dingbats for Dingbats-block symbols such
   as ✓, which Apple Symbols and Arial lack.
+- Lectern's findings describe each substituted preview symbol in one sentence.
 
 - Add measured editable `PanelLayout` cards, three-column panels and numbered
   steps. Lectern exposes all three through generation, template composition,

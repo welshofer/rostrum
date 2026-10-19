@@ -79,7 +79,10 @@ inside Rostrum.
 
 Lectern groups repeated findings and lists affected slide ranges. Native layout
 cases that have not been verified against PowerPoint appear under **Fidelity
-verification notes**, separately from concrete preview limitations. Complete
+verification notes**, separately from concrete preview limitations. A substituted
+symbol reads as one sentence, such as "✓ (U+2713) is drawn with the installed Zapf
+Dingbats because Arial Narrow lacks it"; "installed" replaces that face's separate
+embedding-restriction message. Complete
 per-slide/per-shape diagnostics and original warning strings remain available
 in exports. Strict rendering still refuses verification gaps and substitutions.
 

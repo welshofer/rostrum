@@ -26,5 +26,9 @@ import Rostrum
         #expect(messages.contains("OS/2 embedding restrictions prevent embedding Zapf Dingbats in SVG."), "\(messages)")
         // The restricted face is named, not embedded; CSS family matching is case-insensitive.
         #expect(try #require(previews.svgs.first).contains("font-family=\"zapf dingbats, sans-serif\""))
+        // The inspector shows one plain sentence for the substituted symbol.
+        let groups = PreviewFindingGroup.collect(records: previews.records, diagnostics: previews.diagnostics)
+        let limitations = groups.filter { !$0.isVerificationNote }.map(\.message)
+        #expect(limitations == ["\u{2713} (U+2713) is drawn with the installed Zapf Dingbats because Arial lacks it."], "\(limitations)")
     }
 }
