@@ -45,9 +45,7 @@ struct RecoveryView: View {
             if let candidate {
                 Text("\(candidate.slideCount) slides in the revised copy").font(.headline)
                 if !candidate.previewWarnings.isEmpty {
-                    DisclosureGroup("Preview limitations (\(candidate.previewWarnings.count))") {
-                        ForEach(candidate.previewWarnings, id: \.self) { Text($0).font(.caption) }
-                    }
+                    PreviewFindingsView(groups: candidate.previewFindingGroups)
                 }
                 if !candidate.warnings.isEmpty {
                     DisclosureGroup("Layout adjustments (\(candidate.warnings.count))") {

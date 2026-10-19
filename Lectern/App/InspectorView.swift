@@ -267,31 +267,10 @@ struct InspectorView: View {
         return formatter
     }()
 
-    private func previewFindingList(_ groups: [PreviewFindingGroup], title: String, explanation: String) -> some View {
-        DisclosureGroup("\(title) (\(groups.count))") {
-            Text(explanation).font(.caption).foregroundStyle(.secondary)
-            ForEach(groups) { group in
-                Text("\(group.slideLabel): \(group.message)")
-                    .font(.caption).foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-        }
-    }
-
     private func findingsCard(_ inspection: DeckInspection) -> some View {
-        let groups = inspection.previewFindingGroups
-        let limitations = groups.filter { !$0.isVerificationNote }
-        let verification = groups.filter(\.isVerificationNote)
-        return Card(title: "FINDINGS", systemImage: "exclamationmark.triangle") {
+        Card(title: "FINDINGS", systemImage: "exclamationmark.triangle") {
             VStack(alignment: .leading, spacing: 10) {
-                if !limitations.isEmpty {
-                    previewFindingList(limitations, title: "Preview limitations",
-                        explanation: "These affect Lectern’s preview. The original PowerPoint content is preserved.")
-                }
-                if !verification.isEmpty {
-                    previewFindingList(verification, title: "Fidelity verification notes",
-                        explanation: "These rendering cases have not been verified against PowerPoint. They do not by themselves indicate missing or damaged content.")
-                }
+                PreviewFindingsView(groups: inspection.previewFindingGroups)
                 if !inspection.schemaIssues.isEmpty {
                     DisclosureGroup("\(inspection.schemaIssues.count) schema issue(s)") {
                         ForEach(inspection.schemaIssues, id: \.self) {
