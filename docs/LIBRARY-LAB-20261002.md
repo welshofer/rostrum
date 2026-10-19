@@ -853,3 +853,11 @@ licensed outline fixture plus an explicit registered checkmark fallback, retains
 the substitution diagnostic, and verifies that reopening preserves the text/font
 and reproduces the SVG with the same policy. Both use the ordinary Lab
 inspection/export pipeline. See [support boundaries](CHART-PREVIEW-FIDELITY.md).
+
+## Measured chart preview continuation
+
+Chart gallery includes a thirteenth chart with long categories and measured axis
+titles. Saved/reopened line and pie/doughnut SVGs now check visible data labels.
+Source text, values and editable workbooks survive; dense preview omissions and
+missing fonts remain explicit findings. See [the support and native review
+workflow](MEASURED-CHART-LAYOUT-20261018.md).

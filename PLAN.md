@@ -408,9 +408,29 @@ inspection findings. The original presentation remains outside version control.
 - [x] Add saved/reopened chart and symbol checks to the offline Library Lab.
 - [x] Complete the final portable gate: 1,424 library tests, 371 LecternCore
   tests, 118 optimized controls, native-pack checks and portable fidelity references.
-- [ ] Pass Apple PR checks (including app and native test-host compilation).
+- [x] Pass Apple PR checks (including app and native test-host compilation): PR #86, merged as `dc5d2a3`.
 - [ ] Review the new previews on macOS with the deck's exact fonts.
 
 See [the behavior and validation guide](docs/CHART-PREVIEW-FIDELITY.md).
 Chart collision/layout parity, other chart kinds, and full complex-script shaping
 remain outside this change.
+
+## Measured chart layout and first-preview follow-up (2026-10-18)
+
+- [x] Capture a Release baseline of the private 33-slide deck with stage timings.
+- [x] Replace character-count clipping/fixed margins with registered-font measurement.
+- [x] Reserve titles, axes and legends; wrap long categories and diagnose crowded omissions.
+- [x] Add line/area and pie/doughnut labels, point overrides and bounded collision handling.
+- [x] Correct percent-stacked fractional-axis geometry and cover large finite values.
+- [x] Exercise saved/reopened charts in Lectern Library Lab and production inspection/export.
+- [x] Complete the full portable gate: 1,439 library tests, 142 optimized tests,
+      371 LecternCore tests, saved-fixture checks and portable fidelity references.
+- [x] Complete paired Release CPU/elapsed/peak-memory comparisons on the 33-slide
+      deck, an embedded-Arial chart fixture, and two unchanged-output controls.
+- [ ] Pass Linux and Apple PR checks.
+- [ ] Capture native Mac first-preview measurements and PowerPoint chart reference exports
+      with matching fonts; compare the existing shared-font WebKit experiment before adoption.
+
+The [measured-chart guide](docs/MEASURED-CHART-LAYOUT-20261018.md) records behavior,
+bounds, reproduction commands and remaining native work. The current change does
+not enable the experimental shared-font transport or claim a Mac speedup.

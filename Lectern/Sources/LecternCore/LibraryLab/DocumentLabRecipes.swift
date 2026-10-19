@@ -166,9 +166,18 @@ enum DocumentLabRecipes {
             .init(kind: .barClustered, series: [data.series[0]], colors: palette, dataLabels: .init(showValue: true)),
             .init(kind: .line, series: [data.series[1]], axis: .secondary, colors: [palette[1]])
         ]), frame: LibraryLabSupport.frame(), options: styles)
+        let measured = try deck.slides.add()
+        try LibraryLabSupport.text("Measured labels · long categories", on: measured)
+        let longData = ChartData(categories: ["Undergraduate instructional support", "Graduate research and public service", "Student services and academic support"],
+            name: "Annual expenditure", values: [25, 40, 35])
+        try measured.shapes.addChart(.barClustered, data: longData, frame: LibraryLabSupport.frame(), colors: palette,
+            options: .init(title: "Complete labels use their measured font widths", legend: .bottom,
+                dataLabels: .init(showValue: true, numberFormat: "0\"M\"", position: "outEnd"),
+                valueAxis: .init(numberFormat: "0\"M\"", title: "Expenditure"), categoryAxisTitle: "Funding categories",
+                text: .init(font: "Arial", color: color(options), sizePt: 14)))
         return LibraryLabDraft(deck: deck, verify: { reopened in
             let all = reopened.charts
-            var checks = [LibraryLabCheck("Complete chart gallery", all.count == kinds.count + 3, "Nine category kinds, scatter, bubble and combo.")]
+            var checks = [LibraryLabCheck("Complete chart gallery", all.count == kinds.count + 4, "Nine category kinds, scatter, bubble, combo, and measured long categories.")]
             for (index, kind) in kinds.enumerated() {
                 let chart = try firstChart(reopened.slides[index])
                 let expected = (kind == .pie || kind == .doughnut) ? [data.series[0]] : data.series
@@ -195,6 +204,11 @@ enum DocumentLabRecipes {
                     checks.append(.init("Literal percent chart preview", svg.contains(">12%</text>") && !svg.contains(">1200%</text>") && svg.contains(">\(Int(value))%</text>"), "Saved/reopened axis ticks and above-bar value labels preserve literal percent units."))
                     checks.append(.init("Chart preview honors typography", svg.contains("font-size=\"14\"") && svg.contains("Arial, sans-serif") && svg.contains("#" + color(options).hex), "Chart labels carry the authored family, size, and color."))
                 }
+                if [.line, .pie, .doughnut].contains(kind) {
+                    let preview = try reopened.renderSVG(slideAt: index)
+                    checks.append(.init("\(kind) data labels preview", preview.contains("data-rostrum-chart-role=\"data-label\""),
+                        "Saved chart value or percentage labels are present in the measured SVG preview; crowded omissions remain diagnosed."))
+                }
                 if kind == .pie || kind == .doughnut {
                     checks.append(.init("\(kind) percent labels survive", plot?.firstChild(named: "c:dLbls")?.firstChild(named: "c:showPercent")?[attribute: "val"] == "1", "Pie and doughnut show percentages alongside category labels."))
                 }
@@ -214,7 +228,14 @@ enum DocumentLabRecipes {
             checks.append(.init("XY points read back", scatter.xySeries.first?.points == points.map { Chart.XYPoint(x: $0.x, y: $0.y) } && bubble.xySeries.first?.points == bubblePoints.map { Chart.XYPoint(x: $0.x, y: $0.y, size: $0.size) }, "Scatter coordinates and bubble sizes survive."))
             let last = try firstChart(reopened.slides[kinds.count + 2])
             checks.append(.init("Combo groups read back", last.isCombo && last.plotTypes == ["barChart", "lineChart"] && last.series.map(\.values) == data.series.map(\.values), "Primary bars and secondary line share categories."))
-            checks.append(.init("Titles and workbooks survive", all.allSatisfy { $0.title == options.text && $0.workbookPart?.blob.isEmpty == false }, "Every chart has its authored title and editable workbook."))
+            checks.append(.init("Titles and workbooks survive", all.prefix(kinds.count + 3).allSatisfy { $0.title == options.text && $0.workbookPart?.blob.isEmpty == false }, "Every original gallery chart has its authored title and editable workbook."))
+            let longChart = try firstChart(reopened.slides[kinds.count + 3])
+            let longPreview = try reopened.renderSVG(slideAt: kinds.count + 3)
+            checks.append(.init("Measured long categories survive", longChart.categories == longData.categories &&
+                longPreview.contains("data-rostrum-chart-role=\"category\"") && !longPreview.contains("…"),
+                "Long labels wrap at measured widths without ellipsizing the original content."))
+            checks.append(.init("Measured axis titles preview", longPreview.contains(">Expenditure</text>") && longPreview.contains(">Funding categories</text>"),
+                "Both axis titles receive reserved space in the saved/reopened preview."))
             let xml = try firstChart(reopened.slides[0]).part.dom().serialized()
             checks.append(.init("Chart appearance survives", xml.contains("Units") && xml.contains("Samples") && xml.contains("showVal") && xml.contains(color(options).hex), "Axis titles, labels and selected series color survive."))
             return checks

@@ -6,6 +6,12 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Measure chart preview text using registered fonts; reserve title/axis/legend
+  space, wrap long categories, and diagnose labels that cannot fit. Render line
+  and pie/doughnut labels, retain more category/legend entries when space allows,
+  and correct fractional axes for percent-stacked bars. Chart XML and workbooks
+  remain untouched. See [behavior and measurement](docs/MEASURED-CHART-LAYOUT-20261018.md).
+
 - Correct chart preview percentage scaling and quoted units; honor chart text
   styles, render bar labels and line markers, and draw three-segment elbow
   connectors. Add explicit registered fallback faces for missing standalone

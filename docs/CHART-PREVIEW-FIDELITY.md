@@ -33,8 +33,9 @@ and point overrides, suppression, text styles, numeric formats and common
 inside/outside positions. Line previews render explicit circle, square, diamond
 and triangle markers, with point-level overrides. Custom rich labels, exact
 PowerPoint label collision/layout behavior, other marker shapes, and unsupported
-chart kinds retain fidelity diagnostics. Pie/line/area data-label layout is not
-newly implemented by this change.
+chart kinds retain fidelity diagnostics. The subsequent [measured chart layout](MEASURED-CHART-LAYOUT-20261018.md) adds
+line/area and pie/doughnut labels, measured wrapping and collision handling.
+The evidence below describes this earlier units/style change.
 
 Series/category bounds remain 32 nonempty series and 512 categories. Actual
 truncation produces a separate omission diagnostic. The general chart-layout
