@@ -47,17 +47,8 @@ printf 'Results: %s\nProfiling your deck before running regression tests…\n' "
 bash Lectern/scripts/profile-preview.sh "$deck" "$output/profile" 2>&1 | tee "$output/profile.log"
 
 stage='native thumbnail regression tests'
-# Do not let an inherited opt-in profile configuration affect the second run.
-unset TEST_RUNNER_LECTERN_PREVIEW_PROFILE_INPUT TEST_RUNNER_LECTERN_PREVIEW_PROFILE_OUTPUT
-unset LECTERN_PREVIEW_PROFILE_INPUT LECTERN_PREVIEW_PROFILE_OUTPUT
-LECTERN_TEST_CONFIGURATION=Release bash Lectern/scripts/test-app.sh \
-  -only-testing:LecternAppTests/SlidePreviewGeometryTests \
-  -only-testing:LecternAppTests/SlideRasterizerTests \
-  -only-testing:LecternAppTests/PreviewPipelineTraceTests \
-  '-only-testing:LecternAppTests/GlyphPaintWebKitTests/invalidEmbeddedFontFailsAndTheOwnedHostRecovers(sharedFonts:)' \
-  '-only-testing:LecternAppTests/GlyphPaintWebKitTests/cancelledNavigationCannotCompleteTheNextCapture(sharedFonts:)' \
-  -parallel-testing-enabled NO \
-  -resultBundlePath "$output/regressions.xcresult" 2>&1 | tee "$output/regressions.log"
+bash Lectern/scripts/test-preview-regressions.sh "$output/regressions.xcresult" \
+  2>&1 | tee "$output/regressions.log"
 
 stage='result verification and archive'
 xcrun xcresulttool get test-results summary --path "$output/regressions.xcresult" > "$output/regressions.json"

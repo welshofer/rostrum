@@ -20,6 +20,7 @@ class PreviewRunnerTests(unittest.TestCase):
         self.scripts = self.root / 'Lectern/scripts'
         self.scripts.mkdir(parents=True)
         shutil.copy(ROOT / 'Lectern/scripts/test-preview.sh', self.scripts)
+        shutil.copy(ROOT / 'Lectern/scripts/test-preview-regressions.sh', self.scripts)
         self.deck = self.root / 'input deck.pptx'
         self.deck.write_bytes(b'original deck')
         self.output = self.root / 'test results'
@@ -98,6 +99,16 @@ printf '%s\\n' "$@" > "$TEST_ROOT/arguments"
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('no SVG evidence', result.stderr)
         self.assertFalse(Path(str(self.output) + '.zip').exists())
+
+    def test_reuse_flag_reaches_regressions_and_invalid_flag_fails(self):
+        self.env['LECTERN_PREVIEW_REUSE_BUILD'] = '1'
+        result = self.run_script(str(self.deck), str(self.output))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((self.root / 'arguments').read_text().splitlines()[0], '--test-without-building')
+        self.env['LECTERN_PREVIEW_REUSE_BUILD'] = 'invalid'
+        result = self.run_script(str(self.deck), str(self.root / 'invalid results'))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('LECTERN_PREVIEW_REUSE_BUILD must be 0 or 1', result.stdout + result.stderr)
 
     def test_default_output_is_inside_ignored_build_directory(self):
         result = self.run_script(str(self.deck))

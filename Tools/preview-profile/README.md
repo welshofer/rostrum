@@ -119,15 +119,26 @@ with the existing inline path on the same saved deck, quit Lectern and run:
 python3 Lectern/scripts/compare-preview-loading.py "/path/to/your-deck.pptx"
 ```
 
-This runs one warmup per mode and three alternating measured pairs, using fresh
-Release test processes. Each process performs first-use and repeated inspection.
+This builds one isolated Release test host in the results directory, then runs
+one warmup per mode and three alternating measured pairs in fresh processes
+using `test-without-building`. Each process performs first-use and repeated inspection.
+The native regression selection runs once afterward on those same binaries; it
+still exercises both transports. No builds or regression suites run between pairs.
 The candidate additionally compares every slide's actual bitmap pixels against
-an independent inline host, after measurements. The runner refuses changed SVGs,
-inputs, executable identities, failed/skipped regressions, truncated traces, or
-missing pixel comparisons. Use a deck with embedded preview fonts whose thumbnails
+an independent inline host, after measurements. The runner refuses changed SVGs or ordered diagnostics,
+inputs, executable/resource identities, tracked source changes, failed/skipped
+regressions, truncated traces, invalid timings, or missing pixel comparisons. Use a deck with embedded preview fonts whose thumbnails
 fit in the cache. `--pairs 7` collects more samples; an optional second positional
-argument chooses a new results directory. The final ZIP retains small per-run
-evidence bundles and a combined summary; full SVGs stay local.
+argument chooses a new results directory. The final ZIP retains per-run timing/provenance receipts, SVG and diagnostic hashes,
+build/regression logs and a combined summary. Full SVGs, diagnostic text, the deck,
+build products and result bundles stay local. Logs can contain local paths.
+
+The summary reports first-bitmap latency, app lifetime peak RSS, and CPU/elapsed
+time separately for each recorded stage. It retains every paired difference
+(shared minus inline), the median difference, and the min/max, including slower
+pairs. Warmups are excluded. Nested stages overlap and must not be added together.
+The difference of the two mode medians is not substituted for the median paired
+difference. No timing threshold automatically enables the experimental loader.
 If a native experiment fails, it instead prints a `.failed.zip` containing the
 failed receipt and logs. Send that diagnostics archive back as well; it does not
 claim a successful comparison.

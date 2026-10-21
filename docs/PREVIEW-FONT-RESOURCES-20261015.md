@@ -87,12 +87,15 @@ After pulling, quit Lectern and run from the repository root:
 python3 Lectern/scripts/compare-preview-loading.py "/path/to/your-deck.pptx"
 ```
 
-The default collects one warmup per mode and three alternating measured pairs of
-fresh Release test processes on exactly the same input and executable. Each
+The default builds once into a dedicated results-directory products tree, then
+collects one warmup per mode and three alternating measured pairs of fresh Release
+test processes using `test-without-building`. The native regression suite runs
+once after all measurements, on the same build, covering both transports. Each
 candidate run subsequently compares all slide bitmaps against an independent
 inline host using normalized sRGB RGBA pixels, outside the timed operations.
-Input bytes, standalone SVG hashes, executable identity and complete render/cache
-traces must match. Failed or skipped native regressions and missing comparisons
+Input bytes, standalone SVG hashes, ordered diagnostic hashes, executable/resource
+identity and complete render/cache traces must match. The collector checks the
+built products and tracked source diff before and after each process. Failed or skipped native regressions and missing comparisons
 fail the run. Existing results and running apps are preserved. Send the printed ZIP.
 
 Schema 3 reports resource accounting, mode and bitmap-comparison count. New
@@ -108,3 +111,24 @@ host; it does not execute app-hosted tests. Native failure/recovery checks exerc
 both font transports. Portable tests cover exact reconstruction, alias changes,
 style and format retention, eviction, budget fallback and malformed inputs;
 runner checks reject changed artifacts, skipped tests and incomplete evidence.
+
+## Collector follow-up (2026-10-21)
+
+The comparison no longer invokes the build/test cycle and native regressions for
+every sample. With `--pairs 5`, it invokes one build, twelve fresh profile processes
+(two warmups plus ten measurements), then one regression process. This reduces
+benchmark orchestration work; it is not evidence of faster product previews.
+
+The combined report includes per-stage CPU/elapsed totals, first-bitmap latency
+and app lifetime peak RSS, with raw paired deltas, median and min/max. It keeps
+adverse pairs and excludes warmups. Stages nest: their totals are not additive.
+Diagnostics are captured outside measured operations; only their hashes enter
+the shareable ZIP. Full diagnostics, SVGs, native results and build products
+remain local.
+
+Offline tests cover invocation order, build reuse, changed products/resources,
+reordered diagnostics, nonfinite/negative timings, missing parity and incomplete
+regressions. These tests simulate process orchestration; native execution of the
+revised collector still requires a Mac. The app remains on inline loading until
+paired native results establish a useful gain with exact bitmap/SVG/diagnostic
+parity and an acceptable memory cost.

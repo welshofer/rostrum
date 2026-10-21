@@ -427,10 +427,26 @@ remain outside this change.
       371 LecternCore tests, saved-fixture checks and portable fidelity references.
 - [x] Complete paired Release CPU/elapsed/peak-memory comparisons on the 33-slide
       deck, an embedded-Arial chart fixture, and two unchanged-output controls.
-- [ ] Pass Linux and Apple PR checks.
+- [x] Pass Linux and Apple PR checks (PR #87, merged as `8650efa`).
 - [ ] Capture native Mac first-preview measurements and PowerPoint chart reference exports
       with matching fonts; compare the existing shared-font WebKit experiment before adoption.
 
 The [measured-chart guide](docs/MEASURED-CHART-LAYOUT-20261018.md) records behavior,
 bounds, reproduction commands and remaining native work. The current change does
 not enable the experimental shared-font transport or claim a Mac speedup.
+
+## Native preview comparison follow-up (2026-10-21)
+
+- [x] Build the isolated Release host once; collect fresh paired processes without
+      regenerating or rebuilding, then run both transports' native regressions once.
+- [x] Check input, executable/resource identity, tracked source diff, exact SVGs,
+      ordered diagnostics and native bitmap parity before accepting the comparison.
+- [x] Report paired stage CPU/elapsed differences, first-bitmap latency and app
+      lifetime peak RSS, retaining adverse pairs and excluding warmups.
+- [ ] Run the revised comparison on an idle Mac using the same 33-slide deck.
+- [ ] Decide on shared-font adoption from native time/memory and exact-output evidence.
+
+Run `python3 Lectern/scripts/compare-preview-loading.py /absolute/deck.pptx --pairs 5`.
+The runner prints a small evidence ZIP to return. This Linux session cannot run
+WebKit; orchestration tests and Apple compilation do not complete native timing
+or PowerPoint visual acceptance. Inline loading remains the production default.

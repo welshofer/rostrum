@@ -14,6 +14,11 @@ action=test
 if [ "${1:-}" = --build-only ]; then
   action=build-for-testing
   shift
+elif [ "${1:-}" = --test-without-building ]; then
+  # The comparison runner builds once, fingerprints the products, then starts
+  # fresh processes without regenerating or rebuilding between measurements.
+  action=test-without-building
+  shift
 fi
 
 require_idle_apps() {
@@ -39,10 +44,6 @@ if [ -f .signing.local ]; then
   source .signing.local
 fi
 
-bash scripts/generate-project.sh
-
-require_idle_apps
-
 # Apply manual signing to SwiftPM resource bundles as well as the app.
 # Automatic bundle signing otherwise requests a team even for a local build.
 configuration="${LECTERN_TEST_CONFIGURATION:-Debug}"
@@ -50,6 +51,19 @@ case "$configuration" in
   Debug|Release) ;;
   *) echo "error: LECTERN_TEST_CONFIGURATION must be Debug or Release" >&2; exit 1 ;;
 esac
+if [ "$action" = test-without-building ]; then
+  products="${LECTERN_TEST_DERIVED_DATA_PATH:-.build-xcode-tests}/Build/Products/$configuration"
+  if [ ! -d Lectern.xcodeproj ] || \
+     [ ! -f "$products/LecternTestHost.app/Contents/MacOS/LecternTestHost" ] || \
+     [ ! -f "$products/LecternTestHost.app/Contents/PlugIns/LecternAppTests.xctest/Contents/MacOS/LecternAppTests" ]; then
+    echo "error: Build the $configuration test host with --build-only before --test-without-building." >&2
+    exit 1
+  fi
+else
+  bash scripts/generate-project.sh
+fi
+require_idle_apps
+
 xcodebuild -project Lectern.xcodeproj -scheme LecternTests -configuration "$configuration" \
   -destination 'platform=macOS' -derivedDataPath "${LECTERN_TEST_DERIVED_DATA_PATH:-.build-xcode-tests}" \
   CODE_SIGN_STYLE=Manual ENABLE_TESTABILITY=YES \
