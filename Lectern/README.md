@@ -25,6 +25,15 @@ app output is `Lectern/.build-xcode/Build/Products/Debug/Lectern.app`; see
 [the macOS app](#the-macos-app) for isolation settings. Do not replace an app while it is generating
 a deck; use an isolated build directory for concurrent checks.
 
+For production performance measurements, select Release through the same signing wrapper:
+
+```sh
+LECTERN_BUILD_CONFIGURATION=Release LECTERN_DERIVED_DATA_PATH=/absolute/isolated-build Lectern/scripts/build.sh
+```
+
+The app is then in `Build/Products/Release/Lectern.app` beneath that directory.
+`LECTERN_BUILD_CONFIGURATION` accepts `Debug` (the default) or `Release`.
+
 Current `main` includes measured table columns and row pagination in generation
 and recovery, full-width one-sided comparison continuations, measured final-page
 balancing, and citation placement above the footer when space is available.

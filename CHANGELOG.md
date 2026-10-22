@@ -6,6 +6,14 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Native Mac review completes five diagnostic preview pairs while retaining exact
+  pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
+  fonts remain disabled. Add explicit rejected-evidence collection, a signed
+  Release build option, and scalar-position support in the Office typography
+  checker without changing references or tolerances. PowerPoint review and
+  outstanding production measurements are recorded in the
+  [native evidence report](docs/NATIVE-PERFORMANCE-FIDELITY-20261022.md).
+
 - Native preview comparison builds once and reuses the isolated Release host across
   fresh paired processes, with one final regression run. It checks ordered
   diagnostics and build resources and reports paired stage CPU/elapsed and memory

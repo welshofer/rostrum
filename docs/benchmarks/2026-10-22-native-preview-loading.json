@@ -1,0 +1,3284 @@
+{
+  "schemaVersion": 1,
+  "collectionComplete": true,
+  "exactPixelAcceptance": false,
+  "adoptionSupported": false,
+  "measuredPairs": 5,
+  "warmupPairs": 1,
+  "freshProfileProcesses": 12,
+  "operations": 24,
+  "slideCount": 33,
+  "inputSHA256": "fddcbe1c3b3f507dfcfd36f73e8219343ad1479575921a9e227807e37c827fea",
+  "buildIdentity": {
+    "sourceRevision": "103ba79c0a38f2076b1d4306bc67badc21ab8463",
+    "trackedSourceDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "testHostSHA256": "a727115fa2551c5c293f0485f1641e3e55b52d8bd948c8992c537effc226ab1f",
+    "testBundleSHA256": "fffc0949485dd3677e448f322ad5f1b18948c6cf877dd3995fce1642c1462f20",
+    "testResourcesSHA256": "c55ac6c948a2c50503b2863c35c8b2f32647bc06d6005f6cc8b6bacbd68b9602",
+    "xcode": "Xcode 27.1\nBuild version 27A9275"
+  },
+  "environment": {
+    "os": "macOS 27.0.1 (26A434)",
+    "hardware": "Apple M5 Max, 18 cores, 128 GiB",
+    "architecture": "arm64 execution; universal Release test host",
+    "screenCondition": "Mac reported locked before and after collection; offscreen diagnostic evidence",
+    "globallyIdle": false
+  },
+  "scope": [
+    "Warmups excluded from summary; shared minus inline paired deltas retained.",
+    "No independent builds/tests overlapped the measured processes. Other user/system apps remained running.",
+    "Filesystem caches were not cleared; first use means a fresh app-host process.",
+    "First bitmap availability is not actual composited display.",
+    "CPU and lifetime peak RSS exclude WebKit helpers. Repeat RSS includes first-use and startup.",
+    "SVG writes can contribute to later bitmap offsets. Pixel controls and PNG writes occur after both measured operations.",
+    "Nested stage totals overlap; do not add them. Exact pixel rejection forbids a product speedup or adoption claim."
+  ],
+  "nativeRegressions": {
+    "result": "Passed",
+    "totalTestCount": 14,
+    "passedTests": 14,
+    "failedTests": 0,
+    "skippedTests": 0
+  },
+  "sourceComparisonSHA256": "937dd4bed226b0e9073df7cdd02a6b9a1397a2e9f9cdebea960edc9a627d9f8f",
+  "samples": [
+    {
+      "pair": 0,
+      "warmup": true,
+      "mode": "inline",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 0,
+      "bitmapParityCount": 0,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6845354167744517,
+          "appProcessLifetimePeakRSSBytes": 324419584,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012813999999999992,
+              "elapsedSeconds": 0.012801333330571651
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.03542000000000001,
+              "elapsedSeconds": 0.01753049995750189
+            },
+            "inspect.read": {
+              "cpuSeconds": 8.099999999999774e-05,
+              "elapsedSeconds": 7.345830090343952e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.04230299999999998,
+              "elapsedSeconds": 0.02655650000087917
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.0002590000000000092,
+              "elapsedSeconds": 0.0002595416735857725
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.001375000000000015,
+              "elapsedSeconds": 0.0009632082656025887
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016588000000000047,
+              "elapsedSeconds": 0.016438500955700874
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.1681330000000001,
+              "elapsedSeconds": 0.18635450000874698
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.030179999999999763,
+              "elapsedSeconds": 0.029819458490237594
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00016000000000027104,
+              "elapsedSeconds": 0.00015874998643994331
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.300000000021178e-05,
+              "elapsedSeconds": 6.96245115250349e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 0.0033170000000002364,
+              "elapsedSeconds": 0.0033368337899446487
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.007660000000000111,
+              "elapsedSeconds": 0.021106625208631158
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0017719999999995517,
+              "elapsedSeconds": 0.00176483322866261
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.13062399999999985,
+              "elapsedSeconds": 0.5799123337492347
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 2.899999999972369e-05,
+              "elapsedSeconds": 2.8583919629454613e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.18066599999999988,
+              "elapsedSeconds": 0.7691157083027065
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.008737000000000439,
+              "elapsedSeconds": 0.12008891627192497
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.2737082918174565,
+          "appProcessLifetimePeakRSSBytes": 359677952,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012435000000000196,
+              "elapsedSeconds": 0.012338041793555021
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.01791799999999999,
+              "elapsedSeconds": 0.017919208155944943
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00010900000000002574,
+              "elapsedSeconds": 0.000106374965980649
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.026490000000000014,
+              "elapsedSeconds": 0.025992083363234997
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00021500000000007624,
+              "elapsedSeconds": 0.00021470827050507069
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009559999999999569,
+              "elapsedSeconds": 0.0009566666558384895
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.01623299999999883,
+              "elapsedSeconds": 0.016141583444550633
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.15974700000000008,
+              "elapsedSeconds": 0.16056670830585063
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.028030000000000443,
+              "elapsedSeconds": 0.02787620760500431
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006490000000001217,
+              "elapsedSeconds": 0.0006477092392742634
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0006890000000003837,
+              "elapsedSeconds": 0.0006859586574137211
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0014079999999996318,
+              "elapsedSeconds": 0.0014046668075025082
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 0,
+      "warmup": true,
+      "mode": "shared",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 33,
+      "bitmapParityCount": 33,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6630137916654348,
+          "appProcessLifetimePeakRSSBytes": 314392576,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012720999999999982,
+              "elapsedSeconds": 0.012589166639372706
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.035519999999999996,
+              "elapsedSeconds": 0.017695875139907002
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.0006289999999999907,
+              "elapsedSeconds": 7.866672240197659e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.03884499999999996,
+              "elapsedSeconds": 0.02594283316284418
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.0007739999999999969,
+              "elapsedSeconds": 0.00022312486544251442
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009470000000000312,
+              "elapsedSeconds": 0.0009465415496379137
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016395999999999966,
+              "elapsedSeconds": 0.016311666928231716
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16403500000000004,
+              "elapsedSeconds": 0.1630048332735896
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.03023000000000009,
+              "elapsedSeconds": 0.029654290759935975
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00020100000000000673,
+              "elapsedSeconds": 0.00018720864318311214
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.500000000049134e-05,
+              "elapsedSeconds": 7.112417370080948e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 6.000000000017103e-05,
+              "elapsedSeconds": 6.116693839430809e-05
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.005579000000000112,
+              "elapsedSeconds": 0.025802457937970757
+            },
+            "thumbnail.fontResources": {
+              "cpuSeconds": 0.02449100000000004,
+              "elapsedSeconds": 0.024395374581217766
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0019540000000000113,
+              "elapsedSeconds": 0.0018018744885921478
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.10785099999999981,
+              "elapsedSeconds": 0.4531757503282279
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 3.199999999980996e-05,
+              "elapsedSeconds": 3.0916184186935425e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.17562400000000022,
+              "elapsedSeconds": 0.6959456668701023
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.010138999999999898,
+              "elapsedSeconds": 0.14893137430772185
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.2779510833788663,
+          "appProcessLifetimePeakRSSBytes": 359579648,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012859999999999983,
+              "elapsedSeconds": 0.01263254159130156
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.017256999999999967,
+              "elapsedSeconds": 0.017249708529561758
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00015899999999990921,
+              "elapsedSeconds": 0.00013195816427469254
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.026448999999999945,
+              "elapsedSeconds": 0.02625208324752748
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00022200000000005549,
+              "elapsedSeconds": 0.00022158329375088215
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009780000000001454,
+              "elapsedSeconds": 0.0009786665905267
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016453999999999747,
+              "elapsedSeconds": 0.016464041778817773
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16310500000000006,
+              "elapsedSeconds": 0.1639562917407602
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.028694999999999915,
+              "elapsedSeconds": 0.028626916464418173
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006569999999990195,
+              "elapsedSeconds": 0.0006552084814757109
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0007559999999999789,
+              "elapsedSeconds": 0.0007531263399869204
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0014870000000004602,
+              "elapsedSeconds": 0.0014878332149237394
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 1,
+      "warmup": false,
+      "mode": "shared",
+      "nativeExitStatus": 65,
+      "pixelAcceptance": false,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 33,
+      "bitmapParityCount": 32,
+      "bitmapMismatchSlides": [
+        33
+      ],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.641852083383128,
+          "appProcessLifetimePeakRSSBytes": 316162048,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013207999999999998,
+              "elapsedSeconds": 0.012761583318933845
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.03458,
+              "elapsedSeconds": 0.01702616666443646
+            },
+            "inspect.read": {
+              "cpuSeconds": 7.00000000000145e-05,
+              "elapsedSeconds": 7.095816545188427e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.03991,
+              "elapsedSeconds": 0.02599458326585591
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00021500000000002073,
+              "elapsedSeconds": 0.00021562492474913597
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009620000000000184,
+              "elapsedSeconds": 0.0009631665889173746
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.01662999999999948,
+              "elapsedSeconds": 0.016392041463404894
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.165327,
+              "elapsedSeconds": 0.16467295843176544
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.029683000000000015,
+              "elapsedSeconds": 0.029332040809094906
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00017400000000000748,
+              "elapsedSeconds": 0.00016954191960394382
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.100000000004325e-05,
+              "elapsedSeconds": 7.070903666317463e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 6.499999999964867e-05,
+              "elapsedSeconds": 7.254071533679962e-05
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.004333999999999838,
+              "elapsedSeconds": 0.018174207769334316
+            },
+            "thumbnail.fontResources": {
+              "cpuSeconds": 0.02292099999999997,
+              "elapsedSeconds": 0.022748333169147372
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0015859999999997543,
+              "elapsedSeconds": 0.001576750073581934
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.10321999999999976,
+              "elapsedSeconds": 0.42931283288635314
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 3.799999999998249e-05,
+              "elapsedSeconds": 3.179139457643032e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.16534000000000004,
+              "elapsedSeconds": 0.6557437919545919
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.008851000000000053,
+              "elapsedSeconds": 0.14440204156562686
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.27611358324065804,
+          "appProcessLifetimePeakRSSBytes": 359874560,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012699000000000016,
+              "elapsedSeconds": 0.012707500020042062
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.018013999999999974,
+              "elapsedSeconds": 0.01728354161605239
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00014700000000000824,
+              "elapsedSeconds": 0.00013741664588451385
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.026717000000000102,
+              "elapsedSeconds": 0.026637416798621416
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00021800000000005149,
+              "elapsedSeconds": 0.00021787500008940697
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009620000000000184,
+              "elapsedSeconds": 0.0009619998745620251
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016376999999999642,
+              "elapsedSeconds": 0.016375416424125433
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16157500000000014,
+              "elapsedSeconds": 0.16246591648086905
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.028143000000000917,
+              "elapsedSeconds": 0.028087124228477478
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006669999999999732,
+              "elapsedSeconds": 0.0006677084602415562
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0006969999999990595,
+              "elapsedSeconds": 0.000695250928401947
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0014460000000000583,
+              "elapsedSeconds": 0.0014431667514145374
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 1,
+      "warmup": false,
+      "mode": "inline",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 0,
+      "bitmapParityCount": 0,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6642416249960661,
+          "appProcessLifetimePeakRSSBytes": 325484544,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012896000000000019,
+              "elapsedSeconds": 0.01266108313575387
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.034750999999999976,
+              "elapsedSeconds": 0.016791583271697164
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00022400000000000198,
+              "elapsedSeconds": 7.858313620090485e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.039448999999999956,
+              "elapsedSeconds": 0.026036083232611418
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00024999999999997247,
+              "elapsedSeconds": 0.00022175000049173832
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009640000000000759,
+              "elapsedSeconds": 0.0009631251450628042
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.01626900000000009,
+              "elapsedSeconds": 0.016086415853351355
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.1645580000000001,
+              "elapsedSeconds": 0.16383233340457082
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.030041000000000206,
+              "elapsedSeconds": 0.029382417211309075
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.0001789999999998182,
+              "elapsedSeconds": 0.00016979174688458443
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.099999999937712e-05,
+              "elapsedSeconds": 7.458426989614964e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 0.0013130000000004527,
+              "elapsedSeconds": 0.0013131252489984035
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.005346999999999658,
+              "elapsedSeconds": 0.025409041438251734
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0017930000000000446,
+              "elapsedSeconds": 0.001793667208403349
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.13697199999999976,
+              "elapsedSeconds": 0.5858264993876219
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 3.400000000031156e-05,
+              "elapsedSeconds": 3.0667055398225784e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.18100200000000033,
+              "elapsedSeconds": 0.7858692076988518
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.010581000000000396,
+              "elapsedSeconds": 0.12604770832695067
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.27309345826506615,
+          "appProcessLifetimePeakRSSBytes": 361086976,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012802999999999898,
+              "elapsedSeconds": 0.01278566662222147
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.01718200000000003,
+              "elapsedSeconds": 0.016647916520014405
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00017000000000000348,
+              "elapsedSeconds": 9.933323599398136e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.02658499999999997,
+              "elapsedSeconds": 0.026493916753679514
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00022800000000000598,
+              "elapsedSeconds": 0.00022820825688540936
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009879999999999889,
+              "elapsedSeconds": 0.0009633335284888744
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.01652600000000004,
+              "elapsedSeconds": 0.01642754185013473
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.15865400000000007,
+              "elapsedSeconds": 0.15960533334873617
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.028570000000000206,
+              "elapsedSeconds": 0.028505083406344056
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006610000000006888,
+              "elapsedSeconds": 0.0006633747834712267
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.000700000000000145,
+              "elapsedSeconds": 0.0006947496440261602
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0014300000000004864,
+              "elapsedSeconds": 0.0014339997433125973
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "warmup": false,
+      "mode": "inline",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 0,
+      "bitmapParityCount": 0,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6577804998960346,
+          "appProcessLifetimePeakRSSBytes": 324878336,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012799000000000005,
+              "elapsedSeconds": 0.012675708392634988
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.03597199999999995,
+              "elapsedSeconds": 0.017784624826163054
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.0003389999999999782,
+              "elapsedSeconds": 9.050010703504086e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.03965300000000005,
+              "elapsedSeconds": 0.026165458373725414
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.0007640000000000424,
+              "elapsedSeconds": 0.00022645853459835052
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009640000000000759,
+              "elapsedSeconds": 0.0009646250400692225
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016495999999999733,
+              "elapsedSeconds": 0.016369166783988476
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16457499999999992,
+              "elapsedSeconds": 0.1640885416418314
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.030561999999999978,
+              "elapsedSeconds": 0.03018958424217999
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00017700000000009375,
+              "elapsedSeconds": 0.0001640012487769127
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.300000000065587e-05,
+              "elapsedSeconds": 6.979168392717838e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 0.0026570000000001315,
+              "elapsedSeconds": 0.0026545829605311155
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.00618199999999991,
+              "elapsedSeconds": 0.022891625063493848
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0018200000000000438,
+              "elapsedSeconds": 0.001723207999020815
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.12701000000000018,
+              "elapsedSeconds": 0.5622430415824056
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 2.499999999971969e-05,
+              "elapsedSeconds": 3.062421455979347e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.17630999999999963,
+              "elapsedSeconds": 0.7610241256188601
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.012942000000000231,
+              "elapsedSeconds": 0.12597408262081444
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.2773714584764093,
+          "appProcessLifetimePeakRSSBytes": 360611840,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012581999999999871,
+              "elapsedSeconds": 0.012482416583225131
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.01845400000000008,
+              "elapsedSeconds": 0.01801308337599039
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.0001180000000000625,
+              "elapsedSeconds": 9.579164907336235e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.025534999999999974,
+              "elapsedSeconds": 0.02540608332492411
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00045600000000001195,
+              "elapsedSeconds": 0.00022300006821751595
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009390000000000231,
+              "elapsedSeconds": 0.0009399999398738146
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.0162569999999993,
+              "elapsedSeconds": 0.016127124894410372
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16311699999999996,
+              "elapsedSeconds": 0.16413633339107037
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.02831300000000092,
+              "elapsedSeconds": 0.02823400078341365
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006650000000005818,
+              "elapsedSeconds": 0.0006650418508797884
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0007279999999996178,
+              "elapsedSeconds": 0.000726708211004734
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.001476000000000699,
+              "elapsedSeconds": 0.0014725008513778448
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "warmup": false,
+      "mode": "shared",
+      "nativeExitStatus": 65,
+      "pixelAcceptance": false,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 33,
+      "bitmapParityCount": 32,
+      "bitmapMismatchSlides": [
+        16
+      ],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6674526249989867,
+          "appProcessLifetimePeakRSSBytes": 306987008,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012780999999999931,
+              "elapsedSeconds": 0.012503208359703422
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.035445000000000004,
+              "elapsedSeconds": 0.017534416634589434
+            },
+            "inspect.read": {
+              "cpuSeconds": 7.099999999998774e-05,
+              "elapsedSeconds": 6.724987179040909e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.039146000000000014,
+              "elapsedSeconds": 0.02650795830413699
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.000256000000000034,
+              "elapsedSeconds": 0.0002193748950958252
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009689999999999976,
+              "elapsedSeconds": 0.0009690416045486927
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.01616899999999999,
+              "elapsedSeconds": 0.016018999041989446
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16677599999999992,
+              "elapsedSeconds": 0.16529129166156054
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.029940999999999884,
+              "elapsedSeconds": 0.029588416451588273
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00025500000000011624,
+              "elapsedSeconds": 0.00025758263655006886
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.30000000007669e-05,
+              "elapsedSeconds": 6.983382627367973e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 6.800000000017903e-05,
+              "elapsedSeconds": 6.245868280529976e-05
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.004746999999999946,
+              "elapsedSeconds": 0.01821720926091075
+            },
+            "thumbnail.fontResources": {
+              "cpuSeconds": 0.02377100000000032,
+              "elapsedSeconds": 0.02376087475568056
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0017960000000000198,
+              "elapsedSeconds": 0.0017811667639762163
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.1083249999999999,
+              "elapsedSeconds": 0.45673125027678907
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 2.3999999999690935e-05,
+              "elapsedSeconds": 2.9582995921373367e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.1732100000000002,
+              "elapsedSeconds": 0.6932291251141578
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.008926999999999685,
+              "elapsedSeconds": 0.14878066745586693
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.2807801249437034,
+          "appProcessLifetimePeakRSSBytes": 352567296,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013003000000000098,
+              "elapsedSeconds": 0.01295566651970148
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.018221000000000043,
+              "elapsedSeconds": 0.017581375082954764
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00021000000000004349,
+              "elapsedSeconds": 0.00013208319433033466
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.026159000000000043,
+              "elapsedSeconds": 0.02603245829232037
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00021900000000008024,
+              "elapsedSeconds": 0.00021945848129689693
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009839999999998739,
+              "elapsedSeconds": 0.000984666869044304
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016404000000000307,
+              "elapsedSeconds": 0.016380625311285257
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16468100000000008,
+              "elapsedSeconds": 0.16560341673903167
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.029274000000000022,
+              "elapsedSeconds": 0.02921641687862575
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006639999999997759,
+              "elapsedSeconds": 0.0006600839551538229
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0006809999999999317,
+              "elapsedSeconds": 0.0006783748976886272
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0014209999999992284,
+              "elapsedSeconds": 0.0014129581395536661
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "warmup": false,
+      "mode": "shared",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 33,
+      "bitmapParityCount": 33,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6439577916171402,
+          "appProcessLifetimePeakRSSBytes": 316342272,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.01292900000000008,
+              "elapsedSeconds": 0.01269120816141367
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.03584700000000002,
+              "elapsedSeconds": 0.01768633327446878
+            },
+            "inspect.read": {
+              "cpuSeconds": 7.40000000000185e-05,
+              "elapsedSeconds": 7.095839828252792e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.039657,
+              "elapsedSeconds": 0.025769916595891118
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00022300000000002873,
+              "elapsedSeconds": 0.00022279145196080208
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009759999999999769,
+              "elapsedSeconds": 0.0009763331618160009
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.01631400000000005,
+              "elapsedSeconds": 0.016128415940329432
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16368000000000005,
+              "elapsedSeconds": 0.16278566676191986
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.029912999999999967,
+              "elapsedSeconds": 0.02945912559516728
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.0001700000000001145,
+              "elapsedSeconds": 0.00016066711395978928
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.799999999968943e-05,
+              "elapsedSeconds": 7.020845077931881e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 7.700000000010476e-05,
+              "elapsedSeconds": 7.537449710071087e-05
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.005103999999999886,
+              "elapsedSeconds": 0.01978720910847187
+            },
+            "thumbnail.fontResources": {
+              "cpuSeconds": 0.024801000000000073,
+              "elapsedSeconds": 0.02473362465389073
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0018980000000001773,
+              "elapsedSeconds": 0.0017950416076928377
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.10678700000000019,
+              "elapsedSeconds": 0.43010708410292864
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 3.4000000000200536e-05,
+              "elapsedSeconds": 3.2207928597927094e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.17267,
+              "elapsedSeconds": 0.660857499577105
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.008460000000000023,
+              "elapsedSeconds": 0.14461354142986238
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.27693849988281727,
+          "appProcessLifetimePeakRSSBytes": 359628800,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012857000000000118,
+              "elapsedSeconds": 0.012861458351835608
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.018325000000000036,
+              "elapsedSeconds": 0.017630666494369507
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00013300000000004975,
+              "elapsedSeconds": 0.0001287916675209999
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.02689700000000006,
+              "elapsedSeconds": 0.02682666666805744
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00021899999999996922,
+              "elapsedSeconds": 0.0002192915417253971
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009749999999999481,
+              "elapsedSeconds": 0.0009752083569765091
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016329999999999956,
+              "elapsedSeconds": 0.016327125020325184
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.161022,
+              "elapsedSeconds": 0.16202974994666874
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.02864799999999934,
+              "elapsedSeconds": 0.02861191681586206
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006620000000003845,
+              "elapsedSeconds": 0.0006576243322342634
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0007299999999996754,
+              "elapsedSeconds": 0.0007312924135476351
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0014719999999992517,
+              "elapsedSeconds": 0.0014687073417007923
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "warmup": false,
+      "mode": "inline",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 0,
+      "bitmapParityCount": 0,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6534234997816384,
+          "appProcessLifetimePeakRSSBytes": 324648960,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012815999999999939,
+              "elapsedSeconds": 0.012556249974295497
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.034972999999999976,
+              "elapsedSeconds": 0.01739399996586144
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.0003129999999999522,
+              "elapsedSeconds": 7.658335380256176e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.04042000000000001,
+              "elapsedSeconds": 0.026296833297237754
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00045999999999990493,
+              "elapsedSeconds": 0.00021870830096304417
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009360000000000479,
+              "elapsedSeconds": 0.0009360415861010551
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016287000000000273,
+              "elapsedSeconds": 0.016077708220109344
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16285100000000008,
+              "elapsedSeconds": 0.16246945830062032
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.02874299999999974,
+              "elapsedSeconds": 0.028344333404675126
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00018700000000027028,
+              "elapsedSeconds": 0.00016675028018653393
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 6.8000000000068e-05,
+              "elapsedSeconds": 6.845779716968536e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 0.0008439999999996228,
+              "elapsedSeconds": 0.0008440003730356693
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.005966000000000471,
+              "elapsedSeconds": 0.025423542130738497
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0016579999999999373,
+              "elapsedSeconds": 0.001638749847188592
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.1330420000000001,
+              "elapsedSeconds": 0.5704522086307406
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 3.0999999999892225e-05,
+              "elapsedSeconds": 3.0333641916513443e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.17643300000000006,
+              "elapsedSeconds": 0.7615504993591458
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.009672000000000347,
+              "elapsedSeconds": 0.12203708337619901
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.2759295832365751,
+          "appProcessLifetimePeakRSSBytes": 360448000,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013009000000000048,
+              "elapsedSeconds": 0.01291950000450015
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.017226999999999992,
+              "elapsedSeconds": 0.017227333271875978
+            },
+            "inspect.read": {
+              "cpuSeconds": 9.599999999998499e-05,
+              "elapsedSeconds": 9.595835581421852e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.02639799999999992,
+              "elapsedSeconds": 0.02624533325433731
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00021799999999994046,
+              "elapsedSeconds": 0.00021841656416654587
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009930000000000216,
+              "elapsedSeconds": 0.0009933332912623882
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016309000000000795,
+              "elapsedSeconds": 0.016046291682869196
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16210500000000017,
+              "elapsedSeconds": 0.162935541709885
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.02823699999999918,
+              "elapsedSeconds": 0.02825299953110516
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006540000000003765,
+              "elapsedSeconds": 0.0006552508566528559
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.000690999999998887,
+              "elapsedSeconds": 0.0006951675750315189
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0014290000000012348,
+              "elapsedSeconds": 0.001427374081686139
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 4,
+      "warmup": false,
+      "mode": "inline",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 0,
+      "bitmapParityCount": 0,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6505217081867158,
+          "appProcessLifetimePeakRSSBytes": 326778880,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013160999999999978,
+              "elapsedSeconds": 0.012969208415597677
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.03472599999999998,
+              "elapsedSeconds": 0.017437791684642434
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00031000000000003247,
+              "elapsedSeconds": 7.483339868485928e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.042306999999999984,
+              "elapsedSeconds": 0.026217166800051928
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.0007579999999999809,
+              "elapsedSeconds": 0.00021450011990964413
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009919999999999929,
+              "elapsedSeconds": 0.000992458313703537
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016567,
+              "elapsedSeconds": 0.01637800014577806
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16398899999999994,
+              "elapsedSeconds": 0.16355541651137173
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.030773999999999968,
+              "elapsedSeconds": 0.03030670853331685
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00016399999999994197,
+              "elapsedSeconds": 0.00016445876099169254
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.2000000000072e-05,
+              "elapsedSeconds": 6.779143586754799e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 0.0014099999999998003,
+              "elapsedSeconds": 0.0014046251308172941
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.0063469999999997695,
+              "elapsedSeconds": 0.024538374738767743
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0017819999999997282,
+              "elapsedSeconds": 0.001667333533987403
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.1296689999999998,
+              "elapsedSeconds": 0.5649683333467692
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 3.09999999997812e-05,
+              "elapsedSeconds": 2.9749702662229538e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.17237000000000002,
+              "elapsedSeconds": 0.7530740422662348
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.008399999999999963,
+              "elapsedSeconds": 0.12030362477526069
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.27796970843337476,
+          "appProcessLifetimePeakRSSBytes": 362201088,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013089000000000128,
+              "elapsedSeconds": 0.012982208514586091
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.01776500000000003,
+              "elapsedSeconds": 0.01776708336547017
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00012000000000000899,
+              "elapsedSeconds": 0.00010224990546703339
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.026491000000000042,
+              "elapsedSeconds": 0.026306374929845333
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00022299999999997322,
+              "elapsedSeconds": 0.00022187503054738045
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0010020000000001694,
+              "elapsedSeconds": 0.0010009582620114088
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016332999999999487,
+              "elapsedSeconds": 0.016334373969584703
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16246399999999994,
+              "elapsedSeconds": 0.16324954177252948
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.028752000000000777,
+              "elapsedSeconds": 0.02858070796355605
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006830000000004333,
+              "elapsedSeconds": 0.000675917137414217
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0007099999999993223,
+              "elapsedSeconds": 0.0007137088105082512
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.001466999999999885,
+              "elapsedSeconds": 0.001469208626076579
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 4,
+      "warmup": false,
+      "mode": "shared",
+      "nativeExitStatus": 65,
+      "pixelAcceptance": false,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 33,
+      "bitmapParityCount": 32,
+      "bitmapMismatchSlides": [
+        33
+      ],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6564955834764987,
+          "appProcessLifetimePeakRSSBytes": 315211776,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013020000000000032,
+              "elapsedSeconds": 0.01278704172000289
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.036443,
+              "elapsedSeconds": 0.017809625016525388
+            },
+            "inspect.read": {
+              "cpuSeconds": 7.00000000000145e-05,
+              "elapsedSeconds": 6.924988701939583e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.04110499999999995,
+              "elapsedSeconds": 0.025884583359584212
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00046600000000002195,
+              "elapsedSeconds": 0.00021954160183668137
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009470000000000312,
+              "elapsedSeconds": 0.000947458203881979
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016572999999999838,
+              "elapsedSeconds": 0.016482709674164653
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16475499999999998,
+              "elapsedSeconds": 0.16424795822240412
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.029880000000000018,
+              "elapsedSeconds": 0.02962387423031032
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.0001609999999998557,
+              "elapsedSeconds": 0.0001539168879389763
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 6.60000000000105e-05,
+              "elapsedSeconds": 6.612366996705532e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 7.100000000037632e-05,
+              "elapsedSeconds": 7.549975998699665e-05
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.0044480000000002295,
+              "elapsedSeconds": 0.0187520410399884
+            },
+            "thumbnail.fontResources": {
+              "cpuSeconds": 0.023610000000000575,
+              "elapsedSeconds": 0.023521499475464225
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0016290000000001026,
+              "elapsedSeconds": 0.0015930004883557558
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.10047800000000007,
+              "elapsedSeconds": 0.4315917089115828
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 3.799999999976045e-05,
+              "elapsedSeconds": 2.8916168957948685e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.16667199999999927,
+              "elapsedSeconds": 0.6696826256811619
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.01147900000000035,
+              "elapsedSeconds": 0.14951704163104296
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.2735441247932613,
+          "appProcessLifetimePeakRSSBytes": 354516992,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.012638000000000038,
+              "elapsedSeconds": 0.012638708343729377
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.01743499999999998,
+              "elapsedSeconds": 0.016772500006482005
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.00016599999999999948,
+              "elapsedSeconds": 0.00013779173605144024
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.025733000000000006,
+              "elapsedSeconds": 0.025636041769757867
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00022200000000005549,
+              "elapsedSeconds": 0.00022233347408473492
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009709999999998331,
+              "elapsedSeconds": 0.000971583416685462
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.01614199999999899,
+              "elapsedSeconds": 0.016129249706864357
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.1601760000000001,
+              "elapsedSeconds": 0.1609761668369174
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.0287639999999989,
+              "elapsedSeconds": 0.028668084647506475
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.000660000000000327,
+              "elapsedSeconds": 0.0006560829933732748
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0006979999999998654,
+              "elapsedSeconds": 0.0006956667639315128
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0014390000000013004,
+              "elapsedSeconds": 0.0014304586220532656
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 5,
+      "warmup": false,
+      "mode": "shared",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 33,
+      "bitmapParityCount": 33,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6535690415184945,
+          "appProcessLifetimePeakRSSBytes": 316391424,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013009000000000048,
+              "elapsedSeconds": 0.012746166670694947
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.03523499999999996,
+              "elapsedSeconds": 0.017545791575685143
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.0002949999999999897,
+              "elapsedSeconds": 7.208343595266342e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.041107000000000005,
+              "elapsedSeconds": 0.025672874879091978
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00021500000000002073,
+              "elapsedSeconds": 0.00021470827050507069
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009590000000000432,
+              "elapsedSeconds": 0.0009589584078639746
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016426000000000385,
+              "elapsedSeconds": 0.016431708820164204
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16501,
+              "elapsedSeconds": 0.16414699982851744
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.030155000000000265,
+              "elapsedSeconds": 0.029711833223700523
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00017199999999972793,
+              "elapsedSeconds": 0.00016183429397642612
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 7.900000000082841e-05,
+              "elapsedSeconds": 7.437611930072308e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 8.200000000047059e-05,
+              "elapsedSeconds": 7.833261042833328e-05
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.004183000000000159,
+              "elapsedSeconds": 0.017896250123158097
+            },
+            "thumbnail.fontResources": {
+              "cpuSeconds": 0.023947000000000163,
+              "elapsedSeconds": 0.02390145813114941
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0016499999999998183,
+              "elapsedSeconds": 0.0016522910445928574
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.10581799999999952,
+              "elapsedSeconds": 0.4392782081849873
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 2.8999999999945736e-05,
+              "elapsedSeconds": 3.241701051592827e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.1684300000000002,
+              "elapsedSeconds": 0.6693618760909885
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.007830000000000004,
+              "elapsedSeconds": 0.14555675024166703
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.2839234166312963,
+          "appProcessLifetimePeakRSSBytes": 361431040,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 4,
+            "loadedSVGBytes": 952840,
+            "retainedBytes": 5553640,
+            "retainedCount": 4,
+            "servedFontBytes": 12700892,
+            "servedFontRequests": 67,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013056999999999985,
+              "elapsedSeconds": 0.013048874912783504
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.019324000000000008,
+              "elapsedSeconds": 0.018614791799336672
+            },
+            "inspect.read": {
+              "cpuSeconds": 0.0001420000000000865,
+              "elapsedSeconds": 0.00013087503612041473
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.026223999999999914,
+              "elapsedSeconds": 0.02613375009968877
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00022500000000003073,
+              "elapsedSeconds": 0.0002260417677462101
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009949999999998571,
+              "elapsedSeconds": 0.0009943749755620956
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016378000000000004,
+              "elapsedSeconds": 0.016305458266288042
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16619699999999993,
+              "elapsedSeconds": 0.16706045833416283
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.028800999999999854,
+              "elapsedSeconds": 0.028797666309401393
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006820000000000714,
+              "elapsedSeconds": 0.0006904995534569025
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0008290000000001907,
+              "elapsedSeconds": 0.0008332084398716688
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.0016179999999998973,
+              "elapsedSeconds": 0.0016154577024281025
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    },
+    {
+      "pair": 5,
+      "warmup": false,
+      "mode": "inline",
+      "nativeExitStatus": 0,
+      "pixelAcceptance": true,
+      "diagnosticsSHA256": "68fd60ec3d99a179bc77fb7724e81bfba7dd7f1dedb815843aa168219e4a9f7e",
+      "bitmapComparisonCount": 0,
+      "bitmapParityCount": 0,
+      "bitmapMismatchSlides": [],
+      "operations": [
+        {
+          "operationInProcess": 1,
+          "firstBitmapAvailableSeconds": 0.6510188751854002,
+          "appProcessLifetimePeakRSSBytes": 325206016,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013365999999999989,
+              "elapsedSeconds": 0.012864124961197376
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.034299000000000024,
+              "elapsedSeconds": 0.01717533334158361
+            },
+            "inspect.read": {
+              "cpuSeconds": 9.900000000001574e-05,
+              "elapsedSeconds": 8.316664025187492e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.040239000000000025,
+              "elapsedSeconds": 0.026128291618078947
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.0007510000000000017,
+              "elapsedSeconds": 0.0002190831582993269
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009609999999999896,
+              "elapsedSeconds": 0.0009614999871701002
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.016665999999999626,
+              "elapsedSeconds": 0.016243833117187023
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16498800000000002,
+              "elapsedSeconds": 0.16428808332420886
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.030420000000000003,
+              "elapsedSeconds": 0.030318750767037272
+            },
+            "thumbnail.cacheInsert": {
+              "cpuSeconds": 0.00017000000000000348,
+              "elapsedSeconds": 0.0001722089946269989
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 6.799999999973494e-05,
+              "elapsedSeconds": 6.837490946054459e-05
+            },
+            "thumbnail.document": {
+              "cpuSeconds": 0.002652000000000876,
+              "elapsedSeconds": 0.002652000170201063
+            },
+            "thumbnail.fontReadiness": {
+              "cpuSeconds": 0.005975000000000064,
+              "elapsedSeconds": 0.022924457909539342
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0017860000000001763,
+              "elapsedSeconds": 0.0016774169635027647
+            },
+            "thumbnail.navigation": {
+              "cpuSeconds": 0.1295250000000001,
+              "elapsedSeconds": 0.5599114585202187
+            },
+            "thumbnail.queue": {
+              "cpuSeconds": 3.800000000020454e-05,
+              "elapsedSeconds": 3.187498077750206e-05
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.17546899999999954,
+              "elapsedSeconds": 0.7568352497182786
+            },
+            "thumbnail.snapshot": {
+              "cpuSeconds": 0.01020399999999999,
+              "elapsedSeconds": 0.1277267502155155
+            }
+          },
+          "droppedSamples": 0
+        },
+        {
+          "operationInProcess": 2,
+          "firstBitmapAvailableSeconds": 0.2746442083735019,
+          "appProcessLifetimePeakRSSBytes": 361021440,
+          "thumbnailCacheAccountedBytes": 153662480,
+          "thumbnailCacheByteLimit": 268435456,
+          "thumbnailCacheEntries": 33,
+          "fontResources": {
+            "decodedResources": 0,
+            "loadedSVGBytes": 32011280,
+            "retainedBytes": 0,
+            "retainedCount": 0,
+            "servedFontBytes": 0,
+            "servedFontRequests": 0,
+            "sourceSVGBytes": 32011280
+          },
+          "stageTotals": {
+            "inspect.extract": {
+              "cpuSeconds": 0.013067000000000162,
+              "elapsedSeconds": 0.012961041647940874
+            },
+            "inspect.open": {
+              "cpuSeconds": 0.017583000000000015,
+              "elapsedSeconds": 0.017573916586115956
+            },
+            "inspect.read": {
+              "cpuSeconds": 9.900000000007125e-05,
+              "elapsedSeconds": 9.237485937774181e-05
+            },
+            "inspect.validate": {
+              "cpuSeconds": 0.026561999999999975,
+              "elapsedSeconds": 0.026347333332523704
+            },
+            "preview.embeddedFonts": {
+              "cpuSeconds": 0.00023200000000000998,
+              "elapsedSeconds": 0.0002310001291334629
+            },
+            "preview.fontDiscovery": {
+              "cpuSeconds": 0.0009689999999999976,
+              "elapsedSeconds": 0.0009690832812339067
+            },
+            "preview.identity": {
+              "cpuSeconds": 0.01659699999999953,
+              "elapsedSeconds": 0.016433500219136477
+            },
+            "preview.installedFonts": {
+              "cpuSeconds": 0.16015400000000013,
+              "elapsedSeconds": 0.160960583249107
+            },
+            "preview.svg": {
+              "cpuSeconds": 0.02799999999999958,
+              "elapsedSeconds": 0.027957917656749487
+            },
+            "thumbnail.cacheLookup": {
+              "cpuSeconds": 0.0006580000000002695,
+              "elapsedSeconds": 0.0006559991743415594
+            },
+            "thumbnail.geometry": {
+              "cpuSeconds": 0.0006859999999999644,
+              "elapsedSeconds": 0.0006852911319583654
+            },
+            "thumbnail.request": {
+              "cpuSeconds": 0.001428000000000651,
+              "elapsedSeconds": 0.0014234166592359543
+            }
+          },
+          "droppedSamples": 0
+        }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "operationInProcess": 1,
+      "metrics": {
+        "firstBitmapSeconds": {
+          "inlineMedian": 0.6534234997816384,
+          "sharedMedian": 0.6535690415184945,
+          "pairedDeltas": [
+            -0.022389541612938046,
+            0.009672125102952123,
+            -0.00946570816449821,
+            0.005973875289782882,
+            0.0025501663330942392
+          ],
+          "pairedDeltaMedian": 0.0025501663330942392,
+          "pairedDeltaMin": -0.022389541612938046,
+          "pairedDeltaMax": 0.009672125102952123
+        },
+        "appLifetimePeakRSSBytes": {
+          "inlineMedian": 325206016,
+          "sharedMedian": 316162048,
+          "pairedDeltas": [
+            -9322496,
+            -17891328,
+            -8306688,
+            -11567104,
+            -8814592
+          ],
+          "pairedDeltaMedian": -9322496,
+          "pairedDeltaMin": -17891328,
+          "pairedDeltaMax": -8306688
+        },
+        "inspect.extract.cpuSeconds": {
+          "inlineMedian": 0.012896000000000019,
+          "sharedMedian": 0.013009000000000048,
+          "pairedDeltas": [
+            0.00031199999999997896,
+            -1.8000000000073513e-05,
+            0.00011300000000014077,
+            -0.00014099999999994672,
+            -0.0003569999999999407
+          ],
+          "pairedDeltaMedian": -1.8000000000073513e-05,
+          "pairedDeltaMin": -0.0003569999999999407,
+          "pairedDeltaMax": 0.00031199999999997896
+        },
+        "inspect.extract.elapsedSeconds": {
+          "inlineMedian": 0.012675708392634988,
+          "sharedMedian": 0.012746166670694947,
+          "pairedDeltas": [
+            0.00010050018317997456,
+            -0.00017250003293156624,
+            0.00013495818711817265,
+            -0.0001821666955947876,
+            -0.00011795829050242901
+          ],
+          "pairedDeltaMedian": -0.00011795829050242901,
+          "pairedDeltaMin": -0.0001821666955947876,
+          "pairedDeltaMax": 0.00013495818711817265
+        },
+        "inspect.open.cpuSeconds": {
+          "inlineMedian": 0.034750999999999976,
+          "sharedMedian": 0.035445000000000004,
+          "pairedDeltas": [
+            -0.00017099999999997673,
+            -0.0005269999999999442,
+            0.0008740000000000414,
+            0.001717000000000024,
+            0.0009359999999999369
+          ],
+          "pairedDeltaMedian": 0.0008740000000000414,
+          "pairedDeltaMin": -0.0005269999999999442,
+          "pairedDeltaMax": 0.001717000000000024
+        },
+        "inspect.open.elapsedSeconds": {
+          "inlineMedian": 0.01739399996586144,
+          "sharedMedian": 0.017545791575685143,
+          "pairedDeltas": [
+            0.00023458339273929596,
+            -0.00025020819157361984,
+            0.00029233330860733986,
+            0.00037183333188295364,
+            0.0003704582341015339
+          ],
+          "pairedDeltaMedian": 0.00029233330860733986,
+          "pairedDeltaMin": -0.00025020819157361984,
+          "pairedDeltaMax": 0.00037183333188295364
+        },
+        "inspect.read.cpuSeconds": {
+          "inlineMedian": 0.00031000000000003247,
+          "sharedMedian": 7.099999999998774e-05,
+          "pairedDeltas": [
+            -0.00015399999999998748,
+            -0.00026799999999999047,
+            -0.0002389999999999337,
+            -0.00024000000000001798,
+            0.00019599999999997397
+          ],
+          "pairedDeltaMedian": -0.0002389999999999337,
+          "pairedDeltaMin": -0.00026799999999999047,
+          "pairedDeltaMax": 0.00019599999999997397
+        },
+        "inspect.read.elapsedSeconds": {
+          "inlineMedian": 7.858313620090485e-05,
+          "sharedMedian": 7.095816545188427e-05,
+          "pairedDeltas": [
+            -7.6249707490205765e-06,
+            -2.3250235244631767e-05,
+            -5.624955520033836e-06,
+            -5.5835116654634476e-06,
+            -1.1083204299211502e-05
+          ],
+          "pairedDeltaMedian": -7.6249707490205765e-06,
+          "pairedDeltaMin": -2.3250235244631767e-05,
+          "pairedDeltaMax": -5.5835116654634476e-06
+        },
+        "inspect.validate.cpuSeconds": {
+          "inlineMedian": 0.040239000000000025,
+          "sharedMedian": 0.03991,
+          "pairedDeltas": [
+            0.0004610000000000447,
+            -0.0005070000000000352,
+            -0.0007630000000000137,
+            -0.0012020000000000364,
+            0.0008679999999999799
+          ],
+          "pairedDeltaMedian": -0.0005070000000000352,
+          "pairedDeltaMin": -0.0012020000000000364,
+          "pairedDeltaMax": 0.0008679999999999799
+        },
+        "inspect.validate.elapsedSeconds": {
+          "inlineMedian": 0.026165458373725414,
+          "sharedMedian": 0.025884583359584212,
+          "pairedDeltas": [
+            -4.1499966755509377e-05,
+            0.0003424999304115772,
+            -0.0005269167013466358,
+            -0.00033258344046771526,
+            -0.000455416738986969
+          ],
+          "pairedDeltaMedian": -0.00033258344046771526,
+          "pairedDeltaMin": -0.0005269167013466358,
+          "pairedDeltaMax": 0.0003424999304115772
+        },
+        "preview.embeddedFonts.cpuSeconds": {
+          "inlineMedian": 0.0007510000000000017,
+          "sharedMedian": 0.00022300000000002873,
+          "pairedDeltas": [
+            -3.4999999999951736e-05,
+            -0.0005080000000000084,
+            -0.0002369999999998762,
+            -0.00029199999999995896,
+            -0.0005359999999999809
+          ],
+          "pairedDeltaMedian": -0.00029199999999995896,
+          "pairedDeltaMin": -0.0005359999999999809,
+          "pairedDeltaMax": -3.4999999999951736e-05
+        },
+        "preview.embeddedFonts.elapsedSeconds": {
+          "inlineMedian": 0.0002190831582993269,
+          "sharedMedian": 0.0002193748950958252,
+          "pairedDeltas": [
+            -6.125075742602348e-06,
+            -7.08363950252533e-06,
+            4.083150997757912e-06,
+            5.041481927037239e-06,
+            -4.37488779425621e-06
+          ],
+          "pairedDeltaMedian": -4.37488779425621e-06,
+          "pairedDeltaMin": -7.08363950252533e-06,
+          "pairedDeltaMax": 5.041481927037239e-06
+        },
+        "preview.fontDiscovery.cpuSeconds": {
+          "inlineMedian": 0.0009640000000000759,
+          "sharedMedian": 0.0009620000000000184,
+          "pairedDeltas": [
+            -2.0000000000575113e-06,
+            4.999999999921734e-06,
+            3.999999999992898e-05,
+            -4.499999999996174e-05,
+            -1.999999999946489e-06
+          ],
+          "pairedDeltaMedian": -1.999999999946489e-06,
+          "pairedDeltaMin": -4.499999999996174e-05,
+          "pairedDeltaMax": 3.999999999992898e-05
+        },
+        "preview.fontDiscovery.elapsedSeconds": {
+          "inlineMedian": 0.0009631251450628042,
+          "sharedMedian": 0.0009631665889173746,
+          "pairedDeltas": [
+            4.1443854570388794e-08,
+            4.416564479470253e-06,
+            4.029157571494579e-05,
+            -4.5000109821558e-05,
+            -2.541579306125641e-06
+          ],
+          "pairedDeltaMedian": 4.1443854570388794e-08,
+          "pairedDeltaMin": -4.5000109821558e-05,
+          "pairedDeltaMax": 4.029157571494579e-05
+        },
+        "preview.identity.cpuSeconds": {
+          "inlineMedian": 0.016495999999999733,
+          "sharedMedian": 0.016426000000000385,
+          "pairedDeltas": [
+            0.0003609999999993896,
+            -0.00032699999999974416,
+            2.6999999999777202e-05,
+            5.999999999839467e-06,
+            -0.00023999999999924082
+          ],
+          "pairedDeltaMedian": 5.999999999839467e-06,
+          "pairedDeltaMin": -0.00032699999999974416,
+          "pairedDeltaMax": 0.0003609999999993896
+        },
+        "preview.identity.elapsedSeconds": {
+          "inlineMedian": 0.016243833117187023,
+          "sharedMedian": 0.016392041463404894,
+          "pairedDeltas": [
+            0.0003056256100535393,
+            -0.0003501677419990301,
+            5.070772022008896e-05,
+            0.00010470952838659286,
+            0.00018787570297718048
+          ],
+          "pairedDeltaMedian": 0.00010470952838659286,
+          "pairedDeltaMin": -0.0003501677419990301,
+          "pairedDeltaMax": 0.0003056256100535393
+        },
+        "preview.installedFonts.cpuSeconds": {
+          "inlineMedian": 0.1645580000000001,
+          "sharedMedian": 0.16501,
+          "pairedDeltas": [
+            0.0007689999999999086,
+            0.0022010000000000085,
+            0.0008289999999999687,
+            0.0007660000000000444,
+            2.199999999996649e-05
+          ],
+          "pairedDeltaMedian": 0.0007689999999999086,
+          "pairedDeltaMin": 2.199999999996649e-05,
+          "pairedDeltaMax": 0.0022010000000000085
+        },
+        "preview.installedFonts.elapsedSeconds": {
+          "inlineMedian": 0.16383233340457082,
+          "sharedMedian": 0.16424795822240412,
+          "pairedDeltas": [
+            0.0008406250271946192,
+            0.0012027500197291374,
+            0.0003162084612995386,
+            0.0006925417110323906,
+            -0.00014108349569141865
+          ],
+          "pairedDeltaMedian": 0.0006925417110323906,
+          "pairedDeltaMin": -0.00014108349569141865,
+          "pairedDeltaMax": 0.0012027500197291374
+        },
+        "preview.svg.cpuSeconds": {
+          "inlineMedian": 0.030420000000000003,
+          "sharedMedian": 0.029912999999999967,
+          "pairedDeltas": [
+            -0.0003580000000001915,
+            -0.0006210000000000937,
+            0.0011700000000002264,
+            -0.0008939999999999504,
+            -0.00026499999999973767
+          ],
+          "pairedDeltaMedian": -0.0003580000000001915,
+          "pairedDeltaMin": -0.0008939999999999504,
+          "pairedDeltaMax": 0.0011700000000002264
+        },
+        "preview.svg.elapsedSeconds": {
+          "inlineMedian": 0.03018958424217999,
+          "sharedMedian": 0.029588416451588273,
+          "pairedDeltas": [
+            -5.03764022141695e-05,
+            -0.0006011677905917168,
+            0.0011147921904921532,
+            -0.0006828343030065298,
+            -0.0006069175433367491
+          ],
+          "pairedDeltaMedian": -0.0006011677905917168,
+          "pairedDeltaMin": -0.0006828343030065298,
+          "pairedDeltaMax": 0.0011147921904921532
+        },
+        "thumbnail.cacheInsert.cpuSeconds": {
+          "inlineMedian": 0.00017700000000009375,
+          "sharedMedian": 0.00017199999999972793,
+          "pairedDeltas": [
+            -4.999999999810711e-06,
+            7.80000000000225e-05,
+            -1.700000000015578e-05,
+            -3.000000000086267e-06,
+            1.9999999997244444e-06
+          ],
+          "pairedDeltaMedian": -3.000000000086267e-06,
+          "pairedDeltaMin": -1.700000000015578e-05,
+          "pairedDeltaMax": 7.80000000000225e-05
+        },
+        "thumbnail.cacheInsert.elapsedSeconds": {
+          "inlineMedian": 0.00016675028018653393,
+          "sharedMedian": 0.00016183429397642612,
+          "pairedDeltas": [
+            -2.498272806406021e-07,
+            9.358138777315617e-05,
+            -6.083166226744652e-06,
+            -1.0541873052716255e-05,
+            -1.0374700650572777e-05
+          ],
+          "pairedDeltaMedian": -6.083166226744652e-06,
+          "pairedDeltaMin": -1.0541873052716255e-05,
+          "pairedDeltaMax": 9.358138777315617e-05
+        },
+        "thumbnail.cacheLookup.cpuSeconds": {
+          "inlineMedian": 7.099999999937712e-05,
+          "sharedMedian": 7.30000000007669e-05,
+          "pairedDeltas": [
+            6.661338147750939e-16,
+            1.1102230246251565e-16,
+            9.999999999621423e-06,
+            -6.000000000061512e-06,
+            1.1000000001093468e-05
+          ],
+          "pairedDeltaMedian": 6.661338147750939e-16,
+          "pairedDeltaMin": -6.000000000061512e-06,
+          "pairedDeltaMax": 1.1000000001093468e-05
+        },
+        "thumbnail.cacheLookup.elapsedSeconds": {
+          "inlineMedian": 6.845779716968536e-05,
+          "sharedMedian": 7.020845077931881e-05,
+          "pairedDeltas": [
+            -3.875233232975006e-06,
+            4.21423465013504e-08,
+            1.7506536096334457e-06,
+            -1.6677659004926682e-06,
+            6.00120984017849e-06
+          ],
+          "pairedDeltaMedian": 4.21423465013504e-08,
+          "pairedDeltaMin": -3.875233232975006e-06,
+          "pairedDeltaMax": 6.00120984017849e-06
+        },
+        "thumbnail.document.cpuSeconds": {
+          "inlineMedian": 0.0014099999999998003,
+          "sharedMedian": 7.100000000037632e-05,
+          "pairedDeltas": [
+            -0.001248000000000804,
+            -0.0025889999999999525,
+            -0.0007669999999995181,
+            -0.001338999999999424,
+            -0.0025700000000004053
+          ],
+          "pairedDeltaMedian": -0.001338999999999424,
+          "pairedDeltaMin": -0.0025889999999999525,
+          "pairedDeltaMax": -0.0007669999999995181
+        },
+        "thumbnail.document.elapsedSeconds": {
+          "inlineMedian": 0.0014046251308172941,
+          "sharedMedian": 7.537449710071087e-05,
+          "pairedDeltas": [
+            -0.001240584533661604,
+            -0.0025921242777258158,
+            -0.0007686258759349585,
+            -0.0013291253708302975,
+            -0.00257366755977273
+          ],
+          "pairedDeltaMedian": -0.0013291253708302975,
+          "pairedDeltaMin": -0.0025921242777258158,
+          "pairedDeltaMax": -0.0007686258759349585
+        },
+        "thumbnail.fontReadiness.cpuSeconds": {
+          "inlineMedian": 0.005975000000000064,
+          "sharedMedian": 0.0044480000000002295,
+          "pairedDeltas": [
+            -0.0010129999999998196,
+            -0.001434999999999964,
+            -0.0008620000000005845,
+            -0.00189899999999954,
+            -0.0017919999999999048
+          ],
+          "pairedDeltaMedian": -0.001434999999999964,
+          "pairedDeltaMin": -0.00189899999999954,
+          "pairedDeltaMax": -0.0008620000000005845
+        },
+        "thumbnail.fontReadiness.elapsedSeconds": {
+          "inlineMedian": 0.024538374738767743,
+          "sharedMedian": 0.01821720926091075,
+          "pairedDeltas": [
+            -0.0072348336689174175,
+            -0.004674415802583098,
+            -0.005636333022266626,
+            -0.0057863336987793446,
+            -0.005028207786381245
+          ],
+          "pairedDeltaMedian": -0.005636333022266626,
+          "pairedDeltaMin": -0.0072348336689174175,
+          "pairedDeltaMax": -0.004674415802583098
+        },
+        "thumbnail.fontResources.cpuSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0.02377100000000032,
+          "pairedDeltas": [
+            0.02292099999999997,
+            0.02377100000000032,
+            0.024801000000000073,
+            0.023610000000000575,
+            0.023947000000000163
+          ],
+          "pairedDeltaMedian": 0.02377100000000032,
+          "pairedDeltaMin": 0.02292099999999997,
+          "pairedDeltaMax": 0.024801000000000073
+        },
+        "thumbnail.fontResources.elapsedSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0.02376087475568056,
+          "pairedDeltas": [
+            0.022748333169147372,
+            0.02376087475568056,
+            0.02473362465389073,
+            0.023521499475464225,
+            0.02390145813114941
+          ],
+          "pairedDeltaMedian": 0.02376087475568056,
+          "pairedDeltaMin": 0.022748333169147372,
+          "pairedDeltaMax": 0.02473362465389073
+        },
+        "thumbnail.geometry.cpuSeconds": {
+          "inlineMedian": 0.0017860000000001763,
+          "sharedMedian": 0.0016499999999998183,
+          "pairedDeltas": [
+            -0.00020700000000029029,
+            -2.4000000000024002e-05,
+            0.00024000000000024002,
+            -0.00015299999999962566,
+            -0.00013600000000035806
+          ],
+          "pairedDeltaMedian": -0.00013600000000035806,
+          "pairedDeltaMin": -0.00020700000000029029,
+          "pairedDeltaMax": 0.00024000000000024002
+        },
+        "thumbnail.geometry.elapsedSeconds": {
+          "inlineMedian": 0.0016774169635027647,
+          "sharedMedian": 0.0016522910445928574,
+          "pairedDeltas": [
+            -0.00021691713482141495,
+            5.795876495540142e-05,
+            0.00015629176050424576,
+            -7.433304563164711e-05,
+            -2.512591890990734e-05
+          ],
+          "pairedDeltaMedian": -2.512591890990734e-05,
+          "pairedDeltaMin": -0.00021691713482141495,
+          "pairedDeltaMax": 0.00015629176050424576
+        },
+        "thumbnail.navigation.cpuSeconds": {
+          "inlineMedian": 0.1296689999999998,
+          "sharedMedian": 0.10581799999999952,
+          "pairedDeltas": [
+            -0.033752000000000004,
+            -0.018685000000000285,
+            -0.026254999999999917,
+            -0.029190999999999745,
+            -0.02370700000000059
+          ],
+          "pairedDeltaMedian": -0.026254999999999917,
+          "pairedDeltaMin": -0.033752000000000004,
+          "pairedDeltaMax": -0.018685000000000285
+        },
+        "thumbnail.navigation.elapsedSeconds": {
+          "inlineMedian": 0.5649683333467692,
+          "sharedMedian": 0.4315917089115828,
+          "pairedDeltas": [
+            -0.15651366650126874,
+            -0.1055117913056165,
+            -0.140345124527812,
+            -0.13337662443518639,
+            -0.12063325033523142
+          ],
+          "pairedDeltaMedian": -0.13337662443518639,
+          "pairedDeltaMin": -0.15651366650126874,
+          "pairedDeltaMax": -0.1055117913056165
+        },
+        "thumbnail.queue.cpuSeconds": {
+          "inlineMedian": 3.0999999999892225e-05,
+          "sharedMedian": 3.4000000000200536e-05,
+          "pairedDeltas": [
+            3.9999999996709334e-06,
+            -1.0000000000287557e-06,
+            3.0000000003083116e-06,
+            6.999999999979245e-06,
+            -9.000000000258801e-06
+          ],
+          "pairedDeltaMedian": 3.0000000003083116e-06,
+          "pairedDeltaMin": -9.000000000258801e-06,
+          "pairedDeltaMax": 6.999999999979245e-06
+        },
+        "thumbnail.queue.elapsedSeconds": {
+          "inlineMedian": 3.062421455979347e-05,
+          "sharedMedian": 3.179139457643032e-05,
+          "pairedDeltas": [
+            1.1243391782045364e-06,
+            -1.041218638420105e-06,
+            1.8742866814136505e-06,
+            -8.335337042808533e-07,
+            5.420297384262085e-07
+          ],
+          "pairedDeltaMedian": 5.420297384262085e-07,
+          "pairedDeltaMin": -1.041218638420105e-06,
+          "pairedDeltaMax": 1.8742866814136505e-06
+        },
+        "thumbnail.request.cpuSeconds": {
+          "inlineMedian": 0.17630999999999963,
+          "sharedMedian": 0.1684300000000002,
+          "pairedDeltas": [
+            -0.015662000000000287,
+            -0.0030999999999994365,
+            -0.003763000000000072,
+            -0.005698000000000758,
+            -0.007038999999999351
+          ],
+          "pairedDeltaMedian": -0.005698000000000758,
+          "pairedDeltaMin": -0.015662000000000287,
+          "pairedDeltaMax": -0.0030999999999994365
+        },
+        "thumbnail.request.elapsedSeconds": {
+          "inlineMedian": 0.7610241256188601,
+          "sharedMedian": 0.6693618760909885,
+          "pairedDeltas": [
+            -0.13012541574425995,
+            -0.06779500050470233,
+            -0.10069299978204072,
+            -0.08339141658507288,
+            -0.08747337362729013
+          ],
+          "pairedDeltaMedian": -0.08747337362729013,
+          "pairedDeltaMin": -0.13012541574425995,
+          "pairedDeltaMax": -0.06779500050470233
+        },
+        "thumbnail.snapshot.cpuSeconds": {
+          "inlineMedian": 0.01020399999999999,
+          "sharedMedian": 0.008851000000000053,
+          "pairedDeltas": [
+            -0.0017300000000003424,
+            -0.004015000000000546,
+            -0.001212000000000324,
+            0.003079000000000387,
+            -0.0023739999999999872
+          ],
+          "pairedDeltaMedian": -0.0017300000000003424,
+          "pairedDeltaMin": -0.004015000000000546,
+          "pairedDeltaMax": 0.003079000000000387
+        },
+        "thumbnail.snapshot.elapsedSeconds": {
+          "inlineMedian": 0.12597408262081444,
+          "sharedMedian": 0.14555675024166703,
+          "pairedDeltas": [
+            0.01835433323867619,
+            0.02280658483505249,
+            0.022576458053663373,
+            0.02921341685578227,
+            0.017830000026151538
+          ],
+          "pairedDeltaMedian": 0.022576458053663373,
+          "pairedDeltaMin": 0.017830000026151538,
+          "pairedDeltaMax": 0.02921341685578227
+        }
+      }
+    },
+    {
+      "operationInProcess": 2,
+      "metrics": {
+        "firstBitmapSeconds": {
+          "inlineMedian": 0.2759295832365751,
+          "sharedMedian": 0.27693849988281727,
+          "pairedDeltas": [
+            0.003020124975591898,
+            0.003408666467294097,
+            0.0010089166462421417,
+            -0.004425583640113473,
+            0.00927920825779438
+          ],
+          "pairedDeltaMedian": 0.003020124975591898,
+          "pairedDeltaMin": -0.004425583640113473,
+          "pairedDeltaMax": 0.00927920825779438
+        },
+        "appLifetimePeakRSSBytes": {
+          "inlineMedian": 361021440,
+          "sharedMedian": 359628800,
+          "pairedDeltas": [
+            -1212416,
+            -8044544,
+            -819200,
+            -7684096,
+            409600
+          ],
+          "pairedDeltaMedian": -1212416,
+          "pairedDeltaMin": -8044544,
+          "pairedDeltaMax": 409600
+        },
+        "inspect.extract.cpuSeconds": {
+          "inlineMedian": 0.013009000000000048,
+          "sharedMedian": 0.012857000000000118,
+          "pairedDeltas": [
+            -0.00010399999999988196,
+            0.00042100000000022675,
+            -0.00015199999999992997,
+            -0.0004510000000000902,
+            -1.0000000000176534e-05
+          ],
+          "pairedDeltaMedian": -0.00010399999999988196,
+          "pairedDeltaMin": -0.0004510000000000902,
+          "pairedDeltaMax": 0.00042100000000022675
+        },
+        "inspect.extract.elapsedSeconds": {
+          "inlineMedian": 0.01291950000450015,
+          "sharedMedian": 0.012861458351835608,
+          "pairedDeltas": [
+            -7.816660217940807e-05,
+            0.00047324993647634983,
+            -5.80416526645422e-05,
+            -0.00034350017085671425,
+            8.783326484262943e-05
+          ],
+          "pairedDeltaMedian": -5.80416526645422e-05,
+          "pairedDeltaMin": -0.00034350017085671425,
+          "pairedDeltaMax": 0.00047324993647634983
+        },
+        "inspect.open.cpuSeconds": {
+          "inlineMedian": 0.017583000000000015,
+          "sharedMedian": 0.018221000000000043,
+          "pairedDeltas": [
+            0.0008319999999999439,
+            -0.00023300000000003873,
+            0.0010980000000000434,
+            -0.0003300000000000525,
+            0.0017409999999999926
+          ],
+          "pairedDeltaMedian": 0.0008319999999999439,
+          "pairedDeltaMin": -0.0003300000000000525,
+          "pairedDeltaMax": 0.0017409999999999926
+        },
+        "inspect.open.elapsedSeconds": {
+          "inlineMedian": 0.017573916586115956,
+          "sharedMedian": 0.017581375082954764,
+          "pairedDeltas": [
+            0.0006356250960379839,
+            -0.0004317082930356264,
+            0.0004033332224935293,
+            -0.0009945833589881659,
+            0.0010408752132207155
+          ],
+          "pairedDeltaMedian": 0.0004033332224935293,
+          "pairedDeltaMin": -0.0009945833589881659,
+          "pairedDeltaMax": 0.0010408752132207155
+        },
+        "inspect.read.cpuSeconds": {
+          "inlineMedian": 0.0001180000000000625,
+          "sharedMedian": 0.00014700000000000824,
+          "pairedDeltas": [
+            -2.2999999999995246e-05,
+            9.199999999998099e-05,
+            3.700000000006476e-05,
+            4.599999999999049e-05,
+            4.300000000001525e-05
+          ],
+          "pairedDeltaMedian": 4.300000000001525e-05,
+          "pairedDeltaMin": -2.2999999999995246e-05,
+          "pairedDeltaMax": 9.199999999998099e-05
+        },
+        "inspect.read.elapsedSeconds": {
+          "inlineMedian": 9.595835581421852e-05,
+          "sharedMedian": 0.00013208319433033466,
+          "pairedDeltas": [
+            3.8083409890532494e-05,
+            3.629154525697231e-05,
+            3.283331170678139e-05,
+            3.554183058440685e-05,
+            3.850017674267292e-05
+          ],
+          "pairedDeltaMedian": 3.629154525697231e-05,
+          "pairedDeltaMin": 3.283331170678139e-05,
+          "pairedDeltaMax": 3.850017674267292e-05
+        },
+        "inspect.validate.cpuSeconds": {
+          "inlineMedian": 0.026491000000000042,
+          "sharedMedian": 0.026223999999999914,
+          "pairedDeltas": [
+            0.000132000000000132,
+            0.0006240000000000689,
+            0.0004990000000001382,
+            -0.0007580000000000364,
+            -0.0003380000000000605
+          ],
+          "pairedDeltaMedian": 0.000132000000000132,
+          "pairedDeltaMin": -0.0007580000000000364,
+          "pairedDeltaMax": 0.0006240000000000689
+        },
+        "inspect.validate.elapsedSeconds": {
+          "inlineMedian": 0.026306374929845333,
+          "sharedMedian": 0.02613375009968877,
+          "pairedDeltas": [
+            0.00014350004494190216,
+            0.0006263749673962593,
+            0.0005813334137201309,
+            -0.0006703331600874662,
+            -0.0002135832328349352
+          ],
+          "pairedDeltaMedian": 0.00014350004494190216,
+          "pairedDeltaMin": -0.0006703331600874662,
+          "pairedDeltaMax": 0.0006263749673962593
+        },
+        "preview.embeddedFonts.cpuSeconds": {
+          "inlineMedian": 0.00022800000000000598,
+          "sharedMedian": 0.00021900000000008024,
+          "pairedDeltas": [
+            -9.99999999995449e-06,
+            -0.0002369999999999317,
+            1.0000000000287557e-06,
+            -9.999999999177334e-07,
+            -6.999999999979245e-06
+          ],
+          "pairedDeltaMedian": -6.999999999979245e-06,
+          "pairedDeltaMin": -0.0002369999999999317,
+          "pairedDeltaMax": 1.0000000000287557e-06
+        },
+        "preview.embeddedFonts.elapsedSeconds": {
+          "inlineMedian": 0.00022300006821751595,
+          "sharedMedian": 0.00021945848129689693,
+          "pairedDeltas": [
+            -1.0333256796002388e-05,
+            -3.541586920619011e-06,
+            8.749775588512421e-07,
+            4.584435373544693e-07,
+            -4.958361387252808e-06
+          ],
+          "pairedDeltaMedian": -3.541586920619011e-06,
+          "pairedDeltaMin": -1.0333256796002388e-05,
+          "pairedDeltaMax": 8.749775588512421e-07
+        },
+        "preview.fontDiscovery.cpuSeconds": {
+          "inlineMedian": 0.0009879999999999889,
+          "sharedMedian": 0.0009749999999999481,
+          "pairedDeltas": [
+            -2.599999999997049e-05,
+            4.4999999999850715e-05,
+            -1.8000000000073513e-05,
+            -3.1000000000336314e-05,
+            2.599999999985947e-05
+          ],
+          "pairedDeltaMedian": -1.8000000000073513e-05,
+          "pairedDeltaMin": -3.1000000000336314e-05,
+          "pairedDeltaMax": 4.4999999999850715e-05
+        },
+        "preview.fontDiscovery.elapsedSeconds": {
+          "inlineMedian": 0.0009690832812339067,
+          "sharedMedian": 0.0009752083569765091,
+          "pairedDeltas": [
+            -1.3336539268493652e-06,
+            4.466692917048931e-05,
+            -1.8124934285879135e-05,
+            -2.9374845325946808e-05,
+            2.5291694328188896e-05
+          ],
+          "pairedDeltaMedian": -1.3336539268493652e-06,
+          "pairedDeltaMin": -2.9374845325946808e-05,
+          "pairedDeltaMax": 4.466692917048931e-05
+        },
+        "preview.identity.cpuSeconds": {
+          "inlineMedian": 0.016332999999999487,
+          "sharedMedian": 0.016376999999999642,
+          "pairedDeltas": [
+            -0.0001490000000003988,
+            0.00014700000000100744,
+            2.099999999916058e-05,
+            -0.00019100000000049633,
+            -0.00021899999999952513
+          ],
+          "pairedDeltaMedian": -0.0001490000000003988,
+          "pairedDeltaMin": -0.00021899999999952513,
+          "pairedDeltaMax": 0.00014700000000100744
+        },
+        "preview.identity.elapsedSeconds": {
+          "inlineMedian": 0.016334373969584703,
+          "sharedMedian": 0.016327125020325184,
+          "pairedDeltas": [
+            -5.212542600929737e-05,
+            0.00025350041687488556,
+            0.00028083333745598793,
+            -0.00020512426272034645,
+            -0.00012804195284843445
+          ],
+          "pairedDeltaMedian": -5.212542600929737e-05,
+          "pairedDeltaMin": -0.00020512426272034645,
+          "pairedDeltaMax": 0.00028083333745598793
+        },
+        "preview.installedFonts.cpuSeconds": {
+          "inlineMedian": 0.16210500000000017,
+          "sharedMedian": 0.16157500000000014,
+          "pairedDeltas": [
+            0.0029210000000000624,
+            0.0015640000000001208,
+            -0.0010830000000001672,
+            -0.0022879999999998457,
+            0.0060429999999997985
+          ],
+          "pairedDeltaMedian": 0.0015640000000001208,
+          "pairedDeltaMin": -0.0022879999999998457,
+          "pairedDeltaMax": 0.0060429999999997985
+        },
+        "preview.installedFonts.elapsedSeconds": {
+          "inlineMedian": 0.162935541709885,
+          "sharedMedian": 0.16246591648086905,
+          "pairedDeltas": [
+            0.002860583132132888,
+            0.0014670833479613066,
+            -0.0009057917632162571,
+            -0.0022733749356120825,
+            0.006099875085055828
+          ],
+          "pairedDeltaMedian": 0.0014670833479613066,
+          "pairedDeltaMin": -0.0022733749356120825,
+          "pairedDeltaMax": 0.006099875085055828
+        },
+        "preview.svg.cpuSeconds": {
+          "inlineMedian": 0.02831300000000092,
+          "sharedMedian": 0.0287639999999989,
+          "pairedDeltas": [
+            -0.00042699999999928906,
+            0.0009609999999991015,
+            0.00041100000000016124,
+            1.1999999998124622e-05,
+            0.0008010000000002737
+          ],
+          "pairedDeltaMedian": 0.00041100000000016124,
+          "pairedDeltaMin": -0.00042699999999928906,
+          "pairedDeltaMax": 0.0009609999999991015
+        },
+        "preview.svg.elapsedSeconds": {
+          "inlineMedian": 0.02825299953110516,
+          "sharedMedian": 0.028668084647506475,
+          "pairedDeltas": [
+            -0.0004179591778665781,
+            0.000982416095212102,
+            0.0003589172847568989,
+            8.73766839504242e-05,
+            0.000839748652651906
+          ],
+          "pairedDeltaMedian": 0.0003589172847568989,
+          "pairedDeltaMin": -0.0004179591778665781,
+          "pairedDeltaMax": 0.000982416095212102
+        },
+        "thumbnail.cacheInsert.cpuSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.cacheInsert.elapsedSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.cacheLookup.cpuSeconds": {
+          "inlineMedian": 0.0006610000000006888,
+          "sharedMedian": 0.0006639999999997759,
+          "pairedDeltas": [
+            5.9999999992843556e-06,
+            -1.0000000008059118e-06,
+            8.000000000008e-06,
+            -2.300000000010627e-05,
+            2.3999999999801958e-05
+          ],
+          "pairedDeltaMedian": 5.9999999992843556e-06,
+          "pairedDeltaMin": -2.300000000010627e-05,
+          "pairedDeltaMax": 2.3999999999801958e-05
+        },
+        "thumbnail.cacheLookup.elapsedSeconds": {
+          "inlineMedian": 0.0006633747834712267,
+          "sharedMedian": 0.0006600839551538229,
+          "pairedDeltas": [
+            4.333676770329475e-06,
+            -4.9578957259655e-06,
+            2.373475581407547e-06,
+            -1.9834144040942192e-05,
+            3.4500379115343094e-05
+          ],
+          "pairedDeltaMedian": 2.373475581407547e-06,
+          "pairedDeltaMin": -1.9834144040942192e-05,
+          "pairedDeltaMax": 3.4500379115343094e-05
+        },
+        "thumbnail.document.cpuSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.document.elapsedSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.fontReadiness.cpuSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.fontReadiness.elapsedSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.fontResources.cpuSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.fontResources.elapsedSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.geometry.cpuSeconds": {
+          "inlineMedian": 0.000700000000000145,
+          "sharedMedian": 0.0006979999999998654,
+          "pairedDeltas": [
+            -3.0000000010854677e-06,
+            -4.699999999968618e-05,
+            3.9000000000788404e-05,
+            -1.199999999945689e-05,
+            0.00014300000000022628
+          ],
+          "pairedDeltaMedian": -3.0000000010854677e-06,
+          "pairedDeltaMin": -4.699999999968618e-05,
+          "pairedDeltaMax": 0.00014300000000022628
+        },
+        "thumbnail.geometry.elapsedSeconds": {
+          "inlineMedian": 0.0006951675750315189,
+          "sharedMedian": 0.0006956667639315128,
+          "pairedDeltas": [
+            5.012843757867813e-07,
+            -4.8333313316106796e-05,
+            3.612483851611614e-05,
+            -1.8042046576738358e-05,
+            0.00014791730791330338
+          ],
+          "pairedDeltaMedian": 5.012843757867813e-07,
+          "pairedDeltaMin": -4.8333313316106796e-05,
+          "pairedDeltaMax": 0.00014791730791330338
+        },
+        "thumbnail.navigation.cpuSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.navigation.elapsedSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.queue.cpuSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.queue.elapsedSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.request.cpuSeconds": {
+          "inlineMedian": 0.0014300000000004864,
+          "sharedMedian": 0.0014460000000000583,
+          "pairedDeltas": [
+            1.5999999999571912e-05,
+            -5.500000000147054e-05,
+            4.299999999801685e-05,
+            -2.7999999998584713e-05,
+            0.00018999999999924633
+          ],
+          "pairedDeltaMedian": 1.5999999999571912e-05,
+          "pairedDeltaMin": -5.500000000147054e-05,
+          "pairedDeltaMax": 0.00018999999999924633
+        },
+        "thumbnail.request.elapsedSeconds": {
+          "inlineMedian": 0.0014339997433125973,
+          "sharedMedian": 0.0014431667514145374,
+          "pairedDeltas": [
+            9.167008101940155e-06,
+            -5.9542711824178696e-05,
+            4.1333260014653206e-05,
+            -3.875000402331352e-05,
+            0.0001920410431921482
+          ],
+          "pairedDeltaMedian": 9.167008101940155e-06,
+          "pairedDeltaMin": -5.9542711824178696e-05,
+          "pairedDeltaMax": 0.0001920410431921482
+        },
+        "thumbnail.snapshot.cpuSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        },
+        "thumbnail.snapshot.elapsedSeconds": {
+          "inlineMedian": 0,
+          "sharedMedian": 0,
+          "pairedDeltas": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pairedDeltaMedian": 0,
+          "pairedDeltaMin": 0,
+          "pairedDeltaMax": 0
+        }
+      }
+    }
+  ]
+}

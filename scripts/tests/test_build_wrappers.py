@@ -8,8 +8,45 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 
-@unittest.skipUnless(shutil.which('xcodegen'), 'XcodeGen required')
 class BuildWrappersTests(unittest.TestCase):
+    def test_production_configuration_preserves_signing_and_isolation(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / 'scripts').mkdir()
+            shutil.copy(ROOT / 'Lectern/scripts/build.sh', root / 'scripts/build.sh')
+            (root / 'scripts/generate-project.sh').write_text('touch generated\n')
+            (root / '.signing.local').write_text('LECTERN_SIGN_IDENTITY="stable identity"\n')
+            bindir = root / 'bin'; bindir.mkdir()
+            builder = bindir / 'xcodebuild'
+            builder.write_text('#!/bin/bash\nprintf "%s\\n" "$@" > arguments\n')
+            builder.chmod(0o755)
+            env = dict(os.environ, PATH=str(bindir) + os.pathsep + os.environ['PATH'],
+                       LECTERN_DERIVED_DATA_PATH=str(root / 'isolated products'))
+            for configuration in [None, 'Release', 'Debug']:
+                env.pop('LECTERN_BUILD_CONFIGURATION', None)
+                if configuration:
+                    env['LECTERN_BUILD_CONFIGURATION'] = configuration
+                result = subprocess.run(['bash', str(root / 'scripts/build.sh'), '-quiet'],
+                                        env=env, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                args = (root / 'arguments').read_text().splitlines()
+                self.assertEqual(args.count('-configuration'), 1)
+                self.assertEqual(args[args.index('-configuration') + 1], configuration or 'Debug')
+                self.assertEqual(args[args.index('-derivedDataPath') + 1], str(root / 'isolated products'))
+                self.assertIn('CODE_SIGN_IDENTITY=stable identity', args)
+                self.assertIn('CODE_SIGN_STYLE=Manual', args)
+                self.assertIn('-quiet', args)
+            (root / 'arguments').unlink()
+            (root / 'generated').unlink()
+            env['LECTERN_BUILD_CONFIGURATION'] = 'Invalid'
+            result = subprocess.run(['bash', str(root / 'scripts/build.sh')],
+                                    env=env, capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('Debug or Release', result.stderr)
+            self.assertFalse((root / 'arguments').exists())
+            self.assertFalse((root / 'generated').exists())
+
+    @unittest.skipUnless(shutil.which('xcodegen'), 'XcodeGen required')
     def test_fresh_and_changed_project_for_every_wrapper(self):
         for wrapper in ['build.sh', 'build-ios.sh', 'test-app.sh']:
             with self.subTest(wrapper=wrapper), tempfile.TemporaryDirectory() as temp:

@@ -110,9 +110,17 @@ import LecternCore
         // through independent uncached hosts, including embedded-font loading.
         // Do not publish successful candidate timing evidence on a mismatch.
         var parityCount = 0
+        var comparisonCount = 0
+        var mismatchedSlides: [Int] = []
         if sharedFonts, let reference {
             let inline = SnapshotHost(), shared = SnapshotHost(shareFontResources: true)
             defer { inline.close(); shared.close() }
+            let bitmaps = output.appendingPathComponent("native-bitmaps", isDirectory: true)
+            try FileManager.default.createDirectory(at: bitmaps, withIntermediateDirectories: true)
+            func save(_ image: NSImage, to url: URL) throws {
+                let bitmap = NSBitmapImageRep(cgImage: try #require(image.cgImage(forProposedRect: nil, context: nil, hints: nil)))
+                try #require(bitmap.representation(using: .png, properties: [:])).write(to: url)
+            }
             for record in reference.previewRecords {
                 let svg = try #require(record.svg)
                 let size = try #require(SlidePreviewGeometry(svg: svg)?.snapshotSize(pixelWidth: 640))
@@ -121,8 +129,29 @@ import LecternCore
                 let originalPixels = try PreviewBitmapPixels(original)
                 let candidatePixels = try PreviewBitmapPixels(candidate)
                 let samePixels = originalPixels == candidatePixels
-                try #require(samePixels, "Font-resource transport changed slide \(record.number) pixels")
-                parityCount += 1
+                // Local fidelity evidence only: after measurements, excluded from
+                // the collector's explicit diagnostic archive allowlist.
+                try save(original, to: bitmaps.appendingPathComponent("slide-\(record.number).png"))
+                if !samePixels {
+                    mismatchedSlides.append(record.number)
+                    let directory = output.appendingPathComponent("bitmap-mismatch-slide-\(record.number)", isDirectory: true)
+                    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                    try save(original, to: directory.appendingPathComponent("inline-first.png"))
+                    try save(candidate, to: directory.appendingPathComponent("shared-first.png"))
+                    let inlineRepeat = try #require(await inline.snapshot(svg: svg, size: size))
+                    let sharedRepeat = try #require(await shared.snapshot(svg: svg, size: size))
+                    try save(inlineRepeat, to: directory.appendingPathComponent("inline-repeat.png"))
+                    try save(sharedRepeat, to: directory.appendingPathComponent("shared-repeat.png"))
+                    let inlineRepeatPixels = try PreviewBitmapPixels(inlineRepeat)
+                    let sharedRepeatPixels = try PreviewBitmapPixels(sharedRepeat)
+                    let controls = ["inlineStable": originalPixels == inlineRepeatPixels,
+                                    "sharedStable": candidatePixels == sharedRepeatPixels,
+                                    "repeatParity": inlineRepeatPixels == sharedRepeatPixels]
+                    try JSONSerialization.data(withJSONObject: controls, options: [.prettyPrinted, .sortedKeys])
+                        .write(to: directory.appendingPathComponent("controls.json"))
+                }
+                comparisonCount += 1
+                if samePixels { parityCount += 1 }
             }
             try #require(shared.fontResourceStatistics["servedFontRequests", default: 0] > 0,
                          "Choose a deck containing embedded preview fonts to exercise shared resources")
@@ -157,9 +186,14 @@ import LecternCore
         #endif
         let report: [String: Any] = ["schemaVersion": 3, "buildMode": mode, "platform": ProcessInfo.processInfo.operatingSystemVersionString,
             "fontResourceMode": sharedFonts ? "shared" : "inline", "bitmapParityCount": parityCount,
+            "bitmapComparisonCount": comparisonCount, "bitmapMismatchSlides": mismatchedSlides,
             "samples": profiles, "nativeVisualAcceptance": "pending",
             "measurementScope": "Production inspection then sequential production raster requests, first-use and repeated on the same bounded cache. First bitmap availability is not first visible frame. Process CPU excludes WebKit helper processes. RSS is the app process lifetime peak, includes test-host startup, and is not per-operation or total WebKit memory. SVG evidence writes are outside stage timings but within first-bitmap wall offsets on later slides. Input hashing/reads may warm filesystem caches."]
         try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
             .write(to: output.appendingPathComponent("timings.json"))
+        // Retain truthful measured data and failure evidence before failing the
+        // strict acceptance check. Diagnostic collection must not call this a pass.
+        let allPixelsMatch = mismatchedSlides.isEmpty
+        try #require(allPixelsMatch, "Native bitmap comparison differed on slides \(mismatchedSlides)")
     }
 }

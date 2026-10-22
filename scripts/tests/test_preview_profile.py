@@ -1,6 +1,9 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -9,6 +12,100 @@ ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('preview_profile', ROOT / 'Tools/preview-profile/run.py')
 profile = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(profile)
+
+
+class NativePreviewProfileWrapperTests(unittest.TestCase):
+    """Run the real wrapper and receipt validator with a controlled native exit."""
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name).resolve()
+        scripts = self.root / 'scripts'; scripts.mkdir()
+        for name in ('profile-preview.sh', 'compare-preview-loading.py'):
+            shutil.copy(ROOT / 'Lectern/scripts' / name, scripts / name)
+        (scripts / 'test-app.sh').write_text('''mkdir "$TEST_RUNNER_LECTERN_PREVIEW_PROFILE_OUTPUT"
+cp "$PROFILE_FIXTURE"/* "$TEST_RUNNER_LECTERN_PREVIEW_PROFILE_OUTPUT/"
+exit "$PROFILE_NATIVE_STATUS"
+''')
+        bindir = self.root / 'bin'; bindir.mkdir()
+        for name, body in {'uname': 'echo Darwin', 'xcodebuild': 'echo fixture-xcode',
+                           'git': 'if [ "$1" = rev-parse ]; then echo fixture-revision; fi'}.items():
+            command = bindir / name
+            command.write_text('#!/bin/bash\n' + body + '\n')
+            command.chmod(0o755)
+        products = self.root / 'isolated products'
+        for suffix in ('MacOS/LecternTestHost', 'PlugIns/LecternAppTests.xctest/Contents/MacOS/LecternAppTests'):
+            binary = products / 'Build/Products/Release/LecternTestHost.app/Contents' / suffix
+            binary.parent.mkdir(parents=True, exist_ok=True)
+            binary.write_bytes(b'fixture executable')
+        self.fixture = self.root / 'profile fixture'; self.fixture.mkdir()
+        (self.fixture / 'slide-1.svg').write_text('<svg/>')
+        (self.fixture / 'diagnostics.json').write_text('[]')
+        self.deck = self.root / 'input with spaces.pptx'; self.deck.write_bytes(b'fixture input')
+        self.output = self.root / 'new output'
+        self.env = dict(os.environ, PATH=str(bindir) + os.pathsep + os.environ['PATH'],
+                        LECTERN_TEST_DERIVED_DATA_PATH=str(products), LECTERN_PREVIEW_REUSE_BUILD='1',
+                        PROFILE_FIXTURE=str(self.fixture))
+
+    def execute(self, mode='shared', status=0, mismatch=False, mutation=None):
+        report = {'schemaVersion': 3, 'buildMode': 'release', 'platform': 'macOS', 'fontResourceMode': mode,
+                  'bitmapComparisonCount': int(mode == 'shared'),
+                  'bitmapParityCount': int(mode == 'shared' and not mismatch),
+                  'bitmapMismatchSlides': [1] if mismatch else [],
+                  'samples': [{'operationInProcess': operation, 'firstBitmapAvailableSeconds': 0.5,
+                               'appProcessLifetimePeakRSSBytes': 12345,
+                               'stages': {'droppedSamples': 0, 'samples': [{'stage': 'thumbnail.request',
+                                'cpuSeconds': 0.1, 'elapsedSeconds': 0.2, 'outcome': outcome}]}}
+                              for operation, outcome in enumerate(('rendered', 'cacheHit'), 1)]}
+        if mutation: mutation(report)
+        (self.fixture / 'timings.json').write_text(json.dumps(report))
+        env = dict(self.env, PROFILE_NATIVE_STATUS=str(status),
+                   LECTERN_PREVIEW_SHARED_FONTS='1' if mode == 'shared' else '0')
+        return subprocess.run(['bash', str(self.root / 'scripts/profile-preview.sh'), str(self.deck), str(self.output)],
+                              env=env, capture_output=True, text=True)
+
+    def test_valid_inline_and_shared_profiles_preserve_success(self):
+        for mode in ('inline', 'shared'):
+            with self.subTest(mode=mode):
+                self.output = self.root / mode
+                result = self.execute(mode=mode)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                provenance = json.loads((self.output / 'provenance.json').read_text())
+                self.assertEqual(provenance['nativeExitStatus'], 0)
+                self.assertTrue(provenance['pixelAcceptance'])
+                self.assertEqual(provenance['sourceRevision'], 'fixture-revision')
+
+    def test_complete_rejected_native_profile_keeps_provenance_and_native_failure(self):
+        result = self.execute(status=65, mismatch=True)
+        self.assertEqual(result.returncode, 65, result.stderr)
+        provenance = json.loads((self.output / 'provenance.json').read_text())
+        self.assertEqual(provenance['nativeExitStatus'], 65)
+        self.assertFalse(provenance['pixelAcceptance'])
+        self.assertTrue(provenance['testHostSHA256'])
+
+    def test_pixel_mismatch_cannot_pass_even_if_native_process_returns_success(self):
+        result = self.execute(mismatch=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('did not pass exact native bitmap comparison', result.stderr)
+        provenance = json.loads((self.output / 'provenance.json').read_text())
+        self.assertEqual(provenance['nativeExitStatus'], 0)
+        self.assertFalse(provenance['pixelAcceptance'])
+
+    def test_incomplete_evidence_never_gets_provenance_and_preserves_native_failure(self):
+        for status in (0, 65):
+            with self.subTest(status=status):
+                self.output = self.root / str(status)
+                result = self.execute(status=status, mutation=lambda report: report['samples'].pop())
+                self.assertNotEqual(result.returncode, 0)
+                if status: self.assertEqual(result.returncode, status)
+                self.assertFalse((self.output / 'provenance.json').exists())
+
+    def test_unrelated_native_failure_is_never_swallowed(self):
+        result = self.execute(status=17)
+        self.assertEqual(result.returncode, 17)
+        provenance = json.loads((self.output / 'provenance.json').read_text())
+        self.assertEqual(provenance['nativeExitStatus'], 17)
+        self.assertTrue(provenance['pixelAcceptance'])
 
 
 class PreviewProfileTests(unittest.TestCase):
