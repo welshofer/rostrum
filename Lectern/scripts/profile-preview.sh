@@ -22,32 +22,35 @@ case "${LECTERN_PREVIEW_REUSE_BUILD:-0}" in
   *) echo 'LECTERN_PREVIEW_REUSE_BUILD must be 0 or 1.' >&2; exit 1 ;;
 esac
 # TEST_RUNNER_ forwards these variables to the isolated app test process.
+native_status=0
 TEST_RUNNER_LECTERN_PREVIEW_PROFILE_INPUT="$1" \
 TEST_RUNNER_LECTERN_PREVIEW_PROFILE_OUTPUT="$2" \
 TEST_RUNNER_LECTERN_PREVIEW_SHARED_FONTS="${LECTERN_PREVIEW_SHARED_FONTS:-0}" \
 LECTERN_TEST_CONFIGURATION=Release \
   bash scripts/test-app.sh ${build_action:+"$build_action"} \
     -only-testing:LecternAppTests/PreviewPipelineProfileTests \
-    -parallel-testing-enabled NO
+    -parallel-testing-enabled NO || native_status=$?
 # A skipped/mis-selected test must never look like a successful measurement.
-python3 - "$1" "$2" "${LECTERN_TEST_DERIVED_DATA_PATH:-.build-xcode-tests}" <<'PY'
+# Complete rejected pixel comparisons still need identity evidence. Preserve the
+# native failure status even if receipt validation also fails.
+validation_status=0
+python3 - "$1" "$2" "${LECTERN_TEST_DERIVED_DATA_PATH:-.build-xcode-tests}" \
+  "$native_status" "${LECTERN_PREVIEW_SHARED_FONTS:-0}" <<'PY' || validation_status=$?
 import hashlib
 import json
 from pathlib import Path
+import runpy
 import subprocess
 import sys
 
-input_path, output, products = map(Path, sys.argv[1:])
+input_path, output, products = map(Path, sys.argv[1:4])
+native_status = int(sys.argv[4])
+mode = 'shared' if sys.argv[5] == '1' else 'inline'
 report = json.loads((output / 'timings.json').read_text())
-if report['buildMode'] != 'release' or len(report['samples']) != 2:
-    raise SystemExit('Native profile did not execute both Release operations')
-for sample in report['samples']:
-    if sample['stages']['droppedSamples'] or not any(s['stage'] == 'thumbnail.request' for s in sample['stages']['samples']):
-        raise SystemExit('Native profile is missing complete thumbnail measurements')
-if report.get('fontResourceMode') == 'shared':
-    rendered = sum(s['stage'] == 'thumbnail.request' for s in report['samples'][0]['stages']['samples'])
-    if report.get('bitmapParityCount') != rendered:
-        raise SystemExit('Shared font resources did not pass exact native bitmap comparison')
+validation = runpy.run_path('scripts/compare-preview-loading.py')
+mismatches = validation['validate_timings'](report, mode, validation['profile_slide_numbers'](output))
+# Require the ordered diagnostics receipt as well as all measured operations.
+json.loads((output / 'diagnostics.json').read_text())
 
 def sha256(path):
     digest = hashlib.sha256()
@@ -63,6 +66,13 @@ metadata = {'sourceRevision': subprocess.check_output(['git', 'rev-parse', 'HEAD
             'xcode': subprocess.check_output(['xcodebuild', '-version'], text=True).strip(),
             'inputSHA256': sha256(input_path), 'testHostSHA256': sha256(binary),
             'testBundleSHA256': sha256(test_binary),
+            'nativeExitStatus': native_status, 'pixelAcceptance': not mismatches,
             'scope': 'Exact test host and input identity; timing scopes are in timings.json. Native visual acceptance pending.'}
 (output / 'provenance.json').write_text(json.dumps(metadata, indent=2, sort_keys=True) + '\n')
+if mismatches and native_status == 0:
+    raise SystemExit('Shared font resources did not pass exact native bitmap comparison')
 PY
+if [ "$native_status" -ne 0 ]; then
+  exit "$native_status"
+fi
+exit "$validation_status"

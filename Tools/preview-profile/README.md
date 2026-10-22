@@ -143,6 +143,42 @@ If a native experiment fails, it instead prints a `.failed.zip` containing the
 failed receipt and logs. Send that diagnostics archive back as well; it does not
 claim a successful comparison.
 
+When investigating reproducible native pixel differences, explicitly request a
+diagnostic collection:
+
+```sh
+python3 Lectern/scripts/compare-preview-loading.py "/path/to/your-deck.pptx" \
+  "/absolute/new-diagnostic-results" --pairs 5 --diagnose-pixel-mismatches
+```
+
+The default remains fail-fast. Diagnostic mode continues a native exit 65 only
+when both measured operations, provenance, complete exact comparison counts and
+original mismatched slide numbers are present and consistent. It still rejects
+changed input/build/resources/SVGs/ordered diagnostics, incomplete traces, other
+native failures and failed or skipped regressions. It runs the regression
+selection once after collecting all pairs. If any pixel comparison differs,
+the process exits unsuccessfully and writes a `.failed.zip` with all raw samples
+and a diagnostic summary: `collectionComplete` is true, `complete` and
+`pixelAcceptance` are false. These timing differences do not establish a speedup
+or support adoption. The profile wrapper retains provenance after a complete
+rejected native comparison and preserves its nonzero exit status. Native PNGs
+and mismatch control images remain private in each profile directory, outside
+the archive.
+
+For a separate synthetic check of WebKit image capture stability:
+
+```sh
+TEST_RUNNER_LECTERN_TEST_IMAGE_STABILITY=1 LECTERN_TEST_CONFIGURATION=Release \
+  bash Lectern/scripts/test-app.sh \
+  -only-testing:LecternAppTests/NativeImageStabilityDiagnosticTests \
+  -parallel-testing-enabled NO
+```
+
+This opt-in diagnostic compares 12 repeated inline captures of an owned 1024px
+JPEG, both directly and through a clipped SVG pattern. It requires exact pixels;
+an observed instability fails the test. It is outside the normal regression
+selection and does not change references, tolerances or runtime rendering.
+
 The transport rewrites only canonical renderer-owned font URLs in a temporary
 WebKit document. Exact bytes identify resources; aliases and font styles remain
 unchanged. Unknown rules and oversized resources stay inline. Host-retained keys
@@ -156,7 +192,9 @@ native timing and pixel evidence must justify adoption. See the
 [loading experiment](../../docs/PREVIEW-FONT-RESOURCES-20261015.md).
 The normal app still uses inline fonts. For a single candidate profile, set
 `LECTERN_PREVIEW_SHARED_FONTS=1` when invoking either runner below. Native schema 3
-records the mode, pixel-comparison count and resource statistics. `thumbnail.navigation`
+records the mode, `bitmapComparisonCount`, `bitmapParityCount`,
+`bitmapMismatchSlides` and resource statistics. Inline mode records zero
+comparisons, zero matches and an empty mismatch list. `thumbnail.navigation`
 now excludes wrapper construction and font-resource preparation, so compare whole
 `thumbnail.request` spans across older schemas rather than navigation alone.
 

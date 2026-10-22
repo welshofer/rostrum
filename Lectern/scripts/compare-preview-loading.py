@@ -7,6 +7,7 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import statistics
 import subprocess
 import sys
@@ -55,6 +56,47 @@ def stage_total(sample, stage, field):
     return sum(s[field] for s in sample['stages']['samples'] if s['stage'] == stage)
 
 
+def profile_slide_numbers(output):
+    paths = list(output.glob('slide-*.svg'))
+    matches = [re.fullmatch(r'slide-([1-9][0-9]*)\.svg', p.name) for p in paths]
+    if not paths or not all(matches):
+        raise ValueError('Missing or invalid standalone SVG slide numbers')
+    return {int(match[1]) for match in matches}
+
+
+def validate_timings(timings, mode, slide_numbers):
+    """Validate complete evidence without turning pixel rejection into acceptance."""
+    if (timings.get('schemaVersion') != 3 or timings.get('fontResourceMode') != mode
+            or timings['buildMode'] != 'release' or len(timings['samples']) != 2
+            or not isinstance(timings.get('platform'), str) or not timings['platform']):
+        raise ValueError('Missing requested Release mode, schema or operations')
+    comparisons = timings.get('bitmapComparisonCount')
+    parity = timings.get('bitmapParityCount')
+    mismatches = timings.get('bitmapMismatchSlides')
+    if (type(comparisons) is not int or type(parity) is not int or not isinstance(mismatches, list)
+            or any(type(slide) is not int for slide in mismatches)
+            or len(set(mismatches)) != len(mismatches)
+            or not set(mismatches).issubset(slide_numbers)
+            or comparisons != (len(slide_numbers) if mode == 'shared' else 0)
+            or parity < 0 or parity + len(mismatches) != comparisons):
+        raise ValueError('Missing or inconsistent exact bitmap comparisons')
+    for operation, sample in enumerate(timings['samples'], 1):
+        if type(sample['operationInProcess']) is not int or sample['operationInProcess'] != operation:
+            raise ValueError('Unexpected profile operation order')
+        for value in [sample['firstBitmapAvailableSeconds'], sample['appProcessLifetimePeakRSSBytes'],
+                      *[s[f] for s in sample['stages']['samples'] for f in ('cpuSeconds', 'elapsedSeconds')]]:
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+                raise ValueError('Missing or invalid profile measurement')
+        trace = sample['stages']
+        requests = [s for s in trace['samples'] if s['stage'] == 'thumbnail.request']
+        expected = 'rendered' if operation == 1 else 'cacheHit'
+        if (type(trace['droppedSamples']) is not int or trace['droppedSamples'] != 0
+                or len(requests) != len(slide_numbers)
+                or any(s['outcome'] != expected for s in requests)):
+            raise ValueError('Incomplete render/cache-hit trace; choose a deck that fits the cache')
+    return mismatches
+
+
 def summarize(records):
     """Keep paired differences, adverse pairs and stage costs; never infer adoption."""
     metrics = {
@@ -86,7 +128,8 @@ def summarize(records):
     return result
 
 
-def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_identity):
+def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_identity,
+            diagnose_pixel_mismatches=False):
     if pairs < 1:
         raise ValueError('At least one measured pair is required')
     deck = deck.resolve(strict=True)
@@ -99,7 +142,9 @@ def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_id
     repo = scripts.parents[1]
     records = []
     reference = reference_diagnostics = platform = None
-    manifest = {'schemaVersion': 2, 'complete': False, 'inputSHA256': input_hash, 'samples': records}
+    manifest = {'schemaVersion': 2, 'complete': False, 'collectionComplete': False,
+                'pixelAcceptance': None, 'diagnosePixelMismatches': diagnose_pixel_mismatches,
+                'inputSHA256': input_hash, 'samples': records}
     # A dedicated products directory prevents normal app/test builds from
     # replacing this run's binaries. Paths and the deck stay local to the Mac.
     env = dict(os.environ, LECTERN_TEST_CONFIGURATION='Release',
@@ -128,8 +173,14 @@ def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_id
                 target.mkdir()
                 print(f'{name}: {"warmup" if pair == 0 else "measured"}', flush=True)
                 process_env = dict(env, LECTERN_PREVIEW_SHARED_FONTS='1' if mode == 'shared' else '0')
-                execute(['bash', str(scripts / 'profile-preview.sh'), str(deck), str(target / 'profile')],
-                        target / 'profile.log', process_env)
+                native_exit_status = 0
+                try:
+                    execute(['bash', str(scripts / 'profile-preview.sh'), str(deck), str(target / 'profile')],
+                            target / 'profile.log', process_env)
+                except subprocess.CalledProcessError as error:
+                    if not diagnose_pixel_mismatches or error.returncode != 65:
+                        raise
+                    native_exit_status = error.returncode
                 verify_identity()
                 provenance = json.loads((target / 'profile/provenance.json').read_text())
                 timings = json.loads((target / 'profile/timings.json').read_text())
@@ -141,6 +192,8 @@ def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_id
                 if any(provenance[k] != manifest['buildIdentity'][k] for k in
                        ('sourceRevision', 'testHostSHA256', 'testBundleSHA256', 'xcode')):
                     raise ValueError('Profile used a different test host or Xcode')
+                if provenance.get('nativeExitStatus') != native_exit_status:
+                    raise ValueError('Profile provenance does not match the native exit status')
                 if platform is not None and platform != timings['platform']:
                     raise ValueError('Platform changed during the comparison')
                 platform = timings['platform']
@@ -151,27 +204,19 @@ def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_id
                 if reference_diagnostics is not None and reference_diagnostics != diagnostics_hash:
                     raise ValueError('Ordered diagnostics changed between runs')
                 reference_diagnostics = diagnostics_hash
-                if (timings.get('schemaVersion') != 3 or timings.get('fontResourceMode') != mode
-                        or timings['buildMode'] != 'release' or len(timings['samples']) != 2):
-                    raise ValueError('Missing requested Release mode, schema or operations')
-                if mode == 'shared' and timings.get('bitmapParityCount') != len(svgs):
-                    raise ValueError('Missing exact bitmap parity for the candidate')
-                for operation, sample in enumerate(timings['samples'], 1):
-                    if sample['operationInProcess'] != operation:
-                        raise ValueError('Unexpected profile operation order')
-                    for value in [sample['firstBitmapAvailableSeconds'], sample['appProcessLifetimePeakRSSBytes'],
-                                  *[s[f] for s in sample['stages']['samples'] for f in ('cpuSeconds', 'elapsedSeconds')]]:
-                        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
-                            raise ValueError('Missing or invalid profile measurement')
-                    trace = sample['stages']
-                    requests = [s for s in trace['samples'] if s['stage'] == 'thumbnail.request']
-                    expected = 'rendered' if operation == 1 else 'cacheHit'
-                    if (trace['droppedSamples'] or len(requests) != len(svgs)
-                            or any(s['outcome'] != expected for s in requests)):
-                        raise ValueError('Incomplete render/cache-hit trace; choose a deck that fits the cache')
+                mismatches = validate_timings(timings, mode, profile_slide_numbers(target / 'profile'))
+                if provenance.get('pixelAcceptance') is not (not mismatches):
+                    raise ValueError('Profile provenance does not match the pixel comparison result')
+                if native_exit_status and (mode != 'shared' or not mismatches):
+                    raise ValueError('Native failure is not a complete pixel-mismatch diagnostic')
+                if mismatches and (not diagnose_pixel_mismatches or native_exit_status != 65):
+                    raise ValueError('Exact bitmap comparison failed without a diagnostic native rejection')
                 records.append({'pair': pair, 'warmup': pair == 0, 'mode': mode,
                                 'directory': name, 'provenance': provenance, 'timings': timings,
+                                'nativeExitStatus': native_exit_status, 'pixelAcceptance': not mismatches,
                                 'diagnosticsSHA256': diagnostics_hash})
+                if mode == 'shared':
+                    manifest['pixelAcceptance'] = all(r['pixelAcceptance'] for r in records if r['mode'] == 'shared')
         print('Running native regressions once on the same Release build…', flush=True)
         verify_identity()
         execute(['bash', str(scripts / 'test-preview-regressions.sh'), str(output / 'regressions.xcresult')],
@@ -186,6 +231,10 @@ def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_id
             raise ValueError('Native regressions did not all execute successfully')
         manifest['regressions'] = tests
         manifest['summary'] = summarize(records)
+        manifest['collectionComplete'] = True
+        write_summary(output, manifest, pairs, len(reference))
+        if not manifest['pixelAcceptance']:
+            raise ValueError('Diagnostic collection finished; exact bitmap acceptance failed. Shared fonts remain disabled.')
         manifest['complete'] = True
     except Exception as error:
         manifest['failure'] = str(error)
@@ -195,10 +244,26 @@ def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_id
         if not manifest['complete']:
             archive_evidence(output, '.failed.zip')
             print(f'Comparison failed. Send back diagnostics: {output}.failed.zip', flush=True)
-    lines = ['Paired native preview loading comparison', f'Input SHA256: {input_hash}',
-             f'{len(reference)} identical standalone SVGs and ordered diagnostics in every run; all candidate bitmaps match inline.',
+    archive_evidence(output, '.zip')
+    print((output / 'SUMMARY.txt').read_text())
+    print(f'\nSend back: {output}.zip')
+    return manifest
+
+
+def write_summary(output, manifest, pairs, slide_count):
+    lines = ['Paired native preview loading comparison', f'Input SHA256: {manifest["inputSHA256"]}',
+             f'{slide_count} identical standalone SVGs and ordered diagnostics in every run.',
+             ('Exact pixel acceptance: passed; all candidate bitmaps match inline.' if manifest['pixelAcceptance'] else
+              'REJECTED: diagnostic collection is complete, but exact pixel acceptance failed. Shared fonts remain disabled.'),
              f'{pairs} measured pairs; one warmup per mode excluded. One build and one regression run.',
-             'Paired differences below are shared minus inline; negative is lower. Stages overlap: do not add them.', '']
+             'Paired differences below are shared minus inline; negative is lower. Stages overlap: do not add them.']
+    for record in manifest['samples']:
+        if not record['pixelAcceptance']:
+            lines.append(f"  {record['directory']}: native exit {record['nativeExitStatus']}; "
+                         f"mismatched slides {record['timings']['bitmapMismatchSlides']}")
+    if not manifest['pixelAcceptance']:
+        lines.append('Timing differences are diagnostic only; they do not establish a speedup or support adoption.')
+    lines.append('')
     for operation in manifest['summary']:
         lines.append(f"Operation {operation['operationInProcess']}:")
         for name, metric in operation['metrics'].items():
@@ -209,10 +274,6 @@ def collect(deck, output, pairs=3, run=subprocess.run, identity_reader=native_id
               'First bitmap is not first visible frame. Pixel comparisons run after measured operations.',
               'This candidate remains opt-in; results do not establish PowerPoint visual acceptance.']
     (output / 'SUMMARY.txt').write_text('\n'.join(lines) + '\n')
-    archive_evidence(output, '.zip')
-    print('\n'.join(lines))
-    print(f'\nSend back: {output}.zip')
-    return manifest
 
 
 def archive_evidence(output, suffix):
@@ -232,12 +293,14 @@ def main():
     parser.add_argument('deck', type=Path)
     parser.add_argument('output', nargs='?', type=Path)
     parser.add_argument('--pairs', type=int, default=3)
+    parser.add_argument('--diagnose-pixel-mismatches', action='store_true',
+                        help='Collect complete native pixel rejections for diagnosis; still fail acceptance and exit nonzero')
     args = parser.parse_args()
     if sys.platform != 'darwin':
         parser.error('This comparison needs macOS and native WebKit; no build was started.')
     repo = Path(__file__).resolve().parents[2]
     output = args.output or repo / '.build' / ('preview-loading-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
-    collect(args.deck, output.resolve(), args.pairs)
+    collect(args.deck, output.resolve(), args.pairs, diagnose_pixel_mismatches=args.diagnose_pixel_mismatches)
 
 
 if __name__ == '__main__':

@@ -29,7 +29,7 @@ class PreviewLoadingTests(unittest.TestCase):
         self.regressions = {'result': 'Passed', 'totalTestCount': 14, 'failedTests': 0,
                             'skippedTests': 0, 'passedTests': 14}
 
-    def execute(self, change=None, fail=None):
+    def execute(self, change=None, fail=None, diagnose=False, pairs=2, profile_status=None):
         def run(command, env, check, stdout, **kwargs):
             self.assertTrue(check)
             name = Path(command[1]).name if command[0] == 'bash' else command[0]
@@ -54,11 +54,14 @@ class PreviewLoadingTests(unittest.TestCase):
             self.assertEqual(command[2], str(self.deck))
             mode = 'shared' if env['LECTERN_PREVIEW_SHARED_FONTS'] == '1' else 'inline'
             self.calls.append(mode)
+            status = profile_status(mode, len(self.calls)) if profile_status else 0
             target = Path(command[3]); target.mkdir(parents=True)
             files = {
-                'provenance.json': dict(self.identity, inputSHA256=loading.sha256(self.deck)),
+                'provenance.json': dict(self.identity, inputSHA256=loading.sha256(self.deck),
+                                        nativeExitStatus=status, pixelAcceptance=True),
                 'timings.json': {'schemaVersion': 3, 'fontResourceMode': mode, 'buildMode': 'release',
-                    'bitmapParityCount': 1, 'platform': 'macOS',
+                    'bitmapComparisonCount': int(mode == 'shared'),
+                    'bitmapParityCount': int(mode == 'shared'), 'bitmapMismatchSlides': [], 'platform': 'macOS',
                     'samples': [{'operationInProcess': operation, 'firstBitmapAvailableSeconds': 0.5,
                         'appProcessLifetimePeakRSSBytes': 12345,
                         'stages': {'droppedSamples': 0, 'samples': [{'stage': 'thumbnail.request',
@@ -71,15 +74,27 @@ class PreviewLoadingTests(unittest.TestCase):
                 change(files, len(self.calls), target)
             for name, data in files.items():
                 (target / name).write_text(json.dumps(data))
-        return loading.collect(self.deck, self.output, pairs=2, run=run,
-                               identity_reader=lambda *_: dict(self.identity))
+            if status:
+                raise subprocess.CalledProcessError(status, command)
+        return loading.collect(self.deck, self.output, pairs=pairs, run=run,
+                               identity_reader=lambda *_: dict(self.identity),
+                               diagnose_pixel_mismatches=diagnose)
+
+    @staticmethod
+    def pixel_rejection(files, call, target):
+        if files['timings.json']['fontResourceMode'] == 'shared':
+            files['timings.json']['bitmapParityCount'] = 0
+            files['timings.json']['bitmapMismatchSlides'] = [1]
+            files['provenance.json']['pixelAcceptance'] = False
+            (target / 'native-bitmaps').mkdir()
+            (target / 'native-bitmaps/slide-1.png').write_bytes(b'private pixels')
 
     def assert_failure_bundle(self):
         self.assertFalse(Path(str(self.output) + '.zip').exists())
         self.assertFalse(json.loads((self.output / 'comparison.json').read_text())['complete'])
         with zipfile.ZipFile(str(self.output) + '.failed.zip') as archive:
             self.assertTrue(any(n.endswith('comparison.json') for n in archive.namelist()))
-            self.assertFalse(any(n.endswith(('.pptx', '.svg', 'diagnostics.json')) for n in archive.namelist()))
+            self.assertFalse(any(n.endswith(('.pptx', '.svg', '.png', 'diagnostics.json')) for n in archive.namelist()))
 
     def test_one_build_alternating_processes_then_one_regression_run(self):
         result = self.execute()
@@ -87,6 +102,8 @@ class PreviewLoadingTests(unittest.TestCase):
         self.assertEqual(self.commands, ['test-app.sh'] + ['profile-preview.sh'] * 6 +
                          ['test-preview-regressions.sh', 'xcrun'])
         self.assertTrue(result['complete'])
+        self.assertTrue(result['collectionComplete'])
+        self.assertTrue(result['pixelAcceptance'])
         self.assertEqual(sum(r['warmup'] for r in result['samples']), 2)
         self.assertEqual(result['summary'][0]['metrics']['firstBitmapSeconds']['pairedDeltas'], [0.0, 0.0])
         with zipfile.ZipFile(str(self.output) + '.zip') as archive:
@@ -94,6 +111,84 @@ class PreviewLoadingTests(unittest.TestCase):
             self.assertIn('new results/regressions.json', names)
             self.assertIn('new results/00-inline/svg-manifest.json', names)
             self.assertFalse(any(n.endswith(('.pptx', '.svg', 'diagnostics.json')) or '/build/' in n for n in names))
+
+    def test_default_still_fails_fast_on_complete_native_pixel_rejection(self):
+        with self.assertRaises(subprocess.CalledProcessError):
+            self.execute(self.pixel_rejection, profile_status=lambda mode, _: 65 if mode == 'shared' else 0)
+        self.assertEqual(self.calls, ['inline', 'shared'])
+        self.assertNotIn('test-preview-regressions.sh', self.commands)
+        self.assert_failure_bundle()
+        self.assertFalse(json.loads((self.output / 'comparison.json').read_text())['collectionComplete'])
+
+    def test_diagnostic_rejections_complete_five_pairs_but_never_pass(self):
+        with self.assertRaisesRegex(ValueError, 'exact bitmap acceptance failed'):
+            self.execute(self.pixel_rejection, diagnose=True, pairs=5,
+                         profile_status=lambda mode, _: 65 if mode == 'shared' else 0)
+        self.assertEqual(len(self.calls), 12)
+        self.assertEqual(self.commands.count('test-app.sh'), 1)
+        self.assertEqual(self.commands.count('test-preview-regressions.sh'), 1)
+        self.assert_failure_bundle()
+        manifest = json.loads((self.output / 'comparison.json').read_text())
+        self.assertTrue(manifest['collectionComplete'])
+        self.assertFalse(manifest['pixelAcceptance'])
+        self.assertEqual(len(manifest['samples']), 12)
+        self.assertEqual(len(manifest['summary'][0]['metrics']['firstBitmapSeconds']['pairedDeltas']), 5)
+        self.assertEqual([r['nativeExitStatus'] for r in manifest['samples'] if r['mode'] == 'shared'], [65] * 6)
+        summary = (self.output / 'SUMMARY.txt').read_text()
+        self.assertIn('REJECTED', summary)
+        self.assertIn('do not establish a speedup or support adoption', summary)
+        self.assertNotIn('all candidate bitmaps match inline', summary)
+        with zipfile.ZipFile(str(self.output) + '.failed.zip') as archive:
+            self.assertIn('new results/SUMMARY.txt', archive.namelist())
+            self.assertEqual(sum(n.endswith('/timings.json') for n in archive.namelist()), 12)
+
+    def test_diagnostic_mode_allows_normal_passing_collection(self):
+        result = self.execute(diagnose=True)
+        self.assertTrue(result['complete'])
+        self.assertTrue(result['collectionComplete'])
+        self.assertTrue(result['pixelAcceptance'])
+        self.assertFalse(Path(str(self.output) + '.failed.zip').exists())
+
+    def test_diagnostic_mode_never_accepts_other_failures_or_incomplete_pixel_evidence(self):
+        issues = ('wrong-exit', 'inline-failure', 'no-mismatch', 'successful-rejection',
+                  'missing-count', 'partial-count', 'duplicate-slide', 'unknown-slide', 'bool-count',
+                  'false-parity', 'missing-operation', 'truncated', 'provenance-status', 'provenance-pixels',
+                  'changed-svg', 'changed-diagnostics', 'changed-resources')
+        for issue in issues:
+            with self.subTest(issue=issue):
+                self.output = self.root / issue
+                self.calls = []
+                self.commands = []
+                def status(mode, call):
+                    if issue == 'inline-failure': return 65
+                    if mode == 'inline' or issue == 'successful-rejection': return 0
+                    return 17 if issue == 'wrong-exit' else 65
+                def change(files, call, target):
+                    self.pixel_rejection(files, call, target)
+                    if call != 2: return
+                    timings = files['timings.json']
+                    if issue == 'no-mismatch':
+                        timings.update(bitmapParityCount=1, bitmapMismatchSlides=[])
+                        files['provenance.json']['pixelAcceptance'] = True
+                    if issue == 'missing-count': timings.pop('bitmapComparisonCount')
+                    if issue == 'partial-count': timings['bitmapComparisonCount'] = 0
+                    if issue == 'duplicate-slide': timings['bitmapMismatchSlides'] = [1, 1]
+                    if issue == 'unknown-slide': timings['bitmapMismatchSlides'] = [2]
+                    if issue == 'bool-count': timings['bitmapComparisonCount'] = True
+                    if issue == 'false-parity': timings['bitmapParityCount'] = 1
+                    if issue == 'missing-operation': timings['samples'].pop()
+                    if issue == 'truncated': timings['samples'][0]['stages']['droppedSamples'] = 1
+                    if issue == 'provenance-status': files['provenance.json']['nativeExitStatus'] = 0
+                    if issue == 'provenance-pixels': files['provenance.json']['pixelAcceptance'] = True
+                    if issue == 'changed-svg': (target / 'slide-1.svg').write_text('changed')
+                    if issue == 'changed-diagnostics': files['diagnostics.json']['issues'].reverse()
+                    if issue == 'changed-resources': self.identity['testResourcesSHA256'] += 'changed'
+                with self.assertRaises((ValueError, subprocess.CalledProcessError)):
+                    self.execute(change, diagnose=True, profile_status=status)
+                self.assertLessEqual(len(self.calls), 2)
+                self.assertNotIn('test-preview-regressions.sh', self.commands)
+                self.assert_failure_bundle()
+                self.assertFalse(json.loads((self.output / 'comparison.json').read_text())['collectionComplete'])
 
     def test_changed_svg_diagnostics_or_host_never_produces_success_archive(self):
         for field in ('svg', 'diagnostics', 'host', 'resources', 'input'):
@@ -111,7 +206,8 @@ class PreviewLoadingTests(unittest.TestCase):
                 self.assert_failure_bundle()
 
     def test_missing_parity_or_invalid_measurements_fail(self):
-        for issue in ('parity', 'dropped', 'wrong-mode', 'nan', 'negative', 'null', 'operation', 'cache-miss'):
+        for issue in ('parity', 'dropped', 'null-dropped', 'wrong-mode', 'nan', 'negative', 'null',
+                      'operation', 'bool-operation', 'cache-miss'):
             with self.subTest(issue=issue):
                 self.output = self.root / issue
                 self.calls = []
@@ -120,11 +216,13 @@ class PreviewLoadingTests(unittest.TestCase):
                     timings = files['timings.json']; sample = timings['samples'][0]
                     if issue == 'parity': timings['bitmapParityCount'] = 0
                     if issue == 'dropped': sample['stages']['droppedSamples'] = 1
+                    if issue == 'null-dropped': sample['stages']['droppedSamples'] = None
                     if issue == 'wrong-mode': timings['fontResourceMode'] = 'inline'
                     if issue == 'nan': sample['firstBitmapAvailableSeconds'] = float('nan')
                     if issue == 'negative': sample['stages']['samples'][0]['cpuSeconds'] = -1
                     if issue == 'null': sample['firstBitmapAvailableSeconds'] = None
                     if issue == 'operation': sample['operationInProcess'] = 2
+                    if issue == 'bool-operation': sample['operationInProcess'] = True
                     if issue == 'cache-miss': timings['samples'][1]['stages']['samples'][0]['outcome'] = 'rendered'
                 with self.assertRaises(ValueError): self.execute(change)
                 self.assert_failure_bundle()

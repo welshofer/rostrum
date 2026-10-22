@@ -3,7 +3,7 @@
 
 Requires the baseline checker's pinned PyMuPDF/fonttools, HarfBuzz 14.4.0,
 resvg-py 0.5.0 and Pillow 12.3.0. Verifies capture/font identities, compares
-candidate span widths with independent shaping and glyph origins with the
+declared widths or scalar positions with independent shaping and origins with the
 verified PDF, then applies the unchanged native PNG gate. Optional PDF raster
 and textLength ablations are diagnostics only, never candidate replacements.
 No font bytes, extracted outlines or modified references are written.
@@ -14,6 +14,7 @@ from io import BytesIO
 import hashlib
 import importlib.metadata
 import json
+import math
 from pathlib import Path
 import re
 import subprocess
@@ -24,6 +25,45 @@ import zipfile
 from check_office_baselines import check as baselines, case_at, digest, FIXTURE, ROOT, SVG, require
 sys.path.insert(0, str(ROOT / 'Tools/conformance'))
 from check_text_rendering import local_fonts, prepare, TOLERANCE, MAX_DIFFERENCE_FRACTION
+
+
+def span_positions(span, glyphs, scale):
+    """Read emitted origins; scalar positions do not declare a final advance."""
+    value = span.text or ''
+    require(value and len(glyphs) == len(value), 'Expected one glyph per character')
+    require(not any(name in span.attrib for name in ('y', 'dx', 'dy', 'rotate')),
+            'Unsupported span positioning attribute')
+    positions = [float(item) for item in re.split(r'[\s,]+', span.get('x', '').strip()) if item]
+    require(positions and all(math.isfinite(position) for position in positions),
+            'Missing or nonfinite span x positions')
+    shaped_width = sum(glyph['ax'] for glyph in glyphs) * scale
+    shaped_origins, pen = [], 0
+    for glyph in glyphs:
+        shaped_origins.append((pen + glyph['dx']) * scale)
+        pen += glyph['ax']
+    require(math.isfinite(shaped_width) and all(math.isfinite(origin) for origin in shaped_origins),
+            'Nonfinite shaping result')
+    width_attribute = span.get('textLength')
+    if width_attribute is None:
+        require(len(positions) == len(value) and 'lengthAdjust' not in span.attrib,
+                'Expected one explicit x position per character without textLength')
+        origins, width, mode = positions, None, 'explicitScalarPositions'
+    else:
+        width = float(width_attribute)
+        require(len(positions) == 1 and span.get('lengthAdjust') == 'spacingAndGlyphs'
+                and math.isfinite(width) and width > 0 and shaped_width > 0,
+                'Unsupported legacy textLength span')
+        # Legacy SVG scales both advances and glyphs to its declared textLength.
+        origins = [positions[0] + origin * width / shaped_width for origin in shaped_origins]
+        mode = 'textLengthSpacingAndGlyphs'
+    position_span = origins[-1] - origins[0]
+    shaped_span = shaped_origins[-1] - shaped_origins[0]
+    return origins, {'positioning': mode, 'candidateWidthPoints': width,
+                     'harfBuzzWidthPoints': shaped_width,
+                     'differencePoints': None if width is None else width - shaped_width,
+                     'candidatePositionSpanPoints': position_span,
+                     'harfBuzzPositionSpanPoints': shaped_span,
+                     'positionSpanDifferencePoints': position_span - shaped_span}
 
 
 def check(args):
@@ -78,15 +118,11 @@ def check(args):
                     glyphs = json.loads(subprocess.check_output(command, text=True))
                     require(len(glyphs) == len(value) and [g['cl'] for g in glyphs] == list(range(len(value))),
                             'Expected the pinned one-glyph-per-ASCII-character profile')
-                    shaped_width = sum(glyph['ax'] for glyph in glyphs) * scale
-                    candidate_width = float(span.get('textLength'))
+                    local_origins, measurement = span_positions(span, glyphs, scale)
                     spans.append({'case': case, 'line': index, 'text': value, 'fontSHA256': record['sha256'],
-                                  'candidateWidthPoints': candidate_width, 'harfBuzzWidthPoints': shaped_width,
-                                  'differencePoints': candidate_width - shaped_width})
-                    pen = x + float(span.get('x'))
-                    for char, glyph in zip(value, glyphs):
-                        actual.append((char, (pen + glyph['dx'] * scale, y - glyph['dy'] * scale)))
-                        pen += glyph['ax'] * scale
+                                  **measurement})
+                    for char, glyph, origin in zip(value, glyphs, local_origins):
+                        actual.append((char, (x + origin, y - glyph['dy'] * scale)))
                 require([char for char, _ in expected] == [char for char, _ in actual], 'Glyph text mismatch')
                 for ordinal, ((char, origin), (_, measured)) in enumerate(zip(expected, actual)):
                     origins.append({'case': case, 'line': index, 'characterIndex': ordinal, 'text': char,
@@ -130,7 +166,11 @@ def check(args):
             'verifiedGlyphOutlines': 268, 'caseCount': 30, 'lineCount': 46,
             'baselinePassed': baseline['passed'], 'baselineTolerancePoints': baseline['baselineTolerancePoints'],
             'maximumBaselineDifferencePoints': baseline['maximumBaselineDifferencePoints'],
-            'maximumSpanWidthDifferencePoints': max(abs(span['differencePoints']) for span in spans),
+            'spanWidthScope': 'Only legacy textLength spans declare a complete width. Explicit scalar positions '
+                              'measure first-to-last origins, excluding the final glyph advance.',
+            'maximumSpanWidthDifferencePoints': max((abs(span['differencePoints']) for span in spans
+                                                     if span['differencePoints'] is not None), default=None),
+            'maximumPositionSpanDifferencePoints': max(abs(span['positionSpanDifferencePoints']) for span in spans),
             'maximumGlyphOriginXDifferencePoints': max(abs(origin['differenceXPoints']) for origin in origins),
             'channelTolerance': TOLERANCE, 'maximumDifferenceFraction': MAX_DIFFERENCE_FRACTION,
             'passed': baseline['passed'] and all(entry['candidate']['passed'] for entry in rasters),
@@ -151,7 +191,7 @@ def main():
         print(json.dumps({key: value for key, value in report.items()
                           if key not in ['spanMeasurements', 'glyphOrigins']}, indent=2))
         return 0 if report['passed'] else 1
-    except (ValueError, KeyError, OSError, ImportError, subprocess.CalledProcessError) as error:
+    except (ValueError, KeyError, TypeError, OSError, ImportError, subprocess.CalledProcessError) as error:
         print('Office text positions check refused: ' + str(error), file=sys.stderr)
         return 2
 
