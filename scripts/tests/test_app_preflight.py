@@ -10,6 +10,41 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[2]
 
 class AppTestPreflightTests(unittest.TestCase):
+    def test_reuse_requires_both_binaries_and_never_generates_or_builds(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / 'scripts').mkdir()
+            shutil.copy(ROOT / 'Lectern/scripts/test-app.sh', root / 'scripts/test-app.sh')
+            (root / 'scripts/generate-project.sh').write_text('touch generated\n')
+            (root / 'bin').mkdir()
+            for name, body in [('pgrep', 'exit 1'), ('xcodebuild', 'printf "%s\\n" "$@" > arguments')]:
+                path = root / 'bin' / name
+                path.write_text('#!/bin/bash\n' + body + '\n')
+                path.chmod(0o755)
+            env = dict(os.environ, PATH=str(root / 'bin') + os.pathsep + os.environ['PATH'],
+                       LECTERN_TEST_CONFIGURATION='Release',
+                       LECTERN_TEST_DERIVED_DATA_PATH=str(root / 'isolated products'))
+            command = ['bash', str(root / 'scripts/test-app.sh'), '--test-without-building', '-quiet']
+            host = root / 'isolated products/Build/Products/Release/LecternTestHost.app/Contents'
+            for path in [root / 'Lectern.xcodeproj', host / 'MacOS/LecternTestHost',
+                         host / 'PlugIns/LecternAppTests.xctest/Contents/MacOS/LecternAppTests']:
+                failed = subprocess.run(command, env=env, capture_output=True, text=True)
+                self.assertNotEqual(failed.returncode, 0)
+                self.assertIn('--build-only', failed.stderr)
+                self.assertFalse((root / 'arguments').exists())
+                if path.suffix == '.xcodeproj': path.mkdir()
+                else:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_bytes(b'binary')
+            passed = subprocess.run(command, env=env, capture_output=True, text=True)
+            self.assertEqual(passed.returncode, 0, passed.stderr)
+            self.assertFalse((root / 'generated').exists())
+            args = (root / 'arguments').read_text().splitlines()
+            self.assertIn('test-without-building', args)
+            self.assertIn('-quiet', args)
+            self.assertNotIn('test', args)
+            self.assertNotIn('build-for-testing', args)
+
     def test_active_apps_or_failed_inspection_stop_before_any_generation(self):
         for blocked in ('Lectern', 'LecternTestHost', 'inspection-error'):
             with self.subTest(blocked=blocked), tempfile.TemporaryDirectory() as temp:

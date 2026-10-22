@@ -68,8 +68,15 @@ import LecternCore
                 try PipelineTrace.$current.withValue(trace) { try DeckInspector.inspect(deckAt: input) }
             }.value
             if let reference {
-                #expect(reference.previews == inspection.previews)
-                #expect(reference.previewDiagnostics == inspection.previewDiagnostics)
+                // Keep private slide contents out of assertion logs, which the
+                // collector includes in the shareable diagnostic archive.
+                let samePreviews = reference.previews == inspection.previews
+                let sameDiagnostics = reference.previewDiagnostics == inspection.previewDiagnostics
+                    && reference.schemaIssues == inspection.schemaIssues
+                    && reference.readWarnings == inspection.readWarnings
+                    && reference.outlineWarnings == inspection.outlineWarnings
+                try #require(samePreviews, "Repeated inspection changed SVG output")
+                try #require(sameDiagnostics, "Repeated inspection changed ordered diagnostics")
             }
             reference = inspection
             try #require(!inspection.previewRecords.isEmpty)
@@ -113,13 +120,36 @@ import LecternCore
                 let candidate = try #require(await shared.snapshot(svg: svg, size: size))
                 let originalPixels = try PreviewBitmapPixels(original)
                 let candidatePixels = try PreviewBitmapPixels(candidate)
-                try #require(originalPixels == candidatePixels, "Font-resource transport changed slide \(record.number) pixels")
+                let samePixels = originalPixels == candidatePixels
+                try #require(samePixels, "Font-resource transport changed slide \(record.number) pixels")
                 parityCount += 1
             }
             try #require(shared.fontResourceStatistics["servedFontRequests", default: 0] > 0,
                          "Choose a deck containing embedded preview fonts to exercise shared resources")
         }
-        #expect(try Data(contentsOf: input) == original)
+        let sourceUnchanged = try Data(contentsOf: input) == original
+        try #require(sourceUnchanged, "Profiling changed the source deck")
+        // Outside measured operations. Retain ordering and locations so the
+        // paired collector can reject diagnostic drift as well as SVG drift.
+        let inspected = try #require(reference)
+        let diagnostics: [String: Any] = [
+            "schemaIssues": inspected.schemaIssues, "readWarnings": inspected.readWarnings,
+            "outlineWarnings": inspected.outlineWarnings,
+            "previews": inspected.previewRecords.map { record -> [String: Any] in
+                ["slideNumber": record.number, "warnings": record.warnings]
+            },
+            "diagnostics": inspected.previewDiagnostics.map { diagnostic -> [String: Any] in
+                ["slideNumber": diagnostic.slideNumber, "layoutUnresolved": diagnostic.layoutUnresolved,
+                 "masterUnresolved": diagnostic.masterUnresolved,
+                 "failure": diagnostic.failure as Any? ?? NSNull(), "messages": diagnostic.messages,
+                 "issues": diagnostic.issues.map { issue -> [String: Any] in
+                     ["code": issue.code, "impact": issue.impact, "message": issue.message,
+                      "partURI": issue.partURI, "shapeID": issue.shapeID as Any? ?? NSNull(), "path": issue.path]
+                 }]
+            }
+        ]
+        try JSONSerialization.data(withJSONObject: diagnostics, options: [.prettyPrinted, .sortedKeys])
+            .write(to: output.appendingPathComponent("diagnostics.json"))
         #if DEBUG
         let mode = "debug"
         #else

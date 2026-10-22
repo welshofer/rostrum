@@ -15,12 +15,18 @@ case "${LECTERN_PREVIEW_SHARED_FONTS:-0}" in
   0|1) ;;
   *) echo 'LECTERN_PREVIEW_SHARED_FONTS must be 0 or 1.' >&2; exit 1 ;;
 esac
+build_action=
+case "${LECTERN_PREVIEW_REUSE_BUILD:-0}" in
+  0) ;;
+  1) build_action=--test-without-building ;;
+  *) echo 'LECTERN_PREVIEW_REUSE_BUILD must be 0 or 1.' >&2; exit 1 ;;
+esac
 # TEST_RUNNER_ forwards these variables to the isolated app test process.
 TEST_RUNNER_LECTERN_PREVIEW_PROFILE_INPUT="$1" \
 TEST_RUNNER_LECTERN_PREVIEW_PROFILE_OUTPUT="$2" \
 TEST_RUNNER_LECTERN_PREVIEW_SHARED_FONTS="${LECTERN_PREVIEW_SHARED_FONTS:-0}" \
 LECTERN_TEST_CONFIGURATION=Release \
-  bash scripts/test-app.sh \
+  bash scripts/test-app.sh ${build_action:+"$build_action"} \
     -only-testing:LecternAppTests/PreviewPipelineProfileTests \
     -parallel-testing-enabled NO
 # A skipped/mis-selected test must never look like a successful measurement.

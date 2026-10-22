@@ -6,6 +6,11 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Native preview comparison builds once and reuses the isolated Release host across
+  fresh paired processes, with one final regression run. It checks ordered
+  diagnostics and build resources and reports paired stage CPU/elapsed and memory
+  differences. Shared-font loading remains experimental and disabled by default.
+
 - Measure chart preview text using registered fonts; reserve title/axis/legend
   space, wrap long categories, and diagnose labels that cannot fit. Render line
   and pie/doughnut labels, retain more category/legend entries when space allows,
