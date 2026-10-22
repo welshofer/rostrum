@@ -2,6 +2,14 @@
 
 ## Latest reconciled measurements
 
+The [2026-10-22 native Mac collection](NATIVE-PERFORMANCE-FIDELITY-20261022.md)
+completes five alternating diagnostic pairs and 14 native regressions on one
+Release build. Three shared runs fail exact pixels in JPEG regions; repeated
+inline controls also reproduce the instability. Shared fonts remain disabled.
+Locked-screen offscreen timings are retained with adverse pairs and cannot
+establish a product speedup. Production first-visible-slide and attributable
+WebKit resource measurements remain blocked by the locked Mac.
+
 The [generated-layout integration](GENERATED-LAYOUTS-20261017.md) preserves all
 45 single-render and 450 batched production control artifacts. Seven paired
 Linux Release batches on the final fixture retain −1.05% to +3.58% process CPU

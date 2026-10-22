@@ -1,6 +1,13 @@
 # Mac preview font-resource loading experiment — 2026-10-15
 
-Status: **opt-in experiment; normal app behavior unchanged; native comparison pending**.
+Status: **opt-in experiment; normal app behavior unchanged; native adoption rejected**.
+
+The [2026-10-22 follow-up](NATIVE-PERFORMANCE-FIDELITY-20261022.md) completes five
+native diagnostic pairs. Exact pixel acceptance fails in JPEG regions, and
+same-inline controls independently reproduce instability. Shared fonts remain
+disabled. Production visible-frame and helper-process measurements are still
+blocked by the locked Mac. The earlier measurements below retain their original
+scope and are not replaced by this rejected diagnostic collection.
 
 ## Trigger and decision
 

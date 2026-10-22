@@ -2,6 +2,16 @@
 
 Agreed 2026-10-14. Starting revision: `2032208af1bad8b1a44de78fd753d37616ce1402`.
 
+Latest native checkpoint (2026-10-22): [five diagnostic Mac pairs and PowerPoint
+review](docs/NATIVE-PERFORMANCE-FIDELITY-20261022.md) are recorded. Exact bitmap
+acceptance is rejected because repeated inline JPEG-pattern captures can also
+differ; shared fonts remain disabled. The 33-slide source and 17 generated slides
+retain reviewed content with documented chart, text and font limits. The repaired
+typography oracle still rejects four of six historical raster comparisons.
+Production first-visible-slide and attributable WebKit resource measurements
+remain blocked until the Mac is unlocked; no completed performance milestone is
+claimed from test-host bitmap timing alone.
+
 ## Goal
 
 Deliver a highly performant, pure-Swift PowerPoint library with reliable native
