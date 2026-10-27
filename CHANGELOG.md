@@ -17,6 +17,10 @@ the conformance documentation separately describes rendering limitations.
 - Group members with `a:grpFill` paint with the enclosing group's fill instead of
   drawing unfilled.
 
+- Merge the preview and table/background/text color resolvers into one. All
+  DrawingML color sources now resolve, including HSL and every preset color name,
+  and tables and backgrounds apply the same full transform set as shapes.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed

@@ -68,9 +68,6 @@ final class RenderDiagnosticCollector {
     // time; the complete set remains authoritative across location changes.
     private var recentLocation: FidelityLocation?
     private var recentIssues: [RecentIssue] = []
-    private static let supportedColorTransforms: Set<String> = [
-        "a:tint", "a:shade", "a:lumMod", "a:lumOff", "a:satMod", "a:alpha", "a:alphaMod", "a:alphaOff",
-    ]
     private struct EmbeddedFace {
         let data: Data
         let encoded: String
@@ -296,13 +293,11 @@ final class RenderDiagnosticCollector {
                 }
             case "a:pattFill":
                 issue(.unsupportedFill, .omission, "Pattern fill is not rendered in this shape path.")
-            case "a:hslClr":
-                issue(.unsupportedColor, .omission, "HSL color sources are not resolved by the preview.")
-            case "a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr":
-                if element.childElements.contains(where: { !Self.supportedColorTransforms.contains($0.name) }) {
+            case "a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr", "a:hslClr":
+                if element.childElements.contains(where: { !DrawingColor.supportedTransforms.contains($0.name) }) {
                     issue(.unsupportedColor, .approximation, "A color transform is not applied by the preview.")
                 }
-                if element.name == "a:prstClr", !["black", "white", "red", "green", "blue", "yellow", "gray", "cyan", "magenta", "transparent"].contains(element[attribute: "val"] ?? "") {
+                if element.name == "a:prstClr", DrawingColor.presetHex(element[attribute: "val"] ?? "") == nil {
                     issue(.unsupportedColor, .omission, "This preset color is not resolved by the preview.")
                 }
             case "a:blipFill", "p:blipFill":

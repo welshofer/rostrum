@@ -78,10 +78,11 @@ layout, font substitution, image cropping, effects and chart appearance still ha
 approximation limits.
 
 Gradient previews retain stop precision, clockwise linear direction and the
-`scaled` aspect-ratio setting. RGB, scheme and system fallback colors apply tint,
+`scaled` aspect-ratio setting. RGB, scheme, system, scRGB, HSL and all preset
+(named) colors apply tint,
 shade, hue, saturation, HSL luminance, RGB channel, complement, inverse, grayscale,
 gamma and alpha transforms in XML order, including style reference and placeholder
-transforms. Ordinary outer shadows resolve direct or theme effects, color, opacity,
+transforms; previews, tables, backgrounds and text share one resolver. Ordinary outer shadows resolve direct or theme effects, color, opacity,
 blur and offset; an explicit empty effect list suppresses theme effects. Scaled or
 skewed shadows are diagnosed. Text inherits presentation, master and matched
 placeholder run defaults per paragraph level, with local overrides merged by property.
