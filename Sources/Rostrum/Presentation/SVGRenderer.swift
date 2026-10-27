@@ -208,20 +208,8 @@ struct SVGRenderer {
         switch node.name {
         case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": return ""
         case "p:grpSp":
-            let groupLocation = diagnostics.location
-            var occurrences: [String: Int] = [:]
-            let children = node.childElements.map { child in
-                occurrences[child.name, default: 0] += 1
-                // Match the scanner's same-name indices, including hidden
-                // siblings, and restore the group before visiting the next child.
-                diagnostics.location = FidelityLocation(slideIndex: groupLocation.slideIndex,
-                    partURI: owner.uri.description,
-                    shapeID: child.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"],
-                    path: groupLocation.path + "/\(child.name)[\(occurrences[child.name]!)]")
-                defer { diagnostics.location = groupLocation }
-                return renderNode(child, ownedBy: owner, defs: &defs, problems: &problems,
-                           inherited: inherited, depth: depth + 1, flippedTextH: textFlipH, flippedTextV: textFlipV)
-            }.joined()
+            let children = renderChildren(of: node, under: diagnostics.location.path, ownedBy: owner, defs: &defs,
+                problems: &problems, inherited: inherited, depth: depth, flippedTextH: textFlipH, flippedTextV: textFlipV)
             let transform = ShapeTransform.element(of: node)
             guard let outer = ShapeTransform.rect(transform),
                   let child = ShapeTransform.childSpace(transform),
@@ -254,6 +242,18 @@ struct SVGRenderer {
         case "p:pic": content = renderPicture(node, ownedBy: owner, defs: &defs, problems: &problems)
         case "p:cxnSp": content = renderConnector(node, defs: &defs, problems: &problems)
         case "p:graphicFrame": content = renderGraphicFrame(node, ownedBy: owner, defs: &defs, problems: &problems)
+        case "mc:AlternateContent":
+            // Equations and ink arrive as a choice the preview cannot draw
+            // and a fallback picture or shape it can. The wrapper has no
+            // transform of its own, so its branch's shapes are drawn as-is.
+            guard let selected = MarkupCompatibility.selectedBranch(of: node) else {
+                problems.record("Preview omitted alternate content that has no fallback.")
+                return ""
+            }
+            return renderChildren(of: selected.branch,
+                under: diagnostics.location.path + "/\(selected.branch.name)[\(selected.occurrence)]",
+                ownedBy: owner, defs: &defs, problems: &problems, inherited: inherited, depth: depth,
+                flippedTextH: textFlipH, flippedTextV: textFlipV)
         default:
             problems.record("Preview omitted an unsupported shape-tree element.")
             return ""
@@ -268,6 +268,26 @@ struct SVGRenderer {
         let cx = Double(bounds.x.rawValue) + Double(bounds.width.rawValue) / 2
         let cy = Double(bounds.y.rawValue) + Double(bounds.height.rawValue) / 2
         return "<g transform=\"translate(\(cx) \(cy)) rotate(\(rotation)) scale(\(flipH ? -1 : 1) \(flipV ? -1 : 1)) translate(\(-cx) \(-cy))\">\(content)</g>"
+    }
+
+    /// A group's or alternate-content branch's shapes, in paint order.
+    private func renderChildren(of container: XML.Element, under path: String, ownedBy owner: Part,
+                                defs: inout SVGDefinitions, problems: inout SlideRenderProblems,
+                                inherited: Bool, depth: Int, flippedTextH: Bool, flippedTextV: Bool) -> String {
+        let containerLocation = diagnostics.location
+        var occurrences: [String: Int] = [:]
+        return container.childElements.map { child in
+            occurrences[child.name, default: 0] += 1
+            // Match the scanner's same-name indices, including hidden
+            // siblings, and restore the container before visiting the next child.
+            diagnostics.location = FidelityLocation(slideIndex: containerLocation.slideIndex,
+                partURI: owner.uri.description,
+                shapeID: child.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"],
+                path: path + "/\(child.name)[\(occurrences[child.name]!)]")
+            defer { diagnostics.location = containerLocation }
+            return renderNode(child, ownedBy: owner, defs: &defs, problems: &problems,
+                       inherited: inherited, depth: depth + 1, flippedTextH: flippedTextH, flippedTextV: flippedTextV)
+        }.joined()
     }
 
     private func renderConnector(_ node: XML.Element, defs: inout SVGDefinitions,

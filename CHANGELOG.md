@@ -6,6 +6,10 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Previews draw the `mc:Fallback` of shape-tree alternate content, so equations
+  and ink appear as the pictures Office saved for them instead of being omitted.
+  Diagnostics inspect only the drawn branch. Saved XML is unchanged.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed

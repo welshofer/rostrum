@@ -61,6 +61,9 @@ instead of being synthesized; the original workbook remains preserved.
 approximated content. Groups are traversed on slides, layouts and masters; their
 children retain the owning part for relationship resolution. Traversal stops at 64
 levels with a warning. Malformed group coordinates also produce a warning.
+Shape-tree `mc:AlternateContent` draws its `mc:Fallback`, so equations and ink show
+the pictures Office saved for them; alternate content without a fallback is
+diagnosed as omitted. Both branches stay in the saved part.
 
 Lectern's inspector reports these separately from file damage, identifies the slide,
 and includes limitations in preview accessibility labels. Generated/recovered decks

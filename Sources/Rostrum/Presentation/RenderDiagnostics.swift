@@ -221,7 +221,7 @@ final class RenderDiagnosticCollector {
         guard !ShapeCollection.isHidden(shape) else { return }
         let id = shape.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"]
         location = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: id, path: path)
-        if !["p:sp", "p:pic", "p:cxnSp", "p:grpSp", "p:graphicFrame", "p:bg", "p:bgPr", "a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:tblStyle", "a:tableStyle", "a:ln", "a:effectStyle"].contains(shape.name) {
+        if !["p:sp", "p:pic", "p:cxnSp", "p:grpSp", "p:graphicFrame", "mc:AlternateContent", "p:bg", "p:bgPr", "a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:tblStyle", "a:tableStyle", "a:ln", "a:effectStyle"].contains(shape.name) {
             if ShapeCollection.isShape(shape) { record(.omittedShape, .omission, "The SVG renderer does not draw \(shape.name).") }
             return
         }
@@ -233,10 +233,13 @@ final class RenderDiagnosticCollector {
         let tableStyle = tableStyleReference || shape.name == "a:tblStyle" || shape.name == "a:tableStyle"
         while let (element, occurrence, depth, parent, enclosingShape) = stack.popLast() {
             if ShapeCollection.isHidden(element) { continue }
-            if ignoringPlaceholders && parent == "p:grpSp" && Placeholders.phElement(of: element) != nil { continue }
+            // Shapes in a group or in a drawn alternate-content branch are
+            // shape-tree members, like the renderer's children.
+            let inShapeTree = parent == "p:grpSp" || parent == "mc:Choice" || parent == "mc:Fallback"
+            if ignoringPlaceholders && inShapeTree && Placeholders.phElement(of: element) != nil { continue }
             // A group's child owns its properties. Carry that identity through
             // descendants without attributing every issue to the outer group.
-            let currentShape = parent == "p:grpSp" && ShapeCollection.isShape(element) ? element : enclosingShape
+            let currentShape = inShapeTree && ShapeCollection.isShape(element) ? element : enclosingShape
             if components.count > depth { components.removeLast(components.count - depth) }
             if occurrence > 0 { components.append((element.name, occurrence)) }
             func issue(_ code: FidelityIssueCode, _ impact: FidelityImpact, _ text: String) {
@@ -244,6 +247,15 @@ final class RenderDiagnosticCollector {
                 let shapeID = currentShape === shape ? id : currentShape.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"]
                 let here = FidelityLocation(slideIndex: slideIndex, partURI: owner.uri.description, shapeID: shapeID, path: elementPath)
                 record(code, impact, text, at: here)
+            }
+            // In the shape tree, inspect only the branch the renderer draws.
+            if element.name == "mc:AlternateContent" && (element === shape || parent == "p:grpSp") {
+                if let selected = MarkupCompatibility.selectedBranch(of: element) {
+                    stack.append((selected.branch, selected.occurrence, components.count, element.name, currentShape))
+                } else {
+                    issue(.omittedShape, .omission, "Alternate content without a fallback is not drawn.")
+                }
+                continue
             }
             switch element.name {
             case "p:grpSp":
