@@ -50,4 +50,33 @@ import Testing
         #expect(resolved.color == result && resolved.alpha == 0.5)
         #expect(xml.serialized() == before)
     }
+
+    private func base(_ element: String) throws -> DrawingColor.Resolved? {
+        let container = try XML.parse(Data("<a:solidFill>\(element)</a:solidFill>".utf8))
+        return DrawingColor.resolve(in: container, theme: nil)
+    }
+
+    @Test func everyColorSourceResolvesThroughTheSharedResolver() throws {
+        #expect(try base("<a:prstClr val=\"orange\"/>")?.color == Color("FFA500"))
+        #expect(try base("<a:prstClr val=\"dkSlateGray\"/>")?.color == Color("2F4F4F"))
+        #expect(try base("<a:prstClr val=\"ltGoldenrodYellow\"/>")?.color == Color("FAFAD2"))
+        #expect(try base("<a:prstClr val=\"medSeaGreen\"/>")?.color == Color("3CB371"))
+        #expect(try base("<a:prstClr val=\"mediumBlue\"/>")?.color == Color("0000CD"))
+        #expect(try base("<a:prstClr val=\"notAColor\"/>") == nil)
+        #expect(try base("<a:hslClr hue=\"7200000\" sat=\"100000\" lum=\"50000\"/>")?.color == Color("00FF00"))
+        #expect(try base("<a:sysClr val=\"windowText\"/>")?.color == Color("000000"))
+        #expect(try base("<a:sysClr val=\"window\" lastClr=\"FAFAFA\"/>")?.color == Color("FAFAFA"))
+        #expect(try base("<a:scrgbClr r=\"100000\" g=\"0\" b=\"0\"/>")?.color == Color("FF0000"))
+    }
+
+    @Test func tablesAndBackgroundsApplyTheFullTransformSet() throws {
+        // hueOff and inv were preview-only before the resolvers were merged.
+        #expect(try resolve("FF0000", "<a:hueOff val=\"7200000\"/>") == Color("00FF00"))
+        #expect(try resolve("FF0000", "<a:inv/>") == Color("00FFFF"))
+        #expect(try resolve("FF0000", "<a:tint val=\"-1\"/>") == Color("FF0000"))
+        let theme = try Presentation().theme
+        let navy = try XML.parse(Data("<a:solidFill><a:prstClr val=\"navy\"><a:alpha val=\"50000\"/></a:prstClr></a:solidFill>".utf8))
+        let paint = try #require(SVGPaint.resolve(in: navy, theme: theme))
+        #expect(paint.css == "rgba(0,0,128,0.5)")
+    }
 }

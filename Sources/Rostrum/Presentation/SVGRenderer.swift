@@ -193,7 +193,8 @@ struct SVGRenderer {
 
     private func renderNode(_ node: XML.Element, ownedBy owner: Part, defs: inout SVGDefinitions,
                             problems: inout SlideRenderProblems, inherited: Bool = false,
-                            depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false) -> String {
+                            depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false,
+                            groupFill: XML.Element? = nil) -> String {
         guard !ShapeCollection.isHidden(node) else { return "" }
         guard depth < 64 else {
             problems.record("Preview omitted shapes nested more than 64 levels deep.")
@@ -208,20 +209,12 @@ struct SVGRenderer {
         switch node.name {
         case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": return ""
         case "p:grpSp":
-            let groupLocation = diagnostics.location
-            var occurrences: [String: Int] = [:]
-            let children = node.childElements.map { child in
-                occurrences[child.name, default: 0] += 1
-                // Match the scanner's same-name indices, including hidden
-                // siblings, and restore the group before visiting the next child.
-                diagnostics.location = FidelityLocation(slideIndex: groupLocation.slideIndex,
-                    partURI: owner.uri.description,
-                    shapeID: child.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"],
-                    path: groupLocation.path + "/\(child.name)[\(occurrences[child.name]!)]")
-                defer { diagnostics.location = groupLocation }
-                return renderNode(child, ownedBy: owner, defs: &defs, problems: &problems,
-                           inherited: inherited, depth: depth + 1, flippedTextH: textFlipH, flippedTextV: textFlipV)
-            }.joined()
+            // a:grpFill children paint with the nearest group's own fill.
+            let ownFill = node.firstChild(named: "p:grpSpPr")?.childElements.first { Self.fillNames.contains($0.name) }
+            let childGroupFill = ownFill?.name == "a:grpFill" ? groupFill : ownFill
+            let children = renderChildren(of: node, under: diagnostics.location.path, ownedBy: owner, defs: &defs,
+                problems: &problems, inherited: inherited, depth: depth, flippedTextH: textFlipH, flippedTextV: textFlipV,
+                groupFill: childGroupFill)
             let transform = ShapeTransform.element(of: node)
             guard let outer = ShapeTransform.rect(transform),
                   let child = ShapeTransform.childSpace(transform),
@@ -250,10 +243,23 @@ struct SVGRenderer {
             if (flippedTextH || flippedTextV) && ShapeTransform.rotation(of: node) != 0 {
                 problems.record("Preview may differ for rotated text inside a flipped group.")
             }
-            content = renderShape(node, ownedBy: owner, defs: &defs, problems: &problems, textFlipH: textFlipH, textFlipV: textFlipV)
+            content = renderShape(node, ownedBy: owner, defs: &defs, problems: &problems, textFlipH: textFlipH, textFlipV: textFlipV,
+                                  groupFill: groupFill)
         case "p:pic": content = renderPicture(node, ownedBy: owner, defs: &defs, problems: &problems)
         case "p:cxnSp": content = renderConnector(node, defs: &defs, problems: &problems)
         case "p:graphicFrame": content = renderGraphicFrame(node, ownedBy: owner, defs: &defs, problems: &problems)
+        case "mc:AlternateContent":
+            // Equations and ink arrive as a choice the preview cannot draw
+            // and a fallback picture or shape it can. The wrapper has no
+            // transform of its own, so its branch's shapes are drawn as-is.
+            guard let selected = MarkupCompatibility.selectedBranch(of: node) else {
+                problems.record("Preview omitted alternate content that has no fallback.")
+                return ""
+            }
+            return renderChildren(of: selected.branch,
+                under: diagnostics.location.path + "/\(selected.branch.name)[\(selected.occurrence)]",
+                ownedBy: owner, defs: &defs, problems: &problems, inherited: inherited, depth: depth,
+                flippedTextH: textFlipH, flippedTextV: textFlipV, groupFill: groupFill)
         default:
             problems.record("Preview omitted an unsupported shape-tree element.")
             return ""
@@ -268,6 +274,28 @@ struct SVGRenderer {
         let cx = Double(bounds.x.rawValue) + Double(bounds.width.rawValue) / 2
         let cy = Double(bounds.y.rawValue) + Double(bounds.height.rawValue) / 2
         return "<g transform=\"translate(\(cx) \(cy)) rotate(\(rotation)) scale(\(flipH ? -1 : 1) \(flipV ? -1 : 1)) translate(\(-cx) \(-cy))\">\(content)</g>"
+    }
+
+    /// A group's or alternate-content branch's shapes, in paint order.
+    private func renderChildren(of container: XML.Element, under path: String, ownedBy owner: Part,
+                                defs: inout SVGDefinitions, problems: inout SlideRenderProblems,
+                                inherited: Bool, depth: Int, flippedTextH: Bool, flippedTextV: Bool,
+                                groupFill: XML.Element?) -> String {
+        let containerLocation = diagnostics.location
+        var occurrences: [String: Int] = [:]
+        return container.childElements.map { child in
+            occurrences[child.name, default: 0] += 1
+            // Match the scanner's same-name indices, including hidden
+            // siblings, and restore the container before visiting the next child.
+            diagnostics.location = FidelityLocation(slideIndex: containerLocation.slideIndex,
+                partURI: owner.uri.description,
+                shapeID: child.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"],
+                path: path + "/\(child.name)[\(occurrences[child.name]!)]")
+            defer { diagnostics.location = containerLocation }
+            return renderNode(child, ownedBy: owner, defs: &defs, problems: &problems,
+                       inherited: inherited, depth: depth + 1, flippedTextH: flippedTextH, flippedTextV: flippedTextV,
+                       groupFill: groupFill)
+        }.joined()
     }
 
     private func renderConnector(_ node: XML.Element, defs: inout SVGDefinitions,
@@ -342,7 +370,8 @@ struct SVGRenderer {
     // MARK: - Shapes
 
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
-                             defs: inout SVGDefinitions, problems: inout SlideRenderProblems, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
+                             defs: inout SVGDefinitions, problems: inout SlideRenderProblems, textFlipH: Bool = false, textFlipV: Bool = false,
+                             groupFill: XML.Element? = nil) -> String {
         let sp = owner === slidePart ? notesContext?.effectiveShape(sp) ?? sp : sp
         if notesContext != nil {
             let location = diagnostics.location
@@ -360,13 +389,28 @@ struct SVGRenderer {
         diagnoseReferencedEffects(of: sp, properties: spPr)
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
-        let preset = spPr.firstChild(named: "a:prstGeom")
-        let prst = spPr.firstChild(named: "a:custGeom") != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
+        let inherited = inheritedPlaceholderProperties(of: sp, spPr: spPr, ownedBy: owner, problems: &problems)
+        let shapeGeometry = spPr.childElements.first { ["a:prstGeom", "a:custGeom"].contains($0.name) } ?? inherited.geometry
+        let custom = shapeGeometry?.name == "a:custGeom" ? shapeGeometry : nil
+        let preset = shapeGeometry?.name == "a:prstGeom" ? shapeGeometry : nil
+        let prst = custom != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
         let style = sp.firstChild(named: "p:style")
-        let selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner)
+        var selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner,
+                                         inherited: inherited.fill)
+        // a:grpFill takes the enclosing group's fill, inspected with the group.
+        let usesGroupFill = selectedFill.properties.firstChild(named: "a:grpFill") != nil
+        if usesGroupFill {
+            let groupPaint = groupFill ?? XML.Element("a:noFill")
+            if groupPaint.name == "a:gradFill" || groupPaint.name == "a:blipFill" {
+                diagnostics.record(.unsupportedFill, .approximation,
+                    "Group gradient and picture fills are painted within each shape, not across the group.")
+            }
+            selectedFill = (properties: XML.Element("p:spPr", children: [.element(groupPaint)]), owner: owner)
+        }
         let fill: String?
         if let blip = selectedFill.properties.firstChild(named: "a:blipFill") {
-            if selectedFill.properties !== spPr {
+            // An inherited placeholder or group fill was inspected at its own location.
+            if selectedFill.properties !== spPr && inherited.fill == nil && !usesGroupFill {
                 // Direct paint was inspected with the shape. Referenced paint
                 // belongs to the theme and must use that same owner for both
                 // diagnostics and drawing, including colliding relationship IDs.
@@ -379,7 +423,8 @@ struct SVGRenderer {
         } else {
             fill = paint(for: selectedFill.properties, box: f, defs: &defs, ownedBy: selectedFill.owner)
         }
-        let lineProperties = effectiveLine(spPr, reference: style?.firstChild(named: "a:lnRef"))
+        let lineProperties = effectiveLine(inherited.line.map { XML.Element("p:spPr", children: [.element($0)]) } ?? spPr,
+                                           reference: style?.firstChild(named: "a:lnRef"))
         let stroke = strokeAttrs(lineProperties)
         if let notesContext, NotesPageRenderContext.placeholderType(sp) == "sldImg" {
             if NotesPageRenderContext.suppressesSlideImage(spPr) { return out }
@@ -392,7 +437,7 @@ struct SVGRenderer {
             if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
         } else {
         if fill != nil || !stroke.isEmpty {
-            if let custom = spPr.firstChild(named: "a:custGeom") {
+            if let custom {
                 if let paths = SVGCustomGeometry.paths(custom, width: Double(f.2), height: Double(f.3)) {
                     out += SVGCustomGeometry.render(paths, x: f.0, y: f.1, fill: fill ?? "none", stroke: stroke)
                 } else {
@@ -406,7 +451,7 @@ struct SVGRenderer {
             }
         }
         if let txBody = sp.firstChild(named: "p:txBody") {
-            if !txBody.textContent.isEmpty, let rect = spPr.firstChild(named: "a:custGeom")?.firstChild(named: "a:rect"),
+            if !txBody.textContent.isEmpty, let rect = custom?.firstChild(named: "a:rect"),
                ["l", "t", "r", "b"].contains(where: { rect[attribute: $0] != $0 }) {
                 diagnostics.record(.unsupportedGeometry, .approximation, "Custom geometry text rectangle is not resolved; using the shape bounds.")
             }
@@ -555,12 +600,28 @@ struct SVGRenderer {
     /// renderer's defaults instead of the template's typography — the one thing
     /// applying a template is supposed to change.
     private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
-        guard owner === slidePart else { return nil }
         // Ordinary slide shapes share the same final master style. Placeholder
         // matching and notes inheritance remain specific to each shape.
-        let ordinary = notesContext == nil && Placeholders.phElement(of: sp) == nil
+        let ordinary = owner === slidePart && notesContext == nil && Placeholders.phElement(of: sp) == nil
         if ordinary && ordinaryInheritedDefaults.resolved { return ordinaryInheritedDefaults.value }
-        let styles = notesContext?.styles(for: sp) ?? RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
+        var styles: [XML.Element]
+        let slideChain: Bool
+        if owner === slidePart {
+            styles = notesContext?.styles(for: sp) ?? RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
+            slideChain = true
+        } else {
+            // A layout's or master's own text (its placeholders are not drawn)
+            // inherits the master's ordinary text style, as slide text does.
+            // Other owners, such as a SmartArt drawing, have no such chain.
+            styles = RichTextLayout.inheritedStyles(forFurnitureOwnedBy: owner, package: package)
+            slideChain = !styles.isEmpty
+        }
+        // The presentation's default text style is the base of every slide's
+        // chain; notes pages take their defaults from the notes master instead.
+        if notesContext == nil, slideChain,
+           let defaults = (try? package.mainDocumentPart().dom())?.firstChild(named: "p:defaultTextStyle") {
+            styles.append(defaults)
+        }
         guard !styles.isEmpty else {
             if ordinary { ordinaryInheritedDefaults.resolved = true }
             return nil
@@ -824,12 +885,16 @@ struct SVGRenderer {
                                problems: inout SlideRenderProblems) -> String {
         guard let spPr = pic.firstChild(named: "p:spPr"), let blip = pic.firstChild(named: "p:blipFill") else { return "" }
         diagnoseReferencedEffects(of: pic, properties: spPr)
-        let f = frame(of: spPr)
+        // A picture dropped into a placeholder takes the layout's frame and
+        // shape, e.g. a circular photo slot, until it carries its own.
+        let f = resolvedFrame(of: pic, spPr: spPr, ownedBy: owner)
+        let inherited = inheritedPlaceholderProperties(of: pic, spPr: spPr, ownedBy: owner, problems: &problems)
         guard let fill = imagePattern(blip, ownedBy: owner, box: f, defs: &defs) else {
             problems.record("Preview could not resolve a picture or its crop bounds."); return ""
         }
-        let geom = spPr.firstChild(named: "a:prstGeom")
-        return SVGPresetGeometry.render(geom?[attribute: "prst"] ?? "rect", adjustments: geom?.firstChild(named: "a:avLst"), frame: f, fill: fill, stroke: strokeAttrs(spPr))
+        let geom = spPr.firstChild(named: "a:prstGeom") ?? inherited.geometry.flatMap { $0.name == "a:prstGeom" ? $0 : nil }
+        let line = inherited.line.map { XML.Element("p:spPr", children: [.element($0)]) } ?? spPr
+        return SVGPresetGeometry.render(geom?[attribute: "prst"] ?? "rect", adjustments: geom?.firstChild(named: "a:avLst"), frame: f, fill: fill, stroke: strokeAttrs(line))
     }
 
     /// Read supported embedded raster bytes without recoding. Unsupported
@@ -2234,12 +2299,74 @@ struct SVGRenderer {
         return copy
     }
 
-    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?, ownedBy owner: Part)
+    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?, ownedBy owner: Part,
+                               inherited: (fill: XML.Element, owner: Part)? = nil)
         -> (properties: XML.Element, owner: Part) {
-        let fills = ["a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill", "a:noFill"]
-        guard !properties.childElements.contains(where: { fills.contains($0.name) }),
-              let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return (properties, owner) }
+        guard !properties.childElements.contains(where: { Self.fillNames.contains($0.name) }) else { return (properties, owner) }
+        // Placeholders rarely carry p:style; the layout's own fill comes first.
+        if let inherited { return (XML.Element("p:spPr", children: [.element(inherited.fill)]), inherited.owner) }
+        guard let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return (properties, owner) }
         return (XML.Element("p:spPr", children: [.element(fill)]), theme.part)
+    }
+
+    private static let fillNames: Set<String> = ["a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill", "a:noFill"]
+
+    /// What a slide placeholder leaves unset in its own shape properties and
+    /// takes from its layout, then master, placeholder.
+    private struct PlaceholderProperties {
+        var geometry: XML.Element?
+        var fill: (fill: XML.Element, owner: Part)?
+        var line: XML.Element?
+    }
+
+    /// Inherited geometry, fill and line are inspected where they are written,
+    /// so their diagnostics name the layout or master that owns them.
+    private func inheritedPlaceholderProperties(of sp: XML.Element, spPr: XML.Element, ownedBy owner: Part,
+                                                problems: inout SlideRenderProblems) -> PlaceholderProperties {
+        var inherited = PlaceholderProperties()
+        guard owner === slidePart, notesContext == nil, Placeholders.phElement(of: sp) != nil else { return inherited }
+        let geometries: Set<String> = ["a:prstGeom", "a:custGeom"]
+        let own = Set(spPr.childElements.map(\.name))
+        var needsGeometry = own.isDisjoint(with: geometries)
+        var needsFill = own.isDisjoint(with: Self.fillNames)
+        var needsLine = !own.contains("a:ln")
+        guard needsGeometry || needsFill || needsLine else { return inherited }
+        let location = diagnostics.location
+        defer { diagnostics.location = location }
+        let slide = Slide(part: slidePart, package: package)
+        for source in slide.inheritedPlaceholders(of: Shape(element: sp, part: slidePart, package: package)) {
+            guard let properties = source.element.firstChild(named: "p:spPr"),
+                  let tree = Slide.existingSpTree(of: source.part),
+                  let index = tree.childElements.firstIndex(where: { $0 === source.element }) else { continue }
+            let path = "/p:cSld/p:spTree/\(source.element.name)[\(index + 1)]/p:spPr[1]"
+            func inspect(_ element: XML.Element) {
+                let occurrence = properties.childElements.prefix(while: { $0 !== element }).filter { $0.name == element.name }.count + 1
+                diagnostics.inspect(element, owner: source.part, slideIndex: slideNumber - 1,
+                    path: path + "/\(element.name)[\(occurrence)]", package: package)
+            }
+            if needsGeometry, let geometry = properties.childElements.first(where: { geometries.contains($0.name) }) {
+                inherited.geometry = geometry
+                needsGeometry = false
+                if geometry.name == "a:prstGeom", let preset = geometry[attribute: "prst"],
+                   !SVGPresetGeometry.supported.contains(preset) {
+                    diagnostics.location = FidelityLocation(slideIndex: location.slideIndex, partURI: source.part.uri.description,
+                        shapeID: source.element.childElements.first?.firstChild(named: "p:cNvPr")?[attribute: "id"], path: path + "/a:prstGeom[1]")
+                    diagnostics.record(.unsupportedGeometry, .approximation, "Preset \(preset) is approximated by a rectangle.")
+                    problems.record("Preview approximates custom or unsupported shape geometry as a rectangle.")
+                }
+            }
+            if needsFill, let fill = properties.childElements.first(where: { Self.fillNames.contains($0.name) }) {
+                inherited.fill = (fill: fill, owner: source.part)
+                needsFill = false
+                if fill.name != "a:noFill" && fill.name != "a:grpFill" { inspect(fill) }
+            }
+            if needsLine, let line = properties.firstChild(named: "a:ln") {
+                inherited.line = line
+                needsLine = false
+                inspect(line)
+            }
+        }
+        return inherited
     }
 
     private func effectiveLine(_ properties: XML.Element, reference: XML.Element?) -> XML.Element {

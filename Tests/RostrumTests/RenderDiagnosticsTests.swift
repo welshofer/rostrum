@@ -160,8 +160,20 @@ import Testing
         try table.cell(0, 0).tcPr.appendElement(XML.parse(Data("<a:pattFill prst=\"cross\"><a:fgClr><a:srgbClr val=\"FF0000\"><a:hueOff val=\"60000\"/></a:srgbClr></a:fgClr><a:bgClr><a:prstClr val=\"orange\"/></a:bgClr></a:pattFill>".utf8)))
         let report = try deck.renderSVGReportingProblems(slideAt: 0)
         #expect(report.problems.fidelityIssues.contains { $0.code == .unsupportedFill })
-        #expect(report.problems.fidelityIssues.filter { $0.code == .unsupportedColor }.count == 2)
+        // hueOff and the full preset-name set are resolved; the pattern is not.
+        #expect(!report.problems.fidelityIssues.contains { $0.code == .unsupportedColor })
         #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+    }
+
+    @Test func unknownPresetColorsAndTransformsRemainVisible() throws {
+        let deck = try Presentation(), part = try deck.slides[0].part
+        let shape = try XML.parse(Data("""
+        <p:sp><p:nvSpPr><p:cNvPr id="5"/></p:nvSpPr><p:spPr><a:solidFill><a:prstClr val="notAColor"/></a:solidFill><a:ln><a:solidFill><a:hslClr hue="0" sat="100000" lum="50000"><a:unknownTransform val="1"/></a:hslClr></a:solidFill></a:ln></p:spPr></p:sp>
+        """.utf8))
+        let collector = RenderDiagnosticCollector()
+        collector.inspect(shape, owner: part, slideIndex: 0, path: "/p:sp[1]", package: deck.package)
+        let colors = collector.issues.filter { $0.code == .unsupportedColor }
+        #expect(colors.map(\.impact).sorted { $0.rawValue < $1.rawValue } == [.approximation, .omission])
     }
 
     @Test func unresolvedTableStylePropertiesAreReportedAtTheirOwningPart() throws {
