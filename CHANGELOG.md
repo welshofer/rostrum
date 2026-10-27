@@ -14,6 +14,9 @@ the conformance documentation separately describes rendering limitations.
   layout or master placeholder. Pictures placed in a shaped placeholder now draw
   in its frame and shape instead of failing to resolve.
 
+- Group members with `a:grpFill` paint with the enclosing group's fill instead of
+  drawing unfilled.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed

@@ -193,7 +193,8 @@ struct SVGRenderer {
 
     private func renderNode(_ node: XML.Element, ownedBy owner: Part, defs: inout SVGDefinitions,
                             problems: inout SlideRenderProblems, inherited: Bool = false,
-                            depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false) -> String {
+                            depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false,
+                            groupFill: XML.Element? = nil) -> String {
         guard !ShapeCollection.isHidden(node) else { return "" }
         guard depth < 64 else {
             problems.record("Preview omitted shapes nested more than 64 levels deep.")
@@ -208,8 +209,12 @@ struct SVGRenderer {
         switch node.name {
         case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": return ""
         case "p:grpSp":
+            // a:grpFill children paint with the nearest group's own fill.
+            let ownFill = node.firstChild(named: "p:grpSpPr")?.childElements.first { Self.fillNames.contains($0.name) }
+            let childGroupFill = ownFill?.name == "a:grpFill" ? groupFill : ownFill
             let children = renderChildren(of: node, under: diagnostics.location.path, ownedBy: owner, defs: &defs,
-                problems: &problems, inherited: inherited, depth: depth, flippedTextH: textFlipH, flippedTextV: textFlipV)
+                problems: &problems, inherited: inherited, depth: depth, flippedTextH: textFlipH, flippedTextV: textFlipV,
+                groupFill: childGroupFill)
             let transform = ShapeTransform.element(of: node)
             guard let outer = ShapeTransform.rect(transform),
                   let child = ShapeTransform.childSpace(transform),
@@ -238,7 +243,8 @@ struct SVGRenderer {
             if (flippedTextH || flippedTextV) && ShapeTransform.rotation(of: node) != 0 {
                 problems.record("Preview may differ for rotated text inside a flipped group.")
             }
-            content = renderShape(node, ownedBy: owner, defs: &defs, problems: &problems, textFlipH: textFlipH, textFlipV: textFlipV)
+            content = renderShape(node, ownedBy: owner, defs: &defs, problems: &problems, textFlipH: textFlipH, textFlipV: textFlipV,
+                                  groupFill: groupFill)
         case "p:pic": content = renderPicture(node, ownedBy: owner, defs: &defs, problems: &problems)
         case "p:cxnSp": content = renderConnector(node, defs: &defs, problems: &problems)
         case "p:graphicFrame": content = renderGraphicFrame(node, ownedBy: owner, defs: &defs, problems: &problems)
@@ -253,7 +259,7 @@ struct SVGRenderer {
             return renderChildren(of: selected.branch,
                 under: diagnostics.location.path + "/\(selected.branch.name)[\(selected.occurrence)]",
                 ownedBy: owner, defs: &defs, problems: &problems, inherited: inherited, depth: depth,
-                flippedTextH: textFlipH, flippedTextV: textFlipV)
+                flippedTextH: textFlipH, flippedTextV: textFlipV, groupFill: groupFill)
         default:
             problems.record("Preview omitted an unsupported shape-tree element.")
             return ""
@@ -273,7 +279,8 @@ struct SVGRenderer {
     /// A group's or alternate-content branch's shapes, in paint order.
     private func renderChildren(of container: XML.Element, under path: String, ownedBy owner: Part,
                                 defs: inout SVGDefinitions, problems: inout SlideRenderProblems,
-                                inherited: Bool, depth: Int, flippedTextH: Bool, flippedTextV: Bool) -> String {
+                                inherited: Bool, depth: Int, flippedTextH: Bool, flippedTextV: Bool,
+                                groupFill: XML.Element?) -> String {
         let containerLocation = diagnostics.location
         var occurrences: [String: Int] = [:]
         return container.childElements.map { child in
@@ -286,7 +293,8 @@ struct SVGRenderer {
                 path: path + "/\(child.name)[\(occurrences[child.name]!)]")
             defer { diagnostics.location = containerLocation }
             return renderNode(child, ownedBy: owner, defs: &defs, problems: &problems,
-                       inherited: inherited, depth: depth + 1, flippedTextH: flippedTextH, flippedTextV: flippedTextV)
+                       inherited: inherited, depth: depth + 1, flippedTextH: flippedTextH, flippedTextV: flippedTextV,
+                       groupFill: groupFill)
         }.joined()
     }
 
@@ -362,7 +370,8 @@ struct SVGRenderer {
     // MARK: - Shapes
 
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
-                             defs: inout SVGDefinitions, problems: inout SlideRenderProblems, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
+                             defs: inout SVGDefinitions, problems: inout SlideRenderProblems, textFlipH: Bool = false, textFlipV: Bool = false,
+                             groupFill: XML.Element? = nil) -> String {
         let sp = owner === slidePart ? notesContext?.effectiveShape(sp) ?? sp : sp
         if notesContext != nil {
             let location = diagnostics.location
@@ -386,12 +395,22 @@ struct SVGRenderer {
         let preset = geometry?.name == "a:prstGeom" ? geometry : nil
         let prst = custom != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
         let style = sp.firstChild(named: "p:style")
-        let selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner,
+        var selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner,
                                          inherited: inherited.fill)
+        // a:grpFill takes the enclosing group's fill, inspected with the group.
+        let usesGroupFill = selectedFill.properties.firstChild(named: "a:grpFill") != nil
+        if usesGroupFill {
+            let groupPaint = groupFill ?? XML.Element("a:noFill")
+            if groupPaint.name == "a:gradFill" || groupPaint.name == "a:blipFill" {
+                diagnostics.record(.unsupportedFill, .approximation,
+                    "Group gradient and picture fills are painted within each shape, not across the group.")
+            }
+            selectedFill = (properties: XML.Element("p:spPr", children: [.element(groupPaint)]), owner: owner)
+        }
         let fill: String?
         if let blip = selectedFill.properties.firstChild(named: "a:blipFill") {
-            // An inherited placeholder fill was inspected at its own part.
-            if selectedFill.properties !== spPr && inherited.fill == nil {
+            // An inherited placeholder or group fill was inspected at its own location.
+            if selectedFill.properties !== spPr && inherited.fill == nil && !usesGroupFill {
                 // Direct paint was inspected with the shape. Referenced paint
                 // belongs to the theme and must use that same owner for both
                 // diagnostics and drawing, including colliding relationship IDs.

@@ -67,6 +67,8 @@ diagnosed as omitted. Both branches stay in the saved part.
 Slide placeholders, pictures included, take any frame, geometry, fill or line they
 leave unset from the matching layout, then master, placeholder; inherited properties
 are diagnosed at the part that holds them.
+Shapes with `a:grpFill` paint with the nearest enclosing group's fill; group
+gradients and pictures are painted within each member and diagnosed as approximate.
 
 Lectern's inspector reports these separately from file damage, identifies the slide,
 and includes limitations in preview accessibility labels. Generated/recovered decks
