@@ -47,9 +47,10 @@ import Testing
     @Test func equationFallbackPictureIsDrawn() throws {
         let deck = try Presentation()
         let png = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")!
-        let picture = try deck.slides[0].shapes.addPicture(png,
+        let slide = try deck.slides[0]
+        let picture = try slide.shapes.addPicture(png,
             frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
-        let tree = try #require(Slide.existingSpTree(of: deck.slides[0].part))
+        let tree = try #require(Slide.existingSpTree(of: slide.part))
         let index = try #require(tree.children.firstIndex { node in
             if case .element(let element) = node { return element === picture.element }
             return false
@@ -64,7 +65,7 @@ import Testing
         wrapper.childElements[0].appendElement(equation)
         wrapper.childElements[1].appendElement(picture.element)
         tree.children[index] = .element(wrapper)
-        deck.slides[0].part.markDirty()
+        slide.part.markDirty()
         let result = try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true)
         #expect(result.problems.isEmpty)
         #expect(result.svg.contains("<image"))
