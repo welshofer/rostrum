@@ -390,9 +390,9 @@ struct SVGRenderer {
         let f = resolvedFrame(of: sp, spPr: spPr, ownedBy: owner)
         var out = ""
         let inherited = inheritedPlaceholderProperties(of: sp, spPr: spPr, ownedBy: owner, problems: &problems)
-        let geometry = spPr.childElements.first { ["a:prstGeom", "a:custGeom"].contains($0.name) } ?? inherited.geometry
-        let custom = geometry?.name == "a:custGeom" ? geometry : nil
-        let preset = geometry?.name == "a:prstGeom" ? geometry : nil
+        let shapeGeometry = spPr.childElements.first { ["a:prstGeom", "a:custGeom"].contains($0.name) } ?? inherited.geometry
+        let custom = shapeGeometry?.name == "a:custGeom" ? shapeGeometry : nil
+        let preset = shapeGeometry?.name == "a:prstGeom" ? shapeGeometry : nil
         let prst = custom != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
         let style = sp.firstChild(named: "p:style")
         var selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner,
