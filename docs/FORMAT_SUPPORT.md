@@ -86,6 +86,8 @@ transforms; previews, tables, backgrounds and text share one resolver. Ordinary 
 blur and offset; an explicit empty effect list suppresses theme effects. Scaled or
 skewed shadows are diagnosed. Text inherits presentation, master and matched
 placeholder run defaults per paragraph level, with local overrides merged by property.
+Text in layout and master artwork inherits the master's other-text style, and the
+presentation's default text style is the base of every slide and artwork chain.
 Missing font resources are reported. Hosts can register exact faces or opt into
 `FontLibrary.previewFallbackFamily` for matching fallback measurement and drawing;
 the source typeface stays unchanged. See the [preview guide](IMPORTING-AND-PREVIEWING.md).

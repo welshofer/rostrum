@@ -600,12 +600,28 @@ struct SVGRenderer {
     /// renderer's defaults instead of the template's typography — the one thing
     /// applying a template is supposed to change.
     private func inheritedRunDefaults(for sp: XML.Element, ownedBy owner: Part) -> XML.Element? {
-        guard owner === slidePart else { return nil }
         // Ordinary slide shapes share the same final master style. Placeholder
         // matching and notes inheritance remain specific to each shape.
-        let ordinary = notesContext == nil && Placeholders.phElement(of: sp) == nil
+        let ordinary = owner === slidePart && notesContext == nil && Placeholders.phElement(of: sp) == nil
         if ordinary && ordinaryInheritedDefaults.resolved { return ordinaryInheritedDefaults.value }
-        let styles = notesContext?.styles(for: sp) ?? RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
+        var styles: [XML.Element]
+        let slideChain: Bool
+        if owner === slidePart {
+            styles = notesContext?.styles(for: sp) ?? RichTextLayout.inheritedStyles(for: sp, owner: owner, package: package)
+            slideChain = true
+        } else {
+            // A layout's or master's own text (its placeholders are not drawn)
+            // inherits the master's ordinary text style, as slide text does.
+            // Other owners, such as a SmartArt drawing, have no such chain.
+            styles = RichTextLayout.inheritedStyles(forFurnitureOwnedBy: owner, package: package)
+            slideChain = !styles.isEmpty
+        }
+        // The presentation's default text style is the base of every slide's
+        // chain; notes pages take their defaults from the notes master instead.
+        if notesContext == nil, slideChain,
+           let defaults = (try? package.mainDocumentPart().dom())?.firstChild(named: "p:defaultTextStyle") {
+            styles.append(defaults)
+        }
         guard !styles.isEmpty else {
             if ordinary { ordinaryInheritedDefaults.resolved = true }
             return nil

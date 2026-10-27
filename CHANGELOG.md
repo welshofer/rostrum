@@ -21,6 +21,10 @@ the conformance documentation separately describes rendering limitations.
   DrawingML color sources now resolve, including HSL and every preset color name,
   and tables and backgrounds apply the same full transform set as shapes.
 
+- Preview text in layout and master artwork inherits the master's other-text
+  style instead of the renderer's own defaults, and slide text falls back to the
+  presentation's `p:defaultTextStyle` when nothing nearer sets a property.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed
