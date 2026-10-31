@@ -78,8 +78,17 @@ enum KeychainStore {
         if status == errSecSuccess { return }
         if status == errSecParam {
             // The keychain refused to change the existing item's accessibility
-            // in place. Replace it: a failed delete keeps the old item; a failed
-            // add is surfaced so the UI asks for the key again.
+            // in place (macOS's file-based login keychain has no such class).
+            // Saving the key matters more than migrating its class: store the
+            // bytes under the item's existing class first, so a refusal here
+            // never costs the user their key.
+            let dataOnly: [String: Any] = [kSecValueData as String: Data(key.utf8)]
+            let stored = operations.update(match, dataOnly)
+            if stored == errSecSuccess { return }
+            guard stored == errSecParam else { throw WriteProblem.failed(stored) }
+            // Only when even a plain data update is refused does the item get
+            // replaced: a failed delete keeps the old item; a failed add is
+            // surfaced so the UI asks for the key again.
             let deleted = operations.delete(match)
             guard deleted == errSecSuccess || deleted == errSecItemNotFound else {
                 throw WriteProblem.failed(deleted)

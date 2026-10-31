@@ -44,11 +44,22 @@ import Security
         assertDeviceOnly(fake.additions[0])
     }
 
+    @Test func accessibilityRefusalStoresTheKeyUnderTheExistingClassFirst() throws {
+        let fake = FakeSecurity(value: Data("old-fixture".utf8))
+        fake.updateStatuses = [errSecParam, errSecSuccess]
+        try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
+        #expect(fake.events == ["update", "update"])
+        #expect(fake.value == Data("new-fixture".utf8))
+        // The retry carries only the bytes: no class change, nothing deleted.
+        #expect(fake.updates[1].1[kSecAttrAccessible as String] == nil)
+        #expect(fake.updates[1].1[kSecValueData as String] as? Data == Data("new-fixture".utf8))
+    }
+
     @Test func accessibilityRefusalReplacesItemByDeleteThenDeviceOnlyAdd() throws {
         let fake = FakeSecurity(value: Data("old-fixture".utf8))
-        fake.updateStatuses = [errSecParam]
+        fake.updateStatuses = [errSecParam, errSecParam]
         try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
-        #expect(fake.events == ["update", "delete", "add"])
+        #expect(fake.events == ["update", "update", "delete", "add"])
         #expect(fake.value == Data("new-fixture".utf8))
         assertAccount(fake.queries[0], "openAI")
         assertAccount(fake.additions[0], "openAI")
@@ -57,23 +68,33 @@ import Security
 
     @Test func accessibilityRefusalWithFailedDeleteKeepsOldItemAndDoesNotAdd() {
         let fake = FakeSecurity(value: Data("old-fixture".utf8))
-        fake.updateStatuses = [errSecParam]
+        fake.updateStatuses = [errSecParam, errSecParam]
         fake.deleteStatus = errSecAuthFailed
         #expect(throws: KeychainStore.WriteProblem.failed(errSecAuthFailed)) {
             try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
         }
-        #expect(fake.events == ["update", "delete"])
+        #expect(fake.events == ["update", "update", "delete"])
         #expect(fake.value == Data("old-fixture".utf8))
     }
 
     @Test func accessibilityRefusalWithFailedAddSurfacesAddStatus() {
         let fake = FakeSecurity(value: Data("old-fixture".utf8))
-        fake.updateStatuses = [errSecParam]
+        fake.updateStatuses = [errSecParam, errSecParam]
         fake.addStatus = errSecNotAvailable
         #expect(throws: KeychainStore.WriteProblem.failed(errSecNotAvailable)) {
             try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
         }
-        #expect(fake.events == ["update", "delete", "add"])
+        #expect(fake.events == ["update", "update", "delete", "add"])
+    }
+
+    @Test func accessibilityRefusalFollowedByAnotherFailureIsSurfacedWithoutDeleting() {
+        let fake = FakeSecurity(value: Data("old-fixture".utf8))
+        fake.updateStatuses = [errSecParam, errSecAuthFailed]
+        #expect(throws: KeychainStore.WriteProblem.failed(errSecAuthFailed)) {
+            try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
+        }
+        #expect(fake.events == ["update", "update"])
+        #expect(fake.value == Data("old-fixture".utf8))
     }
 
     @Test(arguments: [errSecIO, errSecMissingEntitlement, errSecDecode])
