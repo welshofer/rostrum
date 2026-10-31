@@ -544,7 +544,11 @@ import Testing
     /// rather than discard when it aligns to the next byte boundary.
     @Test func shortEndOfBlockFollowedByStoredBlockDecodes() throws {
         var seed: UInt64 = 0x0B10_C4ED_0000_0001
-        for prefix in 1...24 {
+        // Short prefixes get a fixed-Huffman block (7-bit end-of-block, never
+        // a whole byte of read-ahead); zlib switches to a dynamic block with a
+        // 2-bit end-of-block code from roughly a dozen bytes on, so the range
+        // runs well past that to cover every alignment of the real trigger.
+        for prefix in 1...48 {
             seed &+= 0x9E37_79B9_7F4A_7C15
             let (compressed, original) = try huffmanThenStored(prefix: prefix, seed: seed)
             let decoded = try Inflate.inflate(compressed, expectedOutputSize: original.count)
