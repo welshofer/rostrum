@@ -136,7 +136,7 @@ struct LibrarySidebar: View {
         .fileImporter(isPresented: $importingRecovery, allowedContentTypes: [.json]) { result in
             Task {
                 do { try await app.importRenderSnapshot(result.get()); showingRecovery = true }
-                catch { recoveryError = String(describing: error) }
+                catch { recoveryError = AppState.describe(error) }
             }
         }
         .alert("Couldn’t recover saved content", isPresented: Binding(get: { recoveryError != nil }, set: { if !$0 { recoveryError = nil } })) {

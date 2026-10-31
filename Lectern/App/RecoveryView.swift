@@ -81,7 +81,7 @@ struct RecoveryView: View {
                 try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true,
                     attributes: [.posixPermissions: 0o700])
                 scratch = dir
-            } catch { problem = String(describing: error) }
+            } catch { problem = AppState.describe(error) }
         }
         .onDisappear {
             task?.cancel()
@@ -103,7 +103,7 @@ struct RecoveryView: View {
                 try Task.checkCancellation()
                 candidate = result
             } catch is CancellationError { }
-            catch { problem = String(describing: error) }
+            catch { problem = AppState.describe(error) }
         }
     }
 
@@ -124,7 +124,7 @@ struct RecoveryView: View {
             }
             let saved = DeckResult.savedCopy(of: candidate, at: destination)
             app.acceptRecoveredDeck(saved); dismiss()
-          } catch { problem = String(describing: error) }
+          } catch { problem = AppState.describe(error) }
         }
     }
 }
