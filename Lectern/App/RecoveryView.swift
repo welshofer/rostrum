@@ -63,7 +63,7 @@ struct RecoveryView: View {
                 Spacer()
                 Button("Preview Layout") { preview() }.disabled(busy || selected.isEmpty)
                 Button("Save Revised Copy") { save() }.disabled(busy || candidate == nil)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
             }
         }
         .padding(24).frame(minWidth: 580, minHeight: 380)

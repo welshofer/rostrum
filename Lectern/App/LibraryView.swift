@@ -299,7 +299,7 @@ struct DeckGridView: View {
                 .font(.callout).foregroundStyle(.secondary)
                 .lineLimit(1)
             Button("Create") { app.startCreate() }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .controlSize(.large)
         }
     }
@@ -317,10 +317,10 @@ struct DeckGridView: View {
             } actions: {
                 if !app.isTestSession {
                     Button("Retry Keychain") { app.refreshKeyAvailability() }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.glassProminent)
                 }
                 Button("Inspect a deck") { app.chooseDeckToInspect() }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
             }
             .frame(maxWidth: .infinity, minHeight: 320)
         } else if !app.hasKey {
@@ -337,13 +337,13 @@ struct DeckGridView: View {
                 VStack(spacing: 10) {
                     #if os(macOS)
                     SettingsLink { Text("Add an API key") }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.glassProminent)
                     #else
                     Button("Add an API key") { onSettings() }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.glassProminent)
                     #endif
                     Button("Inspect a deck instead") { app.chooseDeckToInspect() }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.glass)
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 320)
@@ -353,7 +353,7 @@ struct DeckGridView: View {
             } description: {
                 Text("Decks you make are saved to your Lectern folder and appear here.")
             } actions: {
-                Button("New Deck") { app.startCreate() }.buttonStyle(.borderedProminent)
+                Button("New Deck") { app.startCreate() }.buttonStyle(.glassProminent)
             }
             .frame(maxWidth: .infinity, minHeight: 320)
         }
