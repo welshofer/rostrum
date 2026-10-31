@@ -55,10 +55,12 @@ public final class TextFrame {
     /// Native PowerPoint text autofit. Scale is relative to the inherited font
     /// sizes; it does not replace those sizes or detach text from its theme.
     public func setAutoFit(fontScale: Double = 1) {
-        guard fontScale.isFinite else { return }
+        // Non-finite input is a no-op: the existing autofit choice stays.
+        guard fontScale.isFinite,
+              let scale = fixedPoint(min(1, max(0.01, fontScale)), scale: 100_000) else { return }
         for name in ["a:noAutofit", "a:normAutofit", "a:spAutoFit"] { bodyPr.removeChildren(named: name) }
         let fit = bodyPr.getOrAddChild("a:normAutofit", beforeAnyOf: ["a:scene3d", "a:sp3d", "a:flatTx", "a:extLst"])
-        fit[attribute: "fontScale"] = String(Int((min(1, max(0.01, fontScale)) * 100000).rounded()))
+        fit[attribute: "fontScale"] = scale
         part.markDirty()
     }
 
@@ -205,35 +207,35 @@ public final class Paragraph {
         }
     }
 
-    /// Space before/after the paragraph, in points.
+    /// Space before/after the paragraph, in points. A non-finite value
+    /// (NaN, ±infinity) leaves that side's existing spacing untouched.
     public func setSpacing(beforePoints: Double? = nil, afterPoints: Double? = nil) {
         // No explicit beforeAnyOf: the generated schema places a:spcBef/a:spcAft
         // ahead of ALL the bullet elements (buFont/buAutoNum/buChar/…). A
         // hand-written list omitting those mis-orders spacing after a bullet.
-        if let beforePoints {
+        if let beforePoints, let val = fixedPoint(beforePoints, scale: 100) {
             let spcBef = pPr.getOrAddChild("a:spcBef")
             spcBef.removeChildren(named: "a:spcPts")
-            spcBef.appendElement(XML.Element(
-                "a:spcPts", attributes: [("val", String(Int((beforePoints * 100).rounded())))]))
+            spcBef.appendElement(XML.Element("a:spcPts", attributes: [("val", val)]))
         }
-        if let afterPoints {
+        if let afterPoints, let val = fixedPoint(afterPoints, scale: 100) {
             let spcAft = pPr.getOrAddChild("a:spcAft")
             spcAft.removeChildren(named: "a:spcPts")
-            spcAft.appendElement(XML.Element(
-                "a:spcPts", attributes: [("val", String(Int((afterPoints * 100).rounded())))]))
+            spcAft.appendElement(XML.Element("a:spcPts", attributes: [("val", val)]))
         }
         part.markDirty()
     }
 
-    /// Line spacing as a multiple of single spacing (1.0 = single).
+    /// Line spacing as a multiple of single spacing (1.0 = single). A
+    /// non-finite multiple is a no-op.
     public func setLineSpacing(_ multiple: Double) {
+        guard let val = fixedPoint(multiple, scale: 100_000) else { return }
         // a:lnSpc is the first child of a:pPr; the generated schema's full
         // successor list keeps it ahead of spacing AND bullet elements even
         // when those were added first (an explicit [spcBef, spcAft] would not).
         let lnSpc = pPr.getOrAddChild("a:lnSpc")
         lnSpc.removeChildren(named: "a:spcPct")
-        lnSpc.appendElement(XML.Element(
-            "a:spcPct", attributes: [("val", String(Int((multiple * 100_000).rounded())))]))
+        lnSpc.appendElement(XML.Element("a:spcPct", attributes: [("val", val)]))
         part.markDirty()
     }
 
@@ -385,11 +387,18 @@ public final class Run {
         }
     }
 
-    /// Font size in points.
+    /// Font size in points. Setting NaN or ±infinity is a no-op.
     public var fontSize: Double? {
         get { rPr[attribute: "sz"].flatMap { Int($0) }.map { Double($0) / 100 } }
         set {
-            rPr[attribute: "sz"] = newValue.map { String(Int(($0 * 100).rounded())) }
+            guard let newValue else {
+                rPr[attribute: "sz"] = nil
+                part.markDirty()
+                return
+            }
+            // Non-finite input leaves any existing value unchanged.
+            guard let val = fixedPoint(newValue, scale: 100) else { return }
+            rPr[attribute: "sz"] = val
             part.markDirty()
         }
     }
@@ -411,10 +420,18 @@ public final class Run {
     }
 
     /// Letter spacing (tracking) in points; positive spreads, negative tightens.
+    /// Setting NaN or ±infinity is a no-op.
     public var letterSpacing: Double? {
         get { rPr[attribute: "spc"].flatMap { Int($0) }.map { Double($0) / 100 } }
         set {
-            rPr[attribute: "spc"] = newValue.map { String(Int(($0 * 100).rounded())) }
+            guard let newValue else {
+                rPr[attribute: "spc"] = nil
+                part.markDirty()
+                return
+            }
+            // Non-finite input leaves any existing value unchanged.
+            guard let val = fixedPoint(newValue, scale: 100) else { return }
+            rPr[attribute: "spc"] = val
             part.markDirty()
         }
     }
@@ -475,10 +492,18 @@ public final class Run {
 
     /// Baseline shift as a percent of font size (`a:rPr@baseline`): positive
     /// raises (superscript), negative lowers (subscript), nil is normal.
+    /// Setting NaN or ±infinity is a no-op.
     public var baselinePercent: Double? {
         get { rPr[attribute: "baseline"].flatMap { Int($0) }.map { Double($0) / 1000 } }
         set {
-            rPr[attribute: "baseline"] = newValue.map { String(Int(($0 * 1000).rounded())) }
+            guard let newValue else {
+                rPr[attribute: "baseline"] = nil
+                part.markDirty()
+                return
+            }
+            // Non-finite input leaves any existing value unchanged.
+            guard let val = fixedPoint(newValue, scale: 1000) else { return }
+            rPr[attribute: "baseline"] = val
             part.markDirty()
         }
     }
