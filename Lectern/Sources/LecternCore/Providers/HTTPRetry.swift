@@ -17,13 +17,31 @@ enum HTTPRetry {
 
     /// Seconds to wait before the next attempt. `Retry-After` wins when the
     /// server sends one — it knows more than we do — otherwise exponential from
-    /// two seconds, capped so a 5xx spike cannot park the UI for minutes.
+    /// two seconds with ±25 % jitter, capped so a 5xx spike cannot park the UI
+    /// for minutes.
+    ///
+    /// The jitter is what keeps concurrent image requests apart: four requests
+    /// that hit a 429 together used to sleep exactly 2 s, 4 s, 8 s and collide
+    /// again each time. It is never applied to a server-supplied `Retry-After`.
     ///
     /// `attempt` is zero-based: the delay after the first failure.
     static func backoff(attempt: Int, retryAfter: Int?) -> Int {
-        if let retryAfter, retryAfter >= 0 { return min(maxBackoffSeconds, retryAfter) }
-        return min(maxBackoffSeconds, 2 << max(0, attempt))
+        var generator = SystemRandomNumberGenerator()
+        return backoff(attempt: attempt, retryAfter: retryAfter, using: &generator)
     }
+
+    /// As `backoff(attempt:retryAfter:)`, drawing the jitter from `generator`
+    /// so tests can seed it.
+    static func backoff(attempt: Int, retryAfter: Int?, using generator: inout some RandomNumberGenerator) -> Int {
+        if let retryAfter, retryAfter >= 0 { return min(maxBackoffSeconds, retryAfter) }
+        // Clamp the shift so a runaway attempt count cannot overflow.
+        let base = min(maxBackoffSeconds, 2 << min(max(0, attempt), 10))
+        let jittered = Double(base) * Double.random(in: (1 - jitterFraction)...(1 + jitterFraction), using: &generator)
+        return min(maxBackoffSeconds, max(1, Int(jittered.rounded())))
+    }
+
+    /// Half-width of the uniform jitter band around the exponential delay.
+    static let jitterFraction = 0.25
 
     static let maxBackoffSeconds = 60
 
