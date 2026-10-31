@@ -49,6 +49,15 @@ public enum LibraryLab {
         return LibraryDemoID.allCases.compactMap { id in recipes.first { $0.id == id } }
     }()
 
+    /// The recipe for `id`. `LibraryDemoID` is `Codable` and persisted, so a
+    /// case with no recipe (an old or renamed value) falls back to the first
+    /// catalog entry rather than trapping. The catalog covers every case by
+    /// construction; `LibraryLabTests` asserts this so the fallback is never
+    /// silently relied on.
+    public static func recipe(for id: LibraryDemoID) -> LibraryLabRecipe {
+        catalog.first { $0.id == id } ?? catalog[0]
+    }
+
     /// Synchronous and CPU-bound; run off the main actor. Each invocation owns
     /// a fresh directory, and removes only that directory on error/cancellation.
     public static func run(_ id: LibraryDemoID, options: LibraryLabOptions = .init(),
@@ -60,7 +69,7 @@ public enum LibraryLab {
     }
 
     public static func effectiveOptions(_ options: LibraryLabOptions, for id: LibraryDemoID) -> LibraryLabOptions {
-        let inputs = catalog.first { $0.id == id }!.inputs
+        let inputs = recipe(for: id).inputs
         let defaults = LibraryLabOptions()
         return .init(text: inputs.contains(.text) ? options.text : defaults.text,
                      accentHex: inputs.contains(.accent) ? options.accentHex : defaults.accentHex,
@@ -149,7 +158,7 @@ public enum LibraryLab {
                                 "Exported \(export.slideCount) slides, \(export.assetsWritten) assets and \(export.chartsWritten) chart datasets."))
             try Task.checkCancellation()
             let elapsed = Date().timeIntervalSince(start)
-            let recipe = catalog.first { $0.id == id }!
+            let recipe = Self.recipe(for: id)
             let report = LibraryLabReport(recipe: id, title: recipe.title, options: options,
                 operations: recipe.operations, limitations: recipe.limitations, slideCount: inspection.slideCount,
                 checks: checks, findings: findings, elapsedSeconds: elapsed)

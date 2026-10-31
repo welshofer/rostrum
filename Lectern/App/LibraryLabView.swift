@@ -10,7 +10,7 @@ struct LibraryLabView: View {
     @State private var showingFiles = false
 
     private var recipe: LibraryLabRecipe {
-        LibraryLab.catalog.first { $0.id == model.selection }!
+        LibraryLab.recipe(for: model.selection)
     }
 
     var body: some View {
