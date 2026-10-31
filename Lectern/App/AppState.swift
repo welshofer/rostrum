@@ -314,7 +314,7 @@ final class AppState {
             try DeckLibrary.rename(deck, to: name)
             renameProblem = nil
         } catch {
-            renameProblem = String(describing: error)
+            renameProblem = Self.describe(error)
         }
         refreshLibrary()
     }
@@ -567,7 +567,7 @@ final class AppState {
         }
     }
 
-    static let unreadableKeyAdvice =
+    nonisolated static let unreadableKeyAdvice =
         "Keychain access is unavailable. Unlock your login Keychain if needed, then retry. This does not mean your key is missing."
     static let saveKeyFailure =
         "Couldn't save the key in Keychain. Try again; Lectern did not delete any stored key."
@@ -668,7 +668,7 @@ final class AppState {
             selectedTemplate = native
         } catch {
             guard templateImportRevision == revision else { return }
-            templateError = String(describing: error)
+            templateError = Self.describe(error)
         }
     }
 
@@ -945,10 +945,9 @@ final class AppState {
                     self.phase = .home
                 }
             } catch {
-                // Rendered here, where the error still exists: `describe` is
-                // main-actor isolated and an `Error` is not `Sendable`, so what
-                // crosses back is the `String`.
-                let message = String(describing: error)
+                // Rendered here, where the error still exists: an `Error` is
+                // not `Sendable`, so what crosses back is the `String`.
+                let message = AppState.describe(error)
                 await MainActor.run {
                     guard self.inspectionRuns.isCurrent(run) else { return }
                     let cancelled = self.inspectTask?.isCancelled ?? true
@@ -1037,7 +1036,7 @@ final class AppState {
                     self.exportProblem = problem
                 }
             } catch {
-                let message = String(describing: error)
+                let message = AppState.describe(error)
                 await MainActor.run {
                     guard self.exportRuns.isCurrent(run), self.phase == .inspected,
                           self.inspection?.fileURL == deck else { return }
@@ -1082,8 +1081,33 @@ final class AppState {
         return PriceTable.formatted(est)
     }
 
-    static func describe(_ error: Error) -> String {
-        guard let lectern = error as? LecternError else { return "\(error.localizedDescription)" }
+    /// The one user-facing error formatter. Every alert, failure phase and
+    /// inline problem in the app goes through here, so a person reads a
+    /// sentence rather than a Swift enum dump (`nameTaken("Q3 Review")`) or an
+    /// `Error Domain=NSCocoaErrorDomain Code=513` line.
+    ///
+    /// Order: Lectern's own taxonomy, then `LocalizedError`, then a type's own
+    /// `CustomStringConvertible` wording (`DeckLibrary.RenameProblem`,
+    /// `RostrumError`, …), then Foundation's `localizedDescription`. NSError and
+    /// the bridged Foundation errors skip the description step, because theirs
+    /// is the `Error Domain=` dump. Nonisolated so a background catch can
+    /// render its non-`Sendable` error to a `String` before hopping actors.
+    nonisolated static func describe(_ error: any Error) -> String {
+        if let lectern = error as? LecternError { return describeLectern(lectern) }
+        if let localized = (error as? LocalizedError)?.errorDescription, !localized.isEmpty {
+            return localized
+        }
+        let isFoundationError = error is CocoaError || error is URLError || error is POSIXError
+            || type(of: error as Any) is NSObject.Type
+        if !isFoundationError, let readable = (error as Any) as? CustomStringConvertible {
+            let text = readable.description
+            if !text.isEmpty { return text }
+        }
+        let fallback = (error as NSError).localizedDescription
+        return fallback.isEmpty ? "Something went wrong." : fallback
+    }
+
+    nonisolated private static func describeLectern(_ lectern: LecternError) -> String {
         switch lectern {
         case .noKey: return "Add an API key in Settings to begin."
         case .keyUnreadable: return Self.unreadableKeyAdvice
