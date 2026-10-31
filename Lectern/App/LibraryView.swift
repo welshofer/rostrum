@@ -213,6 +213,9 @@ struct DeckGridView: View {
     /// see `ContentView.deckColumnCount`. Flexible columns then let the cards
     /// resize with the sidebar instead of being re-dealt into new slots.
     let columnCount: Int
+    /// Opens Settings where there is no Settings scene (iOS); macOS uses
+    /// `SettingsLink` and never calls it.
+    var onSettings: () -> Void
     @State private var renaming: DeckFile?
     @State private var draftName = ""
 
@@ -334,6 +337,9 @@ struct DeckGridView: View {
                 VStack(spacing: 10) {
                     #if os(macOS)
                     SettingsLink { Text("Add an API key") }
+                        .buttonStyle(.borderedProminent)
+                    #else
+                    Button("Add an API key") { onSettings() }
                         .buttonStyle(.borderedProminent)
                     #endif
                     Button("Inspect a deck instead") { app.chooseDeckToInspect() }
