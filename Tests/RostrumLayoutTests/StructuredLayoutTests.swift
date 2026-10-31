@@ -19,7 +19,10 @@ import Testing
     }
 
     @Test func pyramidTooNarrowThrows() {
-        expectCannotFit(.pyramid, count: 12, in: region(width: 100, height: 600))
+        // Tall enough that every band clears the 48-pt height floor
+        // ((800 - 11 * 16) / 12 ≈ 52), so only the narrowest band's width
+        // (100 * (0.55 + 0.45 / 12) ≈ 59 < 72) can be what throws.
+        expectCannotFit(.pyramid, count: 12, in: region(width: 100, height: 800))
     }
 
     @Test func pyramidTooShortThrows() {
