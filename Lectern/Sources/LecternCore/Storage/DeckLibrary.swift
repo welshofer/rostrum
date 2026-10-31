@@ -171,10 +171,16 @@ public enum DeckLibrary {
             .components(separatedBy: illegal)
             .joined(separator: " "))
 
-        var capped = ""
+        // Measured in decomposed (NFD) UTF-8: HFS+ stores names that way and
+        // APFS on macOS hands them back that way, so "é" costs three bytes on
+        // disk even when the user typed the two-byte precomposed form. A cap
+        // taken on the precomposed bytes passed on Linux and overshot on a Mac.
+        var capped = "", bytes = 0
         for character in cleaned {
-            guard capped.utf8.count + String(character).utf8.count <= 120 else { break }
+            let cost = String(character).decomposedStringWithCanonicalMapping.utf8.count
+            guard bytes + cost <= 120 else { break }
             capped.append(character)
+            bytes += cost
         }
         // Truncation can leave trailing whitespace or a dot.
         return visible(capped)

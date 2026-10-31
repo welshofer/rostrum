@@ -193,7 +193,9 @@ import Testing
                          String(repeating: "😀", count: 300)] {
             let renamed = try DeckLibrary.rename(deck, to: proposed)
             let stem = renamed.url.deletingPathExtension().lastPathComponent
-            #expect(stem.utf8.count <= 120)
+            // The filesystem may return the name decomposed (macOS does), so
+            // measure the budget the way the disk does.
+            #expect(stem.decomposedStringWithCanonicalMapping.utf8.count <= 120)
             #expect(!stem.isEmpty)
             #expect(DeckLibrary.decks(in: dir).count == 1)
             try FileManager.default.moveItem(at: renamed.url, to: deck.url)
