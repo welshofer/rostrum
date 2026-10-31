@@ -27,7 +27,7 @@ import Testing
         let generator = DeckGenerator(provider: FixtureProvider(validJSON: json),
                                       imageProvider: images, quality: false)
         let request = DeckRequest(prompt: "turbines", slideCount: slideCount, notes: false)
-        return try await generator.generate(request, designURL: nil, into: dir) { _ in }
+        return try await generator.generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { _ in }
     }
 
     @Test func budgetIsTheSlideCountPlusTheValidatorTolerance() {

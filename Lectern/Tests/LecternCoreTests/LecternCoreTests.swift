@@ -164,7 +164,7 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let events = EventBox()
         let result = try await DeckGenerator(provider: provider)
-            .generate(DeckRequest(prompt: "x", slideCount: 3), designURL: nil, into: dir) { events.record($0) }
+            .generate(DeckRequest(prompt: "x", slideCount: 3), designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         #expect(result.slideCount == 3)                     // adopted the revision, not the 5-slide draft
         #expect(events.stages.contains("auditing"))         // the QA pass ran
     }
@@ -174,7 +174,7 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         // Even with a broken revision, quality:false skips it and the draft ships.
         let result = try await DeckGenerator(provider: provider, quality: false)
-            .generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir) { _ in }
+            .generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { _ in }
         #expect(result.slideCount == 5)
     }
 
@@ -428,7 +428,7 @@ import Rostrum
                 provider: FixtureProvider(validJSON: json),
                 imageProvider: ProbeImageProvider(id: providerID, probe: probe),
                 quality: false
-            ).generate(request, designURL: nil, into: dir) { _ in }
+            ).generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { _ in }
 
             let ceiling = providerID.maximumConcurrentRequests
             let peak = await probe.peak
@@ -636,7 +636,7 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let events = EventBox()
         let request = DeckRequest(prompt: "why native rendering", slideCount: 5, notes: true)
-        let result = try await DeckGenerator(provider: provider).generate(request, designURL: nil, into: dir) { events.record($0) }
+        let result = try await DeckGenerator(provider: provider).generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         #expect(result.slideCount == 5)
         let stages = events.stages
         #expect(stages.contains("outlining") && stages.contains("rendering") && stages.contains("finished"))  // AT-09
@@ -648,14 +648,14 @@ import Rostrum
         // invalidJSONOnce → exactly one repair → success (AT-14).
         let once = FixtureProvider(validJSON: try fixtureJSON(), failure: .invalidJSONOnce)
         let events = EventBox()
-        let result = try await DeckGenerator(provider: once).generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir) { events.record($0) }
+        let result = try await DeckGenerator(provider: once).generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         #expect(result.slideCount == 5)
         #expect(events.stages.contains("repairing"))
 
         // invalidJSONAlways → .schemaInvalid.
         let always = FixtureProvider(validJSON: try fixtureJSON(), failure: .invalidJSONAlways)
         await #expect(throws: LecternError.self) {
-            _ = try await DeckGenerator(provider: always).generate(DeckRequest(prompt: "x"), designURL: nil, into: dir) { _ in }
+            _ = try await DeckGenerator(provider: always).generate(DeckRequest(prompt: "x"), designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { _ in }
         }
     }
 
