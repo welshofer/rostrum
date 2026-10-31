@@ -484,7 +484,6 @@ struct ComposeView: View {
         }
         .safeAreaInset(edge: .bottom) { generateBar }
         .sheet(isPresented: $showStyles) { StylePickerSheet().environment(app) }
-        .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
         // Multiple fileImporter modifiers on this view compete for the same
         // presentation host. Use one host and retain its purpose through dismiss.
         .fileImporter(isPresented: $importing, allowedContentTypes: importKind.contentTypes) { result in
