@@ -81,7 +81,14 @@ import Testing
             contents.first { $0.lastPathComponent.hasPrefix("rejected-draft-") },
             "the pipeline should have written a rejected-draft file")
         #expect(FileManager.default.fileExists(atPath: kept.path))
-        #expect(reported.contains { $0.contains(kept.path) }, "the error should point at the kept draft")
+        // macOS lists the temp folder as /private/var/… while the message carries
+        // the /var/… spelling the pipeline was handed; compare resolved paths.
+        let keptPath = kept.resolvingSymlinksInPath().path
+        #expect(reported.contains { message in
+            guard let at = message.range(of: " at ") else { return false }
+            let named = URL(fileURLWithPath: String(message[at.upperBound...]))
+            return named.resolvingSymlinksInPath().path == keptPath
+        }, "the error should point at the kept draft: \(reported)")
 
         #if !os(iOS)
         // The desktop analogue of iOS data protection: owner read/write only.
