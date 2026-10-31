@@ -66,6 +66,7 @@ struct RecoveryView: View {
             }
             HStack {
                 Button("Cancel") { task?.cancel(); dismiss() }
+                    .keyboardShortcut(.cancelAction)
                 Spacer()
                 Button("Preview Layout") { preview() }.disabled(busy || selected.isEmpty)
                 Button("Save Revised Copy") { save() }.disabled(busy || candidate == nil)

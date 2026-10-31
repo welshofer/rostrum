@@ -306,6 +306,7 @@ struct InspectingView: View {
                     .font(.callout).foregroundStyle(.secondary)
             }
             Button("Cancel", role: .cancel) { app.cancelInspection() }.buttonStyle(.glass)
+                .keyboardShortcut(.cancelAction)
         }
         .padding(48)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -630,6 +631,7 @@ struct GeneratingView: View {
                         .contentTransition(.numericText())
                 }
                 Button("Cancel", role: .cancel) { app.cancel() }.buttonStyle(.glass)
+                    .keyboardShortcut(.cancelAction)
             }
             .padding(.bottom, 28)
             .accessibilityElement(children: .combine)

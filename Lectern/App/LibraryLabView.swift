@@ -46,6 +46,7 @@ struct LibraryLabView: View {
                         Text("\(model.completed) of \(model.total) complete · \(activeTitle)")
                             .font(.callout).foregroundStyle(.secondary)
                         Button("Cancel", role: .cancel) { model.cancel() }
+                            .keyboardShortcut(.cancelAction)
                     }
                     .accessibilityIdentifier("libraryLab.progress")
                 }

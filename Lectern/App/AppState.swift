@@ -867,6 +867,16 @@ final class AppState {
 
     func chooseDeckToInspect() { isChoosingDeckToInspect = true }
 
+    /// Bumped by the Export Everything… menu command. The inspector answers each
+    /// bump with the same folder chooser its own button opens, so the panel
+    /// stays view-owned and the menu needs no copy of it.
+    private(set) var exportRequests = 0
+
+    func requestExport() {
+        guard phase == .inspected, inspection != nil, !isExporting else { return }
+        exportRequests += 1
+    }
+
     func clearExportReport() {
         exportRuns.abandon()
         exportTask?.cancel()
