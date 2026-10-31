@@ -97,7 +97,7 @@ public enum StructuredLayout {
             let unwrapped = engine.measuredHeight(label, style: caption, width: cycleCaptionUnwrappedWidth)
             guard !label.contains(where: \.isNewline), wrapped.isFinite,
                   wrapped <= max(cycleCaptionHeight * scale, unwrapped) else {
-                throw LayoutError.cannotFit("The cycle caption does not fit the template region at a readable size.")
+                throw LayoutError.cannotFit("The cycle caption would wrap past its single line in this template region.")
             }
         }
         // Preflight all text before mutating the slide. No truncation or silent

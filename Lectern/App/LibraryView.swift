@@ -74,7 +74,9 @@ struct LibrarySidebar: View {
 
             // One container so the action pills share a glass sampling region
             // and blend as a group rather than as separate panes.
-            GlassEffectContainer(spacing: 10) {
+            // Spacing below the stack's 10-pt gap keeps the three verbs reading
+            // as separate pills rather than one slab that blends on press.
+            GlassEffectContainer(spacing: 4) {
                 VStack(spacing: 10) {
                     SidebarAction(title: "New Deck", systemImage: "sparkles", prominent: true) {
                         app.startCreate()

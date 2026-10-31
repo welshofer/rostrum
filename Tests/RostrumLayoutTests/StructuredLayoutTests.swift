@@ -100,7 +100,7 @@ import Testing
             try body()
             Issue.record("Expected the cycle caption to be rejected")
         } catch LayoutError.cannotFit(let message) {
-            #expect(message == "The cycle caption does not fit the template region at a readable size.")
+            #expect(message == "The cycle caption would wrap past its single line in this template region.")
         } catch {
             Issue.record("Unexpected error: \(error)")
         }
