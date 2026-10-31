@@ -31,13 +31,15 @@ import LecternCore
 /// `WKUserContentController` it was configured with, so a list added later
 /// still governs that view's subsequent loads.
 enum PreviewPolicy {
-    /// The only navigations a preview is allowed: the `about:blank` that
+    /// The only navigation a preview is allowed: the `about:blank` that
     /// `loadHTMLString(_, baseURL: nil)` loads as (reported as a nil URL on
-    /// some WebKit versions), and requests on the app's own font scheme.
+    /// some WebKit versions). Fonts on the app's own scheme are subresource
+    /// loads, which never reach the navigation delegate, so the scheme needs
+    /// no exception here — and granting one would let a page navigate a frame
+    /// to font bytes.
     static func allows(_ url: URL?) -> Bool {
         guard let url else { return true }
-        if url.absoluteString == "about:blank" { return true }
-        return url.scheme?.lowercased() == PreviewFontResources.scheme
+        return url.absoluteString == "about:blank"
     }
 
     /// What the rendered SVG needs and nothing more: inline `<style>` and
@@ -54,8 +56,9 @@ enum PreviewPolicy {
         "<meta http-equiv=\"Content-Security-Policy\" content=\"\(contentSecurityPolicy)\">"
 
     /// Identifier under which the compiled list is stored by the default
-    /// `WKContentRuleListStore`. Bump when the rules change so a stale compiled
-    /// copy from an older build is never looked up by mistake.
+    /// `WKContentRuleListStore`. The list is recompiled on every launch (it is
+    /// tiny), so the version suffix only keeps an older build's copy from
+    /// sharing a name with this one.
     static let ruleListIdentifier = "lectern-preview-block-all-v1"
 
     /// Block everything, then exempt what a preview legitimately loads. The

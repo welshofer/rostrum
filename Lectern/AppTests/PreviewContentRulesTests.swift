@@ -8,13 +8,14 @@ import LecternCore
 /// keep such a page from fetching anything off the machine: the navigation
 /// gate, the document CSP, and the block-all content rule list.
 @Suite struct PreviewPolicyTests {
-    @Test func navigationGateAllowsOnlyTheBlankPageAndTheFontScheme() throws {
+    @Test func navigationGateAllowsOnlyTheBlankPage() throws {
         #expect(PreviewPolicy.allows(nil))
         #expect(PreviewPolicy.allows(URL(string: "about:blank")))
-        #expect(PreviewPolicy.allows(URL(string: "\(PreviewFontResources.scheme)://namespace/1")))
+        // Fonts are subresources, never navigations: the scheme gets no pass.
         for denied in ["https://example.com", "http://example.com/slide.png", "file:///etc/hosts",
                        "ftp://example.com/", "about:srcdoc", "data:text/html,hi", "javascript:void(0)",
-                       "blob:null/abc", "\(PreviewFontResources.scheme)x://namespace/1"] {
+                       "blob:null/abc", "\(PreviewFontResources.scheme)://namespace/1",
+                       "\(PreviewFontResources.scheme)x://namespace/1"] {
             let url = try #require(URL(string: denied))
             #expect(!PreviewPolicy.allows(url), "\(denied)")
         }
