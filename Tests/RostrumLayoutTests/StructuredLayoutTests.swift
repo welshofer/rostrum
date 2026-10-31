@@ -50,4 +50,40 @@ import Testing
             }
         }
     }
+
+    private func cycleShapeTexts(label: String??) throws -> [String] {
+        let deck = try Presentation()
+        let slide = try deck.slides.add()
+        let engine = TemplateLayoutEngine(presentation: deck)
+        let area = region(width: 800, height: 400)
+        let items = (1...4).map { StructuredItem("Step \($0)", detail: "Detail \($0)") }
+        switch label {
+        case .none:
+            _ = try StructuredLayout.compose(kind: .cycle, items: items, in: area, on: slide, style: deck.style, engine: engine)
+        case .some(let value):
+            _ = try StructuredLayout.compose(kind: .cycle, items: items, in: area, on: slide, style: deck.style,
+                                             engine: engine, cycleReturnLabel: value)
+        }
+        return slide.shapes.all.compactMap { $0.textFrame?.text }
+    }
+
+    @Test func cycleReturnLabelDefaultsToRepeatCycle() throws {
+        let texts = try cycleShapeTexts(label: .none)
+        #expect(texts.filter { $0 == "Repeat cycle" }.count == 1)
+    }
+
+    @Test func cycleReturnLabelCanBeLocalized() throws {
+        let texts = try cycleShapeTexts(label: .some("Zyklus wiederholen"))
+        #expect(texts.filter { $0 == "Zyklus wiederholen" }.count == 1)
+        #expect(!texts.contains("Repeat cycle"))
+    }
+
+    @Test func nilOrEmptyCycleReturnLabelDropsOnlyTheCaption() throws {
+        let withCaption = try cycleShapeTexts(label: .none)
+        for label in [String?.none, ""] {
+            let texts = try cycleShapeTexts(label: .some(label))
+            #expect(!texts.contains("Repeat cycle"))
+            #expect(texts.count == withCaption.count - 1)
+        }
+    }
 }
