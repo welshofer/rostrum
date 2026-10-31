@@ -66,4 +66,26 @@ import Rostrum
         }
         #expect(DeckLibrary.decks(in: f.library).count == 3)
     }
+    @Test func pruneAbandonedRemovesOnlyStalePendingFiles() throws {
+        let f = try fixture(); defer { try? FileManager.default.removeItem(at: f.root) }
+        let manager = FileManager.default, now = Date()
+        try manager.createDirectory(at: f.library, withIntermediateDirectories: true)
+        let stale = f.library.appendingPathComponent(".library-demo-X.pending")
+        let fresh = f.library.appendingPathComponent(".library-demo-Y.pending")
+        let deck = f.library.appendingPathComponent("keep.pptx")
+        let other = f.library.appendingPathComponent(".other-Z.pending")
+        for url in [stale, fresh, deck, other] { try Data("x".utf8).write(to: url) }
+        let old = now.addingTimeInterval(-2 * 86_400)
+        for url in [stale, deck, other] { try manager.setAttributes([.modificationDate: old], ofItemAtPath: url.path) }
+        #expect(DeckStorage.PreparedDeckCopy.pruneAbandoned(in: f.library, now: now) == 1)
+        #expect(!manager.fileExists(atPath: stale.path))
+        #expect(manager.fileExists(atPath: fresh.path))
+        #expect(manager.fileExists(atPath: deck.path))
+        #expect(manager.fileExists(atPath: other.path))
+        #expect(DeckStorage.PreparedDeckCopy.pruneAbandoned(in: f.library, now: now) == 0)
+    }
+    @Test func pruneAbandonedOnMissingDirectoryReturnsZero() {
+        let missing = FileManager.default.temporaryDirectory.appendingPathComponent("Missing-" + UUID().uuidString)
+        #expect(DeckStorage.PreparedDeckCopy.pruneAbandoned(in: missing) == 0)
+    }
 }

@@ -21,6 +21,30 @@ public extension DeckStorage {
         }
 
         public func discard() { try? FileManager.default.removeItem(at: staged) }
+
+        /// Remove staging files a crash or force-quit left behind. Only
+        /// `.library-demo-*.pending` files older than `age` are touched, so an
+        /// in-flight copy is never disturbed. Best-effort: per-file errors are
+        /// swallowed.
+        ///
+        /// - Returns: how many files were removed.
+        @discardableResult
+        public static func pruneAbandoned(in directory: URL, olderThan age: TimeInterval = 86_400,
+                                          now: Date = Date(), fileManager: FileManager = .default) -> Int {
+            guard let entries = try? fileManager.contentsOfDirectory(
+                at: directory, includingPropertiesForKeys: [.contentModificationDateKey],
+                options: [.skipsSubdirectoryDescendants]) else { return 0 }
+            var removed = 0
+            for url in entries {
+                let name = url.lastPathComponent
+                guard name.hasPrefix(".library-demo-"), name.hasSuffix(".pending") else { continue }
+                let modified = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?
+                    .contentModificationDate ?? now
+                guard now.timeIntervalSince(modified) > age else { continue }
+                if (try? fileManager.removeItem(at: url)) != nil { removed += 1 }
+            }
+            return removed
+        }
     }
 
     /// Copy original bytes to a hidden temporary file in the destination volume.

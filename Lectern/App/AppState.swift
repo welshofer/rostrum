@@ -405,6 +405,7 @@ final class AppState {
     nonisolated static func prepareLibrary(_ paths: LibraryStartupPaths) -> Int {
         let moved = paths.legacy.map { DeckStorage.migrateDecks(from: $0, to: paths.library) } ?? 0
         DeckStorage.pruneDiagnostics(in: paths.diagnostics)
+        DeckStorage.PreparedDeckCopy.pruneAbandoned(in: paths.library)
         return moved
     }
 
