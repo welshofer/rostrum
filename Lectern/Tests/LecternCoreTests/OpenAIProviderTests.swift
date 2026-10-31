@@ -122,14 +122,15 @@ import Testing
     }
 
     @Test func aServerFaultIsRetriedRatherThanEndingTheDraft() async throws {
-        let attempts = AttemptCounter(), waits = AttemptCounter(), seen = SentRequest()
+        let attempts = AttemptCounter(), waits = IntervalLog(), seen = SentRequest()
         let start = Date(timeIntervalSince1970: 0)
         let budget = ReasoningEffort.medium.timeout
         let provider = OpenAIProvider(apiKey: "k",
-            now: { start.addingTimeInterval(Double(waits.count) * 2) },
+            now: { start.addingTimeInterval(waits.values.reduce(0, +)) },
             wait: { seconds in
-                #expect(seconds == 2)
-                _ = waits.next()
+                // 2 s +/-25 %, kept at sub-second resolution.
+                #expect(seconds >= 1.5 && seconds <= 2.5)
+                waits.record(seconds)
             }, send: { request in
             seen.record(request)
             if attempts.next() == 1 {
@@ -143,8 +144,33 @@ import Testing
 
         #expect(draft.json.contains("\"title\""))
         #expect(attempts.count == 2)
-        #expect(waits.count == 1)
-        #expect(seen.value?.timeoutInterval == budget - 2)
+        #expect(waits.values.count == 1)
+        // The second attempt's timeout shrinks by the jittered wait, to within
+        // the ~1e-7 s that `Date` arithmetic in the stub clock carries.
+        let second = try #require(seen.value?.timeoutInterval)
+        #expect(abs(second - (budget - waits.values[0])) < 1e-6)
+    }
+
+    /// A persistent 429 without Retry-After names the wait it last computed,
+    /// rounded up, rather than drawing a fresh jittered value for the hint.
+    @Test func aPersistentRateLimitHintReusesTheComputedWait() async throws {
+        let attempts = AttemptCounter(), waits = IntervalLog()
+        let provider = OpenAIProvider(apiKey: "k",
+            now: { Date(timeIntervalSince1970: 0) },
+            wait: { waits.record($0) }, send: { _ in
+                _ = attempts.next()
+                return (Data(), Self.http(429))
+            })
+        do {
+            _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
+            Issue.record("a persistent rate limit must surface")
+        } catch LecternError.rateLimited(let afterSeconds) {
+            // Two waits slept (attempts 0 and 1); the hint is attempt 2's
+            // 8 s +/-25 %, rounded up to whole seconds.
+            #expect(attempts.count == HTTPRetry.maxAttempts)
+            #expect(waits.values.count == 2)
+            #expect((6...10).contains(afterSeconds), "hint was \(afterSeconds)s")
+        }
     }
 }
 
@@ -154,6 +180,15 @@ final class SentRequest: @unchecked Sendable {
     private var stored: URLRequest?
     var value: URLRequest? { lock.lock(); defer { lock.unlock() }; return stored }
     func record(_ request: URLRequest) { lock.lock(); stored = request; lock.unlock() }
+}
+
+/// Every wait (or timeout) a `@Sendable` stub saw, in order, at full
+/// sub-second resolution.
+final class IntervalLog: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stored: [TimeInterval] = []
+    var values: [TimeInterval] { lock.lock(); defer { lock.unlock() }; return stored }
+    func record(_ value: TimeInterval) { lock.lock(); stored.append(value); lock.unlock() }
 }
 
 final class AttemptCounter: @unchecked Sendable {
