@@ -72,21 +72,25 @@ struct LibrarySidebar: View {
             .padding(.top, 18)
             .padding(.bottom, 22)
 
-            VStack(spacing: 10) {
-                SidebarAction(title: "New Deck", systemImage: "sparkles", prominent: true) {
-                    app.startCreate()
-                }
-                SidebarAction(title: "Inspect Deck…", systemImage: "doc.viewfinder") {
-                    app.chooseDeckToInspect()
-                }
-                SidebarAction(title: "Recover Saved Content…", systemImage: "doc.badge.clock") {
-                    importingRecovery = true
-                }
-                if let snapshot = app.recoveryURL {
-                    SidebarAction(title: "Last Saved Content…", systemImage: "arrow.counterclockwise") { showingRecovery = true }
-                        .sheet(isPresented: $showingRecovery) {
-                            RecoveryView(snapshotURL: snapshot, sourceURL: app.recoverySourceURL)
-                        }
+            // One container so the action pills share a glass sampling region
+            // and blend as a group rather than as separate panes.
+            GlassEffectContainer(spacing: 10) {
+                VStack(spacing: 10) {
+                    SidebarAction(title: "New Deck", systemImage: "sparkles", prominent: true) {
+                        app.startCreate()
+                    }
+                    SidebarAction(title: "Inspect Deck…", systemImage: "doc.viewfinder") {
+                        app.chooseDeckToInspect()
+                    }
+                    SidebarAction(title: "Recover Saved Content…", systemImage: "doc.badge.clock") {
+                        importingRecovery = true
+                    }
+                    if let snapshot = app.recoveryURL {
+                        SidebarAction(title: "Last Saved Content…", systemImage: "arrow.counterclockwise") { showingRecovery = true }
+                            .sheet(isPresented: $showingRecovery) {
+                                RecoveryView(snapshotURL: snapshot, sourceURL: app.recoverySourceURL)
+                            }
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -171,16 +175,11 @@ private struct SidebarActionChrome: ViewModifier {
     func body(content: Content) -> some View {
         content
             .buttonStyle(.plain)
-            .background {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(prominent ? AnyShapeStyle(.tint.opacity(0.12))
-                                    : AnyShapeStyle(.quaternary.opacity(0.5)))
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .strokeBorder(prominent ? AnyShapeStyle(.tint.opacity(0.35))
-                                            : AnyShapeStyle(.quaternary))
-            }
+            // System Liquid Glass, matching the `.glass` buttons elsewhere;
+            // the prominent verb keeps a light accent tint on the glass.
+            .glassEffect(prominent ? .regular.tint(Color.accentColor.opacity(0.18)).interactive()
+                                   : .regular.interactive(),
+                         in: .rect(cornerRadius: 10, style: .continuous))
             .foregroundStyle(prominent ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
     }
 }
