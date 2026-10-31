@@ -235,4 +235,51 @@ import RostrumLayout
         #expect(requests.allSatisfy { $0.width == 300 - 2 * inset })
         #expect(try deck.serializedData() == before)
     }
+
+    /// The host callback runs once per positioned span of each accepted shared
+    /// layout, so a one-span body turns callback count into layout count.
+    @Test(arguments: [17.5, 18.5, 21.0, 31.0]) func autofitBisectsToTheLinearStepWithBoundedLayouts(threshold: Double) throws {
+        let (deck, slide, shape) = try specimen("<a:p>" + run("A", size: 48) + "</a:p>", height: 200)
+        var sizes: [Double] = []
+        try AuthoredLayoutEngine(presentation: deck, measure: { request in
+            sizes.append(request.size)
+            return request.size > threshold ? 10_000 : 0
+        }).fitText(in: slide)
+        // Independent reference: the old 2500-unit descent from 100% to the
+        // 17pt body floor keeps the first (largest) scale whose size fits.
+        let minimumScale = Int(ceil(100_000.0 * 17 / 48))
+        let ladder = Array(stride(from: 100_000, to: minimumScale, by: -2500)) + [minimumScale]
+        let expected = try #require(ladder.first { 48 * Double($0) / 100_000 <= threshold })
+        let saved = shape.element.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr")?
+            .firstChild(named: "a:normAutofit")?[attribute: "fontScale"]
+        #expect(saved == String(expected))
+        #expect(ladder.firstIndex(of: expected)! > 5, "The fixture must need a large reduction")
+        // One callback rejects the original body; the rest are autofit probes.
+        #expect(sizes.count - 1 <= 7, "Probes: \(sizes.count - 1) for a ladder of \(ladder.count)")
+        #expect(sizes.allSatisfy { $0 <= 48 })
+    }
+
+    @Test func fittingBodyPerformsExactlyOneLayout() throws {
+        let (deck, slide, _) = try specimen("<a:p>" + run("A", size: 48) + "</a:p>", height: 200)
+        let before = try deck.serializedData()
+        var calls = 0
+        try AuthoredLayoutEngine(presentation: deck, measure: { _ in calls += 1; return 0 }).fitText(in: slide)
+        #expect(calls == 1)
+        #expect(try deck.serializedData() == before)
+    }
+
+    @Test func unreadableBodyFailsAfterProbingOnlyCurrentAndFloorScales() throws {
+        let (deck, slide, _) = try specimen("<a:p>" + run("A", size: 48) + "</a:p>", height: 200)
+        let before = try deck.serializedData()
+        var sizes: [Double] = []
+        #expect(throws: LayoutError.self) {
+            try AuthoredLayoutEngine(presentation: deck, measure: { request in
+                sizes.append(request.size)
+                return request.size > 10 ? 10_000 : 0
+            }).fitText(in: slide)
+        }
+        #expect(sizes.count == 3)
+        #expect(abs((sizes.last ?? 0) - 17) < 0.01)
+        #expect(try deck.serializedData() == before)
+    }
 }
