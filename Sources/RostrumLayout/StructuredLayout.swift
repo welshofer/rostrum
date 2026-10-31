@@ -18,10 +18,16 @@ public enum StructuredLayout {
         func rect(_ x: Double, _ y: Double, _ width: Double, _ height: Double) -> Rect {
             Rect(x: region.x + .points(x), y: region.y + .points(y), width: .points(width), height: .points(height))
         }
+        // Every branch must reject cells too small to hold text; otherwise a
+        // negative extent would be written as an invalid `a:ext`.
+        func checked(_ cw: Double, _ ch: Double) throws {
+            guard cw >= 72 * scale, ch >= 48 * scale else { throw LayoutError.cannotFit("The template content region is too small for this structure.") }
+        }
         if kind == .cycle {
             let columns = count == 4 ? 2 : min(3, count), rows = Int(ceil(Double(count) / Double(columns)))
             let cw = (w - Double(columns - 1) * gap) / Double(columns)
             let ch = (h - Double(rows - 1) * gap) / Double(rows)
+            try checked(cw, ch)
             // A serpentine cycle remains legible with long labels and has explicit
             // ordered arrows; circular arrangements otherwise waste text width.
             return (0..<count).map { i in
@@ -31,6 +37,7 @@ public enum StructuredLayout {
         }
         if kind == .bands || kind == .pyramid {
             let ch = (h - Double(count - 1) * gap) / Double(count)
+            try checked(kind == .pyramid ? w * (0.55 + 0.45 / Double(count)) : w, ch)
             return (0..<count).map { i in
                 let width = kind == .pyramid ? w * (0.55 + 0.45 * Double(i + 1) / Double(count)) : w
                 return rect((w - width) / 2, Double(i) * (ch + gap), width, ch)
@@ -40,7 +47,7 @@ public enum StructuredLayout {
         let rows = Int(ceil(Double(count) / Double(columns)))
         let cw = (w - Double(columns - 1) * gap) / Double(columns)
         let ch = (h - Double(rows - 1) * gap) / Double(rows)
-        guard cw >= 72 * scale, ch >= 48 * scale else { throw LayoutError.cannotFit("The template content region is too small for this structure.") }
+        try checked(cw, ch)
         return (0..<count).map { i in
             let row = i / columns
             let col = [.process, .timeline].contains(kind) && row % 2 == 1 ? columns - 1 - i % columns : i % columns
