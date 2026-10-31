@@ -11,6 +11,12 @@ the conformance documentation separately describes rendering limitations.
   Previews report it as an approximation because PowerPoint also spreads
   inter-character spacing, which is not modeled. The Library Lab paragraph demo
   saves, reopens and checks both modes.
+- `AuthoredLayoutEngine.finish` returns the `AuthoredFitReport` from its fitting
+  pass, and report shape IDs are optional (nil for shapes without an id) rather
+  than a `-1` sentinel. Lectern's authored renderer, pagination probes and
+  Generated layouts Lab warn once per vertical or multi-column shape left
+  unfitted instead of accepting it silently; the Fonts and fitting Lab recipe
+  demonstrates a skipped `vert270` label.
 
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared

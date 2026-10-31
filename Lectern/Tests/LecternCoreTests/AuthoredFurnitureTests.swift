@@ -44,4 +44,49 @@ import RostrumLayout
             try AuthoredFurniture.finish(slide, layoutName: "No lost text", engine: AuthoredLayoutEngine(presentation: deck))
         }
     }
+
+    /// A vertical sidebar used to abort the whole slide's final fit. It is now
+    /// published unchanged, the rest of the deck is fitted, and the renderer
+    /// names the skipped shape instead of accepting it silently.
+    @Test func verticalTextShapeShipsWithAWarningNamingIt() throws {
+        let deck = try Presentation()
+        while deck.slides.count > 0 { try deck.slides.remove(at: 0) } // Index-aligned with the IR below.
+        _ = try deck.titleSlide("Plan", subtitle: "Quarterly review")
+        let slide = try deck.bulletSlide("Costs", ["Keep this evidence."])
+        let sidebar = try slide.shapes.addTextBox(Rect(x: .points(880), y: .points(120), width: .points(40), height: .points(300)))
+        sidebar.textFrame?.text = "DRAFT SIDEBAR THAT WOULD NEVER FIT HORIZONTALLY"
+        let id = try #require(sidebar.shapeID)
+        let node = try #require(slide.part.dom().firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")?.childElements.first {
+            $0.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "id"] == String(id)
+        })
+        try #require(node.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr"))[attribute: "vert"] = "vert270"
+        slide.part.markDirty()
+        try deck.showSlideNumbers(from: 1)
+        let ir = DeckIR(meta: .init(title: "Plan"), slides: [
+            IRSlide(id: "open", layout: "title", title: "Plan", body: Body(subtitle: "Quarterly review")),
+            IRSlide(id: "costs", layout: "bullets", title: "Costs", body: Body(bullets: [Bullet(text: "Keep this evidence.")]))])
+
+        let warnings = try DeckRenderer.finishAuthoredSlides(deck, deck: ir,
+            engine: AuthoredLayoutEngine(presentation: deck, measure: TemplateRendering.measurer))
+
+        #expect(warnings == ["Costs: shape \(id) was left unfitted because it uses vertical or multi-column text that authored fitting does not support."])
+        #expect(try deck.validate().isEmpty)
+        let reopened = try Presentation(data: deck.serializedData())
+        try reopened.validateTemplateBindings()
+        try #require(reopened.slides.count == 2)
+        let saved = try reopened.slides[1]
+        #expect(saved.layout?.name == "Lectern — bullets 2")
+        // Publishing turns slide text into inheriting placeholders. The text is
+        // intact and the vertical body still resolves, so it is still skipped.
+        #expect(saved.shapes.all.first { $0.shapeID == id }?.textFrame?.text == "DRAFT SIDEBAR THAT WOULD NEVER FIT HORIZONTALLY")
+        #expect(try AuthoredLayoutEngine(presentation: reopened).fitText(in: saved, only: [id]).skipped.map(\.shapeID) == [id])
+        #expect(saved.shapes.all.contains { $0.textFrame?.text == "Keep this evidence." })
+    }
+
+    @Test func unfittedWarningsNameIDLessShapesAndFallBackToTheSlideID() {
+        let report = AuthoredFitReport(fitted: [2], skipped: [.init(shapeID: nil, reason: "uses vertical text.")])
+        #expect(DeckRenderer.unfittedWarnings(report, on: IRSlide(id: "s7", layout: "bullets", title: ""))
+            == ["s7: a shape without an id was left unfitted because it uses vertical text."])
+        #expect(DeckRenderer.unfittedWarnings(AuthoredFitReport(fitted: [2]), on: IRSlide(id: "s7", layout: "bullets")).isEmpty)
+    }
 }
