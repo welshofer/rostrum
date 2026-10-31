@@ -457,6 +457,13 @@ public actor DeckRenderer {
     static func finishAuthoredSlides(_ presentation: Presentation, deck: DeckIR,
                                      engine: AuthoredLayoutEngine) throws -> [String] {
         var warnings: [String] = []
+        // The build loop emits exactly one slide per IR entry; a caller that
+        // hands in a paginated deck and an unpaginated IR (or vice versa) gets
+        // a named error rather than an index trap.
+        guard presentation.slides.count == deck.slides.count else {
+            throw LecternError.renderFailed(message:
+                "authored finish: \(presentation.slides.count) slides but \(deck.slides.count) IR entries")
+        }
         for (index, slide) in presentation.slides.enumerated() {
             let input = deck.slides[index]
             let report = try AuthoredFurniture.finish(slide, layoutName: "Lectern — \(input.layout) \(index + 1)", engine: engine)

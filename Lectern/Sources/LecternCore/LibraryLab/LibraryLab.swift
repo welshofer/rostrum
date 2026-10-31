@@ -49,13 +49,16 @@ public enum LibraryLab {
         return LibraryDemoID.allCases.compactMap { id in recipes.first { $0.id == id } }
     }()
 
-    /// The recipe for `id`. `LibraryDemoID` is `Codable` and persisted, so a
-    /// case with no recipe (an old or renamed value) falls back to the first
-    /// catalog entry rather than trapping. The catalog covers every case by
-    /// construction; `LibraryLabTests` asserts this so the fallback is never
-    /// silently relied on.
+    /// The recipe for `id`. A `LibraryDemoID` cannot arrive from old persisted
+    /// state (an unknown raw value fails to decode), so the only way to reach
+    /// the fallback is a programmer error: an enum case with no recipe in any
+    /// catalog. That trips the assertion in debug builds and falls back to the
+    /// first entry in release rather than trapping inside a SwiftUI body;
+    /// `LibraryLabTests` asserts every case has a recipe.
     public static func recipe(for id: LibraryDemoID) -> LibraryLabRecipe {
-        catalog.first { $0.id == id } ?? catalog[0]
+        if let recipe = catalog.first(where: { $0.id == id }) { return recipe }
+        assertionFailure("LibraryLab catalog has no recipe for \(id)")
+        return catalog[0]
     }
 
     /// Synchronous and CPU-bound; run off the main actor. Each invocation owns
