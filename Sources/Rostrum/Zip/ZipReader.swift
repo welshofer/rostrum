@@ -454,12 +454,12 @@ public struct ZipReader {
     /// Only ever produced after the decode and CRC check `data(forEntry:)`
     /// performs, so handing these bytes straight to a writer is a validation
     /// pass-through, never a validation skip.
-    public struct CompressedPayload: Sendable {
-        public let data: Data
+    struct CompressedPayload: Sendable {
+        let data: Data
         /// 0 = stored, 8 = deflate; nothing else is ever returned here.
-        public let method: UInt16
-        public let uncompressedSize: Int
-        public let crc32: UInt32
+        let method: UInt16
+        let uncompressedSize: Int
+        let crc32: UInt32
     }
 
     /// The decoded bytes of one entry together with its stored form, from a
@@ -486,7 +486,7 @@ public struct ZipReader {
     /// the local header is what vouched for its sizes and CRC. A caller gets
     /// nil and falls back to compressing the decoded bytes itself. Encrypted
     /// entries and unsupported methods throw, exactly as `data(forEntry:)`.
-    public func compressedPayload(forEntry name: String) throws -> CompressedPayload? {
+    func compressedPayload(forEntry name: String) throws -> CompressedPayload? {
         try decode(name).payload
     }
 

@@ -279,7 +279,12 @@ struct InflateDecoder {
     }
 
     mutating func storedBlock() throws {
-        // Discard bits up to the next byte boundary.
+        // Discard bits up to the next byte boundary — but only the partial
+        // byte. `peek` reads ahead by whole bytes, so after a short
+        // end-of-block code the buffer can still hold one or two complete
+        // input bytes that belong to this block's LEN/NLEN header; give them
+        // back to the input rather than throwing them away.
+        pos -= bitCount / 8
         bitBuffer = 0
         bitCount = 0
         guard pos + 4 <= input.count else {

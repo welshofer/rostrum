@@ -513,4 +513,42 @@ import Testing
         let decoded = try Inflate.inflate(compressed, expectedOutputSize: original.count)
         #expect(decoded == original)
     }
+
+    /// A Huffman block whose end-of-block code is short, immediately followed by
+    /// a stored block: `Z_SYNC_FLUSH` after Huffman-only data emits an empty
+    /// stored block, and a tiny alphabet keeps the end-of-block code to a few
+    /// bits. Each `prefix` length shifts the bit alignment of the transition.
+    private func huffmanThenStored(prefix: Int, seed: UInt64) throws -> (compressed: Data, original: Data) {
+        let script = """
+            import sys, zlib
+            prefix = int(sys.argv[1])
+            payload = sys.stdin.buffer.read()
+            c = zlib.compressobj(9, zlib.DEFLATED, -15, 9, zlib.Z_HUFFMAN_ONLY)
+            out = c.compress(payload[:prefix]) + c.flush(zlib.Z_SYNC_FLUSH)
+            out += c.compress(payload[prefix:]) + c.flush(zlib.Z_FINISH)
+            sys.stdout.buffer.write(out)
+            """
+        var state = seed
+        var bytes = [UInt8]()
+        for _ in 0..<(prefix + 40) {
+            state = state &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
+            bytes.append(UInt8(ascii: "a") + UInt8((state >> 60) & 1))
+        }
+        let original = Data(bytes)
+        let compressed = try runTool("/usr/bin/python3", ["-c", script, String(prefix)], stdin: original)
+        return (compressed, original)
+    }
+
+    /// Regression for the table-driven decoder's read-ahead: `peek` may pull a
+    /// whole input byte into the bit buffer that a stored block must give back
+    /// rather than discard when it aligns to the next byte boundary.
+    @Test func shortEndOfBlockFollowedByStoredBlockDecodes() throws {
+        var seed: UInt64 = 0x0B10_C4ED_0000_0001
+        for prefix in 1...24 {
+            seed &+= 0x9E37_79B9_7F4A_7C15
+            let (compressed, original) = try huffmanThenStored(prefix: prefix, seed: seed)
+            let decoded = try Inflate.inflate(compressed, expectedOutputSize: original.count)
+            #expect(decoded == original, "prefix \(prefix) seed \(seed)")
+        }
+    }
 }
