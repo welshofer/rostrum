@@ -16,9 +16,20 @@ public final class Part {
     public let rels: Relationships
 
     /// The part's serialized bytes. Authoritative while `isDirty` is false.
-    public internal(set) var blob: Data { didSet { blobRevision &+= 1; didReplaceBlob?() } }
+    public internal(set) var blob: Data {
+        didSet { blobRevision &+= 1; originalPayload = nil; didReplaceBlob?() }
+    }
     private(set) var blobRevision: UInt64 = 0
     var didReplaceBlob: (() -> Void)?
+
+    /// The entry bytes this part was read with — the archive's own DEFLATE
+    /// stream (or stored bytes), method and CRC — so a resave can stream them
+    /// back instead of inflating and re-DEFLATEing a part nobody touched.
+    /// Valid only for the as-read `blob`: cleared the moment the blob is
+    /// replaced and the moment authority flips to the DOM (`markDirty()`),
+    /// so a stale payload can never shadow an edit. Nil for parts Rostrum
+    /// created and for entries the reader would not vouch for verbatim.
+    var originalPayload: ZipWriter.Payload?
 
     private var cachedDocument: XML.Document?
     public private(set) var isDirty = false
@@ -47,6 +58,7 @@ public final class Part {
     /// the single funnel that keeps blob/DOM coherence a checkable invariant.
     public func markDirty() {
         isDirty = true
+        originalPayload = nil
     }
 
     /// Replace the part's bytes wholesale, discarding any cached DOM.
@@ -110,7 +122,11 @@ public final class OPCPackage {
     /// orphan `.rels` stream, and for the same reason. They cannot become
     /// `Part`s — a `Part` without a content type has no legal serialization —
     /// and dropping them would break the round trip.
-    private(set) var untypedEntries: [(name: String, data: Data)] = []
+    ///
+    /// `payload` is the entry as the archive stored it, when the reader could
+    /// vouch for it verbatim: a carried entry is never edited, so the resave
+    /// streams those bytes back rather than re-DEFLATEing the decoded ones.
+    private(set) var untypedEntries: [(name: String, data: Data, payload: ZipWriter.Payload?)] = []
 
     /// Diagnostics from `read`: carried entries (directory placeholders,
     /// orphan `.rels` streams) that could not be decoded and were dropped.
@@ -216,18 +232,27 @@ public final class OPCPackage {
                     "part name \"\(name)\" has an empty segment")
             }
             let uri = PackURI("/" + name)
-            let blob = try zip.data(forEntry: name)
+            // One decode yields both the inflated blob and the stored bytes it
+            // came from. The stored form is kept beside the part so that a
+            // resave of an untouched part streams the archive's own entry —
+            // same method, same DEFLATE stream, same CRC — instead of paying
+            // to re-DEFLATE bytes that never changed.
+            let decoded = try zip.decode(name)
+            let blob = decoded.data
+            let original = Self.passThroughPayload(decoded.payload)
             guard let ct = package.contentTypes.declaredContentType(for: uri) else {
                 // Not a part — nothing can reference it, because a relationship
                 // target without a content type could not be loaded either.
                 // Carried verbatim so the resave stays a fixed point.
-                package.untypedEntries.append((name, blob))
+                package.untypedEntries.append((name, blob, original))
                 package.readWarnings.append(
                     "part \"\(name)\" has no declared content type and is carried "
                         + "through unmodelled")
                 continue
             }
-            package.parts[uri] = Part(uri: uri, contentType: ct, blob: blob)
+            let part = Part(uri: uri, contentType: ct, blob: blob)
+            part.originalPayload = original
+            package.parts[uri] = part
         }
 
         // Second pass: attach relationships to the package and to each part,
@@ -267,6 +292,21 @@ public final class OPCPackage {
             }
         }
         return package
+    }
+
+    /// A reader payload in the form the writer takes, or nil when the entry
+    /// must go through `ZipWriter.prepare` instead.
+    ///
+    /// The reader already withholds streamed (data-descriptor) entries and
+    /// throws on encrypted ones; the method and size checks here are the
+    /// writer's own invariants restated at the boundary, so that nothing but
+    /// a STORED or DEFLATE entry with a 32-bit size is ever written verbatim.
+    private static func passThroughPayload(_ payload: ZipReader.CompressedPayload?) -> ZipWriter.Payload? {
+        guard let payload, payload.method == 0 || payload.method == 8,
+              let size = UInt32(exactly: payload.uncompressedSize),
+              UInt64(payload.data.count) <= 0xFFFF_FFFF
+        else { return nil }
+        return ZipWriter.Payload(data: payload.data, method: payload.method, size: size, crc: payload.crc32)
     }
 
     // MARK: - Composition
@@ -388,8 +428,15 @@ public final class OPCPackage {
         if let old = compressionCache.removeValue(forKey: uri) { compressionCacheBytes -= old.cost }
     }
 
+    /// The entry to write for `part`: the bytes it was read with when its blob
+    /// is still the as-read revision, otherwise a (cached) fresh preparation.
+    ///
+    /// The pass-through keeps the archive's own method even where
+    /// `storedExtensions` would choose differently — preserving the entry is
+    /// the point, and `compress` only governs a part that actually changed.
     private func prepared(_ part: Part, compress: Bool) -> ZipWriter.Payload {
         watchPart(part)
+        if let original = part.originalPayload { return original }
         if let cached = compressionCache[part.uri], cached.part === part, cached.revision == part.blobRevision { return cached.payload }
         if let old = compressionCache.removeValue(forKey: part.uri) { compressionCacheBytes -= old.cost }
         let payload = ZipWriter.prepare(data: part.blob, compress: compress)
@@ -447,7 +494,13 @@ public final class OPCPackage {
         }
         for entry in untypedEntries.sorted(by: { $0.name < $1.name })
         where !derived.contains(entry.name) {
-            zip.addFile(name: entry.name, data: entry.data)
+            // Never edited, so the archive's own entry goes back when the
+            // reader vouched for it; otherwise compress the decoded bytes.
+            if let payload = entry.payload {
+                zip.addFile(name: entry.name, payload: payload)
+            } else {
+                zip.addFile(name: entry.name, data: entry.data)
+            }
         }
         for entry in directoryEntries.sorted(by: { $0.name < $1.name })
         where !derived.contains(entry.name) {
@@ -474,13 +527,16 @@ public final class OPCPackage {
                 throw RostrumError.packageInvalid(
                     "part name \"\(uri.value)\" \(reason)")
             }
-            // Media and embedded workbooks are already compressed — don't
-            // waste CPU re-DEFLATEing them; XML parts compress well.
-            let alreadyCompressed = Self.storedExtensions.contains(uri.ext)
             if UInt64(part.blob.count) > 0xFFFF_FFFF {
                 throw RostrumError.packageInvalid("part exceeds the supported ZIP size field")
             }
-            zip.addFile(name: uri.memberName, payload: prepared(part, compress: !alreadyCompressed))
+            // An untouched part streams the entry it was read with — no
+            // inflate, no re-DEFLATE, original method kept. Only a part whose
+            // blob changed is prepared afresh, and there media and embedded
+            // workbooks are already compressed — don't waste CPU re-DEFLATEing
+            // them; XML parts compress well.
+            let recompress = !Self.storedExtensions.contains(uri.ext)
+            zip.addFile(name: uri.memberName, payload: prepared(part, compress: recompress))
             // `isWritten`, not `!isEmpty`: a `<Relationships/>` with no
             // children is legal OPC and some producers emit it, and gating on
             // emptiness dropped it on resave. A part Rostrum created with no

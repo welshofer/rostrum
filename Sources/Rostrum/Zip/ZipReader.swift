@@ -446,8 +446,51 @@ public struct ZipReader {
         indexByName[name] != nil
     }
 
+    /// One entry's bytes exactly as the archive stores them, with the
+    /// central-directory fields a writer needs to emit the entry again
+    /// unchanged: the DEFLATE stream for method 8, the plain bytes for
+    /// method 0, plus the method, the uncompressed size and the CRC-32.
+    ///
+    /// Only ever produced after the decode and CRC check `data(forEntry:)`
+    /// performs, so handing these bytes straight to a writer is a validation
+    /// pass-through, never a validation skip.
+    public struct CompressedPayload: Sendable {
+        public let data: Data
+        /// 0 = stored, 8 = deflate; nothing else is ever returned here.
+        public let method: UInt16
+        public let uncompressedSize: Int
+        public let crc32: UInt32
+    }
+
+    /// The decoded bytes of one entry together with its stored form, from a
+    /// single pass over the payload. `payload` is nil when the entry decoded
+    /// fine but should not be re-emitted verbatim (see `compressedPayload`).
+    struct DecodedEntry {
+        let data: Data
+        let payload: CompressedPayload?
+    }
+
     /// Decode and CRC-verify one entry.
     public func data(forEntry name: String) throws -> Data {
+        try decode(name).data
+    }
+
+    /// Decode and CRC-verify one entry, and return its stored bytes so a writer
+    /// can re-emit them without inflating and re-DEFLATEing.
+    ///
+    /// Everything `data(forEntry:)` checks is checked here too — the same
+    /// decode runs — so a nil result or a thrown error carries the same
+    /// meaning. Nil means the entry is readable but not pass-through-able:
+    /// it was written in streaming mode (general-purpose bit 3, a data
+    /// descriptor after the payload), where the central directory rather than
+    /// the local header is what vouched for its sizes and CRC. A caller gets
+    /// nil and falls back to compressing the decoded bytes itself. Encrypted
+    /// entries and unsupported methods throw, exactly as `data(forEntry:)`.
+    public func compressedPayload(forEntry name: String) throws -> CompressedPayload? {
+        try decode(name).payload
+    }
+
+    func decode(_ name: String) throws -> DecodedEntry {
         guard let index = indexByName[name] else {
             throw RostrumError.partMissing(name)
         }
@@ -503,7 +546,15 @@ public struct ZipReader {
         guard CRC32.checksum(decoded) == entry.crc32 else {
             throw RostrumError.zipCorrupt("CRC-32 mismatch for entry \"\(name)\"")
         }
-        return decoded
+        // Bit 3: the writer streamed this entry and trailed it with a data
+        // descriptor. The decode above is still sound (the central directory
+        // is authoritative), but the entry is not re-emitted verbatim — the
+        // caller compresses the decoded bytes instead. For a STORED entry
+        // `raw` and `decoded` are the same `Data`, so the payload costs no
+        // second copy.
+        let payload: CompressedPayload? = flags & 0x0008 != 0 ? nil : CompressedPayload(
+            data: raw, method: entry.method, uncompressedSize: entry.uncompressedSize, crc32: entry.crc32)
+        return DecodedEntry(data: decoded, payload: payload)
     }
 
     // MARK: - Entry-name decoding
