@@ -151,7 +151,7 @@ public actor DeckGenerator {
     /// Images are an enhancement: a failed one is skipped (not fatal), but the
     /// failure is reported as a warning so "0 images" is never silent.
     /// Cancellation is not a failure: it propagates as `CancellationError`.
-    private func illustrate(_ deck: DeckIR, template: PowerPointTemplate?,
+    private func illustrate(_ deck: DeckIR, requestedSlideCount: Int, template: PowerPointTemplate?,
                             emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> (images: [String: Data], warnings: [String]) {
         guard let imageProvider else { return ([:], []) }
         if let template {
@@ -165,11 +165,37 @@ public actor DeckGenerator {
         // Only slides whose layout can actually show an image (skip text-dense ones,
         // so we never waste an API call or clip text). Full-bleed layouts get a wide
         // image so the background barely stretches.
-        let briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect, ImageRole)? in
+        var briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect, ImageRole)? in
             let placement = slide.kind.imagePlacement
             guard placement != .none, let brief = slide.image else { return nil }
             let aspect = placement == .fullBleed ? ImageAspect.wide : ImageAspect(brief: brief.aspect)
             return (slide.id, brief, aspect, ImageRole(placement: placement))
+        }
+        // Every brief is a paid, user-billed call, and how many there are is
+        // the model's choice (one a source document can steer). Keep the first
+        // `budget` in slide order and say which slides went without.
+        var limitWarnings: [String] = []
+        let budget = PriceTable.imageCallBudget(slideCount: requestedSlideCount)
+        if briefed.count > budget {
+            let dropped = briefed[budget...].map { "\"\($0.0)\"" }.joined(separator: ", ")
+            limitWarnings.append("Image briefs for slides \(dropped) were not generated: "
+                + "\(briefed.count) exceeds the budget of \(budget) for a \(requestedSlideCount)-slide request")
+            briefed.removeSubrange(budget...)
+        }
+        // Bound what each call carries too: a runaway subject is cut on a word
+        // boundary before `ImageStyleDirective.compose` sees it.
+        var shortened: [String] = []
+        briefed = briefed.map { id, brief, aspect, role in
+            let (subject, truncated) = ImageStyleDirective.clampSubject(brief.prompt)
+            guard truncated else { return (id, brief, aspect, role) }
+            shortened.append("\"\(id)\"")
+            var clamped = brief
+            clamped.prompt = subject
+            return (id, clamped, aspect, role)
+        }
+        if !shortened.isEmpty {
+            limitWarnings.append("Image briefs for slides \(shortened.joined(separator: ", ")) were shortened to "
+                + "\(ImageStyleDirective.maximumSubjectScalars) characters")
         }
         // A brief the model wrote for a layout that cannot render one is thrown
         // away here. That used to be silent, which is why "why aren't we making
@@ -180,7 +206,7 @@ public actor DeckGenerator {
             "slide \"\($0.title ?? $0.id)\": an image was requested but a \"\($0.layout)\" "
                 + "slide cannot show one"
         }
-        guard !briefed.isEmpty else { return ([:], discarded) }
+        guard !briefed.isEmpty else { return ([:], discarded + limitWarnings) }
 
         emit(.illustrating(completed: 0, total: briefed.count))
         let style = imageStyle
@@ -236,7 +262,7 @@ public actor DeckGenerator {
             }
             while let finished = try await group.next() { record(finished) }
         }
-        var warnings: [String] = discarded
+        var warnings: [String] = discarded + limitWarnings
         if !failures.isEmpty {
             let reason = failures.first ?? "unknown error"
             warnings.append("\(failures.count) of \(briefed.count) image(s) couldn't be generated: \(reason)")
@@ -330,7 +356,8 @@ public actor DeckGenerator {
         // are the priciest thing this pipeline does after the draft itself.
         try Task.checkCancellation()
         let shaped = normalizeIfValid(result, request)
-        let (images, imageWarnings) = try await illustrate(shaped.deck, template: template, emit: emit)   // no-op without an image provider
+        let (images, imageWarnings) = try await illustrate(
+            shaped.deck, requestedSlideCount: request.slideCount, template: template, emit: emit)   // no-op without an image provider
         // A cancel that arrived while images were in flight (including one a
         // provider reported as its own error) must not render or save a deck.
         try Task.checkCancellation()
