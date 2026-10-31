@@ -380,15 +380,19 @@ public actor DeckGenerator {
         // iCloud-evicted custom design); failing here costs nothing further,
         // and the paid draft is kept for recovery rather than lost with a raw
         // Foundation error after the image budget has been spent.
-        let design: String?
-        do {
-            design = try (template == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) }
-        } catch {
-            var message = "The design file \(designURL?.lastPathComponent ?? "") could not be read: \(error.localizedDescription)"
-            if let kept = keepNormalizedDraft(shaped.deck, diagnostics: diagnostics, decks: directory) {
-                message += " The draft was saved for recovery at \(kept.path)."
+        var design: String?
+        if template == nil, let designURL {
+            do {
+                design = try String(contentsOf: designURL, encoding: .utf8)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                var message = "The design file \(designURL.lastPathComponent) could not be read: \(error.localizedDescription)"
+                if let kept = keepNormalizedDraft(shaped.deck, diagnostics: diagnostics, decks: directory) {
+                    message += " The draft was saved for recovery at \(kept.path)."
+                }
+                throw LecternError.renderFailed(message: message)
             }
-            throw LecternError.renderFailed(message: message)
         }
         let (images, imageWarnings) = try await illustrate(
             shaped.deck, requestedSlideCount: request.slideCount, template: template, emit: emit)   // no-op without an image provider
