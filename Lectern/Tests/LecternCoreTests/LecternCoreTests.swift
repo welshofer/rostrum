@@ -784,43 +784,51 @@ import Rostrum
     @Test func backoffIsJitteredExponentialCappedAndDefersToRetryAfter() {
         var generator = SeededGenerator(seed: 42)
         // Exponential from two seconds, within +/-25 %, not a flat wait.
-        for (attempt, base) in [(0, 2), (1, 4), (2, 8)] {
+        for (attempt, base) in [(0, 2.0), (1, 4.0), (2, 8.0)] {
             for _ in 0..<50 {
                 let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &generator)
-                #expect(Double(wait) >= Double(base) * 0.75 - 0.5 && Double(wait) <= Double(base) * 1.25 + 0.5,
+                #expect(wait >= base * 0.75 && wait <= base * 1.25,
                         "attempt \(attempt) waited \(wait)s for a base of \(base)s")
-                #expect(wait >= 1 && wait <= HTTPRetry.maxBackoffSeconds)
+                #expect(wait >= HTTPRetry.minimumBackoffSeconds && wait <= HTTPRetry.maxBackoffSeconds)
             }
         }
-        var low = SeededGenerator(seed: 7)
-        let first = (0..<50).map { _ in HTTPRetry.backoff(attempt: 0, retryAfter: nil, using: &low) }
-        #expect(first.allSatisfy { (2...3).contains($0) })
-        var mid = SeededGenerator(seed: 8)
-        #expect((0..<50).allSatisfy { _ in (3...5).contains(HTTPRetry.backoff(attempt: 1, retryAfter: nil, using: &mid)) })
-        var high = SeededGenerator(seed: 9)
-        #expect((0..<50).allSatisfy { _ in (6...10).contains(HTTPRetry.backoff(attempt: 2, retryAfter: nil, using: &high)) })
         // The system-generator wrapper obeys the same bounds.
         let wrapped = HTTPRetry.backoff(attempt: 1, retryAfter: nil)
-        #expect((3...5).contains(wrapped))
+        #expect(wrapped >= 3 && wrapped <= 5)
         // Capped, so a 5xx spike cannot park the UI for minutes; jitter cannot lift it.
         var capped = SeededGenerator(seed: 1)
         for attempt in [10, 20, 1_000] {
             for _ in 0..<50 {
                 let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &capped)
-                #expect(wait <= HTTPRetry.maxBackoffSeconds && wait >= Int(Double(HTTPRetry.maxBackoffSeconds) * 0.75))
+                #expect(wait <= HTTPRetry.maxBackoffSeconds && wait >= HTTPRetry.maxBackoffSeconds * 0.75)
             }
         }
-        // Different seeds produce different sequences (so concurrent requests desynchronise).
-        var a = SeededGenerator(seed: 1)
-        var b = SeededGenerator(seed: 2)
-        let seqA = (0..<20).map { _ in HTTPRetry.backoff(attempt: 3, retryAfter: nil, using: &a) }
-        let seqB = (0..<20).map { _ in HTTPRetry.backoff(attempt: 3, retryAfter: nil, using: &b) }
-        #expect(seqA != seqB)
-        #expect(Set(seqA).count > 1, "a single seed should not repeat one value")
+        // Concurrent requests desynchronise on the retries that actually
+        // happen. With three attempts those are attempts 0 and 1, and the
+        // first is the common one: whole-second rounding collapsed 2 s +/-25 %
+        // onto exactly 2 s, so it was never jittered at all.
+        for (attempt, base) in [(0, 2.0), (1, 4.0)] {
+            var a = SeededGenerator(seed: 1)
+            var b = SeededGenerator(seed: 2)
+            let waitA = HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &a)
+            let waitB = HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &b)
+            #expect(waitA != waitB, "attempt \(attempt): two requests both waited \(waitA)s")
+            for wait in [waitA, waitB] {
+                #expect(wait >= base * 0.75 && wait <= base * 1.25 && wait >= 0.5)
+                #expect(wait != wait.rounded(), "attempt \(attempt) lost its sub-second jitter: \(wait)s")
+            }
+            // Across many requests the first retry spreads over the band
+            // instead of landing on one value.
+            var many = SeededGenerator(seed: 99)
+            let spread = (0..<50).map { _ in HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &many) }
+            #expect(Set(spread).count > 40, "attempt \(attempt) repeated values: \(Set(spread).count) distinct")
+            #expect(spread.max()! - spread.min()! > base * 0.25)
+        }
         // The server knows more than we do: Retry-After bypasses jitter exactly.
         var r = SeededGenerator(seed: 3)
         for _ in 0..<20 {
             #expect(HTTPRetry.backoff(attempt: 0, retryAfter: 17, using: &r) == 17)
+            #expect(HTTPRetry.backoff(attempt: 1, retryAfter: 3, using: &r) == 3)
             #expect(HTTPRetry.backoff(attempt: 5, retryAfter: 0, using: &r) == 0)
             #expect(HTTPRetry.backoff(attempt: 0, retryAfter: 9_999, using: &r) == HTTPRetry.maxBackoffSeconds)
         }
@@ -895,25 +903,32 @@ import Rostrum
     /// expensive call in the product, so one dead socket threw away a paid
     /// generation without ever asking again.
     @Test func aDroppedConnectionIsRetriedRatherThanEndingTheDraft() async throws {
-        let attempts = SentBox(), delays = SentBox()
+        let attempts = IntervalLog(), delays = IntervalLog()
         let start = Date(timeIntervalSince1970: 0)
         let good = openAIResponse(stopReason: "tool_use", deck: #"{"meta":{"title":"T"},"slides":[]}"#)
         let provider = OpenAIProvider(apiKey: "k",
-            now: { start.addingTimeInterval(TimeInterval(delays.values.reduce(0, +))) },
+            now: { start.addingTimeInterval(delays.values.reduce(0, +)) },
             wait: { delays.record($0) }, send: { request in
-            attempts.record(Int(request.timeoutInterval))
+            attempts.record(request.timeoutInterval)
             if attempts.values.count < 3 { throw URLError(.networkConnectionLost) }
             return (Data(good.utf8), Self.http(200))
         })
         let draft = try await provider.draft(DeckRequest(prompt: "x", slideCount: 5), repairing: nil) { _ in }
         #expect(draft.json.contains("\"title\""))
-        let budget = Int(ReasoningEffort.medium.timeout)
-        // Backoff is jittered +/-25 %, so assert the ranges and that each
-        // attempt's timeout shrinks by exactly the time already waited.
+        let budget = ReasoningEffort.medium.timeout
+        // Backoff is jittered +/-25 % at sub-second resolution, so assert the
+        // bands and that each attempt's timeout shrinks by exactly the time
+        // already waited — not by a whole number of seconds.
         #expect(delays.values.count == 2)
         let waited = delays.values
-        #expect((2...3).contains(waited[0]) && (3...5).contains(waited[1]), "delays were \(waited)")
-        #expect(attempts.values == [budget, budget - waited[0], budget - waited[0] - waited[1]])
+        #expect(waited[0] >= 1.5 && waited[0] <= 2.5 && waited[1] >= 3 && waited[1] <= 5,
+                "delays were \(waited)")
+        // Within a microsecond: the stub clock is `Date` arithmetic, which
+        // carries fractional seconds to about 1e-7 s.
+        let expected = [budget, budget - waited[0], budget - waited[0] - waited[1]]
+        #expect(attempts.values.count == expected.count)
+        #expect(zip(attempts.values, expected).allSatisfy { abs($0 - $1) < 1e-6 },
+                "timeouts were \(attempts.values), expected \(expected)")
     }
 
     @Test(arguments: [false, true])

@@ -42,14 +42,15 @@ import Testing
     }
 
     @Test func aRateLimitIsRetriedOnceThenTheImageReturns() async throws {
-        let attempts = AttemptCounter(), waits = AttemptCounter()
+        let attempts = AttemptCounter(), waits = IntervalLog()
         let clock = ImageTestClock()
         let provider = OpenAIImageProvider(apiKey: "k",
             now: { clock.now },
             wait: { seconds in
-                #expect(seconds == 2)
-                _ = waits.next()
-                clock.advance(by: TimeInterval(seconds))
+                // 2 s +/-25 %, kept at sub-second resolution.
+                #expect(seconds >= 1.5 && seconds <= 2.5)
+                waits.record(seconds)
+                clock.advance(by: seconds)
             },
             send: { _ in
                 if attempts.next() == 1 { return (Data(), Self.http(429)) }
@@ -60,7 +61,7 @@ import Testing
 
         #expect(bytes == Data("image".utf8))
         #expect(attempts.count == 2)
-        #expect(waits.count == 1)
+        #expect(waits.values.count == 1)
     }
 
     /// Past the deadline nothing new starts, and the user sees what actually
@@ -106,11 +107,14 @@ import Testing
     /// A retry late in the budget is still allowed, but cannot outlive the
     /// deadline it was allowed under: its timeout shrinks to the time left.
     @Test func eachAttemptsTimeoutShrinksAsTheDeadlineApproaches() async throws {
-        let log = ImageRequestLog()
+        let log = ImageRequestLog(), waits = IntervalLog()
         let clock = ImageTestClock()
         let provider = OpenAIImageProvider(apiKey: "k",
             now: { clock.now },
-            wait: { seconds in clock.advance(by: TimeInterval(seconds)) },
+            wait: { seconds in
+                waits.record(seconds)
+                clock.advance(by: seconds)
+            },
             send: { request in
                 log.record(request)
                 // Each attempt hangs for its whole timeout, then fails.
@@ -123,12 +127,18 @@ import Testing
         }
 
         let timeouts = log.requests.map(\.timeoutInterval)
-        // 600 s first; then 900 − (600 + 2 s backoff) = 298 s; then the budget
-        // is spent, so there is no third attempt at all.
+        // 600 s first; then 900 − (600 + ~2 s jittered backoff) ≈ 298 s; then
+        // the budget is spent, so there is no third attempt at all.
         #expect(timeouts.count == 2)
         #expect(timeouts.first == OpenAIImageProvider.attemptTimeout)
         #expect(timeouts[1] < 600)
-        #expect(timeouts[1] == OpenAIImageProvider.imageDeadline - OpenAIImageProvider.attemptTimeout - 2)
+        #expect(waits.values.count == 1)
+        let backoff = try #require(waits.values.first)
+        #expect(backoff >= 1.5 && backoff <= 2.5)
+        // Within a microsecond: the stub clock is `Date` arithmetic, which
+        // carries fractional seconds to about 1e-7 s.
+        let expected = OpenAIImageProvider.imageDeadline - OpenAIImageProvider.attemptTimeout - backoff
+        #expect(abs(timeouts[1] - expected) < 1e-6, "second timeout \(timeouts[1]), expected \(expected)")
         // The whole call stayed inside the image deadline.
         #expect(clock.now.timeIntervalSince(ImageTestClock.start) <= OpenAIImageProvider.imageDeadline)
     }
@@ -162,6 +172,28 @@ import Testing
             _ = try await Self.generate(provider)
         }
         #expect(attempts.count == 3)
+    }
+
+    /// Without Retry-After the hint is the jittered wait computed for the
+    /// final 429, rounded up — not a second, independent draw.
+    @Test func aPersistentRateLimitHintReusesTheComputedWait() async throws {
+        let attempts = AttemptCounter(), waits = IntervalLog()
+        let provider = OpenAIImageProvider(apiKey: "k",
+            now: { ImageTestClock.start },
+            wait: { waits.record($0) },
+            send: { _ in
+                _ = attempts.next()
+                return (Data(), Self.http(429))
+            })
+        do {
+            _ = try await Self.generate(provider)
+            Issue.record("a persistent rate limit must surface")
+        } catch LecternError.rateLimited(let afterSeconds) {
+            #expect(attempts.count == 3)
+            #expect(waits.values.count == 2)
+            // Attempt 2's 8 s +/-25 %, rounded up to whole seconds.
+            #expect((6...10).contains(afterSeconds), "hint was \(afterSeconds)s")
+        }
     }
 }
 

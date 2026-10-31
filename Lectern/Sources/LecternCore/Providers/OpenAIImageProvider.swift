@@ -12,7 +12,7 @@ public struct OpenAIImageProvider: ImageProvider {
     private let quality: ImageQuality
     private let send: HTTPRequestSender
     private let now: @Sendable () -> Date
-    private let wait: @Sendable (Int) async throws -> Void
+    private let wait: @Sendable (TimeInterval) async throws -> Void
 
     /// The ceiling for one image, retries and backoff included. Images
     /// legitimately take longer than the 180-second text default, but one
@@ -38,7 +38,7 @@ public struct OpenAIImageProvider: ImageProvider {
     /// without sleeping through it.
     init(apiKey: String, model: String = ImageModel.flare.rawValue, quality: ImageQuality = .auto,
          now: @escaping @Sendable () -> Date = { Date() },
-         wait: @escaping @Sendable (Int) async throws -> Void = { try await HTTPRetry.wait(seconds: $0) },
+         wait: @escaping @Sendable (TimeInterval) async throws -> Void = { try await HTTPRetry.wait(seconds: $0) },
          send: @escaping HTTPRequestSender) {
         self.apiKey = apiKey
         self.model = model
@@ -95,7 +95,7 @@ public struct OpenAIImageProvider: ImageProvider {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, http, attempt) = try await perform(req, startedAt: startedAt, cap: Self.attemptTimeout,
+        let (data, http, lastWait) = try await perform(req, startedAt: startedAt, cap: Self.attemptTimeout,
                                                       deadline: Self.imageDeadline, retryingStatuses: true)
         switch http.statusCode {
         case 200:
@@ -110,10 +110,11 @@ public struct OpenAIImageProvider: ImageProvider {
             throw LecternError.authFailed(provider: "OpenAI")
         case 429:
             // Retries (or the deadline) are spent: name the rate limit rather
-            // than reporting an image that couldn't be generated.
+            // than reporting an image that couldn't be generated. The hint is
+            // the wait `perform` computed for this response, not a fresh draw.
             throw LecternError.rateLimited(
                 afterSeconds: HTTPRetry.retryAfterSeconds(http)
-                    ?? HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+                    ?? Int(ceil(lastWait ?? HTTPRetry.backoff(attempt: 0, retryAfter: nil))))
         default:
             throw LecternError.providerError(status: http.statusCode, message: message(data))
         }
@@ -131,19 +132,22 @@ public struct OpenAIImageProvider: ImageProvider {
     /// what the caller sees: a transport error is rethrown as-is, a status is
     /// returned for the caller to map.
     ///
-    /// - Returns: the response, and the zero-based attempt that produced it.
+    /// - Returns: the response, and the backoff computed after it (`nil` when
+    ///   it was not a retriable status), so a rate-limit hint reuses the same
+    ///   jittered value rather than drawing a new one.
     private func perform(_ request: URLRequest, startedAt: Date, cap: TimeInterval,
                          deadline: TimeInterval, retryingStatuses: Bool) async throws
-        -> (Data, HTTPURLResponse, Int) {
+        -> (Data, HTTPURLResponse, TimeInterval?) {
         var attempt = 0
         var lastFailure: Result<(Data, HTTPURLResponse), Error>?
+        var lastStatusWait: TimeInterval?
         while true {
             try Task.checkCancellation()
             guard let timeout = HTTPRetry.timeout(startedAt: startedAt, cap: cap, deadline: deadline, now: now()) else {
                 // The backoff ate the remaining time: report what last went
                 // wrong, not a new error the user cannot act on.
                 switch lastFailure {
-                case .success(let (data, http)): return (data, http, max(0, attempt - 1))
+                case .success(let (data, http)): return (data, http, lastStatusWait)
                 case .failure(let error): throw error
                 case nil:
                     throw LecternError.providerError(
@@ -183,12 +187,14 @@ public struct OpenAIImageProvider: ImageProvider {
                    HTTPRetry.hasTimeToRetry(startedAt: startedAt, nextWait: nextWait,
                                             deadline: deadline, now: now()) {
                     lastFailure = .success((data, http))
+                    lastStatusWait = nextWait
                     try await wait(nextWait)
                     attempt += 1
                     continue
                 }
+                return (data, http, nextWait)
             }
-            return (data, http, attempt)
+            return (data, http, nil)
         }
     }
 

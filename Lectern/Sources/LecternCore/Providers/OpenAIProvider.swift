@@ -14,7 +14,7 @@ public struct OpenAIProvider: LLMProvider {
     private let effort: ReasoningEffort
     private let http: HTTPRequestSender
     private let now: @Sendable () -> Date
-    private let wait: @Sendable (Int) async throws -> Void
+    private let wait: @Sendable (TimeInterval) async throws -> Void
     private let endpoint = URL(string: "https://api.openai.com/v1/responses")!
 
     public init(apiKey: String,
@@ -35,7 +35,7 @@ public struct OpenAIProvider: LLMProvider {
     init(apiKey: String, model: String = TextStrength.sol.modelID,
                 effort: ReasoningEffort = .medium,
                 now: @escaping @Sendable () -> Date = { Date() },
-                wait: @escaping @Sendable (Int) async throws -> Void = { try await HTTPRetry.wait(seconds: $0) },
+                wait: @escaping @Sendable (TimeInterval) async throws -> Void = { try await HTTPRetry.wait(seconds: $0) },
                 send: @escaping HTTPRequestSender) {
         self.apiKey = apiKey; self.model = model; self.http = send
         self.effort = TextStrength.resolve(modelID: model).supported(effort)
@@ -204,8 +204,8 @@ public struct OpenAIProvider: LLMProvider {
                     continue
                 }
                 if status == 429 {
-                    throw LecternError.rateLimited(
-                        afterSeconds: retryAfter ?? HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+                    // The hint is the wait just computed, not a fresh draw.
+                    throw LecternError.rateLimited(afterSeconds: retryAfter ?? Int(ceil(wait)))
                 }
                 throw LecternError.providerError(status: status, message: message(data))
             default:
