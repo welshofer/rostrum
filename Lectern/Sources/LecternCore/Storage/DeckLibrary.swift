@@ -148,8 +148,10 @@ public enum DeckLibrary {
     /// The result must also stay visible to `isDeck`: a leading dot or `~$`
     /// (PowerPoint's lock-file prefix) would hide the renamed deck from the very
     /// list it is in, so both are stripped until nothing more comes off. The
-    /// name is capped at 120 UTF-8 bytes (the budget `prepareDeckCopy` uses) so
-    /// a long name does not fail with a raw file-system error.
+    /// name is capped at 120 bytes of decomposed (NFD) UTF-8 — what HFS+ stores
+    /// and what macOS hands back — so a long name does not fail with a raw
+    /// file-system error. `prepareDeckCopy` applies the same budget again on
+    /// its label.
     static func sanitizedName(_ proposed: String) -> String {
         let illegal = CharacterSet(charactersIn: "/:\\")
             .union(.controlCharacters)
