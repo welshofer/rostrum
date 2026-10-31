@@ -55,17 +55,51 @@ public enum StructuredLayout {
         }
     }
 
+    /// Checks that `compose` with the same arguments would fit, without touching
+    /// a slide. Pass the same `cycleReturnLabel` that `compose` will receive.
     public static func validate(kind: StructuredKind, items: [StructuredItem], in region: Rect,
-                                style: DeckStyle, engine: TemplateLayoutEngine) throws {
-        _ = try preflight(kind: kind, items: items, in: region, style: style, engine: engine)
+                                style: DeckStyle, engine: TemplateLayoutEngine,
+                                cycleReturnLabel: String? = "Repeat cycle") throws {
+        _ = try preflight(kind: kind, items: items, in: region, style: style, engine: engine,
+                          cycleReturnLabel: cycleReturnLabel)
+    }
+
+    // A cycle reserves `cycleCaptionGap + cycleCaptionHeight` points (times the
+    // object scale) under its cells for the return path and its caption.
+    private static let cycleCaptionGap = 6.0, cycleCaptionHeight = 22.0
+    /// Wide enough that no caption wraps, so it measures one line's height.
+    private static let cycleCaptionUnwrappedWidth = 1_000_000.0
+
+    /// The caption is body text at 14 pt (times the object scale) with the
+    /// style's own line height; preflight measures it with exactly this style.
+    private static func cycleCaptionStyle(_ style: DeckStyle, scale: Double) -> DeckStyle {
+        var local = style
+        local.type = local.type.overriding(.body) { $0.sizePt = 14 * scale }
+        return local
     }
 
     private static func preflight(kind: StructuredKind, items: [StructuredItem], in region: Rect,
-                                  style: DeckStyle, engine: TemplateLayoutEngine) throws -> [(Double, Double, Double)] {
+                                  style: DeckStyle, engine: TemplateLayoutEngine,
+                                  cycleReturnLabel: String?) throws -> [(Double, Double, Double)] {
         let scale = engine.objectScale
         let availableRegion = Rect(x: region.x, y: region.y, width: region.width,
-            height: region.height - .points(kind == .cycle ? 28 * scale : 0))
+            height: region.height - .points(kind == .cycle ? (cycleCaptionGap + cycleCaptionHeight) * scale : 0))
         let cells = try frames(kind: kind, count: items.count, in: availableRegion, scale: scale)
+        // The caption band is one line across the full region width (compose's
+        // `compact.width`). A caller-supplied translation that would wrap, or that
+        // carries its own line breaks, would spill below the band and the region.
+        // The limit is the label's own unwrapped height rather than the band's
+        // 22 pt: a single 14-pt line at the body line height can measure taller
+        // than the band (the shipped default does), and its output is unchanged.
+        if kind == .cycle, let label = cycleReturnLabel, !label.isEmpty {
+            let caption = cycleCaptionStyle(style, scale: scale).type(.body)
+            let wrapped = engine.measuredHeight(label, style: caption, width: region.width.points)
+            let unwrapped = engine.measuredHeight(label, style: caption, width: cycleCaptionUnwrappedWidth)
+            guard !label.contains(where: \.isNewline), wrapped.isFinite,
+                  wrapped <= max(cycleCaptionHeight * scale, unwrapped) else {
+                throw LayoutError.cannotFit("The cycle caption does not fit the template region at a readable size.")
+            }
+        }
         // Preflight all text before mutating the slide. No truncation or silent
         // fallback to paragraphs when a semantic structure cannot fit.
         var typography: [(Double, Double, Double)] = []
@@ -88,18 +122,26 @@ public enum StructuredLayout {
 
     /// - Parameter cycleReturnLabel: Caption under a `.cycle` diagram's return path.
     ///   Defaults to the historical English "Repeat cycle"; pass a localized string,
-    ///   or `nil`/empty to omit the caption (the return arrow is still drawn).
+    ///   or `nil`/empty to omit the caption. The caption is measured before the slide
+    ///   is touched and must fit on one line across the region (its 22-pt scaled
+    ///   band), or `LayoutError.cannotFit` is thrown; `validate` applies the same check.
+    ///   Omitting it does not reclaim that band: the return-path space below the
+    ///   cells stays reserved, so cell frames are identical with or without a
+    ///   caption. A "↑" return arrow is drawn only when the serpentine's last cell
+    ///   sits in the first cell's column below it (4, 6, 7 or 12 items); other
+    ///   counts draw no return arrow, with or without a caption.
     @discardableResult
     public static func compose(kind: StructuredKind, items: [StructuredItem], in region: Rect,
                                on slide: Slide, style: DeckStyle, engine: TemplateLayoutEngine,
                                cycleReturnLabel: String? = "Repeat cycle") throws -> Shape {
         let scale = engine.objectScale
-        let typography = try preflight(kind: kind, items: items, in: region, style: style, engine: engine)
+        let typography = try preflight(kind: kind, items: items, in: region, style: style, engine: engine,
+                                       cycleReturnLabel: cycleReturnLabel)
         let originalCells = try frames(kind: kind, count: items.count, in: region, scale: scale)
         let rows = Set(originalCells.map { $0.y.points }).count
         let rowHeight = max(64 * scale, typography.map { $0.1 + $0.2 + 24 * scale }.max() ?? 64 * scale)
         let compactHeight = min(region.height.points, rowHeight * Double(rows) + 16 * scale * Double(rows - 1))
-        let loopSpace = kind == .cycle ? 28.0 * scale : 0
+        let loopSpace = kind == .cycle ? (cycleCaptionGap + cycleCaptionHeight) * scale : 0
         guard compactHeight + loopSpace <= region.height.points else {
             throw LayoutError.cannotFit("The cycle needs space for its return path.")
         }
@@ -140,13 +182,13 @@ public enum StructuredLayout {
             _ = try slide.shapes.addText("↑", in: Rect(x: first.x + first.width / 2 - .points(8 * scale),
                 y: first.maxY, width: .points(16 * scale), height: .points(16 * scale)), role: .body, style: arrows, align: .center)
         }
-        // The caption is optional: nil or empty keeps the return arrow and drops only the text.
+        // The caption is optional: nil or empty drops only the text and its band
+        // stays reserved. Preflight measured it at this width (region == compact width).
         if kind == .cycle, let label = cycleReturnLabel, !label.isEmpty {
-            var local = style
-            local.type = local.type.overriding(.body) { $0.sizePt = 14 * scale }
             _ = try slide.shapes.addText(label,
-                in: Rect(x: compact.x, y: compact.maxY + .points(6 * scale), width: compact.width, height: .points(22 * scale)),
-                role: .body, style: local, align: .center)
+                in: Rect(x: compact.x, y: compact.maxY + .points(cycleCaptionGap * scale), width: compact.width,
+                         height: .points(cycleCaptionHeight * scale)),
+                role: .body, style: cycleCaptionStyle(style, scale: scale), align: .center)
         }
         return boundary
     }
