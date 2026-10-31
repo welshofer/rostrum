@@ -24,9 +24,10 @@ public extension DeckStorage {
 
         /// Remove staging files a crash or force-quit left behind. Only regular
         /// `.library-demo-*.pending` files older than `age` are touched. An
-        /// in-flight copy is safe because this runs once at startup, before any
-        /// Library Lab save — not because of the age check alone (`copyItem`
-        /// keeps the source's modification date, so a fresh copy of an old deck
+        /// in-flight copy is normally safe because this runs once, from the
+        /// startup task, which completes long before a recipe can be run and
+        /// saved — the age check alone would not protect it (`copyItem` keeps
+        /// the source's modification date, so a fresh copy of an old deck
         /// already looks stale). Best-effort: per-file errors are swallowed.
         ///
         /// - Returns: how many files were removed.
@@ -41,8 +42,8 @@ public extension DeckStorage {
                 let name = url.lastPathComponent
                 guard name.hasPrefix(".library-demo-"), name.hasSuffix(".pending") else { continue }
                 let values = try? url.resourceValues(forKeys: [.contentModificationDateKey, .isRegularFileKey])
-                // Never recurse into a directory or follow a link that happens
-                // to carry the staging name; only our own regular files go.
+                // Only our own regular files go: a directory or link that
+                // happens to carry the staging name is left alone.
                 guard values?.isRegularFile == true else { continue }
                 let modified = values?.contentModificationDate ?? now
                 guard now.timeIntervalSince(modified) > age else { continue }
