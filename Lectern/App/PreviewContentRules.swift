@@ -14,7 +14,7 @@ import LecternCore
 ///
 /// 1. `PreviewPolicy.allows` — the navigation delegate gate. Both coordinators
 ///    cancel every frame navigation except the `about:blank` the initial load
-///    is, and the app's own font scheme.
+///    is (font loads are subresources, which never reach the gate).
 /// 2. `PreviewPolicy.contentSecurityPolicyMeta` — a `<meta>` CSP written into
 ///    every preview document, so the page itself refuses to fetch anything
 ///    that is not inline, `data:` or served by the font scheme.

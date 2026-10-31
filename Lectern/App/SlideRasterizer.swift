@@ -375,8 +375,8 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
     }
 
     /// The same gate as the live preview's coordinator: the `about:blank` that
-    /// `loadHTMLString(_, baseURL: nil)` loads as, and the app's own font
-    /// scheme, are the only navigations an offscreen render may make.
+    /// `loadHTMLString(_, baseURL: nil)` loads as is the only navigation an
+    /// offscreen render may make (fonts are subresources, not navigations).
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
                  decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
         decisionHandler(PreviewPolicy.allows(navigationAction.request.url) ? .allow : .cancel)

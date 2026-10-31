@@ -40,20 +40,22 @@ import Testing
         return contents.filter { $0.pathExtension == "pptx" }
     }
 
-    /// The provider itself reports the cancel (as `URLSession` and
-    /// `Task.sleep` do when their task is cancelled).
-    @Test func providerCancellationEndsTheRunInsteadOfBecomingImageWarnings() async throws {
+    /// A provider that throws `CancellationError` while the run itself is
+    /// still live did not get a cancel from the user; that is an ordinary
+    /// image failure, not a reason to abandon the paid draft. (A real cancel
+    /// is `cancellingTheRunMidFlightThrowsCancellation` below, where
+    /// `Task.isCancelled` is true when the error surfaces.)
+    @Test func providerCancellationWithLiveRunIsAnOrdinaryImageFailure() async throws {
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let events = StageRecorder()
         let generator = try generator(StubImageProvider(behaviour: .throwCancellation))
 
-        await #expect(throws: CancellationError.self) {
-            _ = try await generator.generate(request, designURL: nil, into: dir) { events.record($0) }
-        }
+        let result = try await generator.generate(request, designURL: nil, into: dir) { events.record($0) }
         #expect(events.stages.contains("illustrating"), "the image pass should have started")
-        #expect(!events.stages.contains("rendering"), "a cancelled run must not render")
-        #expect(!events.stages.contains("finished"))
-        #expect(pptxFiles(in: dir).isEmpty, "no deck may be written for a cancelled run")
+        #expect(events.stages.contains("rendering"), "a live run renders after image failures")
+        #expect(FileManager.default.fileExists(atPath: result.url.path), "the deck is written")
+        let failures = result.warnings.filter { $0.contains("image(s) couldn't be generated") }
+        #expect(failures.count == 1 && failures[0].contains("2 of 2"), "\(result.warnings)")
     }
 
     /// The surrounding task is cancelled while requests are in flight.

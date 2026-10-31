@@ -51,9 +51,9 @@ struct SlidePreview {
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
                      decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
             // `loadHTMLString(_, baseURL: nil)` loads as about:blank; that
-            // initial load (and the app's own font scheme) is the only
-            // navigation a preview is allowed. Shared with the offscreen
-            // rasterizer so the two cannot drift.
+            // initial load is the only navigation a preview is allowed (font
+            // loads are subresources and never come through here). Shared
+            // with the offscreen rasterizer so the two cannot drift.
             decisionHandler(PreviewPolicy.allows(navigationAction.request.url) ? .allow : .cancel)
         }
     }
