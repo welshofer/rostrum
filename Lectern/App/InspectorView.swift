@@ -20,11 +20,12 @@ struct InspectorView: View {
     /// an `NSOpenPanel` (see `chooseExportDestination`) — so the surface lives
     /// only where the `fileImporter` does.
     @State private var importError: String?
+    #endif
     /// True while the macOS export chooser is up. The menu stays live under a
     /// document-modal sheet, so without this a second ⇧⌘E would stack another
-    /// panel on the first.
+    /// panel on the first. (On iOS the chooser is a `fileImporter`, and the
+    /// flag simply never flips.)
     @State private var isChoosingExportFolder = false
-    #endif
 
     var body: some View {
         Group {
