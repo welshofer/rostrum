@@ -25,15 +25,19 @@ public actor DeckGenerator {
     }
 
     public func generate(_ request: DeckRequest, designURL: URL?, template: DeckTemplate,
-                         into directory: URL, emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
-        try await generate(request, designURL: designURL, into: directory,
+                         into directory: URL, diagnostics: URL,
+                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
+        try await generate(request, designURL: designURL, into: directory, diagnostics: diagnostics,
                            template: template.nativeTemplate(), emit: emit)
     }
 
     private struct DraftErrors: Error { var errors: [String] }
 
+    /// `diagnostics` is required and must not be `directory`: rejected drafts
+    /// and render snapshots carry the user's prompt and pasted source text, so
+    /// they belong in an app-owned folder, never among the user's decks.
     public func generate(_ request: DeckRequest, designURL: URL?, into directory: URL,
-                         diagnostics: URL? = nil, template: PowerPointTemplate? = nil,
+                         diagnostics: URL, template: PowerPointTemplate? = nil,
                          emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         var request = request
         if template != nil {
@@ -58,7 +62,7 @@ public actor DeckGenerator {
                 // what the model actually sent is an error string, which is not
                 // enough to tell a prompt problem from a schema one.
                 var errors = second.errors
-                if let kept = Self.keepRejectedDraft(repaired.json, in: diagnostics ?? directory) {
+                if let kept = Self.keepRejectedDraft(repaired.json, in: diagnostics, decks: directory) {
                     errors.append("the rejected draft is at \(kept.path)")
                 }
                 throw LecternError.schemaInvalid(errors: errors)
@@ -73,8 +77,12 @@ public actor DeckGenerator {
     /// The caller passes a diagnostics directory rather than the decks folder.
     /// This file is the app's, not the user's — and it is the model's rendering
     /// of their prompt plus up to 40,000 characters lifted from whatever PDF
-    /// they attached, so it has no business sitting among their documents.
-    private static func keepRejectedDraft(_ json: String, in directory: URL) -> URL? {
+    /// they attached, so it has no business sitting among their documents
+    /// (on iOS the decks folder is published to Files and USB file sharing).
+    /// There is no fallback: when `directory` is the decks folder itself the
+    /// draft is not written at all and this returns `nil`.
+    static func keepRejectedDraft(_ json: String, in directory: URL, decks: URL) -> URL? {
+        guard !isSameDirectory(directory, decks) else { return nil }
         // A per-run name, not a fixed one. `rejected-draft.json` meant the next
         // failure silently replaced the evidence for the last, which is exactly
         // when someone is comparing two of them.
@@ -118,11 +126,18 @@ public actor DeckGenerator {
         }
     }
 
+    /// Whether two directory URLs name the same folder once `.`/`..` segments
+    /// and symlinks are resolved, so `decks/./` cannot slip past the guard.
+    static func isSameDirectory(_ a: URL, _ b: URL) -> Bool {
+        a.standardizedFileURL.resolvingSymlinksInPath().path
+            == b.standardizedFileURL.resolvingSymlinksInPath().path
+    }
+
     /// The QA editor pass: hand the valid draft to the reviewer and use its
     /// revision when it also validates. A failed or invalid revision is ignored
     /// (never worse than the draft).
     private func qaThenFinish(_ result: ValidationResult, draftJSON: String, _ request: DeckRequest,
-                              _ designURL: URL?, _ directory: URL, diagnostics: URL?, template: PowerPointTemplate?, usage: Usage,
+                              _ designURL: URL?, _ directory: URL, diagnostics: URL, template: PowerPointTemplate?, usage: Usage,
                               emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         var final = result
         if quality {
@@ -352,7 +367,7 @@ public actor DeckGenerator {
     }
 
     private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
-                        _ directory: URL, diagnostics: URL?, template: PowerPointTemplate?, usage: Usage,
+                        _ directory: URL, diagnostics: URL, template: PowerPointTemplate?, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         // A cancel must land before `illustrate` starts spending: image calls
         // are the priciest thing this pipeline does after the draft itself.
@@ -367,7 +382,9 @@ public actor DeckGenerator {
         let snapshot = RenderSnapshot(deck: shaped.deck, images: images,
             design: try (template == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) },
             template: template, notesEnabled: request.notes, useSmartArt: useSmartArt)
-        let recoveryURL = diagnostics.flatMap { try? snapshot.save(in: $0) }
+        // Same rule as rejected drafts: the snapshot holds the user's content,
+        // so it is never written into the decks folder.
+        let recoveryURL = Self.isSameDirectory(diagnostics, directory) ? nil : try? snapshot.save(in: diagnostics)
         if let recoveryURL { emit(.recoveryAvailable(recoveryURL)) }
         var deckResult: DeckResult
         do {
@@ -381,7 +398,7 @@ public actor DeckGenerator {
             // layout failures can be replayed without another model request.
             if let data = try? JSONEncoder().encode(shaped.deck),
                let json = String(data: data, encoding: .utf8),
-               let kept = Self.keepRejectedDraft(json, in: diagnostics ?? directory) {
+               let kept = Self.keepRejectedDraft(json, in: diagnostics, decks: directory) {
                 message += " The draft was saved for recovery at \(kept.path)."
             }
             throw LecternError.renderFailed(message: message)

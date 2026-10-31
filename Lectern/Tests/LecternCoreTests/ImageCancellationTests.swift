@@ -50,7 +50,7 @@ import Testing
         let events = StageRecorder()
         let generator = try generator(StubImageProvider(behaviour: .throwCancellation))
 
-        let result = try await generator.generate(request, designURL: nil, into: dir) { events.record($0) }
+        let result = try await generator.generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         #expect(events.stages.contains("illustrating"), "the image pass should have started")
         #expect(events.stages.contains("rendering"), "a live run renders after image failures")
         #expect(FileManager.default.fileExists(atPath: result.url.path), "the deck is written")
@@ -66,7 +66,7 @@ import Testing
         let request = request
 
         let run = Task {
-            try await generator.generate(request, designURL: nil, into: dir) { events.record($0) }
+            try await generator.generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         }
         try await events.waitFor("illustrating")
         run.cancel()
@@ -87,7 +87,7 @@ import Testing
         let request = request
 
         let run = Task {
-            try await generator.generate(request, designURL: nil, into: dir) { events.record($0) }
+            try await generator.generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         }
         try await events.waitFor("illustrating")
         run.cancel()
@@ -104,7 +104,7 @@ import Testing
         let events = StageRecorder()
         let generator = try generator(StubImageProvider(behaviour: .fail))
 
-        let result = try await generator.generate(request, designURL: nil, into: dir) { events.record($0) }
+        let result = try await generator.generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
 
         #expect(events.stages.contains("rendering"))
         #expect(FileManager.default.fileExists(atPath: result.url.path))
