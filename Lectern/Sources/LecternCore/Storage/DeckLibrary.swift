@@ -144,14 +144,39 @@ public enum DeckLibrary {
 
     /// Strip what a filename cannot carry, rather than refusing the whole name.
     /// A user typing `Q3 / Q4 review` means one deck, not an error.
+    ///
+    /// The result must also stay visible to `isDeck`: a leading dot or `~$`
+    /// (PowerPoint's lock-file prefix) would hide the renamed deck from the very
+    /// list it is in, so both are stripped until nothing more comes off. The
+    /// name is capped at 120 UTF-8 bytes (the budget `prepareDeckCopy` uses) so
+    /// a long name does not fail with a raw file-system error.
     static func sanitizedName(_ proposed: String) -> String {
         let illegal = CharacterSet(charactersIn: "/:\\")
             .union(.controlCharacters)
-        return proposed
+        let dots = CharacterSet(charactersIn: ".")
+
+        func visible(_ name: String) -> String {
+            var current = name
+            while true {
+                var next = current
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .trimmingCharacters(in: dots)
+                if next.hasPrefix("~$") { next.removeFirst(2) }
+                if next == current { return current }
+                current = next
+            }
+        }
+
+        let cleaned = visible(proposed
             .components(separatedBy: illegal)
-            .joined(separator: " ")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            // A leading dot would hide the deck from the very list it is in.
-            .trimmingCharacters(in: CharacterSet(charactersIn: "."))
+            .joined(separator: " "))
+
+        var capped = ""
+        for character in cleaned {
+            guard capped.utf8.count + String(character).utf8.count <= 120 else { break }
+            capped.append(character)
+        }
+        // Truncation can leave trailing whitespace or a dot.
+        return visible(capped)
     }
 }
