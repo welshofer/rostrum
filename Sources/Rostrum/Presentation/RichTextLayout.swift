@@ -668,6 +668,12 @@ public struct RichTextLayout: Sendable {
                     canJustify = false
                 }
             }
+            // Office's distributed alignment also widens inter-character spacing
+            // (a one-word line spans the box). Only word spaces are widened here,
+            // so the layout remains a diagnosed approximation.
+            if canJustify && justifyLastLine {
+                warnings.append(.unsupportedLayoutFeature("Paragraph alignment '\(align)' is approximated: lines are distributed by word spacing; PowerPoint also spreads inter-character spacing, which is not modeled"))
+            }
             func emit(justify: Bool = false, emptyMetrics: (ascent: Double, height: Double, drawingML: Bool)? = nil,
                       emptySpacing: SpacingMetric? = nil) {
                 guard output.count < lineLimit else { didTruncate = true; return }
