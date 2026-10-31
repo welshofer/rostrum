@@ -121,6 +121,15 @@ import LecternCore
         #expect(!AppState.testHostFlag(false) && !AppState.testHostFlag("NO"))
         #expect(!AppState.testHostFlag(nil))
     }
+
+    /// Settings renders `.invalid(message)` wrapped and in full, so the text
+    /// it shows must be the provider's whole explanation, not an excerpt.
+    @Test func providerErrorMessageIsDescribedInFull() {
+        let message = "Incorrect API key provided: sk-proj-****abcd. You can find your API key at "
+            + "https://platform.openai.com/account/api-keys.\nThe organization on this request is not "
+            + "verified for the selected model; verify it and retry."
+        #expect(AppState.describe(LecternError.providerError(status: 401, message: message)) == message)
+    }
 }
 
 @MainActor
