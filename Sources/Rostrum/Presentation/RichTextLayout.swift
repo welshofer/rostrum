@@ -601,7 +601,11 @@ public struct RichTextLayout: Sendable {
             }
             // Word-space justification is verified for left-to-right Latin text.
             // Other scripts may require inter-character spacing or kashidas.
-            let latinParagraph = !(hasTabs || align == "just") || !atoms.contains(where: { atom in
+            // DrawingML `dist`/`thaiDist` distribute every line, including the
+            // final one; otherwise they share `just`'s word-space expansion.
+            let justifyLastLine = align == "dist" || align == "thaiDist"
+            let justifiedAlignment = align == "just" || justifyLastLine
+            let latinParagraph = !(hasTabs || justifiedAlignment) || !atoms.contains(where: { atom in
                     atom.text.unicodeScalars.contains { scalar in
                         let value = scalar.value
                         return !(value <= 0x024F || (0x0300...0x036F).contains(value)
@@ -650,8 +654,8 @@ public struct RichTextLayout: Sendable {
                 }
                 return max(0, stop - position - offset)
             }
-            var canJustify = align == "just"
-            if !["l", "ctr", "r", "just"].contains(align) {
+            var canJustify = justifiedAlignment
+            if !["l", "ctr", "r", "just", "dist", "thaiDist"].contains(align) {
                 warnings.append(.unsupportedLayoutFeature("Paragraph alignment '\(align)' is not implemented; using left alignment"))
             }
             if canJustify {
@@ -929,7 +933,7 @@ public struct RichTextLayout: Sendable {
                     }
                     emit(emptyMetrics: lineMetrics(metrics, size: style.measurementPointSize),
                         emptySpacing: spacingMetric(metrics, size: style.fontSize, style: style))
-                } else { emit() }
+                } else { emit(justify: justifyLastLine) }
             }
             if paragraphIndex < paragraphs.count - 1 || useEdgeParagraphSpacing {
                 cursor += spacing(child("a:spcAft"), relativeTo: emptyHeight)

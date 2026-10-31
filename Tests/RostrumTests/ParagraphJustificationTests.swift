@@ -101,7 +101,7 @@ import Testing
     }
 
     @Test func unsupportedModesAndScriptsAreDiagnosed() throws {
-        for mode in ["dist", "justLow", "thaiDist"] {
+        for mode in ["justLow"] {
             let result = try layout(body(text("AA BB CC"), attributes: "algn=\"\(mode)\""))
             #expect(result.lines[0].width == 25)
             #expect(result.diagnostics.contains(.unsupportedLayoutFeature("Paragraph alignment '\(mode)' is not implemented; using left alignment")))
@@ -115,6 +115,36 @@ import Testing
             let result = try layout(body(runs, attributes: attributes))
             #expect(result.diagnostics.contains { if case .unsupportedLayoutFeature(let value) = $0 { return value.hasPrefix(reason) }; return false })
         }
+    }
+
+    @Test(arguments: ["dist", "thaiDist"])
+    func distributedAlignmentAlsoStretchesTheFinalLine(mode: String) throws {
+        func rightEdge(_ line: RichTextLine) -> Double {
+            line.spans.last.map { $0.x + $0.width } ?? -1
+        }
+        // Two lines; the final line "CC D E" is 25 pt natural in a 30 pt frame.
+        let justified = try layout(body(text("AA BB CC D E")))
+        let distributed = try layout(body(text("AA BB CC D E"), attributes: "algn=\"\(mode)\""))
+        #expect(justified.lines.count == 2 && distributed.lines.count == 2)
+        #expect(distributed.diagnostics.isEmpty)
+        #expect(!distributed.diagnostics.contains { if case .unsupportedLayoutFeature = $0 { return true }; return false })
+        // Interior lines match `just`; only the final line differs.
+        #expect(distributed.lines[0].spans.map(\.x) == justified.lines[0].spans.map(\.x))
+        #expect(rightEdge(justified.lines[1]) == 25)
+        #expect(distributed.lines[1].spans.map(\.run.text) == ["CC", " ", "D", " ", "E"])
+        #expect(distributed.lines[1].spans.map(\.x) == [0, 10, 15, 20, 25])
+        #expect(rightEdge(distributed.lines[1]) == 30)
+        #expect(distributed.lines[1].width == 30 && distributed.fits)
+        // A single-line paragraph is the final line and is also distributed.
+        let single = try layout(body(text("AA BB"), attributes: "algn=\"\(mode)\""))
+        #expect(single.lines.count == 1 && single.diagnostics.isEmpty)
+        #expect(single.lines[0].spans.map(\.x) == [0, 10, 20])
+        #expect(rightEdge(single.lines[0]) == 30)
+        let singleJustified = try layout(body(text("AA BB")))
+        #expect(rightEdge(singleJustified.lines[0]) == 22.5)
+        // A trailing break's empty final line has no slots and stays empty.
+        let broken = try layout(body(text("AA BB") + "<a:br/>", attributes: "algn=\"\(mode)\""))
+        #expect(broken.lines.map(\.width) == [30, 0] && broken.diagnostics.isEmpty)
     }
 
     @Test func explicitBreakJustifiesButFinalAndEmptyLinesStayNatural() throws {
