@@ -141,14 +141,15 @@ struct ContentView: View {
                     LibraryLabView(model: labModel)
                 } else {
                     DeckGridView(section: section, query: $query, layout: layout,
-                                 columnCount: deckColumnCount)
+                                 columnCount: deckColumnCount,
+                                 onSettings: { openSettings() })
                         .searchable(text: $query, placement: .toolbar, prompt: "Search")
                         .transition(phaseTransition)
                 }
             case .compose: ComposeView().transition(phaseTransition)
             case .generating: GeneratingView().transition(phaseTransition)
             case .result(let r): ResultView(result: r).transition(phaseTransition)
-            case .failed(let m): FailedView(message: m).transition(phaseTransition)
+            case .failed(let m): FailedView(message: m, onSettings: { openSettings() }).transition(phaseTransition)
             case .inspecting: InspectingView().transition(phaseTransition)
             case .inspected: InspectorView().transition(phaseTransition)
             }
@@ -834,6 +835,9 @@ struct FailedView: View {
     @Environment(AppState.self) private var app
     @ScaledMetric(relativeTo: .largeTitle) private var failGlyph: CGFloat = 44
     let message: String
+    /// iOS has no Settings scene, so the shell that owns the settings sheet
+    /// hands down how to open it. macOS uses `SettingsLink` instead.
+    var onSettings: () -> Void
 
     var body: some View {
         @Bindable var app = app
@@ -884,7 +888,8 @@ struct FailedView: View {
             SettingsLink { Text("Open Settings") }
                 .buttonStyle(.glassProminent).controlSize(.large)
             #else
-            EmptyView()
+            Button("Open Settings") { onSettings() }
+                .buttonStyle(.glassProminent).controlSize(.large)
             #endif
         case .schemaInvalid:
             #if os(macOS)
