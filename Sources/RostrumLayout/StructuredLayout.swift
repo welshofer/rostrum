@@ -86,9 +86,13 @@ public enum StructuredLayout {
         return typography
     }
 
+    /// - Parameter cycleReturnLabel: Caption under a `.cycle` diagram's return path.
+    ///   Defaults to the historical English "Repeat cycle"; pass a localized string,
+    ///   or `nil`/empty to omit the caption (the return arrow is still drawn).
     @discardableResult
     public static func compose(kind: StructuredKind, items: [StructuredItem], in region: Rect,
-                               on slide: Slide, style: DeckStyle, engine: TemplateLayoutEngine) throws -> Shape {
+                               on slide: Slide, style: DeckStyle, engine: TemplateLayoutEngine,
+                               cycleReturnLabel: String? = "Repeat cycle") throws -> Shape {
         let scale = engine.objectScale
         let typography = try preflight(kind: kind, items: items, in: region, style: style, engine: engine)
         let originalCells = try frames(kind: kind, count: items.count, in: region, scale: scale)
@@ -136,10 +140,11 @@ public enum StructuredLayout {
             _ = try slide.shapes.addText("↑", in: Rect(x: first.x + first.width / 2 - .points(8 * scale),
                 y: first.maxY, width: .points(16 * scale), height: .points(16 * scale)), role: .body, style: arrows, align: .center)
         }
-        if kind == .cycle {
+        // The caption is optional: nil or empty keeps the return arrow and drops only the text.
+        if kind == .cycle, let label = cycleReturnLabel, !label.isEmpty {
             var local = style
             local.type = local.type.overriding(.body) { $0.sizePt = 14 * scale }
-            _ = try slide.shapes.addText("Repeat cycle",
+            _ = try slide.shapes.addText(label,
                 in: Rect(x: compact.x, y: compact.maxY + .points(6 * scale), width: compact.width, height: .points(22 * scale)),
                 role: .body, style: local, align: .center)
         }
