@@ -193,7 +193,7 @@ public actor DeckGenerator {
         let budget = PriceTable.imageCallBudget(slideCount: requestedSlideCount)
         if briefed.count > budget {
             let dropped = briefed[budget...].map { "\"\($0.0)\"" }.joined(separator: ", ")
-            limitWarnings.append("Image briefs for slides \(dropped) were not generated: "
+            limitWarnings.append("Image briefs for the slides with ids \(dropped) were not generated: "
                 + "\(briefed.count) exceeds the budget of \(budget) for a \(requestedSlideCount)-slide request")
             briefed.removeSubrange(budget...)
         }
@@ -209,8 +209,8 @@ public actor DeckGenerator {
             return (id, clamped, aspect, role)
         }
         if !shortened.isEmpty {
-            limitWarnings.append("Image briefs for slides \(shortened.joined(separator: ", ")) were shortened to "
-                + "\(ImageStyleDirective.maximumSubjectScalars) characters")
+            limitWarnings.append("Image briefs for the slides with ids \(shortened.joined(separator: ", ")) were shortened to "
+                + "\(ImageStyleDirective.maximumSubjectScalars) characters (Unicode scalars)")
         }
         // A brief the model wrote for a layout that cannot render one is thrown
         // away here. That used to be silent, which is why "why aren't we making
