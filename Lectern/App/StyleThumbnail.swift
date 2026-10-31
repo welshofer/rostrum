@@ -45,6 +45,7 @@ struct StyleCard: View {
                         Image(systemName: isFavorite ? "heart.fill" : "heart")
                             .font(.callout.weight(.semibold))
                             .foregroundStyle(isFavorite ? .pink : .white)
+                            .shadow(color: .black.opacity(0.35), radius: 2)
                             .padding(7)
                             .background(.ultraThinMaterial, in: .circle)
                     }

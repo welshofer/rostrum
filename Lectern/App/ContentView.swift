@@ -73,7 +73,7 @@ struct ContentView: View {
                     .font(.callout)
                     .padding(8)
                     .frame(maxWidth: .infinity)
-                    .background(.yellow.opacity(0.15))
+                    .background(.tint.opacity(0.12))
             }
         }
         // The window's own width, which — unlike the detail column's — does not
@@ -473,7 +473,14 @@ struct ComposeView: View {
                     }
                     .disabled(app.templateLoading)
                     if app.templateLoading { ProgressView("Reading template…") }
-                    if let error = app.templateError { Text(error).font(.caption).foregroundStyle(.red) }
+                    if let error = app.templateError {
+                        Label {
+                            Text(error).foregroundStyle(.secondary)
+                        } icon: {
+                            Image(systemName: "xmark.octagon.fill").foregroundStyle(.red)
+                        }
+                        .font(.caption)
+                    }
                 }
 
                 groundingCard
