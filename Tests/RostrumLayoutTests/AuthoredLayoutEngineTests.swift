@@ -166,11 +166,39 @@ import RostrumLayout
 
     @Test func unverifiedVerticalAndColumnGeometryCannotReportSuccess() throws {
         for body in ["vert=\"vert\"", "numCol=\"2\""] {
-            let (deck, slide, _) = try specimen("<a:p>" + run("A", size: 17) + "</a:p>", height: 100, body: body)
+            let (deck, slide, shape) = try specimen("<a:p>" + run("A", size: 17) + "</a:p>", height: 100, body: body)
             let before = try deck.serializedData()
-            #expect(throws: LayoutError.self) { try AuthoredLayoutEngine(presentation: deck).fitText(in: slide) }
+            let report = try AuthoredLayoutEngine(presentation: deck).fitText(in: slide)
+            #expect(report.fitted.isEmpty)
+            #expect(report.skipped.map(\.shapeID) == [try #require(shape.shapeID)])
             #expect(try deck.serializedData() == before)
         }
+    }
+
+    @Test(arguments: ["vert=\"vert270\"", "numCol=\"2\""])
+    func unsupportedSidebarDoesNotBlockFittingTheRestOfTheSlide(body: String) throws {
+        // An overflowing ordinary body plus a decorative vertical/multi-column one.
+        let content = "<a:p>" + run("Small ", size: 24) + run("LARGE", size: 48) + "</a:p>"
+        let (deck, slide, ordinary) = try specimen(content, height: 45)
+        let sidebar = try slide.shapes.addTextBox(Rect(x: .points(400), y: .points(20), width: .points(40), height: .points(300)))
+        sidebar.element.removeChildren(named: "p:txBody")
+        sidebar.element.appendElement(try XML.parse(Data("""
+        <p:txBody><a:bodyPr lIns="0" tIns="0" rIns="0" bIns="0" \(body)/><a:lstStyle/><a:p>\(run("SIDEBAR LABEL THAT OVERFLOWS", size: 48))</a:p></p:txBody>
+        """.utf8)))
+        slide.part.markDirty()
+        #expect(try !layout(ordinary, deck: deck).fits)
+        let sidebarBefore = XML.document(sidebar.element)
+
+        let report = try AuthoredLayoutEngine(presentation: deck).fitText(in: slide)
+
+        let scale = ordinary.element.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr")?
+            .firstChild(named: "a:normAutofit")?[attribute: "fontScale"]
+        #expect(scale != nil)
+        #expect(try layout(ordinary, deck: deck).fits)
+        #expect(XML.document(sidebar.element) == sidebarBefore)
+        #expect(report.fitted == [try #require(ordinary.shapeID)])
+        #expect(report.skipped == [AuthoredFitReport.Skipped(shapeID: try #require(sidebar.shapeID),
+            reason: "uses vertical or multi-column text that authored fitting does not support.")])
     }
 
     @Test func repeatedBodiesKeepIndependentSourceNodes() throws {
