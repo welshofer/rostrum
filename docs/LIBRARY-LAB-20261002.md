@@ -37,7 +37,9 @@ The Fonts, Shaping and Fitting recipe also exercises
 `AuthoredLayoutEngine.fitText` on a second slide. Original 24/48 pt mixed-size
 runs overflow a compact frame; the fitted copy retains both run sizes and saves
 normal autofit. Both frame-height options verify reopened rich-text lines and
-editable run content using the embedded DejaVu face. The normal Lab pipeline
+editable run content using the embedded DejaVu face. A `vert270` label on the
+same slide must appear under the returned report's `skipped` shapes (the copy
+under `fitted`) and reopen with byte-identical XML. The normal Lab pipeline
 produces inspector SVGs and extracted artifacts for both slides. These are
 computed-fit checks, not native PowerPoint autofit or pixel-equivalence evidence.
 

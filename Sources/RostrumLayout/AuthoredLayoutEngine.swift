@@ -5,23 +5,25 @@ import Rostrum
 public struct AuthoredFitReport: Sendable, Equatable {
     /// A text shape the pass deliberately left untouched.
     public struct Skipped: Sendable, Equatable {
-        public var shapeID: Int
+        /// The shape's `p:cNvPr` id, or nil when the shape has none.
+        public var shapeID: Int?
         public var reason: String
 
-        public init(shapeID: Int, reason: String) {
+        public init(shapeID: Int?, reason: String) {
             self.shapeID = shapeID
             self.reason = reason
         }
     }
 
     /// Shapes whose text was verified to fit, either at its authored size or
-    /// with a saved normal-autofit scale, in slide order.
-    public var fitted: [Int]
+    /// with a saved normal-autofit scale, in slide order. Nil marks a shape
+    /// without a `p:cNvPr` id.
+    public var fitted: [Int?]
     /// Shapes whose geometry authored fitting cannot verify (vertical or
     /// multi-column text). Their XML is unchanged; other shapes still fit.
     public var skipped: [Skipped]
 
-    public init(fitted: [Int] = [], skipped: [Skipped] = []) {
+    public init(fitted: [Int?] = [], skipped: [Skipped] = []) {
         self.fitted = fitted
         self.skipped = skipped
     }
@@ -54,9 +56,14 @@ public final class AuthoredLayoutEngine {
         self.measure = measure
     }
 
-    public func finish(_ slide: Slide, layoutName: String) throws {
-        try fitText(in: slide)
+    /// Fit the slide, then publish its layout. The returned report lists any
+    /// vertical or multi-column shapes that were published without being
+    /// verified; callers decide how to surface them.
+    @discardableResult
+    public func finish(_ slide: Slide, layoutName: String) throws -> AuthoredFitReport {
+        let report = try fitText(in: slide)
         try presentation.publishLayout(of: slide, named: layoutName)
+        return report
     }
 
     /// Fit complete rich-text bodies, preserving run properties and fields.
@@ -81,7 +88,7 @@ public final class AuthoredLayoutEngine {
         var resolvedSlideNumber = false
         for shape in slide.shapes.all {
             try Task.checkCancellation()
-            if let selected, !selected.contains(shape.shapeID ?? -1) { continue }
+            if let selected, !(shape.shapeID.map(selected.contains) ?? false) { continue }
             let node = shape.element
             guard let text = node.firstChild(named: "p:txBody"),
                   text.children(named: "a:p").contains(where: { paragraph in
@@ -131,7 +138,7 @@ public final class AuthoredLayoutEngine {
                 title: ["title", "ctrTitle"].contains(shape.placeholder?.type ?? "")) : nil
             if let key, let cached = fits[key] {
                 if case .autofit(let fit) = cached { apply(fit, to: text); slide.part.markDirty() }
-                report.fitted.append(shape.shapeID ?? -1)
+                report.fitted.append(shape.shapeID)
                 continue
             }
             func remember(_ change: FitChange) {
@@ -155,7 +162,7 @@ public final class AuthoredLayoutEngine {
                   (bodyAttribute("numCol") ?? "1") == "1" else {
                 // Leave unverifiable geometry untouched rather than failing
                 // every other shape on the slide (e.g. a decorative sidebar).
-                report.skipped.append(.init(shapeID: shape.shapeID ?? -1,
+                report.skipped.append(.init(shapeID: shape.shapeID,
                     reason: "uses vertical or multi-column text that authored fitting does not support."))
                 continue
             }
@@ -191,7 +198,7 @@ public final class AuthoredLayoutEngine {
                 return value.contentHeight + extraHeight <= frame.height.points - top - bottom + 0.01
             }
             let original = layout(text)
-            if accepted(original) { remember(.unchanged); report.fitted.append(shape.shapeID ?? -1); continue }
+            if accepted(original) { remember(.unchanged); report.fitted.append(shape.shapeID); continue }
             guard !original.truncated else { throw cannotFit("exceeds the bounded text-layout limit.") }
             let minimum = original.lines.lazy.flatMap(\.spans).map(\.run.fontSize).min() ?? 18
             // Preserve intentionally small captions; body never falls below 17pt.
@@ -240,7 +247,7 @@ public final class AuthoredLayoutEngine {
             apply(fit, to: text)
             remember(.autofit(fit))
             slide.part.markDirty()
-            report.fitted.append(shape.shapeID ?? -1)
+            report.fitted.append(shape.shapeID)
         }
         return report
     }

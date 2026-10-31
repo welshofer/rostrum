@@ -6,6 +6,13 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- `AuthoredLayoutEngine.finish` returns the `AuthoredFitReport` from its fitting
+  pass, and report shape IDs are optional (nil for shapes without an id) rather
+  than a `-1` sentinel. Lectern's authored renderer, pagination probes and
+  Generated layouts Lab warn once per vertical or multi-column shape left
+  unfitted instead of accepting it silently; the Fonts and fitting Lab recipe
+  demonstrates a skipped `vert270` label.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed

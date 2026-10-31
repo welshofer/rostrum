@@ -170,7 +170,8 @@ import RostrumLayout
             let before = try deck.serializedData()
             let report = try AuthoredLayoutEngine(presentation: deck).fitText(in: slide)
             #expect(report.fitted.isEmpty)
-            #expect(report.skipped.map(\.shapeID) == [try #require(shape.shapeID)])
+            #expect(report.skipped.map(\.shapeID) == [shape.shapeID])
+            #expect(shape.shapeID != nil)
             #expect(try deck.serializedData() == before)
         }
     }
@@ -199,6 +200,45 @@ import RostrumLayout
         #expect(report.fitted == [try #require(ordinary.shapeID)])
         #expect(report.skipped == [AuthoredFitReport.Skipped(shapeID: try #require(sidebar.shapeID),
             reason: "uses vertical or multi-column text that authored fitting does not support.")])
+    }
+
+    @Test func finishReturnsTheFitReportAndStillPublishesTheLayout() throws {
+        let content = "<a:p>" + run("Small ", size: 24) + run("LARGE", size: 48) + "</a:p>"
+        let (deck, slide, ordinary) = try specimen(content, height: 45)
+        let sidebar = try slide.shapes.addTextBox(Rect(x: .points(400), y: .points(20), width: .points(40), height: .points(300)))
+        sidebar.element.removeChildren(named: "p:txBody")
+        sidebar.element.appendElement(try XML.parse(Data("""
+        <p:txBody><a:bodyPr vert="vert270"/><a:lstStyle/><a:p>\(run("SIDEBAR", size: 24))</a:p></p:txBody>
+        """.utf8)))
+        slide.part.markDirty()
+
+        let report = try AuthoredLayoutEngine(presentation: deck).finish(slide, layoutName: "Sidebar")
+
+        #expect(report.fitted == [try #require(ordinary.shapeID)])
+        #expect(report.skipped.map(\.shapeID) == [try #require(sidebar.shapeID)])
+        #expect(slide.layout?.name == "Sidebar")
+        // Publishing turns text into inheriting placeholders; the vertical body
+        // still resolves through that chain and is still reported, not fitted.
+        #expect(sidebar.textFrame?.text == "SIDEBAR")
+        let reopened = try Presentation(data: deck.serializedData())
+        try reopened.validateTemplateBindings()
+        let id = try #require(sidebar.shapeID)
+        let again = try AuthoredLayoutEngine(presentation: reopened).fitText(in: try reopened.slides[0], only: [id])
+        #expect(again == AuthoredFitReport(skipped: [.init(shapeID: id,
+            reason: "uses vertical or multi-column text that authored fitting does not support.")]))
+    }
+
+    @Test func shapesWithoutAnIDAreReportedWithoutASentinel() throws {
+        let (deck, slide, shape) = try specimen("<a:p>" + run("A", size: 17) + "</a:p>", height: 100, body: "vert=\"vert270\"")
+        shape.element.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "id"] = nil
+        slide.part.markDirty()
+        #expect(shape.shapeID == nil)
+        let report = try AuthoredLayoutEngine(presentation: deck).fitText(in: slide)
+        #expect(report.fitted.isEmpty)
+        #expect(report.skipped == [AuthoredFitReport.Skipped(shapeID: nil,
+            reason: "uses vertical or multi-column text that authored fitting does not support.")])
+        // A selection never matches an id-less shape, even with a negative id.
+        #expect(try AuthoredLayoutEngine(presentation: deck).fitText(in: slide, only: [-1]) == AuthoredFitReport())
     }
 
     @Test func repeatedBodiesKeepIndependentSourceNodes() throws {

@@ -5,8 +5,10 @@ enum AuthoredFurniture {
     /// Normal decks take the unchanged final-fit path. A generated slide-number
     /// field can inherit oversized caption paragraph spacing from a design master;
     /// give just that rejected field explicit single-line furniture spacing.
-    static func finish(_ slide: Slide, layoutName: String, engine: AuthoredLayoutEngine) throws {
-        do { try engine.finish(slide, layoutName: layoutName) }
+    /// Returns the final pass's report so callers can surface skipped shapes.
+    @discardableResult
+    static func finish(_ slide: Slide, layoutName: String, engine: AuthoredLayoutEngine) throws -> AuthoredFitReport {
+        do { return try engine.finish(slide, layoutName: layoutName) }
         catch let original as LayoutError {
             var repaired = false
             let nodes = try slide.part.dom().firstChild(named: "p:cSld")?
@@ -31,7 +33,7 @@ enum AuthoredFurniture {
             guard repaired else { throw original }
             // Revalidate the whole slide. Content failures and unfit fields
             // still surface; never suppress a layout error or remove a number.
-            try engine.finish(slide, layoutName: layoutName)
+            return try engine.finish(slide, layoutName: layoutName)
         }
     }
 }
