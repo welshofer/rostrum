@@ -290,8 +290,18 @@ final class AppState {
         slideCounts.merge(counts) { _, new in new }
     }
 
+    /// The last delete that failed, for the view to show and then clear. The
+    /// user already confirmed a destructive dialog, so a trash that silently
+    /// does nothing (deck open elsewhere, file evicted) must explain itself.
+    var deleteProblem: String?
+
     func deleteFromLibrary(_ deck: DeckFile) {
-        try? deletingDeck(deck)
+        do {
+            try deletingDeck(deck)
+            deleteProblem = nil
+        } catch {
+            deleteProblem = AppState.describe(error)
+        }
         refreshLibrary()
     }
 
