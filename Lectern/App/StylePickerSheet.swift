@@ -104,7 +104,7 @@ struct StylePickerSheet: View {
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 9)
-            .background(.regularMaterial, in: .capsule)
+            .glassEffect(.regular, in: .capsule)
 
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
@@ -158,8 +158,12 @@ struct TagChip: View {
                 #if !os(macOS)
                 .frame(minWidth: 44, minHeight: 44)     // HIG touch minimum
                 #endif
-                .background(selected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.regularMaterial),
+                // Selected keeps its solid accent fill (no glass) so the
+                // `.background`-coloured label stays readable; unselected
+                // chips are interactive glass like the buttons around them.
+                .background(selected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(Color.clear),
                             in: .capsule)
+                .glassEffect(selected ? .identity : .regular.interactive(), in: .capsule)
                 .contentShape(.capsule)
         }
         .buttonStyle(.plain)

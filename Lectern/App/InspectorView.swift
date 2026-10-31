@@ -487,7 +487,7 @@ struct InspectorView: View {
             }
             .padding(28)
             .frame(maxWidth: 300)
-            .background(.regularMaterial, in: .rect(cornerRadius: 18, style: .continuous))
+            .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
         }
         .transition(.opacity)
     }
