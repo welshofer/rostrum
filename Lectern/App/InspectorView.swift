@@ -20,6 +20,10 @@ struct InspectorView: View {
     /// an `NSOpenPanel` (see `chooseExportDestination`) — so the surface lives
     /// only where the `fileImporter` does.
     @State private var importError: String?
+    /// True while the macOS export chooser is up. The menu stays live under a
+    /// document-modal sheet, so without this a second ⇧⌘E would stack another
+    /// panel on the first.
+    @State private var isChoosingExportFolder = false
     #endif
 
     var body: some View {
@@ -56,7 +60,8 @@ struct InspectorView: View {
         }
         // ⇧⌘E from the menu bar opens the same chooser as the button below.
         .onChange(of: app.exportRequests) {
-            if let inspection = app.inspection { chooseExportDestination(for: inspection) }
+            guard !isChoosingExportFolder, let inspection = app.inspection else { return }
+            chooseExportDestination(for: inspection)
         }
     }
 
@@ -409,11 +414,13 @@ struct InspectorView: View {
         panel.directoryURL = inspection.fileURL.deletingLastPathComponent()
 
         let handle: (NSApplication.ModalResponse) -> Void = { response in
+            isChoosingExportFolder = false
             guard response == .OK, let url = panel.url else { return }
             app.exportInspected(into: url)
         }
         // A sheet on the window it belongs to when there is one; the panel's
         // own modal session when there is not.
+        isChoosingExportFolder = true
         if let window = NSApp.keyWindow {
             panel.beginSheetModal(for: window, completionHandler: handle)
         } else {
