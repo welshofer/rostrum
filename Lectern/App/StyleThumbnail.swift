@@ -27,62 +27,72 @@ struct StyleCard: View {
     @State private var hovering = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ZStack(alignment: .topTrailing) {
-                ThumbImage(url: style.thumbnailURL, fallback: style.swatchColors)
-                    .aspectRatio(16.0 / 9.0, contentMode: .fill)
-                    .frame(maxWidth: .infinity)
-                    .clipShape(.rect(cornerRadius: 12, style: .continuous))
+        // A real Button (like DeckCardView), not a tap gesture wearing
+        // `.isButton`: it gets focus and Space/Return activation for free. The
+        // heart stays its own Button inside the label; SwiftUI routes a tap on
+        // it to the innermost button. The card combines its children (and the
+        // heart is invisible until hover on macOS), so VoiceOver reaches
+        // favoriting through the named action below.
+        Button(action: onSelect) {
+            VStack(alignment: .leading, spacing: 10) {
+                ZStack(alignment: .topTrailing) {
+                    ThumbImage(url: style.thumbnailURL, fallback: style.swatchColors)
+                        .aspectRatio(16.0 / 9.0, contentMode: .fill)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(.rect(cornerRadius: 12, style: .continuous))
 
-                Button(action: onFavorite) {
-                    Image(systemName: isFavorite ? "heart.fill" : "heart")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(isFavorite ? .pink : .white)
-                        .padding(7)
-                        .background(.ultraThinMaterial, in: .circle)
-                }
-                .buttonStyle(.plain)
-                .padding(8)
-                #if os(macOS)
-                // Hover-reveal is a pointer affordance; on touch the heart must
-                // always be visible or favoriting is unreachable.
-                .opacity(isFavorite || hovering ? 1 : 0)
-                #endif
-            }
-
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text(style.name).font(.headline).lineLimit(1)
-                    Spacer(minLength: 6)
-                    if !style.badge.isEmpty {
-                        Text(style.badge.uppercased())
-                            .font(.system(size: 9, weight: .semibold))
-                            .tracking(0.4)
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, 8).padding(.vertical, 3)
-                            .overlay(Capsule().strokeBorder(.quaternary))
-                            .fixedSize()
+                    Button(action: onFavorite) {
+                        Image(systemName: isFavorite ? "heart.fill" : "heart")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(isFavorite ? .pink : .white)
+                            .padding(7)
+                            .background(.ultraThinMaterial, in: .circle)
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
+                    .padding(8)
+                    #if os(macOS)
+                    // Hover-reveal is a pointer affordance; on touch the heart must
+                    // always be visible or favoriting is unreachable.
+                    .opacity(isFavorite || hovering ? 1 : 0)
+                    #endif
                 }
-                SwatchRow(colors: style.swatchColors)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(style.name).font(.headline).lineLimit(1)
+                        Spacer(minLength: 6)
+                        if !style.badge.isEmpty {
+                            Text(style.badge.uppercased())
+                                .font(.system(size: 9, weight: .semibold))
+                                .tracking(0.4)
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 8).padding(.vertical, 3)
+                                .overlay(Capsule().strokeBorder(.quaternary))
+                                .fixedSize()
+                        }
+                    }
+                    SwatchRow(colors: style.swatchColors)
+                }
+                .padding(.horizontal, 2)
             }
-            .padding(.horizontal, 2)
+            .padding(10)
+            .background(.regularMaterial, in: .rect(cornerRadius: 18, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .strokeBorder(isSelected ? Color.accentColor : .clear, lineWidth: 2.5)
+            )
+            .shadow(color: .black.opacity(hovering ? 0.16 : 0), radius: 12, y: 6)
+            .scaleEffect(hovering ? 1.015 : 1)
+            .contentShape(.rect(cornerRadius: 18))
         }
-        .padding(10)
-        .background(.regularMaterial, in: .rect(cornerRadius: 18, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(isSelected ? Color.accentColor : .clear, lineWidth: 2.5)
-        )
-        .shadow(color: .black.opacity(hovering ? 0.16 : 0), radius: 12, y: 6)
-        .scaleEffect(hovering ? 1.015 : 1)
+        .buttonStyle(.plain)
         .animation(.spring(response: 0.25, dampingFraction: 0.8), value: hovering)
         .onHover { hovering = $0 }
-        .contentShape(.rect(cornerRadius: 18))
-        .onTapGesture(perform: onSelect)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(style.name), \(style.badge)")
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+        .accessibilityAction(named: Text(isFavorite ? "Remove from favorites" : "Favorite"), onFavorite)
     }
 }
 
