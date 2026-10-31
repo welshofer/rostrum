@@ -160,8 +160,12 @@ justified table cell with explicit zero padding. Both public fit entry points,
 owned-DOM `RichTextLayout` measurement, embedding, SVG and extraction are invoked.
 Saved-file checks compare all spans, baselines, widths and styles after reopening.
 
-The catalog and Run All action derive their count from the enum. RTL, non-Latin,
-distributed and low justification remain visible support boundaries. The tab
+The catalog and Run All action derive their count from the enum. RTL, non-Latin
+and low justification remain visible support boundaries. The second slide also
+authors `dist` and `thaiDist` paragraphs through the owned DOM: every line,
+including the last, widens word spaces, and save/reopen checks confirm the saved
+`algn` values, identical lines and one preview approximation per paragraph
+(PowerPoint's inter-character spreading is not modeled). The tab
 profile is covered by the subsequent extension below.
 Explicit hard line breaks can expand, while paragraph-final lines stay natural.
 These layout checks do not establish general Office pixel parity. The historical

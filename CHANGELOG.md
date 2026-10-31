@@ -6,6 +6,12 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Lay out `dist` and `thaiDist` paragraph alignment by widening word spaces on
+  every line, including the last, instead of falling back to left alignment.
+  Previews report it as an approximation because PowerPoint also spreads
+  inter-character spacing, which is not modeled. The Library Lab paragraph demo
+  saves, reopens and checks both modes.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed

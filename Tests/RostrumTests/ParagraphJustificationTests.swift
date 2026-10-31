@@ -125,9 +125,13 @@ import Testing
         // Two lines; the final line "CC D E" is 25 pt natural in a 30 pt frame.
         let justified = try layout(body(text("AA BB CC D E")))
         let distributed = try layout(body(text("AA BB CC D E"), attributes: "algn=\"\(mode)\""))
+        // PowerPoint also spreads inter-character spacing; word-space-only
+        // distribution is reported once per paragraph as an approximation.
+        let approximation = ShapingDiagnostic.unsupportedLayoutFeature("Paragraph alignment '\(mode)' is approximated: lines are distributed by word spacing; PowerPoint also spreads inter-character spacing, which is not modeled")
+        let leftFallback = ShapingDiagnostic.unsupportedLayoutFeature("Paragraph alignment '\(mode)' is not implemented; using left alignment")
         #expect(justified.lines.count == 2 && distributed.lines.count == 2)
-        #expect(distributed.diagnostics.isEmpty)
-        #expect(!distributed.diagnostics.contains { if case .unsupportedLayoutFeature = $0 { return true }; return false })
+        #expect(distributed.diagnostics == [approximation])
+        #expect(!distributed.diagnostics.contains(leftFallback))
         // Interior lines match `just`; only the final line differs.
         #expect(distributed.lines[0].spans.map(\.x) == justified.lines[0].spans.map(\.x))
         #expect(rightEdge(justified.lines[1]) == 25)
@@ -137,14 +141,23 @@ import Testing
         #expect(distributed.lines[1].width == 30 && distributed.fits)
         // A single-line paragraph is the final line and is also distributed.
         let single = try layout(body(text("AA BB"), attributes: "algn=\"\(mode)\""))
-        #expect(single.lines.count == 1 && single.diagnostics.isEmpty)
+        #expect(single.lines.count == 1 && single.diagnostics == [approximation])
         #expect(single.lines[0].spans.map(\.x) == [0, 10, 20])
         #expect(rightEdge(single.lines[0]) == 30)
         let singleJustified = try layout(body(text("AA BB")))
         #expect(rightEdge(singleJustified.lines[0]) == 22.5)
         // A trailing break's empty final line has no slots and stays empty.
         let broken = try layout(body(text("AA BB") + "<a:br/>", attributes: "algn=\"\(mode)\""))
-        #expect(broken.lines.map(\.width) == [30, 0] && broken.diagnostics.isEmpty)
+        #expect(broken.lines.map(\.width) == [30, 0] && broken.diagnostics == [approximation])
+        // RTL distribution is not laid out, so it is not reported as approximated.
+        let rtl = try layout(body(text("AA BB CC D E"), attributes: "algn=\"\(mode)\" rtl=\"1\""))
+        #expect(!rtl.diagnostics.contains(approximation) && !rtl.diagnostics.contains(leftFallback))
+        #expect(rtl.diagnostics.contains(.unsupportedLayoutFeature("Justification of RTL paragraphs is not verified; using left alignment")))
+        // Preview diagnostics classify the approximation, not as an omission.
+        let collector = RenderDiagnosticCollector()
+        collector.text(distributed)
+        #expect(collector.issues.map(\.code) == [.unsupportedTextProperty])
+        #expect(collector.issues.map(\.impact) == [.approximation])
     }
 
     @Test func explicitBreakJustifiesButFinalAndEmptyLinesStayNatural() throws {
