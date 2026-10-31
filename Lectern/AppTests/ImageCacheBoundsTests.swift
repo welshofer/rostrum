@@ -115,6 +115,21 @@ import Testing
         #expect(store.cached(key) != nil)
     }
 
+    /// A deck Quick Look cannot thumbnail answers `nil`, and that failure is not
+    /// cached as a picture: the card shows its titled placard, and a later
+    /// request (say, after the file is repaired) is free to try again.
+    @MainActor
+    @Test func thumbnailStoreDoesNotCacheAFailedThumbnail() async {
+        let store = DeckThumbnailStore(capacity: 4)
+        let missing = FileManager.default.temporaryDirectory
+            .appendingPathComponent("lectern-missing-\(UUID().uuidString).pptx")
+        let key = DeckThumbnailStore.key(url: missing, version: .distantPast, width: 64)
+        let image = await store.thumbnail(url: missing, key: key, width: 64, scale: 1)
+        #expect(image == nil)
+        #expect(store.cached(key) == nil)
+        #expect(store.cacheCount == 0)
+    }
+
     // MARK: - SlideRasterizer (macOS only — the rasteriser does not exist on iOS)
 
     #if os(macOS)
