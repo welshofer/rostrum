@@ -375,6 +375,21 @@ public actor DeckGenerator {
         // are the priciest thing this pipeline does after the draft itself.
         try Task.checkCancellation()
         let shaped = normalizeIfValid(result, request)
+        // Read the style file before `illustrate` buys any images. It is a
+        // local file, but it can still be gone (a deleted bundle resource, an
+        // iCloud-evicted custom design); failing here costs nothing further,
+        // and the paid draft is kept for recovery rather than lost with a raw
+        // Foundation error after the image budget has been spent.
+        let design: String?
+        do {
+            design = try (template == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) }
+        } catch {
+            var message = "The design file \(designURL?.lastPathComponent ?? "") could not be read: \(error.localizedDescription)"
+            if let kept = keepNormalizedDraft(shaped.deck, diagnostics: diagnostics, decks: directory) {
+                message += " The draft was saved for recovery at \(kept.path)."
+            }
+            throw LecternError.renderFailed(message: message)
+        }
         let (images, imageWarnings) = try await illustrate(
             shaped.deck, requestedSlideCount: request.slideCount, template: template, emit: emit)   // no-op without an image provider
         // A cancel that arrived while images were in flight (including one a
@@ -382,7 +397,7 @@ public actor DeckGenerator {
         try Task.checkCancellation()
         emit(.rendering)
         let snapshot = RenderSnapshot(deck: shaped.deck, images: images,
-            design: try (template == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) },
+            design: design,
             template: template, notesEnabled: request.notes, useSmartArt: useSmartArt)
         // Same rule as rejected drafts: the snapshot holds the user's content,
         // so it is never written into the decks folder.
@@ -398,9 +413,7 @@ public actor DeckGenerator {
             var message = underlying
             // Keep the final normalized deck, including accepted QA edits, so
             // layout failures can be replayed without another model request.
-            if let data = try? JSONEncoder().encode(shaped.deck),
-               let json = String(data: data, encoding: .utf8),
-               let kept = Self.keepRejectedDraft(json, in: diagnostics, decks: directory) {
+            if let kept = keepNormalizedDraft(shaped.deck, diagnostics: diagnostics, decks: directory) {
                 message += " The draft was saved for recovery at \(kept.path)."
             }
             throw LecternError.renderFailed(message: message)
@@ -408,5 +421,13 @@ public actor DeckGenerator {
         deckResult.recoveryURL = recoveryURL
         emit(.finished(deckResult))
         return deckResult
+    }
+
+    /// Keep the normalized deck (including accepted QA edits) as a rejected
+    /// draft so a failed run can be replayed without another model request.
+    private func keepNormalizedDraft(_ deck: DeckIR, diagnostics: URL, decks: URL) -> URL? {
+        guard let data = try? JSONEncoder().encode(deck),
+              let json = String(data: data, encoding: .utf8) else { return nil }
+        return Self.keepRejectedDraft(json, in: diagnostics, decks: decks)
     }
 }
