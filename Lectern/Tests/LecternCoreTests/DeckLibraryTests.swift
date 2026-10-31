@@ -156,6 +156,59 @@ import Testing
         #expect(renamed.url.deletingLastPathComponent().path == dir.path)
     }
 
+    /// A leading `~$` is PowerPoint's lock-file prefix, which `isDeck` hides.
+    @Test func aLockFilePrefixIsStrippedSoTheRenamedDeckStaysListed() throws {
+        for proposed in ["~$Q3", ".~$Q3", "~$.~$Q3", " ~$ Q3"] {
+            let dir = try scratch()
+            defer { try? FileManager.default.removeItem(at: dir) }
+            let deck = try makeDeck("Before", in: dir)
+
+            let renamed = try DeckLibrary.rename(deck, to: proposed)
+
+            #expect(!renamed.url.lastPathComponent.hasPrefix("~$"), "\(proposed)")
+            #expect(DeckLibrary.decks(in: dir).map(\.url.lastPathComponent)
+                == [renamed.url.lastPathComponent], "\(proposed)")
+        }
+        #expect(DeckLibrary.sanitizedName("~$Q3") == "Q3")
+        #expect(DeckLibrary.sanitizedName(".~$Q3") == "Q3")
+    }
+
+    @Test func aNameThatIsOnlyALockPrefixIsNotAName() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let deck = try makeDeck("Real", in: dir)
+
+        #expect(throws: DeckLibrary.RenameProblem.empty) {
+            try DeckLibrary.rename(deck, to: "~$")
+        }
+    }
+
+    @Test func aVeryLongNameIsCappedRatherThanFailingInTheFileSystem() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let deck = try makeDeck("Before", in: dir)
+
+        for proposed in [String(repeating: "a", count: 300),
+                         String(repeating: "é", count: 300),
+                         String(repeating: "😀", count: 300)] {
+            let renamed = try DeckLibrary.rename(deck, to: proposed)
+            let stem = renamed.url.deletingPathExtension().lastPathComponent
+            // The filesystem may return the name decomposed (macOS does), so
+            // measure the budget the way the disk does.
+            #expect(stem.decomposedStringWithCanonicalMapping.utf8.count <= 120)
+            #expect(!stem.isEmpty)
+            #expect(DeckLibrary.decks(in: dir).count == 1)
+            try FileManager.default.moveItem(at: renamed.url, to: deck.url)
+        }
+    }
+
+    @Test func ordinarySanitizingIsUnchanged() {
+        #expect(DeckLibrary.sanitizedName("Q3 / Q4 review") == "Q3   Q4 review")
+        #expect(DeckLibrary.sanitizedName("  .hidden ") == "hidden")
+        #expect(DeckLibrary.sanitizedName("Plain") == "Plain")
+        #expect(DeckLibrary.sanitizedName("/") == "")
+    }
+
     @Test func renamingToTheSameNameIsANoOp() throws {
         let dir = try scratch()
         defer { try? FileManager.default.removeItem(at: dir) }

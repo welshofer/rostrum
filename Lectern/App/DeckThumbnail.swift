@@ -165,6 +165,10 @@ struct DeckThumbnail: View {
 
     @Environment(\.displayScale) private var displayScale
     @State private var loaded: Image?
+    /// True once Quick Look has answered for this `key` with no picture. Until
+    /// then the placard is a loading state; after it, the placard is the final
+    /// answer and carries the deck's title.
+    @State private var finishedWithoutImage = false
 
     private var key: String {
         DeckThumbnailStore.key(url: url, version: version, width: width)
@@ -182,7 +186,10 @@ struct DeckThumbnail: View {
             if let image {
                 image.resizable().aspectRatio(contentMode: .fill)
             } else {
-                DeckPlacard(title: fallbackTitle, muted: true)
+                // A title cannot be set legibly in a list-row-sized chip, so
+                // only cards wide enough to read it get one.
+                DeckPlacard(title: width >= 120 ? fallbackTitle : "",
+                            muted: !finishedWithoutImage)
             }
         }
         // The generated image is whatever shape the slide is; the card decides
@@ -190,18 +197,24 @@ struct DeckThumbnail: View {
         // corners and over the card beside it.
         .clipped()
         .task(id: key) {
+            // A new key is a new question: back to loading until it answers.
+            finishedWithoutImage = false
             // Already had it: no request, no decode, and nothing to animate.
             guard DeckThumbnailStore.shared.cached(key) == nil else { return }
             let image = await DeckThumbnailStore.shared.thumbnail(
                 url: url, key: key, width: width, scale: displayScale)
             guard !Task.isCancelled else { return }
-            withAnimation(.easeOut(duration: 0.18)) { loaded = image }
+            withAnimation(.easeOut(duration: 0.18)) {
+                loaded = image
+                finishedWithoutImage = image == nil
+            }
         }
     }
 }
 
 /// The stand-in when Quick Look has no picture: a quiet surface rather than an
-/// empty grey rectangle.
+/// empty grey rectangle. Semantic fills keep it in step with dark mode, so a
+/// loading grid is not a field of bright slabs.
 struct DeckPlacard: View {
     let title: String
     /// True while the thumbnail is still being fetched, so the placard reads as
@@ -210,15 +223,20 @@ struct DeckPlacard: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            LinearGradient(colors: [Color(white: 0.97), Color(white: 0.90)],
+            Rectangle().fill(.quaternary)
+            LinearGradient(colors: [Color.primary.opacity(0.0), Color.primary.opacity(0.06)],
                            startPoint: .topLeading, endPoint: .bottomTrailing)
-            if !muted {
+            if !title.isEmpty {
+                // While loading the title is a redacted bar, so the card reads
+                // as "on its way"; once Quick Look has given up it is the
+                // deck's name, so the card reads as a deck rather than broken.
                 Text(title)
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.headline)
                     .foregroundStyle(.secondary)
                     .lineLimit(3)
                     .minimumScaleFactor(0.75)
                     .padding(16)
+                    .redacted(reason: muted ? .placeholder : [])
             }
         }
     }

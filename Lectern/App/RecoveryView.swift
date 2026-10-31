@@ -57,13 +57,20 @@ struct RecoveryView: View {
                 SlideContactSheet(records: candidate.previewRecords, total: candidate.slideCount)
                     .frame(minHeight: 280)
             }
-            if let problem { Text(problem).foregroundStyle(.red).textSelection(.enabled) }
+            if let problem {
+                Label {
+                    Text(problem).foregroundStyle(.secondary).textSelection(.enabled)
+                } icon: {
+                    Image(systemName: "xmark.octagon.fill").foregroundStyle(.red)
+                }
+            }
             HStack {
                 Button("Cancel") { task?.cancel(); dismiss() }
+                    .keyboardShortcut(.cancelAction)
                 Spacer()
                 Button("Preview Layout") { preview() }.disabled(busy || selected.isEmpty)
                 Button("Save Revised Copy") { save() }.disabled(busy || candidate == nil)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
             }
         }
         .padding(24).frame(minWidth: 580, minHeight: 380)
@@ -75,7 +82,7 @@ struct RecoveryView: View {
                 try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true,
                     attributes: [.posixPermissions: 0o700])
                 scratch = dir
-            } catch { problem = String(describing: error) }
+            } catch { problem = AppState.describe(error) }
         }
         .onDisappear {
             task?.cancel()
@@ -97,7 +104,7 @@ struct RecoveryView: View {
                 try Task.checkCancellation()
                 candidate = result
             } catch is CancellationError { }
-            catch { problem = String(describing: error) }
+            catch { problem = AppState.describe(error) }
         }
     }
 
@@ -118,7 +125,7 @@ struct RecoveryView: View {
             }
             let saved = DeckResult.savedCopy(of: candidate, at: destination)
             app.acceptRecoveredDeck(saved); dismiss()
-          } catch { problem = String(describing: error) }
+          } catch { problem = AppState.describe(error) }
         }
     }
 }

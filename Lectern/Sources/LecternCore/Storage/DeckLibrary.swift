@@ -144,14 +144,47 @@ public enum DeckLibrary {
 
     /// Strip what a filename cannot carry, rather than refusing the whole name.
     /// A user typing `Q3 / Q4 review` means one deck, not an error.
+    ///
+    /// The result must also stay visible to `isDeck`: a leading dot or `~$`
+    /// (PowerPoint's lock-file prefix) would hide the renamed deck from the very
+    /// list it is in, so both are stripped until nothing more comes off. The
+    /// name is capped at 120 bytes of decomposed (NFD) UTF-8 — what HFS+ stores
+    /// and what macOS hands back — so a long name does not fail with a raw
+    /// file-system error. `prepareDeckCopy` applies the same budget again on
+    /// its label.
     static func sanitizedName(_ proposed: String) -> String {
         let illegal = CharacterSet(charactersIn: "/:\\")
             .union(.controlCharacters)
-        return proposed
+        let dots = CharacterSet(charactersIn: ".")
+
+        func visible(_ name: String) -> String {
+            var current = name
+            while true {
+                var next = current
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .trimmingCharacters(in: dots)
+                if next.hasPrefix("~$") { next.removeFirst(2) }
+                if next == current { return current }
+                current = next
+            }
+        }
+
+        let cleaned = visible(proposed
             .components(separatedBy: illegal)
-            .joined(separator: " ")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            // A leading dot would hide the deck from the very list it is in.
-            .trimmingCharacters(in: CharacterSet(charactersIn: "."))
+            .joined(separator: " "))
+
+        // Measured in decomposed (NFD) UTF-8: HFS+ stores names that way and
+        // APFS on macOS hands them back that way, so "é" costs three bytes on
+        // disk even when the user typed the two-byte precomposed form. A cap
+        // taken on the precomposed bytes passed on Linux and overshot on a Mac.
+        var capped = "", bytes = 0
+        for character in cleaned {
+            let cost = String(character).decomposedStringWithCanonicalMapping.utf8.count
+            guard bytes + cost <= 120 else { break }
+            capped.append(character)
+            bytes += cost
+        }
+        // Truncation can leave trailing whitespace or a dot.
+        return visible(capped)
     }
 }

@@ -64,6 +64,7 @@ enum GeneratedLayoutsRecipe {
         let engine = TemplateLayoutEngine(presentation: deck, measure: TemplateRendering.measurer)
         let prepared = try TableRendering.prepare(input, engine: engine, templateBacked: false)
         var pages: [String: Slide] = [:]
+        var unfitted: [String] = []
         for slide in prepared.deck.slides {
             let built: Slide
             if let group = prepared.groups[slide.id] {
@@ -75,13 +76,16 @@ enum GeneratedLayoutsRecipe {
             try built.part.dom().firstChild(named: "p:cSld")?[attribute: "name"] = "Lectern:" + slide.id
             built.part.markDirty()
             if let notes = slide.notes { try built.setNotes(notes) }
-            try AuthoredLayoutEngine(presentation: deck, measure: TemplateRendering.measurer)
+            let report = try AuthoredLayoutEngine(presentation: deck, measure: TemplateRendering.measurer)
                 .finish(built, layoutName: "Generated — " + slide.layout)
+            unfitted += DeckRenderer.unfittedWarnings(report, on: slide)
         }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         return LibraryLabDraft(deck: deck, checks: [
             .init("Measured connected groups", prepared.groups["table"]?.plan.pages.count ?? 0 > 1,
-                  "Native merged tables continue with both header rows.")],
+                  "Native merged tables continue with both header rows."),
+            .init("Authored fitting verified every body", unfitted.isEmpty,
+                  unfitted.isEmpty ? "No vertical or multi-column text was published unverified." : unfitted.joined(separator: " "))],
             extraFiles: ["generated-layouts.json": try encoder.encode(input)], verify: { reopened in
                 let text = reopened.outline().markdown()
                 return [.init("Saved panel content", ["Fidelity", "Performance", "Layout", "Reliability", "Prepare", "Compose", "Review"].allSatisfy(text.contains), "All headings remain editable text."),

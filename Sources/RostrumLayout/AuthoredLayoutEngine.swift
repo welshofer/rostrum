@@ -1,6 +1,34 @@
 import Foundation
 import Rostrum
 
+/// Outcome of one authored fitting pass over a slide.
+public struct AuthoredFitReport: Sendable, Equatable {
+    /// A text shape the pass deliberately left untouched.
+    public struct Skipped: Sendable, Equatable {
+        /// The shape's `p:cNvPr` id, or nil when the shape has none.
+        public var shapeID: Int?
+        public var reason: String
+
+        public init(shapeID: Int?, reason: String) {
+            self.shapeID = shapeID
+            self.reason = reason
+        }
+    }
+
+    /// Shapes whose text was verified to fit, either at its authored size or
+    /// with a saved normal-autofit scale, in slide order. Nil marks a shape
+    /// without a `p:cNvPr` id.
+    public var fitted: [Int?]
+    /// Shapes whose geometry authored fitting cannot verify (vertical or
+    /// multi-column text). Their XML is unchanged; other shapes still fit.
+    public var skipped: [Skipped]
+
+    public init(fitted: [Int?] = [], skipped: [Skipped] = []) {
+        self.fitted = fitted
+        self.skipped = skipped
+    }
+}
+
 /// Final composition pass for slides authored from a design system. Imported
 /// templates use TemplateLayoutEngine instead: this pass may adjust typography
 /// within the author's own regions, but never rewrites a supplied template.
@@ -28,16 +56,25 @@ public final class AuthoredLayoutEngine {
         self.measure = measure
     }
 
-    public func finish(_ slide: Slide, layoutName: String) throws {
-        try fitText(in: slide)
+    /// Fit the slide, then publish its layout. The returned report lists any
+    /// vertical or multi-column shapes that were published without being
+    /// verified; callers decide how to surface them.
+    @discardableResult
+    public func finish(_ slide: Slide, layoutName: String) throws -> AuthoredFitReport {
+        let report = try fitText(in: slide)
         try presentation.publishLayout(of: slide, named: layoutName)
+        return report
     }
 
     /// Fit complete rich-text bodies, preserving run properties and fields.
     /// A selected scale is saved as normal autofit. Explicit percentage line
     /// spacing and point paragraph gaps may be compacted; exact line spacing
     /// and inherited styles are preserved. An unfit body is left unchanged.
-    public func fitText(in slide: Slide, only ids: [Int]? = nil) throws {
+    /// Vertical and multi-column bodies are reported as skipped and left
+    /// byte-identical; the remaining shapes on the slide are still fitted.
+    @discardableResult
+    public func fitText(in slide: Slide, only ids: [Int]? = nil) throws -> AuthoredFitReport {
+        var report = AuthoredFitReport()
         let theme = slide.master?.theme ?? presentation.theme
         let selected = ids.map(Set.init)
         // Reuse only within this operation: font registration, theme changes
@@ -51,7 +88,7 @@ public final class AuthoredLayoutEngine {
         var resolvedSlideNumber = false
         for shape in slide.shapes.all {
             try Task.checkCancellation()
-            if let selected, !selected.contains(shape.shapeID ?? -1) { continue }
+            if let selected, !(shape.shapeID.map(selected.contains) ?? false) { continue }
             let node = shape.element
             guard let text = node.firstChild(named: "p:txBody"),
                   text.children(named: "a:p").contains(where: { paragraph in
@@ -101,6 +138,7 @@ public final class AuthoredLayoutEngine {
                 title: ["title", "ctrTitle"].contains(shape.placeholder?.type ?? "")) : nil
             if let key, let cached = fits[key] {
                 if case .autofit(let fit) = cached { apply(fit, to: text); slide.part.markDirty() }
+                report.fitted.append(shape.shapeID)
                 continue
             }
             func remember(_ change: FitChange) {
@@ -122,7 +160,11 @@ public final class AuthoredLayoutEngine {
             let availableWidth = max(0, frame.width.points - inset("lIns", default: 7.2) - inset("rIns", default: 7.2))
             guard (bodyAttribute("vert") ?? "horz") == "horz",
                   (bodyAttribute("numCol") ?? "1") == "1" else {
-                throw cannotFit("uses vertical or multi-column text that authored fitting does not support.")
+                // Leave unverifiable geometry untouched rather than failing
+                // every other shape on the slide (e.g. a decorative sidebar).
+                report.skipped.append(.init(shapeID: shape.shapeID,
+                    reason: "uses vertical or multi-column text that authored fitting does not support."))
+                continue
             }
             var preparation: RichTextLayout.Preparation?
             func layout(_ body: XML.Element) -> RichTextLayout {
@@ -156,7 +198,7 @@ public final class AuthoredLayoutEngine {
                 return value.contentHeight + extraHeight <= frame.height.points - top - bottom + 0.01
             }
             let original = layout(text)
-            if accepted(original) { remember(.unchanged); continue }
+            if accepted(original) { remember(.unchanged); report.fitted.append(shape.shapeID); continue }
             guard !original.truncated else { throw cannotFit("exceeds the bounded text-layout limit.") }
             let minimum = original.lines.lazy.flatMap(\.spans).map(\.run.fontSize).min() ?? 18
             // Preserve intentionally small captions; body never falls below 17pt.
@@ -179,22 +221,35 @@ public final class AuthoredLayoutEngine {
                 fit.children = autofit.deepCopy().children
             }
             preparation = RichTextLayout.Preparation()
-            var scale = currentScale
-            while true {
+            // Candidate scales are currentScale - 2500k above the floor, then the
+            // floor itself. Bisect that grid for the largest accepted scale: the
+            // same value a 2500-unit linear descent selects, in O(log n) layouts.
+            func probe(_ scale: Int) throws -> Bool {
                 try Task.checkCancellation()
                 fit[attribute: "fontScale"] = String(scale)
-                if accepted(layout(candidate)) { break }
-                guard scale > minimumScale else {
+                return accepted(layout(candidate))
+            }
+            if try !probe(currentScale) {
+                let steps = (currentScale - minimumScale - 1) / 2500
+                func grid(_ index: Int) -> Int { index > steps ? minimumScale : currentScale - 2500 * index }
+                guard currentScale > minimumScale, try probe(minimumScale) else {
                     throw cannotFit("does not fit at a readable size. Use a roomier layout or split this slide.")
                 }
-                scale = max(minimumScale, scale - 2500)
+                var rejected = 0, acceptedIndex = steps + 1
+                while acceptedIndex - rejected > 1 {
+                    let middle = (rejected + acceptedIndex) / 2
+                    if try probe(grid(middle)) { acceptedIndex = middle } else { rejected = middle }
+                }
+                fit[attribute: "fontScale"] = String(grid(acceptedIndex))
             }
             // Apply only the measured edits. Retain paragraph/run identities so
             // previously obtained facades still edit the document after fitting.
             apply(fit, to: text)
             remember(.autofit(fit))
             slide.part.markDirty()
+            report.fitted.append(shape.shapeID)
         }
+        return report
     }
 
     private func apply(_ fit: XML.Element, to text: XML.Element) {

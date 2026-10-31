@@ -73,7 +73,7 @@ struct ContentView: View {
                     .font(.callout)
                     .padding(8)
                     .frame(maxWidth: .infinity)
-                    .background(.yellow.opacity(0.15))
+                    .background(.tint.opacity(0.12))
             }
         }
         // The window's own width, which — unlike the detail column's — does not
@@ -141,14 +141,15 @@ struct ContentView: View {
                     LibraryLabView(model: labModel)
                 } else {
                     DeckGridView(section: section, query: $query, layout: layout,
-                                 columnCount: deckColumnCount)
+                                 columnCount: deckColumnCount,
+                                 onSettings: { openSettings() })
                         .searchable(text: $query, placement: .toolbar, prompt: "Search")
                         .transition(phaseTransition)
                 }
             case .compose: ComposeView().transition(phaseTransition)
             case .generating: GeneratingView().transition(phaseTransition)
             case .result(let r): ResultView(result: r).transition(phaseTransition)
-            case .failed(let m): FailedView(message: m).transition(phaseTransition)
+            case .failed(let m): FailedView(message: m, onSettings: { openSettings() }).transition(phaseTransition)
             case .inspecting: InspectingView().transition(phaseTransition)
             case .inspected: InspectorView().transition(phaseTransition)
             }
@@ -305,6 +306,7 @@ struct InspectingView: View {
                     .font(.callout).foregroundStyle(.secondary)
             }
             Button("Cancel", role: .cancel) { app.cancelInspection() }.buttonStyle(.glass)
+                .keyboardShortcut(.cancelAction)
         }
         .padding(48)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -472,7 +474,14 @@ struct ComposeView: View {
                     }
                     .disabled(app.templateLoading)
                     if app.templateLoading { ProgressView("Reading template…") }
-                    if let error = app.templateError { Text(error).font(.caption).foregroundStyle(.red) }
+                    if let error = app.templateError {
+                        Label {
+                            Text(error).foregroundStyle(.secondary)
+                        } icon: {
+                            Image(systemName: "xmark.octagon.fill").foregroundStyle(.red)
+                        }
+                        .font(.caption)
+                    }
                 }
 
                 groundingCard
@@ -483,7 +492,6 @@ struct ComposeView: View {
         }
         .safeAreaInset(edge: .bottom) { generateBar }
         .sheet(isPresented: $showStyles) { StylePickerSheet().environment(app) }
-        .sheet(isPresented: $app.isShowingLibrary) { DeckLibrarySheet().environment(app) }
         // Multiple fileImporter modifiers on this view compete for the same
         // presentation host. Use one host and retain its purpose through dismiss.
         .fileImporter(isPresented: $importing, allowedContentTypes: importKind.contentTypes) { result in
@@ -623,6 +631,7 @@ struct GeneratingView: View {
                         .contentTransition(.numericText())
                 }
                 Button("Cancel", role: .cancel) { app.cancel() }.buttonStyle(.glass)
+                    .keyboardShortcut(.cancelAction)
             }
             .padding(.bottom, 28)
             .accessibilityElement(children: .combine)
@@ -834,6 +843,9 @@ struct FailedView: View {
     @Environment(AppState.self) private var app
     @ScaledMetric(relativeTo: .largeTitle) private var failGlyph: CGFloat = 44
     let message: String
+    /// iOS has no Settings scene, so the shell that owns the settings sheet
+    /// hands down how to open it. macOS uses `SettingsLink` instead.
+    var onSettings: () -> Void
 
     var body: some View {
         @Bindable var app = app
@@ -884,7 +896,8 @@ struct FailedView: View {
             SettingsLink { Text("Open Settings") }
                 .buttonStyle(.glassProminent).controlSize(.large)
             #else
-            EmptyView()
+            Button("Open Settings") { onSettings() }
+                .buttonStyle(.glassProminent).controlSize(.large)
             #endif
         case .schemaInvalid:
             #if os(macOS)

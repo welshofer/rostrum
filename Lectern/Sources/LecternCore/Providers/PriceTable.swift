@@ -25,6 +25,19 @@ public enum PriceTable {
 
     public static func price(for model: String) -> ModelPrice? { defaults[model] }
 
+    /// The most paid image calls one generation may make, as a multiple of the
+    /// requested slide count. Every image brief is a user-billed API call, and
+    /// the model (which a source document can steer) decides how many it
+    /// writes. 1.25 sits just above the validator's ±20 % slide-count
+    /// tolerance: a deck the validator accepts without a warning, with an
+    /// image on every slide, always fits the budget.
+    public static let imageCallBudgetFactor = 1.25
+
+    /// The image-call ceiling for a request of `slideCount` slides (at least one).
+    public static func imageCallBudget(slideCount: Int) -> Int {
+        max(1, Int((Double(slideCount) * imageCallBudgetFactor).rounded(.up)))
+    }
+
     /// Exact cost of a completed run from its reported `Usage`. `nil` for an
     /// unpriced model — the caller shows nothing rather than a fabricated number.
     public static func cost(model: String, usage: Usage) -> Decimal? {

@@ -6,6 +6,24 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- `StructuredLayout.compose` and `validate` take a `cycleReturnLabel` (default
+  "Repeat cycle"; `nil` or empty omits it) for the caption under a cycle
+  diagram's return path. Preflight measures the caption across the region and
+  throws `LayoutError.cannotFit` when it would wrap past its one-line band,
+  instead of letting a long translation overflow. Default output is unchanged,
+  and omitting the caption keeps its band reserved so cell frames do not move.
+- Lay out `dist` and `thaiDist` paragraph alignment by widening word spaces on
+  every line, including the last, instead of falling back to left alignment.
+  Previews report it as an approximation because PowerPoint also spreads
+  inter-character spacing, which is not modeled. The Library Lab paragraph demo
+  saves, reopens and checks both modes.
+- `AuthoredLayoutEngine.finish` returns the `AuthoredFitReport` from its fitting
+  pass, and report shape IDs are optional (nil for shapes without an id) rather
+  than a `-1` sentinel. Lectern's authored renderer, pagination probes and
+  Generated layouts Lab warn once per vertical or multi-column shape left
+  unfitted instead of accepting it silently; the Fonts and fitting Lab recipe
+  demonstrates a skipped `vert270` label.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed

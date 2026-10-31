@@ -164,7 +164,7 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let events = EventBox()
         let result = try await DeckGenerator(provider: provider)
-            .generate(DeckRequest(prompt: "x", slideCount: 3), designURL: nil, into: dir) { events.record($0) }
+            .generate(DeckRequest(prompt: "x", slideCount: 3), designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         #expect(result.slideCount == 3)                     // adopted the revision, not the 5-slide draft
         #expect(events.stages.contains("auditing"))         // the QA pass ran
     }
@@ -174,7 +174,7 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         // Even with a broken revision, quality:false skips it and the draft ships.
         let result = try await DeckGenerator(provider: provider, quality: false)
-            .generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir) { _ in }
+            .generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { _ in }
         #expect(result.slideCount == 5)
     }
 
@@ -428,7 +428,7 @@ import Rostrum
                 provider: FixtureProvider(validJSON: json),
                 imageProvider: ProbeImageProvider(id: providerID, probe: probe),
                 quality: false
-            ).generate(request, designURL: nil, into: dir) { _ in }
+            ).generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { _ in }
 
             let ceiling = providerID.maximumConcurrentRequests
             let peak = await probe.peak
@@ -636,7 +636,7 @@ import Rostrum
         let dir = tempDir(); defer { try? FileManager.default.removeItem(at: dir) }
         let events = EventBox()
         let request = DeckRequest(prompt: "why native rendering", slideCount: 5, notes: true)
-        let result = try await DeckGenerator(provider: provider).generate(request, designURL: nil, into: dir) { events.record($0) }
+        let result = try await DeckGenerator(provider: provider).generate(request, designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         #expect(result.slideCount == 5)
         let stages = events.stages
         #expect(stages.contains("outlining") && stages.contains("rendering") && stages.contains("finished"))  // AT-09
@@ -648,14 +648,14 @@ import Rostrum
         // invalidJSONOnce → exactly one repair → success (AT-14).
         let once = FixtureProvider(validJSON: try fixtureJSON(), failure: .invalidJSONOnce)
         let events = EventBox()
-        let result = try await DeckGenerator(provider: once).generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir) { events.record($0) }
+        let result = try await DeckGenerator(provider: once).generate(DeckRequest(prompt: "x", slideCount: 5), designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { events.record($0) }
         #expect(result.slideCount == 5)
         #expect(events.stages.contains("repairing"))
 
         // invalidJSONAlways → .schemaInvalid.
         let always = FixtureProvider(validJSON: try fixtureJSON(), failure: .invalidJSONAlways)
         await #expect(throws: LecternError.self) {
-            _ = try await DeckGenerator(provider: always).generate(DeckRequest(prompt: "x"), designURL: nil, into: dir) { _ in }
+            _ = try await DeckGenerator(provider: always).generate(DeckRequest(prompt: "x"), designURL: nil, into: dir, diagnostics: TestPaths.diagnostics) { _ in }
         }
     }
 
@@ -768,16 +768,71 @@ import Rostrum
 
     // MARK: - Retry policy
 
-    @Test func backoffIsExponentialCappedAndDefersToRetryAfter() {
-        // Exponential from two seconds, not a flat wait.
-        #expect(HTTPRetry.backoff(attempt: 0, retryAfter: nil) == 2)
-        #expect(HTTPRetry.backoff(attempt: 1, retryAfter: nil) == 4)
-        #expect(HTTPRetry.backoff(attempt: 2, retryAfter: nil) == 8)
-        // Capped, so a 5xx spike cannot park the UI for minutes.
-        #expect(HTTPRetry.backoff(attempt: 20, retryAfter: nil) == HTTPRetry.maxBackoffSeconds)
-        // The server knows more than we do.
+    /// Deterministic SplitMix64, so jitter assertions do not flake.
+    struct SeededGenerator: RandomNumberGenerator {
+        var state: UInt64
+        init(seed: UInt64) { state = seed }
+        mutating func next() -> UInt64 {
+            state &+= 0x9E37_79B9_7F4A_7C15
+            var z = state
+            z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
+            z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
+            return z ^ (z >> 31)
+        }
+    }
+
+    @Test func backoffIsJitteredExponentialCappedAndDefersToRetryAfter() {
+        var generator = SeededGenerator(seed: 42)
+        // Exponential from two seconds, within +/-25 %, not a flat wait.
+        for (attempt, base) in [(0, 2.0), (1, 4.0), (2, 8.0)] {
+            for _ in 0..<50 {
+                let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &generator)
+                #expect(wait >= base * 0.75 && wait <= base * 1.25,
+                        "attempt \(attempt) waited \(wait)s for a base of \(base)s")
+                #expect(wait >= HTTPRetry.minimumBackoffSeconds && wait <= HTTPRetry.maxBackoffSeconds)
+            }
+        }
+        // The system-generator wrapper obeys the same bounds.
+        let wrapped = HTTPRetry.backoff(attempt: 1, retryAfter: nil)
+        #expect(wrapped >= 3 && wrapped <= 5)
+        // Capped, so a 5xx spike cannot park the UI for minutes; jitter cannot lift it.
+        var capped = SeededGenerator(seed: 1)
+        for attempt in [10, 20, 1_000] {
+            for _ in 0..<50 {
+                let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &capped)
+                #expect(wait <= HTTPRetry.maxBackoffSeconds && wait >= HTTPRetry.maxBackoffSeconds * 0.75)
+            }
+        }
+        // Concurrent requests desynchronise on the retries that actually
+        // happen. With three attempts those are attempts 0 and 1, and the
+        // first is the common one: whole-second rounding collapsed 2 s +/-25 %
+        // onto exactly 2 s, so it was never jittered at all.
+        for (attempt, base) in [(0, 2.0), (1, 4.0)] {
+            var a = SeededGenerator(seed: 1)
+            var b = SeededGenerator(seed: 2)
+            let waitA = HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &a)
+            let waitB = HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &b)
+            #expect(waitA != waitB, "attempt \(attempt): two requests both waited \(waitA)s")
+            for wait in [waitA, waitB] {
+                #expect(wait >= base * 0.75 && wait <= base * 1.25 && wait >= 0.5)
+                #expect(wait != wait.rounded(), "attempt \(attempt) lost its sub-second jitter: \(wait)s")
+            }
+            // Across many requests the first retry spreads over the band
+            // instead of landing on one value.
+            var many = SeededGenerator(seed: 99)
+            let spread = (0..<50).map { _ in HTTPRetry.backoff(attempt: attempt, retryAfter: nil, using: &many) }
+            #expect(Set(spread).count > 40, "attempt \(attempt) repeated values: \(Set(spread).count) distinct")
+            #expect(spread.max()! - spread.min()! > base * 0.25)
+        }
+        // The server knows more than we do: Retry-After bypasses jitter exactly.
+        var r = SeededGenerator(seed: 3)
+        for _ in 0..<20 {
+            #expect(HTTPRetry.backoff(attempt: 0, retryAfter: 17, using: &r) == 17)
+            #expect(HTTPRetry.backoff(attempt: 1, retryAfter: 3, using: &r) == 3)
+            #expect(HTTPRetry.backoff(attempt: 5, retryAfter: 0, using: &r) == 0)
+            #expect(HTTPRetry.backoff(attempt: 0, retryAfter: 9_999, using: &r) == HTTPRetry.maxBackoffSeconds)
+        }
         #expect(HTTPRetry.backoff(attempt: 0, retryAfter: 17) == 17)
-        #expect(HTTPRetry.backoff(attempt: 0, retryAfter: 9_999) == HTTPRetry.maxBackoffSeconds)
         // Google-style durations and junk.
         #expect(HTTPRetry.seconds("3s") == 3)
         #expect(HTTPRetry.seconds("1.2") == 2)
@@ -848,21 +903,32 @@ import Rostrum
     /// expensive call in the product, so one dead socket threw away a paid
     /// generation without ever asking again.
     @Test func aDroppedConnectionIsRetriedRatherThanEndingTheDraft() async throws {
-        let attempts = SentBox(), delays = SentBox()
+        let attempts = IntervalLog(), delays = IntervalLog()
         let start = Date(timeIntervalSince1970: 0)
         let good = openAIResponse(stopReason: "tool_use", deck: #"{"meta":{"title":"T"},"slides":[]}"#)
         let provider = OpenAIProvider(apiKey: "k",
-            now: { start.addingTimeInterval(TimeInterval(delays.values.reduce(0, +))) },
+            now: { start.addingTimeInterval(delays.values.reduce(0, +)) },
             wait: { delays.record($0) }, send: { request in
-            attempts.record(Int(request.timeoutInterval))
+            attempts.record(request.timeoutInterval)
             if attempts.values.count < 3 { throw URLError(.networkConnectionLost) }
             return (Data(good.utf8), Self.http(200))
         })
         let draft = try await provider.draft(DeckRequest(prompt: "x", slideCount: 5), repairing: nil) { _ in }
         #expect(draft.json.contains("\"title\""))
-        let budget = Int(ReasoningEffort.medium.timeout)
-        #expect(attempts.values == [budget, budget - 2, budget - 6])
-        #expect(delays.values == [2, 4])
+        let budget = ReasoningEffort.medium.timeout
+        // Backoff is jittered +/-25 % at sub-second resolution, so assert the
+        // bands and that each attempt's timeout shrinks by exactly the time
+        // already waited — not by a whole number of seconds.
+        #expect(delays.values.count == 2)
+        let waited = delays.values
+        #expect(waited[0] >= 1.5 && waited[0] <= 2.5 && waited[1] >= 3 && waited[1] <= 5,
+                "delays were \(waited)")
+        // Within a microsecond: the stub clock is `Date` arithmetic, which
+        // carries fractional seconds to about 1e-7 s.
+        let expected = [budget, budget - waited[0], budget - waited[0] - waited[1]]
+        #expect(attempts.values.count == expected.count)
+        #expect(zip(attempts.values, expected).allSatisfy { abs($0 - $1) < 1e-6 },
+                "timeouts were \(attempts.values), expected \(expected)")
     }
 
     @Test(arguments: [false, true])

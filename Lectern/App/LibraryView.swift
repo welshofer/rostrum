@@ -72,21 +72,27 @@ struct LibrarySidebar: View {
             .padding(.top, 18)
             .padding(.bottom, 22)
 
-            VStack(spacing: 10) {
-                SidebarAction(title: "New Deck", systemImage: "sparkles", prominent: true) {
-                    app.startCreate()
-                }
-                SidebarAction(title: "Inspect Deck…", systemImage: "doc.viewfinder") {
-                    app.chooseDeckToInspect()
-                }
-                SidebarAction(title: "Recover Saved Content…", systemImage: "doc.badge.clock") {
-                    importingRecovery = true
-                }
-                if let snapshot = app.recoveryURL {
-                    SidebarAction(title: "Last Saved Content…", systemImage: "arrow.counterclockwise") { showingRecovery = true }
-                        .sheet(isPresented: $showingRecovery) {
-                            RecoveryView(snapshotURL: snapshot, sourceURL: app.recoverySourceURL)
-                        }
+            // One container so the action pills share a glass sampling region
+            // and blend as a group rather than as separate panes.
+            // Spacing below the stack's 10-pt gap keeps the three verbs reading
+            // as separate pills rather than one slab that blends on press.
+            GlassEffectContainer(spacing: 4) {
+                VStack(spacing: 10) {
+                    SidebarAction(title: "New Deck", systemImage: "sparkles", prominent: true) {
+                        app.startCreate()
+                    }
+                    SidebarAction(title: "Inspect Deck…", systemImage: "doc.viewfinder") {
+                        app.chooseDeckToInspect()
+                    }
+                    SidebarAction(title: "Recover Saved Content…", systemImage: "doc.badge.clock") {
+                        importingRecovery = true
+                    }
+                    if let snapshot = app.recoveryURL {
+                        SidebarAction(title: "Last Saved Content…", systemImage: "arrow.counterclockwise") { showingRecovery = true }
+                            .sheet(isPresented: $showingRecovery) {
+                                RecoveryView(snapshotURL: snapshot, sourceURL: app.recoverySourceURL)
+                            }
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -136,7 +142,7 @@ struct LibrarySidebar: View {
         .fileImporter(isPresented: $importingRecovery, allowedContentTypes: [.json]) { result in
             Task {
                 do { try await app.importRenderSnapshot(result.get()); showingRecovery = true }
-                catch { recoveryError = String(describing: error) }
+                catch { recoveryError = AppState.describe(error) }
             }
         }
         .alert("Couldn’t recover saved content", isPresented: Binding(get: { recoveryError != nil }, set: { if !$0 { recoveryError = nil } })) {
@@ -171,16 +177,11 @@ private struct SidebarActionChrome: ViewModifier {
     func body(content: Content) -> some View {
         content
             .buttonStyle(.plain)
-            .background {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(prominent ? AnyShapeStyle(.tint.opacity(0.12))
-                                    : AnyShapeStyle(.quaternary.opacity(0.5)))
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .strokeBorder(prominent ? AnyShapeStyle(.tint.opacity(0.35))
-                                            : AnyShapeStyle(.quaternary))
-            }
+            // System Liquid Glass, matching the `.glass` buttons elsewhere;
+            // the prominent verb keeps a light accent tint on the glass.
+            .glassEffect(prominent ? .regular.tint(Color.accentColor.opacity(0.18)).interactive()
+                                   : .regular.interactive(),
+                         in: .rect(cornerRadius: 10, style: .continuous))
             .foregroundStyle(prominent ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
     }
 }
@@ -213,6 +214,9 @@ struct DeckGridView: View {
     /// see `ContentView.deckColumnCount`. Flexible columns then let the cards
     /// resize with the sidebar instead of being re-dealt into new slots.
     let columnCount: Int
+    /// Opens Settings where there is no Settings scene (iOS); macOS uses
+    /// `SettingsLink` and never calls it.
+    var onSettings: () -> Void
     @State private var renaming: DeckFile?
     @State private var draftName = ""
 
@@ -285,6 +289,15 @@ struct DeckGridView: View {
         } message: {
             Text(app.renameProblem ?? "")
         }
+        .alert("Couldn't delete that deck",
+               // The library sheet hosts its own copy of this alert; while it
+               // is up, let it present rather than racing a second one here.
+               isPresented: Binding(get: { app.deleteProblem != nil && !app.isShowingLibrary },
+                                    set: { if !$0 { app.deleteProblem = nil } })) {
+            Button("OK", role: .cancel) { app.deleteProblem = nil }
+        } message: {
+            Text(app.deleteProblem ?? "")
+        }
     }
 
     private var header: some View {
@@ -296,7 +309,7 @@ struct DeckGridView: View {
                 .font(.callout).foregroundStyle(.secondary)
                 .lineLimit(1)
             Button("Create") { app.startCreate() }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .controlSize(.large)
         }
     }
@@ -314,10 +327,10 @@ struct DeckGridView: View {
             } actions: {
                 if !app.isTestSession {
                     Button("Retry Keychain") { app.refreshKeyAvailability() }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.glassProminent)
                 }
                 Button("Inspect a deck") { app.chooseDeckToInspect() }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
             }
             .frame(maxWidth: .infinity, minHeight: 320)
         } else if !app.hasKey {
@@ -334,10 +347,13 @@ struct DeckGridView: View {
                 VStack(spacing: 10) {
                     #if os(macOS)
                     SettingsLink { Text("Add an API key") }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.glassProminent)
+                    #else
+                    Button("Add an API key") { onSettings() }
+                        .buttonStyle(.glassProminent)
                     #endif
                     Button("Inspect a deck instead") { app.chooseDeckToInspect() }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.glass)
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 320)
@@ -347,7 +363,7 @@ struct DeckGridView: View {
             } description: {
                 Text("Decks you make are saved to your Lectern folder and appear here.")
             } actions: {
-                Button("New Deck") { app.startCreate() }.buttonStyle(.borderedProminent)
+                Button("New Deck") { app.startCreate() }.buttonStyle(.glassProminent)
             }
             .frame(maxWidth: .infinity, minHeight: 320)
         }

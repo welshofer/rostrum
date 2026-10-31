@@ -27,8 +27,24 @@ struct SettingsView: View {
         }
         #else
         form
-            .frame(width: 520, height: 740)
+            // A floor, not a pin: a long key-validation error or larger text
+            // grows the window instead of clipping.
+            .frame(minWidth: 520, idealWidth: 520, minHeight: 560, idealHeight: 740)
         #endif
+    }
+
+    /// Key-validation failures wrap in full and stay selectable: why a key
+    /// failed is the part a user needs, and iPad has no tooltip to hold it.
+    private func invalidLabel(_ message: String) -> some View {
+        Label {
+            Text(message)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "xmark.seal.fill").foregroundStyle(.red)
+        }
     }
 
     private var form: some View {
@@ -150,8 +166,7 @@ struct SettingsView: View {
         case .valid:
             Label("Valid", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
         case .invalid(let message):
-            Label(message, systemImage: "xmark.seal.fill")
-                .foregroundStyle(.red).lineLimit(1).help(message)
+            invalidLabel(message)
         case .unknown:
             if app.hasImageKey {
                 Label("Saved — not checked", systemImage: "key.fill").foregroundStyle(.secondary)
@@ -185,7 +200,7 @@ struct SettingsView: View {
         case .valid(let count):
             Label("Valid · \(count) models", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
         case .invalid(let message):
-            Label(message, systemImage: "xmark.seal.fill").foregroundStyle(.red).lineLimit(1).help(message)
+            invalidLabel(message)
         case .unknown:
             if app.hasKey {
                 Label("Key saved in Keychain", systemImage: "checkmark.circle.fill").foregroundStyle(.green)

@@ -343,12 +343,13 @@ public class Shape {
         }
     }
 
-    /// Rotation in degrees, clockwise.
+    /// Rotation in degrees, clockwise. Setting NaN or ±infinity is a no-op.
     public var rotation: Double {
         get { ShapeTransform.rotation(of: element) }
         set {
-            guard let xfrm = ShapeTransform.mutableElement(of: element) else { return }
-            xfrm[attribute: "rot"] = newValue == 0 ? nil : String(Int((newValue * 60_000).rounded()))
+            guard let rot = fixedPoint(newValue, scale: 60_000),
+                  let xfrm = ShapeTransform.mutableElement(of: element) else { return }
+            xfrm[attribute: "rot"] = newValue == 0 ? nil : rot
             part.markDirty()
         }
     }
