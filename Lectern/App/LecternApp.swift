@@ -36,6 +36,13 @@ struct LecternApp: App {
     #endif
     @State private var app = AppState.forLaunch()
 
+    init() {
+        // Start compiling the previews' block-all content rule list before
+        // any preview or thumbnail web view exists. Compilation is async;
+        // PreviewContentRules documents what guards the first load meanwhile.
+        PreviewContentRules.warm()
+    }
+
     var body: some Scene {
         WindowGroup("Lectern") {
             ContentView()

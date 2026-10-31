@@ -283,6 +283,11 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
         // Same rule as the live preview: the markup is model-derived and SVG
         // can carry script. A picture is not a program.
         config.defaultWebpagePreferences.allowsContentJavaScript = false
+        // And not a network client either: the block-all rule list (see
+        // PreviewContentRules for the three layers and their ordering). The
+        // navigation gate below and the document's CSP cover the first load
+        // if the list is still compiling.
+        PreviewContentRules.attach(to: config)
         webView = WKWebView(frame: .zero, configuration: config)
         window = NSWindow(contentRect: .zero,
                           styleMask: [.borderless],
@@ -367,6 +372,14 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
         fontResources = nil
         window.orderOut(nil)
         window.close()
+    }
+
+    /// The same gate as the live preview's coordinator: the `about:blank` that
+    /// `loadHTMLString(_, baseURL: nil)` loads as, and the app's own font
+    /// scheme, are the only navigations an offscreen render may make.
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
+        decisionHandler(PreviewPolicy.allows(navigationAction.request.url) ? .allow : .cancel)
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -473,10 +486,12 @@ final class SnapshotHost: NSObject, WKNavigationDelegate {
     """
 
     /// The SVG carries its own background and aspect ratio; this only stops the
-    /// web view adding chrome around it.
-    private static func document(svg: String) -> String {
+    /// web view adding chrome around it — and, through the CSP, stops anything
+    /// in the markup fetching beyond inline, `data:` and the font scheme.
+    static func document(svg: String) -> String {
         """
         <!doctype html><html><head><meta charset="utf-8">
+        \(PreviewPolicy.contentSecurityPolicyMeta)
         <style>
           html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
           body > svg { display: block; width: 100%; height: 100%; }
