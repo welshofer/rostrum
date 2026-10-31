@@ -90,6 +90,13 @@ struct DeckLibrarySheet: View {
         } message: {
             Text(Self.deleteExplanation)
         }
+        .alert("Couldn't delete that deck",
+               isPresented: Binding(get: { app.deleteProblem != nil },
+                                    set: { if !$0 { app.deleteProblem = nil } })) {
+            Button("OK", role: .cancel) { app.deleteProblem = nil }
+        } message: {
+            Text(app.deleteProblem ?? "")
+        }
     }
 
     private var header: some View {
