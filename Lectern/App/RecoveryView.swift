@@ -57,7 +57,13 @@ struct RecoveryView: View {
                 SlideContactSheet(records: candidate.previewRecords, total: candidate.slideCount)
                     .frame(minHeight: 280)
             }
-            if let problem { Text(problem).foregroundStyle(.red).textSelection(.enabled) }
+            if let problem {
+                Label {
+                    Text(problem).foregroundStyle(.secondary).textSelection(.enabled)
+                } icon: {
+                    Image(systemName: "xmark.octagon.fill").foregroundStyle(.red)
+                }
+            }
             HStack {
                 Button("Cancel") { task?.cancel(); dismiss() }
                 Spacer()

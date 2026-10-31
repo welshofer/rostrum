@@ -153,7 +153,7 @@ struct TagChip: View {
             // and only the glyphs themselves selected a filter.
             Text(title)
                 .font(.callout.weight(selected ? .semibold : .regular))
-                .foregroundStyle(selected ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
+                .foregroundStyle(selected ? AnyShapeStyle(.background) : AnyShapeStyle(.primary))
                 .padding(.horizontal, 13).padding(.vertical, 6)
                 #if !os(macOS)
                 .frame(minWidth: 44, minHeight: 44)     // HIG touch minimum
