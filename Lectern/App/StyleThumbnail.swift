@@ -43,7 +43,7 @@ struct StyleCard: View {
 
                     Button(action: onFavorite) {
                         Image(systemName: isFavorite ? "heart.fill" : "heart")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(.callout.weight(.semibold))
                             .foregroundStyle(isFavorite ? .pink : .white)
                             .padding(7)
                             .background(.ultraThinMaterial, in: .circle)
@@ -64,7 +64,7 @@ struct StyleCard: View {
                         Spacer(minLength: 6)
                         if !style.badge.isEmpty {
                             Text(style.badge.uppercased())
-                                .font(.system(size: 9, weight: .semibold))
+                                .font(.caption2.weight(.semibold))
                                 .tracking(0.4)
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 8).padding(.vertical, 3)

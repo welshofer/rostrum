@@ -231,7 +231,7 @@ struct DeckPlacard: View {
                 // as "on its way"; once Quick Look has given up it is the
                 // deck's name, so the card reads as a deck rather than broken.
                 Text(title)
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.headline)
                     .foregroundStyle(.secondary)
                     .lineLimit(3)
                     .minimumScaleFactor(0.75)
