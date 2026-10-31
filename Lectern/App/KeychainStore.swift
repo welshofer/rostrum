@@ -9,7 +9,9 @@ typealias OSStatus = Int32
 /// The *only* home for API keys (invariant I1): a generic-password item per
 /// account in the user's login keychain (macOS) or the app's data-protection
 /// keychain (iOS/iPadOS, automatic — sandboxed per app, encrypted at rest,
-/// readable only while the device is unlocked per kSecAttrAccessibleWhenUnlocked).
+/// readable only while the device is unlocked per
+/// kSecAttrAccessibleWhenUnlockedThisDeviceOnly, so keys stay out of backups
+/// and device-to-device migration).
 /// Keys are never written to UserDefaults and never logged.
 ///
 /// NOTE ON PERSISTENCE ACROSS REBUILDS (macOS): the login keychain gates access by the
@@ -62,22 +64,38 @@ enum KeychainStore {
 
     static func saveOrFail(_ key: String, account: String, operations: Operations = .live) throws {
         let match = query(account: account)
-        // Updating data preserves an existing item's access control. Never
-        // delete first: a denied/failed replacement must retain the old value.
-        let data = [kSecValueData as String: Data(key.utf8)]
-        let status = operations.update(match, data)
+        // Updating in place keeps an existing item and its ACL, and moves an
+        // item saved under the older WhenUnlocked class to the device-only
+        // class. Never delete first: a denied/failed replacement must retain
+        // the old value.
+        let changes: [String: Any] = [
+            kSecValueData as String: Data(key.utf8),
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly]
+        var attributes = match
+        attributes.merge(changes) { _, new in new }
+
+        let status = operations.update(match, changes)
         if status == errSecSuccess { return }
+        if status == errSecParam {
+            // The keychain refused to change the existing item's accessibility
+            // in place. Replace it: a failed delete keeps the old item; a failed
+            // add is surfaced so the UI asks for the key again.
+            let deleted = operations.delete(match)
+            guard deleted == errSecSuccess || deleted == errSecItemNotFound else {
+                throw WriteProblem.failed(deleted)
+            }
+            let added = operations.add(attributes)
+            guard added == errSecSuccess else { throw WriteProblem.failed(added) }
+            return
+        }
         guard status == errSecItemNotFound else { throw WriteProblem.failed(status) }
 
-        var attributes = match
-        attributes[kSecValueData as String] = data[kSecValueData as String]
-        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlocked
         let added = operations.add(attributes)
         if added == errSecSuccess { return }
         // Another writer may have added the account after the first update.
-        // Retry once without deleting that writer's item or changing its ACL.
+        // Retry once without deleting that writer's item.
         guard added == errSecDuplicateItem else { throw WriteProblem.failed(added) }
-        let retried = operations.update(match, data)
+        let retried = operations.update(match, changes)
         guard retried == errSecSuccess else { throw WriteProblem.failed(retried) }
     }
     #else

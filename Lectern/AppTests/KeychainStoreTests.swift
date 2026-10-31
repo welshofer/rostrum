@@ -11,13 +11,14 @@ import Security
 /// Every operation is injected. These tests never query, modify, or decrypt
 /// a real Keychain item, even when compiled by an app-hosted target later.
 @Suite struct KeychainStoreTests {
-    @Test func replacementUpdatesOnlyDataWithoutDeletingExistingAccessControl() throws {
+    @Test func replacementUpdatesDataAndDeviceOnlyClassWithoutDeletingExistingItem() throws {
         let fake = FakeSecurity(value: Data("old-fixture".utf8))
         try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
         #expect(fake.value == Data("new-fixture".utf8))
         #expect(fake.events == ["update"])
         #expect(fake.updates.count == 1)
-        #expect(Set(fake.updates[0].1.keys) == [kSecValueData as String])
+        #expect(Set(fake.updates[0].1.keys) == [kSecValueData as String, kSecAttrAccessible as String])
+        assertDeviceOnly(fake.updates[0].1)
         assertAccount(fake.updates[0].0, "openAI")
         #expect(fake.updates[0].0[kSecReturnData as String] == nil)
         #expect(fake.updates[0].0[kSecAttrAccessible as String] == nil)
@@ -40,7 +41,50 @@ import Security
         #expect(fake.events == ["update", "add"])
         #expect(fake.value == Data("new-fixture".utf8))
         assertAccount(fake.additions[0], "image:openAI")
-        #expect(fake.additions[0][kSecAttrAccessible as String] as? String == kSecAttrAccessibleWhenUnlocked as String)
+        assertDeviceOnly(fake.additions[0])
+    }
+
+    @Test func accessibilityRefusalReplacesItemByDeleteThenDeviceOnlyAdd() throws {
+        let fake = FakeSecurity(value: Data("old-fixture".utf8))
+        fake.updateStatuses = [errSecParam]
+        try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
+        #expect(fake.events == ["update", "delete", "add"])
+        #expect(fake.value == Data("new-fixture".utf8))
+        assertAccount(fake.queries[0], "openAI")
+        assertAccount(fake.additions[0], "openAI")
+        assertDeviceOnly(fake.additions[0])
+    }
+
+    @Test func accessibilityRefusalWithFailedDeleteKeepsOldItemAndDoesNotAdd() {
+        let fake = FakeSecurity(value: Data("old-fixture".utf8))
+        fake.updateStatuses = [errSecParam]
+        fake.deleteStatus = errSecAuthFailed
+        #expect(throws: KeychainStore.WriteProblem.failed(errSecAuthFailed)) {
+            try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
+        }
+        #expect(fake.events == ["update", "delete"])
+        #expect(fake.value == Data("old-fixture".utf8))
+    }
+
+    @Test func accessibilityRefusalWithFailedAddSurfacesAddStatus() {
+        let fake = FakeSecurity(value: Data("old-fixture".utf8))
+        fake.updateStatuses = [errSecParam]
+        fake.addStatus = errSecNotAvailable
+        #expect(throws: KeychainStore.WriteProblem.failed(errSecNotAvailable)) {
+            try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
+        }
+        #expect(fake.events == ["update", "delete", "add"])
+    }
+
+    @Test(arguments: [errSecIO, errSecMissingEntitlement, errSecDecode])
+    func otherUpdateFailuresAreSurfacedUnchangedWithoutDeleteOrAdd(_ status: OSStatus) {
+        let fake = FakeSecurity(value: Data("old-fixture".utf8))
+        fake.updateStatuses = [status]
+        #expect(throws: KeychainStore.WriteProblem.failed(status)) {
+            try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
+        }
+        #expect(fake.events == ["update"])
+        #expect(fake.value == Data("old-fixture".utf8))
     }
 
     @Test func failedAddIsReportedWithoutAnyDelete() {
@@ -59,7 +103,7 @@ import Security
         try KeychainStore.saveOrFail("new-fixture", account: "openAI", operations: fake.operations)
         #expect(fake.events == ["update", "add", "update"])
         #expect(fake.value == Data("new-fixture".utf8))
-        #expect(Set(fake.updates[1].1.keys) == [kSecValueData as String])
+        #expect(Set(fake.updates[1].1.keys) == [kSecValueData as String, kSecAttrAccessible as String])
     }
 
     @Test func failedRaceRetryRetainsOtherWritersItemAndDoesNotLoop() {
@@ -134,6 +178,11 @@ import Security
         fake.deleteStatus = errSecItemNotFound
         try KeychainStore.deleteOrFail(account: "openAI", operations: fake.operations)
         #expect(fake.events == ["delete", "delete", "delete"])
+    }
+
+    private func assertDeviceOnly(_ attributes: [String: Any]) {
+        #expect(attributes[kSecAttrAccessible as String] as? String
+            == kSecAttrAccessibleWhenUnlockedThisDeviceOnly as String)
     }
 
     private func assertAccount(_ query: [String: Any], _ account: String) {
