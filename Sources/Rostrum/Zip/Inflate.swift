@@ -7,7 +7,8 @@ import Foundation
 /// - Handle all three block types: stored (BTYPE=00), fixed Huffman (01),
 ///   dynamic Huffman (10). BTYPE=11 → throw `RostrumError.deflateCorrupt`.
 /// - Model the canonical-Huffman decode tables the way puff.c does (count/symbol
-///   arrays per code length); no need for anything fancier.
+///   arrays per code length), fronted by a 9-bit primary lookup so the common
+///   short codes cost one table hit instead of one bit-read per code bit.
 /// - Length/distance extra-bit tables per RFC 1951 §3.2.5; window is the output
 ///   buffer itself (distances may reference up to 32 KiB back; a distance past
 ///   the start of output → throw).
@@ -34,12 +35,28 @@ public enum Inflate {
 /// Canonical Huffman decode table, modeled after puff.c: `count[len]` is the
 /// number of codes of each bit length (1...15), `symbol` lists the symbols in
 /// canonical order (sorted by code length, then by symbol value).
-private struct HuffmanTable {
+///
+/// On top of the canonical walk, `fast` is a primary lookup table indexed by
+/// the next `fastBits` bits of the stream (LSB-first, as `InflateDecoder.peek`
+/// returns them). Every code of at most `fastBits` bits resolves in one hit;
+/// longer codes leave `fastMiss` and fall back to the bit-by-bit walk.
+struct HuffmanTable {
     let count: [Int]
     let symbol: [Int]
     /// Leftover code space after construction: 0 means the code is complete,
     /// > 0 means it is incomplete. Oversubscription throws at construction.
     let left: Int
+
+    /// Width of the primary lookup. Nine bits covers every fixed-table code
+    /// and, in practice, nearly every dynamic-table literal.
+    static let fastBits = 9
+    /// A `fast` entry that resolves nothing: the code is longer than
+    /// `fastBits` (or the bit pattern is unused in an incomplete code).
+    static let fastMiss: UInt16 = 0
+
+    /// `1 << fastBits` entries, each `symbol << 4 | length` (symbol <= 287 fits
+    /// in 9 bits, length <= 9 in 4), or `fastMiss`.
+    let fast: [UInt16]
 
     init(lengths: [Int]) throws {
         var count = [Int](repeating: 0, count: 16)
@@ -67,6 +84,44 @@ private struct HuffmanTable {
         self.count = count
         self.symbol = symbol
         self.left = left
+        self.fast = Self.buildFast(lengths: lengths, count: count)
+    }
+
+    /// Canonical code assignment (RFC 1951 §3.2.2), bit-reversed into the
+    /// LSB-first stream order and replicated across every index that shares
+    /// the code as its prefix.
+    private static func buildFast(lengths: [Int], count: [Int]) -> [UInt16] {
+        var fast = [UInt16](repeating: fastMiss, count: 1 << fastBits)
+        var nextCode = [Int](repeating: 0, count: 16)
+        var code = 0
+        for len in 1...15 {
+            code = (code + (len == 1 ? 0 : count[len - 1])) << 1
+            nextCode[len] = code
+        }
+        for (sym, len) in lengths.enumerated() where len != 0 {
+            let canonical = nextCode[len]
+            nextCode[len] += 1
+            guard len <= fastBits else { continue }
+            var reversed = 0
+            for i in 0..<len where canonical & (1 << i) != 0 {
+                reversed |= 1 << (len - 1 - i)
+            }
+            let entry = UInt16(sym << 4 | len)
+            var index = reversed
+            while index < fast.count {
+                fast[index] = entry
+                index += 1 << len
+            }
+        }
+        return fast
+    }
+
+    /// Resolve the code at the head of `bits` (the next `fastBits` stream bits,
+    /// LSB-first) if it is at most `fastBits` long; nil means fall back.
+    func fastLookup(_ bits: Int) -> (symbol: Int, length: Int)? {
+        let entry = fast[bits & ((1 << Self.fastBits) - 1)]
+        guard entry != Self.fastMiss else { return nil }
+        return (Int(entry >> 4), Int(entry & 0xF))
     }
 
     /// True when the code contains at most one symbol (all lengths 0 or 1),
@@ -76,7 +131,7 @@ private struct HuffmanTable {
     }
 }
 
-private struct InflateDecoder {
+struct InflateDecoder {
     let input: [UInt8]
     let expectedOutputSize: Int?
     var pos = 0
@@ -114,8 +169,47 @@ private struct InflateDecoder {
         return value
     }
 
-    /// Decode one symbol, reading Huffman code bits MSB-first (puff.c decode()).
+    /// Buffer up to `n` bits (n <= 24) without consuming them and return them
+    /// LSB-first. Unlike `bits`, running out of input does not throw: the
+    /// caller reads `bitCount` to learn how many of the returned bits are
+    /// real; the rest are zero padding.
+    mutating func peek(_ n: Int) -> Int {
+        while bitCount < n, pos < input.count {
+            bitBuffer |= UInt32(input[pos]) << bitCount
+            pos += 1
+            bitCount += 8
+        }
+        return Int(bitBuffer & UInt32((1 << n) - 1))
+    }
+
+    /// Consume `n` bits previously made available by `peek`.
+    mutating func drop(_ n: Int) {
+        assert(n <= bitCount, "dropping more bits than were peeked")
+        bitBuffer >>= UInt32(n)
+        bitCount -= n
+    }
+
+    /// Decode one symbol: one primary-table hit for codes of at most
+    /// `HuffmanTable.fastBits` bits, otherwise the canonical bit-by-bit walk.
     mutating func decode(_ table: HuffmanTable) throws -> Int {
+        let head = peek(HuffmanTable.fastBits)
+        if let (symbol, length) = table.fastLookup(head) {
+            guard length <= bitCount else {
+                // The hit was completed by zero padding past the real input:
+                // the stream ends inside this code, exactly where the
+                // one-bit walk would have asked for a bit that is not there.
+                throw RostrumError.deflateCorrupt("unexpected end of stream while reading bits")
+            }
+            drop(length)
+            return symbol
+        }
+        return try decodeSlow(table)
+    }
+
+    /// Decode one symbol reading Huffman code bits MSB-first, one at a time
+    /// (puff.c decode()). Reached only for codes longer than the primary
+    /// table, and for truncated input, where `bits(1)` reports the end.
+    mutating func decodeSlow(_ table: HuffmanTable) throws -> Int {
         var code = 0
         var first = 0
         var index = 0
