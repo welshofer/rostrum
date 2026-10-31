@@ -27,9 +27,12 @@ struct SlidePreview {
     /// `viewBox`), so the wrapper only has to stop the web view adding chrome,
     /// margins or a scrollbar around it. A full-viewport SVG uses its viewBox
     /// to contain the slide even in a differently proportioned app panel.
-    private var document: String {
+    /// The CSP is the document's own promise not to fetch beyond inline,
+    /// `data:` and the font scheme (see PreviewContentRules).
+    var document: String {
         """
         <!doctype html><html><head><meta charset="utf-8">
+        \(PreviewPolicy.contentSecurityPolicyMeta)
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
           html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
@@ -48,9 +51,10 @@ struct SlidePreview {
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
                      decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
             // `loadHTMLString(_, baseURL: nil)` loads as about:blank; that
-            // initial load is the only navigation a preview is allowed.
-            let url = navigationAction.request.url
-            decisionHandler(url == nil || url?.absoluteString == "about:blank" ? .allow : .cancel)
+            // initial load (and the app's own font scheme) is the only
+            // navigation a preview is allowed. Shared with the offscreen
+            // rasterizer so the two cannot drift.
+            decisionHandler(PreviewPolicy.allows(navigationAction.request.url) ? .allow : .cancel)
         }
     }
 
@@ -67,6 +71,10 @@ struct SlidePreview {
         // scriptable half. A preview is a picture, not a program.
         let config = WKWebViewConfiguration()
         config.defaultWebpagePreferences.allowsContentJavaScript = false
+        // And the block-all rule list, when it has compiled (see
+        // PreviewContentRules for the layers and their ordering); the
+        // navigation gate and the document's CSP hold until then.
+        PreviewContentRules.attach(to: config)
         #if os(macOS)
         let view = PassiveWebView(frame: .zero, configuration: config)
         #else
