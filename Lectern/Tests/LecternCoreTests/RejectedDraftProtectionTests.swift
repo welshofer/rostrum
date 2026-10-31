@@ -105,6 +105,10 @@ import Testing
         // A spelling that standardizes to the same folder is refused too.
         let dotted = decks.appendingPathComponent(".", isDirectory: true)
         #expect(DeckGenerator.keepRejectedDraft("{\"secret\":1}", in: dotted, decks: decks) == nil)
+        // So is a folder nested anywhere inside the decks tree: it would be
+        // published along with everything else there.
+        let nested = decks.appendingPathComponent("Diagnostics", isDirectory: true)
+        #expect(DeckGenerator.keepRejectedDraft("{\"secret\":1}", in: nested, decks: decks) == nil)
         #expect(try FileManager.default.contentsOfDirectory(atPath: decks.path).isEmpty)
 
         // A distinct diagnostics folder is still written.

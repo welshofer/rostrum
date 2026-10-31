@@ -126,11 +126,13 @@ public actor DeckGenerator {
         }
     }
 
-    /// Whether two directory URLs name the same folder once `.`/`..` segments
-    /// and symlinks are resolved, so `decks/./` cannot slip past the guard.
+    /// Whether `a` is the folder `b` or lies anywhere inside it, once `.`/`..`
+    /// segments and symlinks are resolved — so neither `decks/./` nor
+    /// `decks/Diagnostics` can carry a draft into the user's published tree.
     static func isSameDirectory(_ a: URL, _ b: URL) -> Bool {
-        a.standardizedFileURL.resolvingSymlinksInPath().path
-            == b.standardizedFileURL.resolvingSymlinksInPath().path
+        let inner = a.standardizedFileURL.resolvingSymlinksInPath().path
+        let outer = b.standardizedFileURL.resolvingSymlinksInPath().path
+        return inner == outer || inner.hasPrefix(outer.hasSuffix("/") ? outer : outer + "/")
     }
 
     /// The QA editor pass: hand the valid draft to the reviewer and use its
