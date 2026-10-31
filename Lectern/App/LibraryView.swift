@@ -288,7 +288,9 @@ struct DeckGridView: View {
             Text(app.renameProblem ?? "")
         }
         .alert("Couldn't delete that deck",
-               isPresented: Binding(get: { app.deleteProblem != nil },
+               // The library sheet hosts its own copy of this alert; while it
+               // is up, let it present rather than racing a second one here.
+               isPresented: Binding(get: { app.deleteProblem != nil && !app.isShowingLibrary },
                                     set: { if !$0 { app.deleteProblem = nil } })) {
             Button("OK", role: .cancel) { app.deleteProblem = nil }
         } message: {
