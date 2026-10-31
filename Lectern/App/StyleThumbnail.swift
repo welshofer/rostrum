@@ -91,8 +91,9 @@ struct StyleCard: View {
         .onHover { hovering = $0 }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(style.name), \(style.badge)")
-        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
-        .accessibilityAction(named: Text(isFavorite ? "Remove from favorites" : "Favorite"), onFavorite)
+        // A Button already carries the button trait; only selection is added.
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityAction(named: Text(isFavorite ? "Remove from favorites" : "Add to favorites"), onFavorite)
     }
 }
 

@@ -250,10 +250,12 @@ public actor DeckGenerator {
                         let data = try await imageProvider.image(prompt: brief.prompt, style: style,
                                                                  aspect: aspect, role: role)
                         return (id, .success(data))
-                    } catch is CancellationError {
+                    } catch is CancellationError where Task.isCancelled {
                         // The user stopped the run; recording this as an image
                         // failure would let rendering go ahead and save a deck
-                        // with N "couldn't be generated" warnings.
+                        // with N "couldn't be generated" warnings. A provider
+                        // that throws CancellationError on its own, with the
+                        // run still live, is an ordinary image failure below.
                         throw CancellationError()
                     } catch {
                         return (id, .failure(error))
