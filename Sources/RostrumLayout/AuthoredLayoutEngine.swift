@@ -179,15 +179,26 @@ public final class AuthoredLayoutEngine {
                 fit.children = autofit.deepCopy().children
             }
             preparation = RichTextLayout.Preparation()
-            var scale = currentScale
-            while true {
+            // Candidate scales are currentScale - 2500k above the floor, then the
+            // floor itself. Bisect that grid for the largest accepted scale: the
+            // same value a 2500-unit linear descent selects, in O(log n) layouts.
+            func probe(_ scale: Int) throws -> Bool {
                 try Task.checkCancellation()
                 fit[attribute: "fontScale"] = String(scale)
-                if accepted(layout(candidate)) { break }
-                guard scale > minimumScale else {
+                return accepted(layout(candidate))
+            }
+            if try !probe(currentScale) {
+                let steps = (currentScale - minimumScale - 1) / 2500
+                func grid(_ index: Int) -> Int { index > steps ? minimumScale : currentScale - 2500 * index }
+                guard currentScale > minimumScale, try probe(minimumScale) else {
                     throw cannotFit("does not fit at a readable size. Use a roomier layout or split this slide.")
                 }
-                scale = max(minimumScale, scale - 2500)
+                var rejected = 0, acceptedIndex = steps + 1
+                while acceptedIndex - rejected > 1 {
+                    let middle = (rejected + acceptedIndex) / 2
+                    if try probe(grid(middle)) { acceptedIndex = middle } else { rejected = middle }
+                }
+                fit[attribute: "fontScale"] = String(grid(acceptedIndex))
             }
             // Apply only the measured edits. Retain paragraph/run identities so
             // previously obtained facades still edit the document after fitting.
