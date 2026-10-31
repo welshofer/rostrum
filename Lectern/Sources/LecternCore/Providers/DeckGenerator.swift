@@ -150,8 +150,9 @@ public actor DeckGenerator {
     /// Generate an image for each slide that carries an `ImageBrief`, concurrently.
     /// Images are an enhancement: a failed one is skipped (not fatal), but the
     /// failure is reported as a warning so "0 images" is never silent.
+    /// Cancellation is not a failure: it propagates as `CancellationError`.
     private func illustrate(_ deck: DeckIR, template: PowerPointTemplate?,
-                            emit: @Sendable @escaping (GenerationEvent) -> Void) async -> (images: [String: Data], warnings: [String]) {
+                            emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> (images: [String: Data], warnings: [String]) {
         guard let imageProvider else { return ([:], []) }
         if let template {
             let source = try? Presentation.fromTemplate(data: template.data)
@@ -196,7 +197,10 @@ public actor DeckGenerator {
         var images: [String: Data] = [:]
         var failures: [String] = []
         var done = 0
-        await withTaskGroup(of: (String, Result<Data, Error>).self) { group in
+        // A throwing group so a cancel surfaces from `illustrate` instead of
+        // being folded into per-slide failures: leaving the group by throwing
+        // also cancels the requests still in flight.
+        try await withThrowingTaskGroup(of: (String, Result<Data, Error>).self) { group in
             func record(_ outcome: (String, Result<Data, Error>)) {
                 let (id, result) = outcome
                 done += 1
@@ -210,7 +214,7 @@ public actor DeckGenerator {
             while next < briefed.count {
                 // At the ceiling, wait for one to land before starting another,
                 // so the number in flight never exceeds it.
-                if next >= inFlightLimit, let finished = await group.next() {
+                if next >= inFlightLimit, let finished = try await group.next() {
                     record(finished)
                 }
                 let (id, brief, aspect, role) = briefed[next]
@@ -220,12 +224,17 @@ public actor DeckGenerator {
                         let data = try await imageProvider.image(prompt: brief.prompt, style: style,
                                                                  aspect: aspect, role: role)
                         return (id, .success(data))
+                    } catch is CancellationError {
+                        // The user stopped the run; recording this as an image
+                        // failure would let rendering go ahead and save a deck
+                        // with N "couldn't be generated" warnings.
+                        throw CancellationError()
                     } catch {
                         return (id, .failure(error))
                     }
                 }
             }
-            while let finished = await group.next() { record(finished) }
+            while let finished = try await group.next() { record(finished) }
         }
         var warnings: [String] = discarded
         if !failures.isEmpty {
@@ -321,7 +330,10 @@ public actor DeckGenerator {
         // are the priciest thing this pipeline does after the draft itself.
         try Task.checkCancellation()
         let shaped = normalizeIfValid(result, request)
-        let (images, imageWarnings) = await illustrate(shaped.deck, template: template, emit: emit)   // no-op without an image provider
+        let (images, imageWarnings) = try await illustrate(shaped.deck, template: template, emit: emit)   // no-op without an image provider
+        // A cancel that arrived while images were in flight (including one a
+        // provider reported as its own error) must not render or save a deck.
+        try Task.checkCancellation()
         emit(.rendering)
         let snapshot = RenderSnapshot(deck: shaped.deck, images: images,
             design: try (template == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) },
