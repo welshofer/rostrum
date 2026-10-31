@@ -101,6 +101,15 @@ struct LecternApp: App {
                 NSWorkspace.shared.open(directory)
             }
             .keyboardShortcut("o", modifiers: [.command, .shift])
+            Divider()
+            // Generation spends API money while it runs; ⌘. stops it from
+            // anywhere, not just from the button in the progress view.
+            Button("Stop Generating") { app.cancel() }
+                .keyboardShortcut(".")
+                .disabled(app.phase != .generating)
+            Button("Export Everything…") { app.requestExport() }
+                .keyboardShortcut("e", modifiers: [.command, .shift])
+                .disabled(app.phase != .inspected || app.isExporting)
         }
         CommandGroup(replacing: .help) {
             Link("Lectern Help",

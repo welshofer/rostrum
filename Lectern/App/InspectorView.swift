@@ -54,6 +54,10 @@ struct InspectorView: View {
         .sheet(item: $notesPreviewRequest) { request in
             NotesPagePreviewView(request: request)
         }
+        // ⇧⌘E from the menu bar opens the same chooser as the button below.
+        .onChange(of: app.exportRequests) {
+            if let inspection = app.inspection { chooseExportDestination(for: inspection) }
+        }
     }
 
     private func content(for inspection: DeckInspection) -> some View {
