@@ -61,8 +61,8 @@ enum HTTPRetry {
     static func seconds(_ value: String) -> Int? {
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
         let number = trimmed.hasSuffix("s") ? String(trimmed.dropLast()) : trimmed
-        guard let seconds = Double(number), seconds >= 0 else { return nil }
-        return Int(ceil(seconds))
+        guard let seconds = Double(number), seconds.isFinite, seconds >= 0 else { return nil }
+        return Int(exactly: ceil(seconds))
     }
 
     /// The longest a call may go on *starting* new attempts.
