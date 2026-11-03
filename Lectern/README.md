@@ -301,6 +301,10 @@ repository's executable contract; internal spec references are historical contex
 - **FixtureProvider** (tests only): replays a fixture with injectable
   failures, so the whole pipeline is exercised headlessly. The shipping app
   has **no mock path** — generation requires a real key.
+- **Provider retries**: numeric `Retry-After` values round up to whole seconds.
+  Nonfinite or unrepresentable durations use the existing exponential backoff,
+  rather than trapping during conversion. Retry caps, cancellation and request
+  deadlines are unchanged.
 - **StyleCatalog**: scans a `design.md` directory into `[Style]`.
 
 **Verified:** the fixture-driven pipeline renders a deck that opens in PowerPoint without

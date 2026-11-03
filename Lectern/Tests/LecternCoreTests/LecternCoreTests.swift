@@ -784,6 +784,22 @@ import Rostrum
         #expect(HTTPRetry.seconds("soon") == nil)
     }
 
+    @Test(arguments: ["inf", "+inf", "infinity", "1e100", "1e309",
+                      String(Double(Int.max)), "nan", "-1", "-0.1"])
+    func invalidRetryDurationsCannotTrap(_ value: String) {
+        #expect(HTTPRetry.seconds(value) == nil)
+    }
+
+    @Test func representableRetryDurationsRetainTheirRounding() throws {
+        #expect(HTTPRetry.seconds("0") == 0)
+        #expect(HTTPRetry.seconds("-0") == 0)
+        #expect(HTTPRetry.seconds(" 1.2s ") == 2)
+        #expect(HTTPRetry.seconds("9999") == 9999)
+        let nearLimit = Double(Int.max).nextDown
+        let expected = try #require(Int(exactly: nearLimit))
+        #expect(HTTPRetry.seconds(String(nearLimit)) == expected)
+    }
+
     /// Retrying without a ceiling turned a stalled network into six minutes of
     /// a UI that looks frozen. The deadline bounds when a retry may start.
     @Test func retryingStopsAtTheOverallDeadline() {

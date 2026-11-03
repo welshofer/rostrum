@@ -146,6 +146,30 @@ import Testing
         #expect(waits.count == 1)
         #expect(seen.value?.timeoutInterval == budget - 2)
     }
+
+    @Test(arguments: ["inf", "1e100", String(Double(Int.max))])
+    func invalidRetryAfterUsesTheExistingBackoff(_ value: String) async throws {
+        let attempts = AttemptCounter(), waits = AttemptCounter()
+        let start = Date(timeIntervalSince1970: 0)
+        let provider = OpenAIProvider(apiKey: "k",
+            now: { start.addingTimeInterval(Double(waits.count) * 2) },
+            wait: { seconds in
+                #expect(seconds == 2)
+                _ = waits.next()
+            }, send: { request in
+                #expect(request.timeoutInterval == ReasoningEffort.medium.timeout - Double(waits.count) * 2)
+                if attempts.next() == 1 {
+                    return (Data(), Self.http(429, headers: ["Retry-After": value]))
+                }
+                return (Data(self.response(deck: self.deck).utf8), Self.http(200))
+            })
+
+        let draft = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
+
+        #expect(draft.json == deck)
+        #expect(attempts.count == 2)
+        #expect(waits.count == 1)
+    }
 }
 
 /// Small thread-safe boxes so a `@Sendable` stub can report what it saw.
