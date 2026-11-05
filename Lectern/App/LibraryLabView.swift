@@ -10,7 +10,7 @@ struct LibraryLabView: View {
     @State private var showingFiles = false
 
     private var recipe: LibraryLabRecipe {
-        LibraryLab.catalog.first { $0.id == model.selection }!
+        LibraryLab.recipe(for: model.selection)
     }
 
     var body: some View {
@@ -46,6 +46,7 @@ struct LibraryLabView: View {
                         Text("\(model.completed) of \(model.total) complete · \(activeTitle)")
                             .font(.callout).foregroundStyle(.secondary)
                         Button("Cancel", role: .cancel) { model.cancel() }
+                            .keyboardShortcut(.cancelAction)
                     }
                     .accessibilityIdentifier("libraryLab.progress")
                 }
@@ -136,7 +137,7 @@ struct LibraryLabView: View {
 
     @ViewBuilder private var actions: some View {
         Button("Run Demo", systemImage: "play.fill") { app.runLibraryDemos([recipe.id], model: model) }
-            .buttonStyle(.borderedProminent).disabled(model.isRunning)
+            .buttonStyle(.glassProminent).disabled(model.isRunning)
             .accessibilityIdentifier("libraryLab.run")
         Button("Run All \(LibraryLab.catalog.count) Demos") { app.runLibraryDemos(LibraryLab.catalog.map(\.id), model: model) }
             .disabled(model.isRunning).accessibilityIdentifier("libraryLab.runAll")

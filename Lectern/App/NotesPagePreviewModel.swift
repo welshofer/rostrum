@@ -51,7 +51,7 @@ final class NotesPagePreviewModel {
                     if !cancelled { preview = result }
                 }
             } catch {
-                let message = String(describing: error)
+                let message = AppState.describe(error)
                 let cancelled = Task.isCancelled || error is CancellationError
                 await MainActor.run {
                     guard runs.isCurrent(run) else { return }

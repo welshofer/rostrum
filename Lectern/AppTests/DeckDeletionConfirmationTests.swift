@@ -65,6 +65,38 @@ import LecternCore
         #expect(FileManager.default.fileExists(atPath: deck.url.path))
     }
 
+    /// A trash that fails after the user confirmed "Delete" must explain
+    /// itself rather than leave the row in place silently, and the next
+    /// successful delete clears the stale explanation.
+    @MainActor
+    @Test func aFailedDeleteSetsDeleteProblemAndASuccessfulOneClearsIt() throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
+
+        // The test context's injected `deletingDeck` refuses any deck outside
+        // its owned library directory, which stands in for a trash that fails.
+        let outside = FileManager.default.temporaryDirectory.resolvingSymlinksInPath()
+            .appendingPathComponent("deck-deletion-outside-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: outside, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: outside) }
+        let refused = try makeFixtureDeck(in: outside)
+
+        app.deleteFromLibrary(refused)
+
+        let problem = try #require(app.deleteProblem)
+        #expect(!problem.isEmpty)
+        #expect(FileManager.default.fileExists(atPath: refused.url.path))
+
+        let deck = try makeFixtureDeck(in: context.libraryDirectory)
+        defer { try? FileManager.default.removeItem(at: deck.url) }
+
+        app.deleteFromLibrary(deck)
+
+        #expect(app.deleteProblem == nil)
+        #expect(!FileManager.default.fileExists(atPath: deck.url.path))
+    }
+
     private func makeFixtureDeck(in directory: URL) throws -> DeckFile {
         let url = directory
             .appendingPathComponent("deck-deletion-\(UUID().uuidString).pptx")

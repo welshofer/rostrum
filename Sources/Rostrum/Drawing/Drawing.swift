@@ -35,12 +35,12 @@ public struct Color: Hashable, Sendable {
     public static let black = Color("000000")
 
     /// `<a:srgbClr val="…">` with an optional `<a:alpha>` child
-    /// (alpha in 0…1; wire unit is thousandths of a percent).
+    /// (alpha in 0…1; wire unit is thousandths of a percent). A non-finite
+    /// alpha writes no `a:alpha` (fully opaque).
     func srgbElement(alpha: Double? = nil) -> XML.Element {
         let element = XML.Element("a:srgbClr", attributes: [("val", hex)])
-        if let alpha, alpha < 1 {
-            element.appendElement(XML.Element(
-                "a:alpha", attributes: [("val", String(Int((alpha * 100_000).rounded())))]))
+        if let alpha, alpha < 1, let val = fixedPoint(alpha, scale: 100_000) {
+            element.appendElement(XML.Element("a:alpha", attributes: [("val", val)]))
         }
         return element
     }
@@ -153,10 +153,13 @@ public enum Fill: Hashable, Sendable {
         case .gradient(let gradient):
             let fill = XML.Element("a:gradFill", attributes: [("rotWithShape", "1")])
             let stopList = XML.Element("a:gsLst")
-            for stop in gradient.stops.sorted(by: { $0.position < $1.position }) {
-                let gs = XML.Element("a:gs", attributes: [
-                    ("pos", String(Int((stop.position * 100_000).rounded()))),
-                ])
+            // A stop with a non-finite position has no wire form; skip it
+            // (filtering first also keeps NaN out of the sort predicate).
+            let placed = gradient.stops.compactMap { stop in
+                fixedPoint(stop.position, scale: 100_000).map { (stop, $0) }
+            }
+            for (stop, pos) in placed.sorted(by: { $0.0.position < $1.0.position }) {
+                let gs = XML.Element("a:gs", attributes: [("pos", pos)])
                 gs.appendElement(stop.color.srgbElement(alpha: stop.alpha))
                 stopList.appendElement(gs)
             }
@@ -169,9 +172,11 @@ public enum Fill: Hashable, Sendable {
                     ("l", "50000"), ("t", "50000"), ("r", "50000"), ("b", "50000"),
                 ]))
                 fill.appendElement(path)
-            } else {
+            } else if let ang = fixedPoint(gradient.angleDegrees, scale: 60_000) {
+                // A non-finite angle writes no a:lin (it is optional; the
+                // fill keeps its stops and the default direction).
                 fill.appendElement(XML.Element("a:lin", attributes: [
-                    ("ang", String(Int((gradient.angleDegrees * 60_000).rounded()))),
+                    ("ang", ang),
                     ("scaled", "1"),
                 ]))
             }

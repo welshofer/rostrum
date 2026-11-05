@@ -43,10 +43,11 @@ extension PlatformLabRecipes {
         cell.setPadding(left: .zero, top: .zero, right: .zero, bottom: .zero)
         cell.setBorders(Line(color: Color("276D89")))
         paragraphContent(cell.textFrame, body: paragraphSentence + "The last line remains natural.", alignment: .justified)
-        let note = try text("Supported sample: Latin words, ordinary spaces, mixed sizes and colors.\n\nRight-to-left and non-Latin layout remain diagnosed limitations. See the tab-stop demo for supported tab-aware columns. Distributed and low text alignment are not demonstrated as supported.\n\nSave/reopen checks compare exact measured span positions; this is not a general PowerPoint pixel-parity claim.",
+        let note = try text("Supported sample: Latin words, ordinary spaces, mixed sizes and colors.\n\nRight-to-left and non-Latin layout remain diagnosed limitations. See the tab-stop demo for supported tab-aware columns. Below, distributed alignment widens word spaces on every line and is diagnosed as an approximation: PowerPoint also spreads letters. Low justification is not demonstrated.\n\nSave/reopen checks compare exact measured span positions; this is not a general PowerPoint pixel-parity claim.",
             on: tableSlide, in: LibraryLabSupport.frame(7, 1.7, 5.4, 4.5))
         note.textFrame?.paragraphs.first?.runs.first?.fontSize = 18
         note.fitText(fonts: deck.fonts)
+        let distributed = try paragraphDistributed(deck, slide: tableSlide, width: width)
 
         let boundary = try paragraphBoundary(deck, narrow: options.alternative)
         let ligatures = try paragraphLigatures(deck, narrow: options.alternative)
@@ -69,7 +70,7 @@ extension PlatformLabRecipes {
             .init("Mixed formatting remains measurable", Set(justified.lines.flatMap(\.spans).map { $0.run.color }).count == 2 && Set(justified.lines.flatMap(\.spans).map { $0.run.fontSize }).count == 2 && justified.diagnostics.isEmpty, "Two sizes and colors retain their run styles with the exact regular font."),
             .init("Table uses justified layout", tableLayout.lines.count > 1 && abs(paragraphVisibleWidth(tableLayout.lines[0], fonts: deck.fonts) - width * 72) < 0.01 && tableLayout.diagnostics.isEmpty, "A zero-padding table cell fills the same bounded width."),
             .init("Preview and extraction produced", svg.contains("<svg") && !extraction.files.isEmpty, "Real SVG and DeckExport artifacts accompany the editable PPTX.")
-        ] + boundary.checks + ligatures.checks + breaks.checks + spacing.checks + paint.checks, extraFiles: extraction.files, verify: { reopened in
+        ] + distributed.checks + boundary.checks + ligatures.checks + breaks.checks + spacing.checks + paint.checks, extraFiles: extraction.files, verify: { reopened in
             let registered = reopened.registerEmbeddedFonts()
             let readLeft = try paragraphGeometry(reopened, named: "Left paragraph")
             let readJustified = try paragraphGeometry(reopened, named: "Justified paragraph")
@@ -79,7 +80,74 @@ extension PlatformLabRecipes {
                 .init("Paragraph positions survive reopening", left.lines == readLeft.lines && justified.lines == readJustified.lines && paragraphExpansion(left: readLeft, justified: readJustified), "Every span, baseline, width and style matches the authored layout."),
                 .init("Table positions survive reopening", tableLayout.lines == readTable.lines, "The table cell reproduces all justified spans."),
                 .init("Saved SVG is deterministic", try reopened.renderSVG(slideAt: 0) == svg, "The reopened preview matches the original byte-for-byte.")
-            ] + (try boundary.verify(reopened)) + (try ligatures.verify(reopened)) + (try breaks.verify(reopened)) + (try spacing.verify(reopened)) + (try paint.verify(reopened))
+            ] + (try distributed.verify(reopened)) + (try boundary.verify(reopened)) + (try ligatures.verify(reopened)) + (try breaks.verify(reopened)) + (try spacing.verify(reopened)) + (try paint.verify(reopened))
+        })
+    }
+
+    static let distributedModes = ["dist", "thaiDist"]
+
+    static func distributedApproximation(_ mode: String) -> String {
+        "Paragraph alignment '\(mode)' is approximated: lines are distributed by word spacing; PowerPoint also spreads inter-character spacing, which is not modeled"
+    }
+
+    /// `dist`/`thaiDist` have no public `TextAlignment` case, so the owned DOM
+    /// authors them. Layout widens word spaces on every line, including the
+    /// last, and reports that as an approximation of PowerPoint's distribution.
+    static func paragraphDistributed(_ deck: Presentation, slide: Slide, width: Double) throws -> (checks: [LibraryLabCheck], verify: (Presentation) throws -> [LibraryLabCheck]) {
+        let sentence = "Distributed alignment widens the word spaces of every line, including the last."
+        var layouts: [String: RichTextLayout] = [:]
+        for (index, mode) in distributedModes.enumerated() {
+            let box = try slide.shapes.addTextBox(LibraryLabSupport.frame(0.7, 5.75 + Double(index) * 0.85, width, 0.75))
+            box.name = "Distributed paragraph " + mode
+            let frame = try require(box.textFrame, "Distributed frame missing")
+            frame.clear()
+            frame.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
+            frame.wordWrap = true
+            let paragraph = frame.addParagraph()
+            paragraph.alignment = .justified
+            paragraph.setNoBullet()
+            let run = paragraph.addRun(mode + ": " + sentence)
+            run.fontName = "DejaVu Sans"; run.fontSize = 14; run.color = Color("263445")
+            let properties = try require(paragraphBody(deck, named: box.name, slideAt: 1)
+                .firstChild(named: "a:p")?.firstChild(named: "a:pPr"), "Distributed paragraph properties missing")
+            properties[attribute: "algn"] = mode
+            slide.part.markDirty()
+            layouts[mode] = try paragraphGeometry(deck, named: box.name, slideAt: 1)
+        }
+        let rendered = try deck.renderSVGReportingProblems(slideAt: 1)
+        func spread(_ layout: RichTextLayout) -> Bool {
+            layout.lines.count > 1 && layout.fits
+                && layout.lines.allSatisfy { abs($0.visibleWidth - width * 72) < 0.01 }
+        }
+        func diagnosed(_ problems: SlideRenderProblems) -> Bool {
+            let alignment = problems.fidelityIssues.filter { $0.message.hasPrefix("Paragraph alignment") }
+            return alignment.map(\.message).sorted() == distributedModes.map(distributedApproximation).sorted()
+                && alignment.allSatisfy { $0.code == .unsupportedTextProperty && $0.impact == .approximation }
+                && !problems.messages.contains { $0.contains("using left alignment") }
+        }
+        func attributes(_ deck: Presentation) throws -> [String] {
+            try distributedModes.map { mode in
+                try paragraphBody(deck, named: "Distributed paragraph " + mode, slideAt: 1)
+                    .firstChild(named: "a:p")?.firstChild(named: "a:pPr")?[attribute: "algn"] ?? ""
+            }
+        }
+        let checks: [LibraryLabCheck] = [
+            .init("Distributed lines spread", distributedModes.allSatisfy { mode in
+                    layouts[mode].map { spread($0) && $0.diagnostics == [.unsupportedLayoutFeature(distributedApproximation(mode))] } ?? false
+                }, "dist and thaiDist widen word spaces so every line, including the last, reaches the box edge."),
+            .init("Distributed alignment is diagnosed as an approximation", diagnosed(rendered.problems),
+                  "One approximation per paragraph names the unmodeled inter-character spacing; no left-alignment fallback is reported.")
+        ]
+        return (checks, { reopened in
+            let saved = try reopened.renderSVGReportingProblems(slideAt: 1)
+            let read = try distributedModes.map { try paragraphGeometry(reopened, named: "Distributed paragraph " + $0, slideAt: 1) }
+            return [
+                .init("Distributed alignment survives reopening", try attributes(reopened) == distributedModes
+                      && zip(distributedModes, read).allSatisfy { layouts[$0]?.lines == $1.lines && spread($1) },
+                      "Saved algn values reopen as dist and thaiDist with identical spread lines."),
+                .init("Saved distributed diagnostics remain approximations", diagnosed(saved.problems) && saved.svg == rendered.svg,
+                      "The reopened table slide reports the same approximations and byte-identical SVG.")
+            ]
         })
     }
 

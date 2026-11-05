@@ -50,15 +50,15 @@ public enum OpenAIModels {
                 throw LecternError.authFailed(provider: "OpenAI")
             case let status where HTTPRetry.isRetriable(status: status):
                 let retryAfter = HTTPRetry.retryAfterSeconds(http)
+                let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter)
                 if attempt + 1 < HTTPRetry.maxAttempts {
-                    try await HTTPRetry.wait(
-                        seconds: HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter))
+                    try await HTTPRetry.wait(seconds: wait)
                     attempt += 1
                     continue
                 }
                 if status == 429 {
-                    throw LecternError.rateLimited(
-                        afterSeconds: retryAfter ?? HTTPRetry.backoff(attempt: attempt, retryAfter: nil))
+                    // The hint is the wait just computed, not a fresh draw.
+                    throw LecternError.rateLimited(afterSeconds: retryAfter ?? Int(ceil(wait)))
                 }
                 throw LecternError.providerError(status: status, message: "couldn't list models")
             default:

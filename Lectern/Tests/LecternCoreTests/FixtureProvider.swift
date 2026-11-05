@@ -1,6 +1,13 @@
 import Foundation
 @testable import LecternCore
 
+/// Scratch locations shared by pipeline tests. `DeckGenerator` requires an
+/// app-owned diagnostics directory distinct from the decks folder.
+enum TestPaths {
+    static let diagnostics = FileManager.default.temporaryDirectory
+        .appendingPathComponent("lectern-diagnostics", isDirectory: true)
+}
+
 /// Test-only provider that replays a fixture draft with injectable failure modes.
 /// It lives in the **test target only** — the shipping product never contains a
 /// mock/fake provider (a deck is always produced by a real one).

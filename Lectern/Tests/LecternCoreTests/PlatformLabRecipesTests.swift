@@ -56,6 +56,20 @@ import Rostrum
         #expect(try PlatformLabRecipes.paragraphGeometry(short.deck, named: "Left paragraph").lines[0].width < expectedWidth)
     }
 
+    @Test(arguments: [false, true])
+    func distributedAlignmentIsSavedAndDiagnosedAsApproximation(narrow: Bool) throws {
+        let draft = try PlatformLabRecipes.make(.paragraphLayout, options: .init(sampleSize: 2, alternative: narrow))
+        let names = ["Distributed lines spread", "Distributed alignment is diagnosed as an approximation"]
+        #expect(names.allSatisfy { name in draft.checks.contains { $0.name == name && $0.passed } })
+        let reopened = try Presentation(data: draft.deck.serializedData())
+        let saved = try draft.verify(reopened)
+        #expect(["Distributed alignment survives reopening", "Saved distributed diagnostics remain approximations"]
+            .allSatisfy { name in saved.contains { $0.name == name && $0.passed } })
+        let issues = try reopened.renderSVGReportingProblems(slideAt: 1).problems.fidelityIssues
+            .filter { $0.message.hasPrefix("Paragraph alignment") }
+        #expect(issues.count == 2 && issues.allSatisfy { $0.impact == .approximation && $0.message.contains("inter-character spacing") })
+    }
+
     @Test func embeddedWorkbookHasResolvableNativePreview() throws {
         let draft = try PlatformLabRecipes.make(.mediaAndAttachments, options: .init())
         let deck = try Presentation(data: draft.deck.serializedData())

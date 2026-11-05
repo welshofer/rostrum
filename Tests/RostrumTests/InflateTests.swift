@@ -283,6 +283,220 @@ import Testing
         }
     }
 
+    // MARK: - Primary (9-bit) Huffman lookup
+
+    /// A complete code with one symbol per length 1...14 and two of length 15:
+    /// symbol k < 15 is k ones then a zero; symbol 15 is fifteen ones. Codes
+    /// 0...8 fit the primary table; 9...15 are longer than `fastBits` and must
+    /// fall back to the canonical walk.
+    private static let staircaseLengths: [Int] = Array(1...15) + [15]
+
+    /// MSB-first code bits for symbol `sym` of `staircaseLengths`.
+    private func writeStaircase(_ sym: Int, into writer: inout BitWriter) {
+        let ones = sym == 15 ? 15 : sym
+        for _ in 0..<ones { writer.write(1, bits: 1) }
+        if sym < 15 { writer.write(0, bits: 1) }
+    }
+
+    @Test func fastTableResolvesShortCodesAndMissesLongOnes() throws {
+        let table = try HuffmanTable(lengths: Self.staircaseLengths)
+        #expect(table.left == 0)
+        // Symbol 3 is `1110` MSB-first, i.e. stream bits 1,1,1,0 → index 0b0111
+        // LSB-first; every 9-bit index sharing that prefix resolves to it.
+        for high in 0..<(1 << 5) {
+            let index = 0b0111 | (high << 4)
+            let hit = try #require(table.fastLookup(index))
+            #expect(hit.symbol == 3)
+            #expect(hit.length == 4)
+        }
+        // Symbol 0 is the single bit `0`: half the table.
+        for high in 0..<(1 << 8) {
+            let hit = try #require(table.fastLookup(high << 1))
+            #expect(hit.symbol == 0 && hit.length == 1)
+        }
+        // The longest code the table can hold is symbol 8 (`111111110`).
+        let eight = try #require(table.fastLookup(0b0_1111_1111))
+        #expect(eight.symbol == 8 && eight.length == 9)
+        // Nine ones is the prefix of every code longer than 9 bits: a miss.
+        #expect(table.fastLookup(0b1_1111_1111) == nil)
+
+        // The fixed literal table (7/8/9-bit codes) is fully resolvable.
+        let fixed = InflateDecoder.fixedTables.0
+        for index in 0..<(1 << HuffmanTable.fastBits) {
+            #expect(fixed.fastLookup(index) != nil, "fixed index \(index)")
+        }
+    }
+
+    @Test func decodeFallsBackToCanonicalWalkForLongCodes() throws {
+        let table = try HuffmanTable(lengths: Self.staircaseLengths)
+        let sequence = [12, 3, 15, 0, 9, 14, 8, 10, 0, 0, 13, 5]
+        var writer = BitWriter()
+        for sym in sequence { writeStaircase(sym, into: &writer) }
+        var decoder = InflateDecoder(input: [UInt8](writer.data), expectedOutputSize: nil)
+        var decoded: [Int] = []
+        for _ in sequence { decoded.append(try decoder.decode(table)) }
+        #expect(decoded == sequence)
+        // The slow walk must agree bit-for-bit with the fast path.
+        var walker = InflateDecoder(input: [UInt8](writer.data), expectedOutputSize: nil)
+        var walked: [Int] = []
+        for _ in sequence { walked.append(try walker.decodeSlow(table)) }
+        #expect(walked == sequence)
+    }
+
+    @Test func decodeThrowsWhenStreamEndsInsideACode() throws {
+        let table = try HuffmanTable(lengths: Self.staircaseLengths)
+        // Eight ones and then nothing: the primary table pads the ninth bit
+        // with a zero and finds symbol 8 (`111111110`), but that ninth bit is
+        // not in the input, so the hit must be rejected rather than consumed.
+        var decoder = InflateDecoder(input: [0xFF], expectedOutputSize: nil)
+        expectDeflateCorrupt("code cut off by end of input") { _ = try decoder.decode(table) }
+        // Two zeros (symbol 0 twice) then fourteen ones: past the primary
+        // table, the walk runs out of input one bit short of symbol 14/15.
+        decoder = InflateDecoder(input: [0xFC, 0xFF], expectedOutputSize: nil)
+        #expect(try decoder.decode(table) == 0)
+        #expect(try decoder.decode(table) == 0)
+        expectDeflateCorrupt("long code cut off by end of input") { _ = try decoder.decode(table) }
+        // No input at all.
+        decoder = InflateDecoder(input: [], expectedOutputSize: nil)
+        expectDeflateCorrupt("empty input") { _ = try decoder.decode(table) }
+        // A short code followed by padding zeros decodes: `0` is symbol 0 and
+        // the zero padding of the final byte is a legitimate symbol 0 too.
+        decoder = InflateDecoder(input: [0x00], expectedOutputSize: nil)
+        for _ in 0..<8 { #expect(try decoder.decode(table) == 0) }
+        expectDeflateCorrupt("byte fully consumed") { _ = try decoder.decode(table) }
+    }
+
+    @Test func peekAndDropMirrorBits() throws {
+        var reader = InflateDecoder(input: [0b1010_0101, 0b1100_0011, 0xFF], expectedOutputSize: nil)
+        #expect(reader.peek(9) == 0b1_1010_0101)
+        #expect(reader.bitCount == 16)
+        reader.drop(3)
+        #expect(reader.peek(9) == 0b0_0111_0100)
+        #expect(try reader.bits(5) == 0b1_0100)
+        #expect(reader.bitCount == 8)
+        // At the end of input peek returns the real bits zero-padded and
+        // reports how many are real through bitCount; it never throws.
+        reader.drop(8)
+        #expect(reader.bitCount == 0)
+        #expect(reader.peek(9) == 0b0_1111_1111)
+        #expect(reader.bitCount == 8)
+        reader.drop(8)
+        #expect(reader.peek(9) == 0)
+        #expect(reader.bitCount == 0)
+        expectDeflateCorrupt("bits past the end") { _ = try reader.bits(1) }
+    }
+
+    // MARK: - Randomized oracle round trips
+
+    /// Payload shapes that drive the encoder into different block types and
+    /// code-length distributions: dynamic tables with long codes (skewed
+    /// alphabets), fixed blocks, stored blocks and far-back distances.
+    private func oraclePayload(kind: Int, seed: UInt64) -> Data {
+        switch kind {
+        case 0:
+            // Skewed byte frequencies (Zipf-like) force dynamic tables whose
+            // rare symbols get the long (10-15 bit) codes.
+            var state = seed
+            var bytes = [UInt8]()
+            for _ in 0..<60_000 {
+                state = state &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
+                let r = Int(state >> 33)
+                let rank = r % 1_000
+                let sym: Int
+                if rank < 700 { sym = r % 4 } else if rank < 950 { sym = 4 + r % 24 } else { sym = 28 + r % 228 }
+                bytes.append(UInt8(sym))
+            }
+            return Data(bytes)
+        case 1:
+            // Repeats separated by just under the 32 KiB window: the longest
+            // distance codes (13 extra bits) with long matches.
+            let chunk = pseudorandomData(count: 3_000, seed: seed)
+            var data = Data()
+            for i in 0..<4 {
+                data.append(chunk)
+                data.append(pseudorandomData(count: 29_500 + i * 100, seed: seed &+ UInt64(i) &+ 1))
+            }
+            data.append(chunk)
+            return data
+        case 2:
+            // Text-like content: ordinary dynamic blocks with short matches.
+            let words = ["slide", "deck", "layout", "placeholder", "theme", "master", "rostrum", "\n", " ", "—"]
+            var state = seed
+            var text = ""
+            while text.utf8.count < 40_000 {
+                state = state &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
+                text += words[Int(state >> 33) % words.count]
+                text += " "
+            }
+            return Data(text.utf8)
+        default:
+            // Near-incompressible noise with a few planted runs.
+            var data = pseudorandomData(count: 20_000, seed: seed)
+            data.append(Data(repeating: UInt8(truncatingIfNeeded: seed), count: 700))
+            data.append(pseudorandomData(count: 20_000, seed: seed ^ 0xABCD))
+            return data
+        }
+    }
+
+    @Test func randomizedOracleRoundTrips() throws {
+        let strategies = ["Z_DEFAULT_STRATEGY", "Z_FILTERED", "Z_HUFFMAN_ONLY", "Z_RLE", "Z_FIXED"]
+        var seed: UInt64 = 0x5EED_0000_0000_0001
+        for kind in 0..<4 {
+            for (i, strategy) in strategies.enumerated() {
+                seed = seed &* 2_862_933_555_777_941_757 &+ 3_037_000_493
+                let original = oraclePayload(kind: kind, seed: seed)
+                let level = [1, 6, 9][(kind + i) % 3]
+                let compressed = try rawDeflate(original, level: level, strategy: strategy)
+                let decoded = try Inflate.inflate(compressed, expectedOutputSize: original.count)
+                #expect(decoded == original, "kind \(kind) \(strategy) level \(level) seed \(seed)")
+                let undeclared = try Inflate.inflate(compressed)
+                #expect(undeclared == original, "kind \(kind) \(strategy) level \(level) undeclared size")
+            }
+        }
+    }
+
+    @Test func skewedAlphabetProducesLongDynamicCodes() throws {
+        // Guard the premise of the fallback coverage: the skewed payload's
+        // dynamic table really does contain codes longer than the primary
+        // lookup, so `randomizedOracleRoundTrips` exercises `decodeSlow`.
+        let original = oraclePayload(kind: 0, seed: 99)
+        let compressed = try rawDeflate(original, level: 9)
+        var decoder = InflateDecoder(input: [UInt8](compressed), expectedOutputSize: original.count)
+        _ = try decoder.bits(1) // BFINAL of the first block
+        #expect(try decoder.bits(2) == 2) // dynamic
+        let (literals, _) = try decoder.dynamicTables()
+        let longest = (1...15).last { literals.count[$0] > 0 } ?? 0
+        #expect(longest > HuffmanTable.fastBits, "longest literal code is \(longest) bits")
+        #expect(literals.fastLookup(0b1_1111_1111) == nil)
+    }
+
+    @Test func everyTruncationOfOracleStreamsThrows() throws {
+        // A proper prefix of a valid stream always ends before the final
+        // end-of-block code, so every truncation must throw — through the
+        // fast path's padding check as well as the walk's `bits(1)`.
+        let streams: [Data] = [
+            try rawDeflate(Data()),
+            try rawDeflate(Data("a".utf8)),
+            try rawDeflate(Data(String(repeating: "truncate me ", count: 40).utf8)),
+            try rawDeflate(oraclePayload(kind: 0, seed: 5).prefix(2_000), level: 9),
+            try rawDeflate(oraclePayload(kind: 2, seed: 6).prefix(1_500), strategy: "Z_FIXED"),
+            try rawDeflate(pseudorandomData(count: 300, seed: 8), level: 0),
+            try rawDeflate(oraclePayload(kind: 1, seed: 7), level: 9),
+        ]
+        for (n, stream) in streams.enumerated() {
+            // Every byte of the small streams; a 120-cut sample of the big one.
+            let step = Swift.max(1, stream.count / (stream.count > 10_000 ? 120 : 400))
+            var cut = 0
+            while cut < stream.count {
+                expectDeflateCorrupt("stream \(n) cut at \(cut) of \(stream.count)") {
+                    _ = try Inflate.inflate(stream.prefix(cut))
+                }
+                cut += step
+            }
+            _ = try Inflate.inflate(stream)
+        }
+    }
+
     // MARK: - expectedOutputSize
 
     @Test func expectedOutputSizeExceededThrows() throws {
@@ -298,5 +512,47 @@ import Testing
         let compressed = try rawDeflate(original)
         let decoded = try Inflate.inflate(compressed, expectedOutputSize: original.count)
         #expect(decoded == original)
+    }
+
+    /// A Huffman block whose end-of-block code is short, immediately followed by
+    /// a stored block: `Z_SYNC_FLUSH` after Huffman-only data emits an empty
+    /// stored block, and a tiny alphabet keeps the end-of-block code to a few
+    /// bits. Each `prefix` length shifts the bit alignment of the transition.
+    private func huffmanThenStored(prefix: Int, seed: UInt64) throws -> (compressed: Data, original: Data) {
+        let script = """
+            import sys, zlib
+            prefix = int(sys.argv[1])
+            payload = sys.stdin.buffer.read()
+            c = zlib.compressobj(9, zlib.DEFLATED, -15, 9, zlib.Z_HUFFMAN_ONLY)
+            out = c.compress(payload[:prefix]) + c.flush(zlib.Z_SYNC_FLUSH)
+            out += c.compress(payload[prefix:]) + c.flush(zlib.Z_FINISH)
+            sys.stdout.buffer.write(out)
+            """
+        var state = seed
+        var bytes = [UInt8]()
+        for _ in 0..<(prefix + 40) {
+            state = state &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
+            bytes.append(UInt8(ascii: "a") + UInt8((state >> 60) & 1))
+        }
+        let original = Data(bytes)
+        let compressed = try runTool("/usr/bin/python3", ["-c", script, String(prefix)], stdin: original)
+        return (compressed, original)
+    }
+
+    /// Regression for the table-driven decoder's read-ahead: `peek` may pull a
+    /// whole input byte into the bit buffer that a stored block must give back
+    /// rather than discard when it aligns to the next byte boundary.
+    @Test func shortEndOfBlockFollowedByStoredBlockDecodes() throws {
+        var seed: UInt64 = 0x0B10_C4ED_0000_0001
+        // Short prefixes get a fixed-Huffman block (7-bit end-of-block, never
+        // a whole byte of read-ahead); zlib switches to a dynamic block with a
+        // 2-bit end-of-block code from roughly a dozen bytes on, so the range
+        // runs well past that to cover every alignment of the real trigger.
+        for prefix in 1...48 {
+            seed &+= 0x9E37_79B9_7F4A_7C15
+            let (compressed, original) = try huffmanThenStored(prefix: prefix, seed: seed)
+            let decoded = try Inflate.inflate(compressed, expectedOutputSize: original.count)
+            #expect(decoded == original, "prefix \(prefix) seed \(seed)")
+        }
     }
 }

@@ -121,6 +121,40 @@ import LecternCore
         #expect(!AppState.testHostFlag(false) && !AppState.testHostFlag("NO"))
         #expect(!AppState.testHostFlag(nil))
     }
+
+    /// Settings renders `.invalid(message)` wrapped and in full, so the text
+    /// it shows must be the provider's whole explanation, not an excerpt.
+    @Test func providerErrorMessageIsDescribedInFull() {
+        let message = "Incorrect API key provided: sk-proj-****abcd. You can find your API key at "
+            + "https://platform.openai.com/account/api-keys.\nThe organization on this request is not "
+            + "verified for the selected model; verify it and retry."
+        #expect(AppState.describe(LecternError.providerError(status: 401, message: message)) == message)
+    }
+
+    /// A Foundation failure reads as Foundation's sentence, never the
+    /// `Error Domain=NSCocoaErrorDomain Code=513 …` dump.
+    @Test func cocoaErrorIsDescribedAsASentence() {
+        let text = AppState.describe(CocoaError(.fileWriteNoPermission))
+        #expect(!text.isEmpty)
+        #expect(!text.contains("Error Domain="))
+        #expect(!text.contains("CocoaError"))
+    }
+
+    /// A rename refusal reads as its own wording, naming the deck, without the
+    /// Swift case name a `String(describing:)` dump would show.
+    @Test func renameProblemIsDescribedInItsOwnWords() {
+        let problem = DeckLibrary.RenameProblem.nameTaken("X")
+        let text = AppState.describe(problem)
+        #expect(text == problem.description)
+        #expect(text.contains("X"))
+        #expect(!text.contains("nameTaken"))
+    }
+
+    /// An error with no wording of its own still yields something to show.
+    @Test func unwordedErrorFallsBackToNonEmptyText() {
+        struct E: Error {}
+        #expect(!AppState.describe(E()).isEmpty)
+    }
 }
 
 @MainActor

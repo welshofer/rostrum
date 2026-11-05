@@ -99,4 +99,14 @@ struct LibraryLabTests {
         #expect(try FileManager.default.contentsOfDirectory(atPath: parent.path) == ["keep.txt"])
         #expect(try String(contentsOf: sentinel, encoding: .utf8) == "existing file")
     }
+
+    @Test("Every demo ID has a catalog recipe and effective options")
+    func everyIDHasRecipe() {
+        #expect(LibraryLab.catalog.count == LibraryDemoID.allCases.count)
+        for id in LibraryDemoID.allCases {
+            #expect(LibraryLab.catalog.contains { $0.id == id }, "No catalog entry for \(id.rawValue)")
+            #expect(LibraryLab.recipe(for: id).id == id)
+            _ = LibraryLab.effectiveOptions(.init(), for: id)
+        }
+    }
 }

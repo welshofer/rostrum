@@ -25,15 +25,19 @@ public actor DeckGenerator {
     }
 
     public func generate(_ request: DeckRequest, designURL: URL?, template: DeckTemplate,
-                         into directory: URL, emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
-        try await generate(request, designURL: designURL, into: directory,
+                         into directory: URL, diagnostics: URL,
+                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
+        try await generate(request, designURL: designURL, into: directory, diagnostics: diagnostics,
                            template: template.nativeTemplate(), emit: emit)
     }
 
     private struct DraftErrors: Error { var errors: [String] }
 
+    /// `diagnostics` is required and must not be `directory`: rejected drafts
+    /// and render snapshots carry the user's prompt and pasted source text, so
+    /// they belong in an app-owned folder, never among the user's decks.
     public func generate(_ request: DeckRequest, designURL: URL?, into directory: URL,
-                         diagnostics: URL? = nil, template: PowerPointTemplate? = nil,
+                         diagnostics: URL, template: PowerPointTemplate? = nil,
                          emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         var request = request
         if template != nil {
@@ -58,7 +62,7 @@ public actor DeckGenerator {
                 // what the model actually sent is an error string, which is not
                 // enough to tell a prompt problem from a schema one.
                 var errors = second.errors
-                if let kept = Self.keepRejectedDraft(repaired.json, in: diagnostics ?? directory) {
+                if let kept = Self.keepRejectedDraft(repaired.json, in: diagnostics, decks: directory) {
                     errors.append("the rejected draft is at \(kept.path)")
                 }
                 throw LecternError.schemaInvalid(errors: errors)
@@ -73,8 +77,12 @@ public actor DeckGenerator {
     /// The caller passes a diagnostics directory rather than the decks folder.
     /// This file is the app's, not the user's — and it is the model's rendering
     /// of their prompt plus up to 40,000 characters lifted from whatever PDF
-    /// they attached, so it has no business sitting among their documents.
-    private static func keepRejectedDraft(_ json: String, in directory: URL) -> URL? {
+    /// they attached, so it has no business sitting among their documents
+    /// (on iOS the decks folder is published to Files and USB file sharing).
+    /// There is no fallback: when `directory` is the decks folder itself the
+    /// draft is not written at all and this returns `nil`.
+    static func keepRejectedDraft(_ json: String, in directory: URL, decks: URL) -> URL? {
+        guard !isSameDirectory(directory, decks) else { return nil }
         // A per-run name, not a fixed one. `rejected-draft.json` meant the next
         // failure silently replaced the evidence for the last, which is exactly
         // when someone is comparing two of them.
@@ -118,11 +126,20 @@ public actor DeckGenerator {
         }
     }
 
+    /// Whether `a` is the folder `b` or lies anywhere inside it, once `.`/`..`
+    /// segments and symlinks are resolved — so neither `decks/./` nor
+    /// `decks/Diagnostics` can carry a draft into the user's published tree.
+    static func isSameDirectory(_ a: URL, _ b: URL) -> Bool {
+        let inner = a.standardizedFileURL.resolvingSymlinksInPath().path
+        let outer = b.standardizedFileURL.resolvingSymlinksInPath().path
+        return inner == outer || inner.hasPrefix(outer.hasSuffix("/") ? outer : outer + "/")
+    }
+
     /// The QA editor pass: hand the valid draft to the reviewer and use its
     /// revision when it also validates. A failed or invalid revision is ignored
     /// (never worse than the draft).
     private func qaThenFinish(_ result: ValidationResult, draftJSON: String, _ request: DeckRequest,
-                              _ designURL: URL?, _ directory: URL, diagnostics: URL?, template: PowerPointTemplate?, usage: Usage,
+                              _ designURL: URL?, _ directory: URL, diagnostics: URL, template: PowerPointTemplate?, usage: Usage,
                               emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         var final = result
         if quality {
@@ -150,8 +167,9 @@ public actor DeckGenerator {
     /// Generate an image for each slide that carries an `ImageBrief`, concurrently.
     /// Images are an enhancement: a failed one is skipped (not fatal), but the
     /// failure is reported as a warning so "0 images" is never silent.
-    private func illustrate(_ deck: DeckIR, template: PowerPointTemplate?,
-                            emit: @Sendable @escaping (GenerationEvent) -> Void) async -> (images: [String: Data], warnings: [String]) {
+    /// Cancellation is not a failure: it propagates as `CancellationError`.
+    private func illustrate(_ deck: DeckIR, requestedSlideCount: Int, template: PowerPointTemplate?,
+                            emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> (images: [String: Data], warnings: [String]) {
         guard let imageProvider else { return ([:], []) }
         if let template {
             let source = try? Presentation.fromTemplate(data: template.data)
@@ -164,11 +182,37 @@ public actor DeckGenerator {
         // Only slides whose layout can actually show an image (skip text-dense ones,
         // so we never waste an API call or clip text). Full-bleed layouts get a wide
         // image so the background barely stretches.
-        let briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect, ImageRole)? in
+        var briefed = deck.slides.compactMap { slide -> (String, ImageBrief, ImageAspect, ImageRole)? in
             let placement = slide.kind.imagePlacement
             guard placement != .none, let brief = slide.image else { return nil }
             let aspect = placement == .fullBleed ? ImageAspect.wide : ImageAspect(brief: brief.aspect)
             return (slide.id, brief, aspect, ImageRole(placement: placement))
+        }
+        // Every brief is a paid, user-billed call, and how many there are is
+        // the model's choice (one a source document can steer). Keep the first
+        // `budget` in slide order and say which slides went without.
+        var limitWarnings: [String] = []
+        let budget = PriceTable.imageCallBudget(slideCount: requestedSlideCount)
+        if briefed.count > budget {
+            let dropped = briefed[budget...].map { "\"\($0.0)\"" }.joined(separator: ", ")
+            limitWarnings.append("Image briefs for the slides with ids \(dropped) were not generated: "
+                + "\(briefed.count) exceeds the budget of \(budget) for a \(requestedSlideCount)-slide request")
+            briefed.removeSubrange(budget...)
+        }
+        // Bound what each call carries too: a runaway subject is cut on a word
+        // boundary before `ImageStyleDirective.compose` sees it.
+        var shortened: [String] = []
+        briefed = briefed.map { id, brief, aspect, role in
+            let (subject, truncated) = ImageStyleDirective.clampSubject(brief.prompt)
+            guard truncated else { return (id, brief, aspect, role) }
+            shortened.append("\"\(id)\"")
+            var clamped = brief
+            clamped.prompt = subject
+            return (id, clamped, aspect, role)
+        }
+        if !shortened.isEmpty {
+            limitWarnings.append("Image briefs for the slides with ids \(shortened.joined(separator: ", ")) were shortened to "
+                + "\(ImageStyleDirective.maximumSubjectScalars) characters (Unicode scalars)")
         }
         // A brief the model wrote for a layout that cannot render one is thrown
         // away here. That used to be silent, which is why "why aren't we making
@@ -179,7 +223,7 @@ public actor DeckGenerator {
             "slide \"\($0.title ?? $0.id)\": an image was requested but a \"\($0.layout)\" "
                 + "slide cannot show one"
         }
-        guard !briefed.isEmpty else { return ([:], discarded) }
+        guard !briefed.isEmpty else { return ([:], discarded + limitWarnings) }
 
         emit(.illustrating(completed: 0, total: briefed.count))
         let style = imageStyle
@@ -196,7 +240,10 @@ public actor DeckGenerator {
         var images: [String: Data] = [:]
         var failures: [String] = []
         var done = 0
-        await withTaskGroup(of: (String, Result<Data, Error>).self) { group in
+        // A throwing group so a cancel surfaces from `illustrate` instead of
+        // being folded into per-slide failures: leaving the group by throwing
+        // also cancels the requests still in flight.
+        try await withThrowingTaskGroup(of: (String, Result<Data, Error>).self) { group in
             func record(_ outcome: (String, Result<Data, Error>)) {
                 let (id, result) = outcome
                 done += 1
@@ -210,7 +257,7 @@ public actor DeckGenerator {
             while next < briefed.count {
                 // At the ceiling, wait for one to land before starting another,
                 // so the number in flight never exceeds it.
-                if next >= inFlightLimit, let finished = await group.next() {
+                if next >= inFlightLimit, let finished = try await group.next() {
                     record(finished)
                 }
                 let (id, brief, aspect, role) = briefed[next]
@@ -220,14 +267,21 @@ public actor DeckGenerator {
                         let data = try await imageProvider.image(prompt: brief.prompt, style: style,
                                                                  aspect: aspect, role: role)
                         return (id, .success(data))
+                    } catch is CancellationError where Task.isCancelled {
+                        // The user stopped the run; recording this as an image
+                        // failure would let rendering go ahead and save a deck
+                        // with N "couldn't be generated" warnings. A provider
+                        // that throws CancellationError on its own, with the
+                        // run still live, is an ordinary image failure below.
+                        throw CancellationError()
                     } catch {
                         return (id, .failure(error))
                     }
                 }
             }
-            while let finished = await group.next() { record(finished) }
+            while let finished = try await group.next() { record(finished) }
         }
-        var warnings: [String] = discarded
+        var warnings: [String] = discarded + limitWarnings
         if !failures.isEmpty {
             let reason = failures.first ?? "unknown error"
             warnings.append("\(failures.count) of \(briefed.count) image(s) couldn't be generated: \(reason)")
@@ -315,18 +369,43 @@ public actor DeckGenerator {
     }
 
     private func finish(_ result: ValidationResult, _ request: DeckRequest, _ designURL: URL?,
-                        _ directory: URL, diagnostics: URL?, template: PowerPointTemplate?, usage: Usage,
+                        _ directory: URL, diagnostics: URL, template: PowerPointTemplate?, usage: Usage,
                         emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
         // A cancel must land before `illustrate` starts spending: image calls
         // are the priciest thing this pipeline does after the draft itself.
         try Task.checkCancellation()
         let shaped = normalizeIfValid(result, request)
-        let (images, imageWarnings) = await illustrate(shaped.deck, template: template, emit: emit)   // no-op without an image provider
+        // Read the style file before `illustrate` buys any images. It is a
+        // local file, but it can still be gone (a deleted bundle resource, an
+        // iCloud-evicted custom design); failing here costs nothing further,
+        // and the paid draft is kept for recovery rather than lost with a raw
+        // Foundation error after the image budget has been spent.
+        var design: String?
+        if template == nil, let designURL {
+            do {
+                design = try String(contentsOf: designURL, encoding: .utf8)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                var message = "The design file \(designURL.lastPathComponent) could not be read: \(error.localizedDescription)"
+                if let kept = keepNormalizedDraft(shaped.deck, diagnostics: diagnostics, decks: directory) {
+                    message += " The draft was saved for recovery at \(kept.path)."
+                }
+                throw LecternError.renderFailed(message: message)
+            }
+        }
+        let (images, imageWarnings) = try await illustrate(
+            shaped.deck, requestedSlideCount: request.slideCount, template: template, emit: emit)   // no-op without an image provider
+        // A cancel that arrived while images were in flight (including one a
+        // provider reported as its own error) must not render or save a deck.
+        try Task.checkCancellation()
         emit(.rendering)
         let snapshot = RenderSnapshot(deck: shaped.deck, images: images,
-            design: try (template == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) },
+            design: design,
             template: template, notesEnabled: request.notes, useSmartArt: useSmartArt)
-        let recoveryURL = diagnostics.flatMap { try? snapshot.save(in: $0) }
+        // Same rule as rejected drafts: the snapshot holds the user's content,
+        // so it is never written into the decks folder.
+        let recoveryURL = Self.isSameDirectory(diagnostics, directory) ? nil : try? snapshot.save(in: diagnostics)
         if let recoveryURL { emit(.recoveryAvailable(recoveryURL)) }
         var deckResult: DeckResult
         do {
@@ -338,9 +417,7 @@ public actor DeckGenerator {
             var message = underlying
             // Keep the final normalized deck, including accepted QA edits, so
             // layout failures can be replayed without another model request.
-            if let data = try? JSONEncoder().encode(shaped.deck),
-               let json = String(data: data, encoding: .utf8),
-               let kept = Self.keepRejectedDraft(json, in: diagnostics ?? directory) {
+            if let kept = keepNormalizedDraft(shaped.deck, diagnostics: diagnostics, decks: directory) {
                 message += " The draft was saved for recovery at \(kept.path)."
             }
             throw LecternError.renderFailed(message: message)
@@ -348,5 +425,13 @@ public actor DeckGenerator {
         deckResult.recoveryURL = recoveryURL
         emit(.finished(deckResult))
         return deckResult
+    }
+
+    /// Keep the normalized deck (including accepted QA edits) as a rejected
+    /// draft so a failed run can be replayed without another model request.
+    private func keepNormalizedDraft(_ deck: DeckIR, diagnostics: URL, decks: URL) -> URL? {
+        guard let data = try? JSONEncoder().encode(deck),
+              let json = String(data: data, encoding: .utf8) else { return nil }
+        return Self.keepRejectedDraft(json, in: diagnostics, decks: decks)
     }
 }

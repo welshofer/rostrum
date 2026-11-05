@@ -166,11 +166,79 @@ import RostrumLayout
 
     @Test func unverifiedVerticalAndColumnGeometryCannotReportSuccess() throws {
         for body in ["vert=\"vert\"", "numCol=\"2\""] {
-            let (deck, slide, _) = try specimen("<a:p>" + run("A", size: 17) + "</a:p>", height: 100, body: body)
+            let (deck, slide, shape) = try specimen("<a:p>" + run("A", size: 17) + "</a:p>", height: 100, body: body)
             let before = try deck.serializedData()
-            #expect(throws: LayoutError.self) { try AuthoredLayoutEngine(presentation: deck).fitText(in: slide) }
+            let report = try AuthoredLayoutEngine(presentation: deck).fitText(in: slide)
+            #expect(report.fitted.isEmpty)
+            #expect(report.skipped.map(\.shapeID) == [shape.shapeID])
+            #expect(shape.shapeID != nil)
             #expect(try deck.serializedData() == before)
         }
+    }
+
+    @Test(arguments: ["vert=\"vert270\"", "numCol=\"2\""])
+    func unsupportedSidebarDoesNotBlockFittingTheRestOfTheSlide(body: String) throws {
+        // An overflowing ordinary body plus a decorative vertical/multi-column one.
+        let content = "<a:p>" + run("Small ", size: 24) + run("LARGE", size: 48) + "</a:p>"
+        let (deck, slide, ordinary) = try specimen(content, height: 45)
+        let sidebar = try slide.shapes.addTextBox(Rect(x: .points(400), y: .points(20), width: .points(40), height: .points(300)))
+        sidebar.element.removeChildren(named: "p:txBody")
+        sidebar.element.appendElement(try XML.parse(Data("""
+        <p:txBody><a:bodyPr lIns="0" tIns="0" rIns="0" bIns="0" \(body)/><a:lstStyle/><a:p>\(run("SIDEBAR LABEL THAT OVERFLOWS", size: 48))</a:p></p:txBody>
+        """.utf8)))
+        slide.part.markDirty()
+        #expect(try !layout(ordinary, deck: deck).fits)
+        let sidebarBefore = XML.document(sidebar.element)
+
+        let report = try AuthoredLayoutEngine(presentation: deck).fitText(in: slide)
+
+        let scale = ordinary.element.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr")?
+            .firstChild(named: "a:normAutofit")?[attribute: "fontScale"]
+        #expect(scale != nil)
+        #expect(try layout(ordinary, deck: deck).fits)
+        #expect(XML.document(sidebar.element) == sidebarBefore)
+        #expect(report.fitted == [try #require(ordinary.shapeID)])
+        #expect(report.skipped == [AuthoredFitReport.Skipped(shapeID: try #require(sidebar.shapeID),
+            reason: "uses vertical or multi-column text that authored fitting does not support.")])
+    }
+
+    @Test func finishReturnsTheFitReportAndStillPublishesTheLayout() throws {
+        let content = "<a:p>" + run("Small ", size: 24) + run("LARGE", size: 48) + "</a:p>"
+        let (deck, slide, ordinary) = try specimen(content, height: 45)
+        let sidebar = try slide.shapes.addTextBox(Rect(x: .points(400), y: .points(20), width: .points(40), height: .points(300)))
+        sidebar.element.removeChildren(named: "p:txBody")
+        sidebar.element.appendElement(try XML.parse(Data("""
+        <p:txBody><a:bodyPr vert="vert270"/><a:lstStyle/><a:p>\(run("SIDEBAR", size: 24))</a:p></p:txBody>
+        """.utf8)))
+        slide.part.markDirty()
+
+        let report = try AuthoredLayoutEngine(presentation: deck).finish(slide, layoutName: "Sidebar")
+
+        #expect(report.fitted == [try #require(ordinary.shapeID)])
+        #expect(report.skipped.map(\.shapeID) == [try #require(sidebar.shapeID)])
+        #expect(slide.layout?.name == "Sidebar")
+        // Publishing turns text into inheriting placeholders; the vertical body
+        // still resolves through that chain and is still reported, not fitted.
+        #expect(sidebar.textFrame?.text == "SIDEBAR")
+        let reopened = try Presentation(data: deck.serializedData())
+        try reopened.validateTemplateBindings()
+        let id = try #require(sidebar.shapeID)
+        let again = try AuthoredLayoutEngine(presentation: reopened).fitText(in: try reopened.slides[0], only: [id])
+        #expect(again == AuthoredFitReport(skipped: [.init(shapeID: id,
+            reason: "uses vertical or multi-column text that authored fitting does not support.")]))
+    }
+
+    @Test func shapesWithoutAnIDAreReportedWithoutASentinel() throws {
+        let (deck, slide, shape) = try specimen("<a:p>" + run("A", size: 17) + "</a:p>", height: 100, body: "vert=\"vert270\"")
+        shape.element.firstChild(named: "p:nvSpPr")?.firstChild(named: "p:cNvPr")?[attribute: "id"] = nil
+        slide.part.markDirty()
+        #expect(shape.shapeID == nil)
+        let report = try AuthoredLayoutEngine(presentation: deck).fitText(in: slide)
+        #expect(report.fitted.isEmpty)
+        #expect(report.skipped == [AuthoredFitReport.Skipped(shapeID: nil,
+            reason: "uses vertical or multi-column text that authored fitting does not support.")])
+        // A selection never matches an id-less shape, even with a negative id.
+        #expect(try AuthoredLayoutEngine(presentation: deck).fitText(in: slide, only: [-1]) == AuthoredFitReport())
     }
 
     @Test func repeatedBodiesKeepIndependentSourceNodes() throws {
@@ -233,6 +301,53 @@ import RostrumLayout
         }).fitText(in: slide)
         #expect(!requests.isEmpty)
         #expect(requests.allSatisfy { $0.width == 300 - 2 * inset })
+        #expect(try deck.serializedData() == before)
+    }
+
+    /// The host callback runs once per positioned span of each accepted shared
+    /// layout, so a one-span body turns callback count into layout count.
+    @Test(arguments: [17.5, 18.5, 21.0, 31.0]) func autofitBisectsToTheLinearStepWithBoundedLayouts(threshold: Double) throws {
+        let (deck, slide, shape) = try specimen("<a:p>" + run("A", size: 48) + "</a:p>", height: 200)
+        var sizes: [Double] = []
+        try AuthoredLayoutEngine(presentation: deck, measure: { request in
+            sizes.append(request.size)
+            return request.size > threshold ? 10_000 : 0
+        }).fitText(in: slide)
+        // Independent reference: the old 2500-unit descent from 100% to the
+        // 17pt body floor keeps the first (largest) scale whose size fits.
+        let minimumScale = Int(ceil(100_000.0 * 17 / 48))
+        let ladder = Array(stride(from: 100_000, to: minimumScale, by: -2500)) + [minimumScale]
+        let expected = try #require(ladder.first { 48 * Double($0) / 100_000 <= threshold })
+        let saved = shape.element.firstChild(named: "p:txBody")?.firstChild(named: "a:bodyPr")?
+            .firstChild(named: "a:normAutofit")?[attribute: "fontScale"]
+        #expect(saved == String(expected))
+        #expect(ladder.firstIndex(of: expected)! > 5, "The fixture must need a large reduction")
+        // One callback rejects the original body; the rest are autofit probes.
+        #expect(sizes.count - 1 <= 7, "Probes: \(sizes.count - 1) for a ladder of \(ladder.count)")
+        #expect(sizes.allSatisfy { $0 <= 48 })
+    }
+
+    @Test func fittingBodyPerformsExactlyOneLayout() throws {
+        let (deck, slide, _) = try specimen("<a:p>" + run("A", size: 48) + "</a:p>", height: 200)
+        let before = try deck.serializedData()
+        var calls = 0
+        try AuthoredLayoutEngine(presentation: deck, measure: { _ in calls += 1; return 0 }).fitText(in: slide)
+        #expect(calls == 1)
+        #expect(try deck.serializedData() == before)
+    }
+
+    @Test func unreadableBodyFailsAfterProbingOnlyCurrentAndFloorScales() throws {
+        let (deck, slide, _) = try specimen("<a:p>" + run("A", size: 48) + "</a:p>", height: 200)
+        let before = try deck.serializedData()
+        var sizes: [Double] = []
+        #expect(throws: LayoutError.self) {
+            try AuthoredLayoutEngine(presentation: deck, measure: { request in
+                sizes.append(request.size)
+                return request.size > 10 ? 10_000 : 0
+            }).fitText(in: slide)
+        }
+        #expect(sizes.count == 3)
+        #expect(abs((sizes.last ?? 0) - 17) < 0.01)
         #expect(try deck.serializedData() == before)
     }
 }

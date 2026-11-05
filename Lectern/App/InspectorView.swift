@@ -21,6 +21,11 @@ struct InspectorView: View {
     /// only where the `fileImporter` does.
     @State private var importError: String?
     #endif
+    /// True while the macOS export chooser is up. The menu stays live under a
+    /// document-modal sheet, so without this a second ⇧⌘E would stack another
+    /// panel on the first. (On iOS the chooser is a `fileImporter`, and the
+    /// flag simply never flips.)
+    @State private var isChoosingExportFolder = false
 
     var body: some View {
         Group {
@@ -53,6 +58,11 @@ struct InspectorView: View {
         }
         .sheet(item: $notesPreviewRequest) { request in
             NotesPagePreviewView(request: request)
+        }
+        // ⇧⌘E from the menu bar opens the same chooser as the button below.
+        .onChange(of: app.exportRequests) {
+            guard !isChoosingExportFolder, let inspection = app.inspection else { return }
+            chooseExportDestination(for: inspection)
         }
     }
 
@@ -405,11 +415,13 @@ struct InspectorView: View {
         panel.directoryURL = inspection.fileURL.deletingLastPathComponent()
 
         let handle: (NSApplication.ModalResponse) -> Void = { response in
+            isChoosingExportFolder = false
             guard response == .OK, let url = panel.url else { return }
             app.exportInspected(into: url)
         }
         // A sheet on the window it belongs to when there is one; the panel's
         // own modal session when there is not.
+        isChoosingExportFolder = true
         if let window = NSApp.keyWindow {
             panel.beginSheetModal(for: window, completionHandler: handle)
         } else {
@@ -487,7 +499,7 @@ struct InspectorView: View {
             }
             .padding(28)
             .frame(maxWidth: 300)
-            .background(.regularMaterial, in: .rect(cornerRadius: 18, style: .continuous))
+            .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
         }
         .transition(.opacity)
     }

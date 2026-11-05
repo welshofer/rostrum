@@ -103,15 +103,14 @@ private let realDecks: [URL] = {
     /// Decompressed, not stored: `data(forEntry:)` inflates. The *encoding* of
     /// an entry is outside this gate — compression method, DEFLATE level, the
     /// data-descriptor bit, extra fields, entry order. That is not hypothetical
-    /// slack. Rostrum picks STORE or DEFLATE from the file extension alone
-    /// (`OPCPackage.storedExtensions`), so it re-emits ten entries in this
-    /// corpus STORED that Keynote and Google Slides had DEFLATEd, and Google
-    /// Slides' data descriptors on all 86 of its entries are not reproduced
-    /// either. Those files are byte-different from what their authors wrote and
-    /// this test passes them, correctly: they carry identical payloads under
-    /// identical names, which is the promise Rostrum makes. Preserving an
-    /// untouched entry's original encoding is a real improvement, tracked in
-    /// ROADMAP — it is simply not what this asserts.
+    /// slack. An untouched part now passes through with the archive's own
+    /// stream and method (`Part.originalPayload`, PERF-1), but an entry written
+    /// with a data descriptor — Google Slides sets one on all 86 of its — is
+    /// recompressed from its decoded bytes, and the descriptor itself is not
+    /// reproduced. Those files are byte-different from what their authors
+    /// wrote and this test passes them, correctly: they carry identical
+    /// payloads under identical names, which is the promise Rostrum makes.
+    /// Encoding preservation is asserted in `ResavePassThroughTests`, not here.
     ///
     /// Entry *order* is deliberately not asserted either. Rostrum sorts part
     /// order for determinism, which is a different promise from preserving

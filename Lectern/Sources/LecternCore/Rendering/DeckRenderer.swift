@@ -404,9 +404,8 @@ public actor DeckRenderer {
                     }
                 }
                 let engine = AuthoredLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
-                for (index, slide) in presentation.slides.enumerated() {
-                    try AuthoredFurniture.finish(slide, layoutName: "Lectern — \(deck.slides[index].layout) \(index + 1)", engine: engine)
-                }
+                for warning in try Self.finishAuthoredSlides(presentation, deck: deck, engine: engine)
+                    where !layoutWarnings.contains(warning) { layoutWarnings.append(warning) }
             }
             composition?.end()
             try PipelineTrace.measure("generation.validateBindings") { try presentation.validateTemplateBindings() }
@@ -442,12 +441,45 @@ public actor DeckRenderer {
         }
     }
 
+    /// One warning per shape an authored pass left unverified. The slide and
+    /// its layout are still accepted; the skip is never silent. Probes and the
+    /// final pass share this wording so a repeated finding appears once.
+    static func unfittedWarnings(_ report: AuthoredFitReport, on input: IRSlide) -> [String] {
+        let label = input.title.flatMap { $0.isEmpty ? nil : $0 } ?? input.id
+        return report.skipped.map { skipped in
+            let shape = skipped.shapeID.map { "shape \($0)" } ?? "a shape without an id"
+            return "\(label): \(shape) was left unfitted because it \(skipped.reason)"
+        }
+    }
+
+    /// The final authored pass: fit and publish every slide's layout, index-
+    /// aligned with `deck.slides`, returning a warning per skipped shape.
+    static func finishAuthoredSlides(_ presentation: Presentation, deck: DeckIR,
+                                     engine: AuthoredLayoutEngine) throws -> [String] {
+        var warnings: [String] = []
+        // The build loop emits exactly one slide per IR entry; a caller that
+        // hands in a paginated deck and an unpaginated IR (or vice versa) gets
+        // a named error rather than an index trap.
+        guard presentation.slides.count == deck.slides.count else {
+            throw LecternError.renderFailed(message:
+                "authored finish: \(presentation.slides.count) slides but \(deck.slides.count) IR entries")
+        }
+        for (index, slide) in presentation.slides.enumerated() {
+            let input = deck.slides[index]
+            let report = try AuthoredFurniture.finish(slide, layoutName: "Lectern — \(input.layout) \(index + 1)", engine: engine)
+            warnings += unfittedWarnings(report, on: input)
+        }
+        return warnings
+    }
+
     private static func paginate(_ deck: DeckIR, images: [String: Data],
                                  in presentation: Presentation, useSmartArt: Bool) throws -> AuthoredPagination.Result {
         let fitter = AuthoredLayoutEngine(presentation: presentation, measure: TemplateRendering.measurer)
         var preparedDeck = deck
         var sourceWarnings: [String] = []
         var sourceIDs: [String: String] = [:]
+        // Probe skips, keyed by candidate; only shipped candidates report.
+        var probeSkips: [(id: String, message: String)] = []
         var usedIDs = Set(deck.slides.map(\.id))
         preparedDeck.slides = []
         for var input in deck.slides {
@@ -457,7 +489,8 @@ public actor DeckRenderer {
                 var sourceFits = true
                 do {
                     _ = try presentation.addSource(source, to: probe)
-                    try fitter.fitText(in: probe)
+                    let report = try fitter.fitText(in: probe)
+                    probeSkips += unfittedWarnings(report, on: input).map { (input.id, $0) }
                 } catch is LayoutError { sourceFits = false }
                 catch { try presentation.slides.remove(at: presentation.slides.count - 1); throw error }
                 try presentation.slides.remove(at: presentation.slides.count - 1)
@@ -522,7 +555,10 @@ public actor DeckRenderer {
                             try addAuthoredSource(source, input: candidate, to: probe, in: presentation,
                                 hasImage: hasImage, fitter: fitter)
                         }
-                        try fitter.fitText(in: probe)
+                        // Unsupported vertical/multi-column shapes do not
+                        // reject the layout, but they are reported below.
+                        let report = try fitter.fitText(in: probe)
+                        probeSkips += unfittedWarnings(report, on: candidate).map { (candidate.id, $0) }
                         let fraction = try usage ? AuthoredPageUsage.fraction(on: probe, input: candidate, in: presentation) : nil
                         try presentation.slides.remove(at: count)
                         return .fits(usage: fraction)
@@ -540,6 +576,10 @@ public actor DeckRenderer {
             var result = try AuthoredPagination.prepare(preparedDeck, images: images,
                 usage: { try probe($0, $1, usage: true) }, fits: { try probe($0, $1, usage: false) != nil })
             result.warnings += sourceWarnings
+            let shipped = Set(result.deck.slides.map(\.id))
+            for skip in probeSkips where shipped.contains(skip.id) && !result.warnings.contains(skip.message) {
+                result.warnings.append(skip.message)
+            }
             return result
         } catch let error as LayoutError {
             throw LayoutError.cannotFit(lastFailure.isEmpty ? "\(error)" : lastFailure)

@@ -34,9 +34,19 @@ public actor DeckCardIndex {
     private var inFlight: [String: Task<DeckCard?, Never>] = [:]
     private let directory: URL
     private let fileManager: FileManager
+    /// Opens a package for its card. `build(from:)` in production; tests
+    /// substitute a wrapper that counts parses or holds them open.
+    private let builder: @Sendable (URL) async -> DeckCard?
 
     public init(directory: URL? = nil, fileManager: FileManager = .default) {
+        self.init(directory: directory, fileManager: fileManager,
+                  builder: { DeckCardIndex.build(from: $0) })
+    }
+
+    init(directory: URL? = nil, fileManager: FileManager = .default,
+         builder: @escaping @Sendable (URL) async -> DeckCard?) {
         self.fileManager = fileManager
+        self.builder = builder
         if let directory {
             self.directory = directory
         } else {
@@ -50,7 +60,9 @@ public actor DeckCardIndex {
     ///
     /// Concurrent callers for the same deck share one read rather than each
     /// opening their own copy: a grid scrolled quickly asks for the same card
-    /// several times before the first answer lands.
+    /// several times before the first answer lands. The shared task is
+    /// registered before anything suspends, so no caller can slip past the
+    /// `inFlight` check while another is still waiting for a parse slot.
     public func card(for deck: DeckFile) async -> DeckCard? {
         let key = Self.key(for: deck)
         if let cached = memory[key] { return cached }
@@ -58,23 +70,32 @@ public actor DeckCardIndex {
 
         let directory = self.directory
         let url = deck.url
-        // Reading a card means opening the whole package, and a real library
-        // holds ninety-megabyte decks. Twelve visible cards opening at once
-        // measured 183s and 2GB peak — eleven times *slower* than doing them
-        // one after another, because the machine spent the difference swapping.
-        // The gate is what keeps a grid from doing that to itself.
-        await acquire()
-        let task = Task<DeckCard?, Never>.detached(priority: .utility) {
+        let builder = self.builder
+        let task = Task<DeckCard?, Never>.detached(priority: .utility) { [self] in
+            // A card already on disk is one small JSON read: answer it here,
+            // off the actor, without queueing behind packages being parsed.
             if let onDisk = Self.read(key: key, in: directory) { return onDisk }
-            guard let built = Self.build(from: url) else { return nil }
-            Self.write(built, key: key, in: directory)
+            // Reading a card means opening the package, and a real library
+            // holds ninety-megabyte decks. Twelve visible cards opening at once
+            // measured 183s and 2GB peak — eleven times *slower* than doing
+            // them one after another, because the machine spent the difference
+            // swapping. The gate is what keeps a grid from doing that to itself.
+            await self.acquire()
+            let built = await builder(url)
+            if let built { Self.write(built, key: key, in: directory) }
+            // No path between acquire and here can exit early, so the slot is
+            // always handed back.
+            await self.release()
             return built
         }
+        // Registered synchronously after the checks above: nothing between
+        // them suspends, so the actor cannot be re-entered in between.
         inFlight[key] = task
 
         let value = await task.value
-        release()
-        inFlight[key] = nil
+        // `removeAll()` may have dropped this task and a newer caller may have
+        // registered its own; only clear the entry if it is still ours.
+        if inFlight[key] == task { inFlight[key] = nil }
         if let value { memory[key] = value }
         return value
     }
@@ -87,8 +108,14 @@ public actor DeckCardIndex {
     private static let maxConcurrentParses = 2
     private var activeParses = 0
     private var waiting: [CheckedContinuation<Void, Never>] = []
+    /// How many times a read has entered the gate. Tests use it to prove a
+    /// card answered from disk never queued for a parse slot.
+    private(set) var gateAcquisitions = 0
+    /// Reads currently queued for a slot.
+    var queuedParses: Int { waiting.count }
 
     private func acquire() async {
+        gateAcquisitions += 1
         if activeParses < Self.maxConcurrentParses {
             activeParses += 1
             return

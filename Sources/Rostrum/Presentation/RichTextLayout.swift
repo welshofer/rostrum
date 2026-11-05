@@ -601,7 +601,11 @@ public struct RichTextLayout: Sendable {
             }
             // Word-space justification is verified for left-to-right Latin text.
             // Other scripts may require inter-character spacing or kashidas.
-            let latinParagraph = !(hasTabs || align == "just") || !atoms.contains(where: { atom in
+            // DrawingML `dist`/`thaiDist` distribute every line, including the
+            // final one; otherwise they share `just`'s word-space expansion.
+            let justifyLastLine = align == "dist" || align == "thaiDist"
+            let justifiedAlignment = align == "just" || justifyLastLine
+            let latinParagraph = !(hasTabs || justifiedAlignment) || !atoms.contains(where: { atom in
                     atom.text.unicodeScalars.contains { scalar in
                         let value = scalar.value
                         return !(value <= 0x024F || (0x0300...0x036F).contains(value)
@@ -650,8 +654,8 @@ public struct RichTextLayout: Sendable {
                 }
                 return max(0, stop - position - offset)
             }
-            var canJustify = align == "just"
-            if !["l", "ctr", "r", "just"].contains(align) {
+            var canJustify = justifiedAlignment
+            if !["l", "ctr", "r", "just", "dist", "thaiDist"].contains(align) {
                 warnings.append(.unsupportedLayoutFeature("Paragraph alignment '\(align)' is not implemented; using left alignment"))
             }
             if canJustify {
@@ -663,6 +667,12 @@ public struct RichTextLayout: Sendable {
                     warnings.append(.unsupportedLayoutFeature("Justification outside left-to-right Latin text is not verified; using left alignment"))
                     canJustify = false
                 }
+            }
+            // Office's distributed alignment also widens inter-character spacing
+            // (a one-word line spans the box). Only word spaces are widened here,
+            // so the layout remains a diagnosed approximation.
+            if canJustify && justifyLastLine {
+                warnings.append(.unsupportedLayoutFeature("Paragraph alignment '\(align)' is approximated: lines are distributed by word spacing; PowerPoint also spreads inter-character spacing, which is not modeled"))
             }
             func emit(justify: Bool = false, emptyMetrics: (ascent: Double, height: Double, drawingML: Bool)? = nil,
                       emptySpacing: SpacingMetric? = nil) {
@@ -929,7 +939,7 @@ public struct RichTextLayout: Sendable {
                     }
                     emit(emptyMetrics: lineMetrics(metrics, size: style.measurementPointSize),
                         emptySpacing: spacingMetric(metrics, size: style.fontSize, style: style))
-                } else { emit() }
+                } else { emit(justify: justifyLastLine) }
             }
             if paragraphIndex < paragraphs.count - 1 || useEdgeParagraphSpacing {
                 cursor += spacing(child("a:spcAft"), relativeTo: emptyHeight)

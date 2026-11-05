@@ -246,7 +246,10 @@ enum TemplateRendering {
 
             if let caption = plan.captionFrame {
                 let shape = try slide.addText(source, in: caption, role: .caption, style: style)
-                try AuthoredLayoutEngine(presentation: deck, measure: measurer).fitText(in: slide, only: [shape.shapeID!])
+                let report = try AuthoredLayoutEngine(presentation: deck, measure: measurer).fitText(in: slide, only: [shape.shapeID!])
+                for skipped in report.skipped {
+                    warnings.append("\(title): the caption was kept at its authored size because it \(skipped.reason)")
+                }
             }
         }
         if let image {

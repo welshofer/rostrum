@@ -138,6 +138,31 @@ public enum ImageProviderFactory {
 /// Deck/UI prose is intentionally excluded because typography and component
 /// guidance conflict with the requirement that generated images contain no text.
 public enum ImageStyleDirective {
+    /// The longest image subject (in Unicode scalars) sent to a provider. A
+    /// brief is model-written and can be steered by source material; capping
+    /// it bounds what one paid call can carry.
+    public static let maximumSubjectScalars = 1_000
+
+    /// `subject` cut to `maximumSubjectScalars`, on a word boundary where one
+    /// falls in the back half of the allowance. `truncated` says whether
+    /// anything was removed.
+    public static func clampSubject(_ subject: String) -> (subject: String, truncated: Bool) {
+        let scalars = subject.unicodeScalars
+        guard scalars.count > maximumSubjectScalars else { return (subject, false) }
+        var kept = Array(scalars.prefix(maximumSubjectScalars))
+        let nextIsBreak = scalars.dropFirst(maximumSubjectScalars).first
+            .map { CharacterSet.whitespacesAndNewlines.contains($0) } ?? true
+        if !nextIsBreak,
+           let space = kept.lastIndex(where: { CharacterSet.whitespacesAndNewlines.contains($0) }),
+           space >= maximumSubjectScalars / 2 {
+            kept.removeSubrange(space...)
+        }
+        while let last = kept.last, CharacterSet.whitespacesAndNewlines.contains(last) { kept.removeLast() }
+        var view = String.UnicodeScalarView()
+        view.append(contentsOf: kept)
+        return (String(view), true)
+    }
+
     /// The complete prompt sent to any image model: brand direction, what the
     /// image has to do on the slide, the subject, and the frame. Shared so the
     /// two providers cannot drift — OpenAI used to send only style + subject,

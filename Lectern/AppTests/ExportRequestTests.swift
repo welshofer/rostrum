@@ -137,6 +137,18 @@ import Rostrum
         if route == "create" { #expect(app.phase == .compose) }
     }
 
+    @Test func menuExportRequestFlipsOnlyForAnInspectedDeck() async throws {
+        let context = try AppStateTestContext()
+        defer { context.remove() }
+        let app = context.app
+        app.requestExport()
+        #expect(app.exportRequests == 0)
+        await app.inspect(deckAt: try fixture(in: context, name: "menu")).value
+        #expect(app.phase == .inspected)
+        app.requestExport()
+        #expect(app.exportRequests == 1)
+    }
+
     private func fixture(in context: AppStateTestContext, name: String) throws -> URL {
         #if SWIFT_PACKAGE
         let bundle = Bundle.module

@@ -97,7 +97,7 @@ import Rostrum
         let result = try await DeckGenerator(provider: provider).generate(
             DeckRequest(prompt: "Create something new", slideCount: 3, notes: true),
             designURL: URL(fileURLWithPath: "/a-design-that-must-never-be-opened.md"),
-            template: template, into: directory) { _ in }
+            template: template, into: directory, diagnostics: TestPaths.diagnostics) { _ in }
         let output = try Presentation(contentsOf: result.url)
         #expect(await provider.draftCalls == 2)
         #expect(await provider.revisionCalls == 1)
@@ -219,7 +219,7 @@ import Rostrum
         do {
             _ = try await DeckGenerator(provider: provider).generate(
                 DeckRequest(prompt: "Do not send", slideCount: 3), designURL: nil,
-                template: DeckTemplate(data: Data("Not a PowerPoint".utf8), name: "bad.potx"), into: directory) { _ in }
+                template: DeckTemplate(data: Data("Not a PowerPoint".utf8), name: "bad.potx"), into: directory, diagnostics: TestPaths.diagnostics) { _ in }
             Issue.record("Malformed template was accepted")
         } catch {}
         #expect(await provider.draftCalls == 0)

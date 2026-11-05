@@ -20,8 +20,10 @@ explicit-break and bulleted paragraphs. This is horizontal spacing evidence,
 not whole-slide pixel parity. The integrated engine's saved v2 deck also opened
 in PowerPoint without repair.
 
-Tabs, RTL/non-Latin justification, `justLow`, `dist` and `thaiDist` remain
-explicitly diagnosed approximations. Existing near-boundary font rounding can
+Tabs, RTL/non-Latin justification and `justLow` remain explicitly diagnosed
+approximations. `dist` and `thaiDist` now widen word spaces on every line,
+including the last, and stay diagnosed approximations: PowerPoint also spreads
+inter-character spacing, which is not modeled or measured. Existing near-boundary font rounding can
 still cause a different character wrap from Office. General bidi, columns,
 decoration geometry and the outstanding table raster differences remain open.
 No existing native reference or fidelity threshold was weakened.

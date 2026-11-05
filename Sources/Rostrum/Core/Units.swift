@@ -74,3 +74,22 @@ public struct EMU: RawRepresentable, Hashable, Sendable, Comparable, AdditiveAri
 // Numeric-literal extensions (`1.5.inches`) were rejected because they
 // pollute Double for every importer; `Measurement` bridging because
 // `UnitLength` has no points unit.
+
+/// The wire form of a fixed-point DrawingML quantity (`ST_Angle` 60000ths of
+/// a degree, `ST_TextFontSize` hundredths of a point, `ST_Percentage`
+/// thousandths of a percent, …): `value × scale`, rounded half away from zero.
+///
+/// `Int(_: Double)` traps on NaN, infinity and out-of-range magnitudes, so a
+/// public setter fed `0/0` would abort the host process. This returns `nil`
+/// for non-finite input — callers treat that as "write nothing": leave an
+/// existing attribute unchanged, or skip creating a new element — and clamps
+/// finite results into `Int32.min…Int32.max`, the range of the 32-bit `xsd:int`
+/// simple types these attributes are declared as. Finite in-range values
+/// produce exactly the digits `String(Int((value * scale).rounded()))` did.
+func fixedPoint(_ value: Double, scale: Double) -> String? {
+    guard value.isFinite else { return nil }
+    let scaled = (value * scale).rounded()
+    guard !scaled.isNaN else { return nil }
+    let clamped = min(Double(Int32.max), max(Double(Int32.min), scaled))
+    return String(Int(clamped))
+}

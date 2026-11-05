@@ -17,15 +17,41 @@ enum HTTPRetry {
 
     /// Seconds to wait before the next attempt. `Retry-After` wins when the
     /// server sends one — it knows more than we do — otherwise exponential from
-    /// two seconds, capped so a 5xx spike cannot park the UI for minutes.
+    /// two seconds with ±25 % jitter, capped so a 5xx spike cannot park the UI
+    /// for minutes.
+    ///
+    /// The jitter is what keeps concurrent image requests apart: four requests
+    /// that hit a 429 together used to sleep exactly 2 s, 4 s, 8 s and collide
+    /// again each time. It is never applied to a server-supplied `Retry-After`.
+    ///
+    /// The result keeps sub-second resolution. Rounding to whole seconds
+    /// undid the jitter exactly where it matters: 2 s ± 25 % spans 1.5–2.5 s,
+    /// which rounds to 2 s every time, so the first retry — with three
+    /// attempts, the one that usually happens — went out in lockstep anyway.
     ///
     /// `attempt` is zero-based: the delay after the first failure.
-    static func backoff(attempt: Int, retryAfter: Int?) -> Int {
-        if let retryAfter, retryAfter >= 0 { return min(maxBackoffSeconds, retryAfter) }
-        return min(maxBackoffSeconds, 2 << max(0, attempt))
+    static func backoff(attempt: Int, retryAfter: Int?) -> TimeInterval {
+        var generator = SystemRandomNumberGenerator()
+        return backoff(attempt: attempt, retryAfter: retryAfter, using: &generator)
     }
 
-    static let maxBackoffSeconds = 60
+    /// As `backoff(attempt:retryAfter:)`, drawing the jitter from `generator`
+    /// so tests can seed it.
+    static func backoff(attempt: Int, retryAfter: Int?, using generator: inout some RandomNumberGenerator) -> TimeInterval {
+        if let retryAfter, retryAfter >= 0 { return min(maxBackoffSeconds, TimeInterval(retryAfter)) }
+        // Clamp the shift so a runaway attempt count cannot overflow.
+        let base = min(maxBackoffSeconds, TimeInterval(2 << min(max(0, attempt), 10)))
+        let jittered = base * Double.random(in: (1 - jitterFraction)...(1 + jitterFraction), using: &generator)
+        return min(maxBackoffSeconds, max(minimumBackoffSeconds, jittered))
+    }
+
+    /// Half-width of the uniform jitter band around the exponential delay.
+    static let jitterFraction = 0.25
+
+    static let maxBackoffSeconds: TimeInterval = 60
+
+    /// The shortest jittered wait: a retry sooner than this is no backoff.
+    static let minimumBackoffSeconds: TimeInterval = 0.5
 
     /// A status worth trying again: rate limiting, or the server failing in a
     /// way that says nothing about the request.
@@ -101,14 +127,14 @@ enum HTTPRetry {
     /// Whether there is still time to try again, given when the call started
     /// and how long the next wait would be. Checked before sleeping, so the
     /// backoff itself cannot carry the call past the deadline.
-    static func hasTimeToRetry(startedAt: Date, nextWait: Int, deadline: TimeInterval = overallDeadline, now: Date = Date()) -> Bool {
-        now.addingTimeInterval(TimeInterval(nextWait)).timeIntervalSince(startedAt) < deadline
+    static func hasTimeToRetry(startedAt: Date, nextWait: TimeInterval, deadline: TimeInterval = overallDeadline, now: Date = Date()) -> Bool {
+        now.addingTimeInterval(nextWait).timeIntervalSince(startedAt) < deadline
     }
 
     /// Sleep between attempts. Cancellation propagates: a user who pressed
     /// Cancel should not wait out a backoff first.
-    static func wait(seconds: Int) async throws {
-        guard seconds > 0 else { return }
-        try await Task.sleep(nanoseconds: UInt64(seconds) * 1_000_000_000)
+    static func wait(seconds: TimeInterval) async throws {
+        guard seconds > 0, seconds.isFinite else { return }
+        try await Task.sleep(for: .seconds(seconds))
     }
 }

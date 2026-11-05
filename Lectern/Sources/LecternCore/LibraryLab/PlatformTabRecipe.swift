@@ -55,7 +55,7 @@ extension PlatformLabRecipes {
         cell.setBorders(Line(color: Color(options.accentHex)))
         tabFrame(cell.textFrame)
         tabParagraph(cell.textFrame.addParagraph(), text: tabSentence, stop: justifiedStop, mode: .left, alignment: .justified)
-        let note = try text("The table cell uses the same tab-aware layout.\n\nBounded left-to-right Latin and period-decimal fields only. Final paragraph lines retain natural spacing. RTL, non-Latin and distributed justification are outside this demonstration.\n\nSave/reopen checks compare exact spans; no general Office pixel-parity claim.", on: second, in: LibraryLabSupport.frame(7, 4.2, 5.7, 2.5))
+        let note = try text("The table cell uses the same tab-aware layout.\n\nBounded left-to-right Latin and period-decimal fields only. Final paragraph lines retain natural spacing. RTL and non-Latin justification are outside this demonstration; distributed alignment is a diagnosed word-spacing approximation.\n\nSave/reopen checks compare exact spans; no general Office pixel-parity claim.", on: second, in: LibraryLabSupport.frame(7, 4.2, 5.7, 2.5))
         note.textFrame?.paragraphs.first?.runs.first?.fontSize = 14
         note.fitText(fonts: deck.fonts)
 
