@@ -138,10 +138,19 @@ private let realDecks: [URL] = {
         // Collected rather than asserted per entry: a deck with 1300 parts that
         // regresses wholesale should report one legible failure, not 1300.
         var changed: [String] = []
+        let beforeEntries = Dictionary(uniqueKeysWithValues: before.allEntries.map { ($0.name, $0) })
+        let afterEntries = Dictionary(uniqueKeysWithValues: after.allEntries.map { ($0.name, $0) })
+        var methodChanged: [String] = []
         for name in before.entryNames where afterNames.contains(name) {
             let old = try before.data(forEntry: name)
             let new = try after.data(forEntry: name)
             if old != new { changed.append(name) }
+            if !name.hasSuffix(".rels"), !name.hasSuffix("/"), name != PackURI.contentTypes.memberName,
+               let oldEntry = beforeEntries[name], let newEntry = afterEntries[name],
+               oldEntry.compressedSize <= max(oldEntry.uncompressedSize + 64, 64),
+               oldEntry.method != newEntry.method {
+                methodChanged.append("\(name) (\(oldEntry.method) → \(newEntry.method))")
+            }
         }
         let sample = changed.prefix(10).joined(separator: ", ")
         let ellipsis = changed.count > 10 ? ", …" : ""
@@ -151,6 +160,10 @@ private let realDecks: [URL] = {
             \(deck): \(changed.count) of \(beforeNames.count) entries changed on resave: \
             \(sample)\(ellipsis)
             """)
+        #expect(
+            methodChanged.isEmpty,
+            "\(deck): untouched part entries changed compression method on resave: \(methodChanged)"
+        )
     }
 
     // MARK: - Invariant 2: determinism on foreign input

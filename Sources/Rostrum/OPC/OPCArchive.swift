@@ -72,15 +72,23 @@ public final class OPCArchive {
     public var cacheStatistics: CacheStatistics { .init(retainedBytes: retained, hits: hits, misses: misses) }
     public func clearCache() { cache.removeAll(); recency.removeAll(); retained = 0 }
 
-    public func data(forPart uri: PackURI) throws -> Data { try read(uri.memberName) }
-    public func xml(forPart uri: PackURI) throws -> XML.Element { try XML.parse(read(uri.memberName)) }
+    public func data(forPart uri: PackURI) throws -> Data {
+        if reader.contains(uri.memberName) { return try read(uri.memberName) }
+        if let decoded = uri.percentDecoded, reader.contains(decoded.memberName) { return try read(decoded.memberName) }
+        return try read(uri.memberName)
+    }
+    public func xml(forPart uri: PackURI) throws -> XML.Element { try XML.parse(data(forPart: uri)) }
 
     /// Materialize an independent editable presentation with the original eager
     /// validation and error timing. All package entries remain present.
     public func presentation() throws -> Presentation { try Presentation(data: source, limits: limits) }
 
     public var mainPartURI: PackURI? {
-        relationships.first(ofType: RelType.officeDocument).map { PackURI.resolve(target: $0.target, relativeTo: "/") }
+        guard let rel = relationships.first(ofType: RelType.officeDocument) else { return nil }
+        let resolved = PackURI.resolve(target: rel.target, relativeTo: "/")
+        if reader.contains(resolved.memberName) { return resolved }
+        if let decoded = resolved.percentDecoded, reader.contains(decoded.memberName) { return decoded }
+        return resolved
     }
 
     private func read(_ name: String) throws -> Data {

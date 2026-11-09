@@ -16,8 +16,15 @@ public final class Part {
     public let rels: Relationships
 
     /// The part's serialized bytes. Authoritative while `isDirty` is false.
-    public internal(set) var blob: Data { didSet { blobRevision &+= 1; didReplaceBlob?() } }
+    public internal(set) var blob: Data {
+        didSet {
+            blobRevision &+= 1
+            initialPayload = nil
+            didReplaceBlob?()
+        }
+    }
     private(set) var blobRevision: UInt64 = 0
+    var initialPayload: ZipWriter.Payload?
     var didReplaceBlob: (() -> Void)?
 
     private var cachedDocument: XML.Document?
@@ -47,6 +54,7 @@ public final class Part {
     /// the single funnel that keeps blob/DOM coherence a checkable invariant.
     public func markDirty() {
         isDirty = true
+        initialPayload = nil
     }
 
     /// Replace the part's bytes wholesale, discarding any cached DOM.
@@ -216,7 +224,8 @@ public final class OPCPackage {
                     "part name \"\(name)\" has an empty segment")
             }
             let uri = PackURI("/" + name)
-            let blob = try zip.data(forEntry: name)
+            let loaded = try zip.entryPayload(forEntry: name)
+            let blob = loaded.decoded
             guard let ct = package.contentTypes.declaredContentType(for: uri) else {
                 // Not a part — nothing can reference it, because a relationship
                 // target without a content type could not be loaded either.
@@ -227,7 +236,18 @@ public final class OPCPackage {
                         + "through unmodelled")
                 continue
             }
-            package.parts[uri] = Part(uri: uri, contentType: ct, blob: blob)
+            let part = Part(uri: uri, contentType: ct, blob: blob)
+            if UInt64(loaded.entry.uncompressedSize) <= 0xFFFF_FFFF,
+               UInt64(loaded.raw.count) <= 0xFFFF_FFFF,
+               loaded.raw.count <= max(blob.count + 64, 64) {
+                part.initialPayload = ZipWriter.Payload(
+                    data: loaded.raw,
+                    method: loaded.entry.method,
+                    size: UInt32(loaded.entry.uncompressedSize),
+                    crc: loaded.entry.crc32
+                )
+            }
+            package.parts[uri] = part
         }
 
         // Second pass: attach relationships to the package and to each part,
@@ -272,8 +292,9 @@ public final class OPCPackage {
     // MARK: - Composition
 
     public func part(at uri: PackURI) throws -> Part {
-        guard let part = parts[uri] else { throw RostrumError.partMissing(uri.value) }
-        return part
+        if let part = parts[uri] { return part }
+        if let decoded = uri.percentDecoded, let part = parts[decoded] { return part }
+        throw RostrumError.partMissing(uri.value)
     }
 
     @discardableResult
@@ -390,6 +411,9 @@ public final class OPCPackage {
 
     private func prepared(_ part: Part, compress: Bool) -> ZipWriter.Payload {
         watchPart(part)
+        if !part.isDirty, part.blobRevision == 0, let initial = part.initialPayload {
+            return initial
+        }
         if let cached = compressionCache[part.uri], cached.part === part, cached.revision == part.blobRevision { return cached.payload }
         if let old = compressionCache.removeValue(forKey: part.uri) { compressionCacheBytes -= old.cost }
         let payload = ZipWriter.prepare(data: part.blob, compress: compress)

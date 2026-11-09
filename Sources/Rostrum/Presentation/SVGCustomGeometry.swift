@@ -72,11 +72,61 @@ enum SVGCustomGeometry {
             guard pw > 0, ph > 0, pw.isFinite, ph.isFinite else { return nil }
             let sx = width / pw, sy = height / ph
             var parts: [String] = [], hasPoint = false
+            var currentX = 0.0, currentY = 0.0, startX = 0.0, startY = 0.0
             for command in path.childElements {
                 commands += 1
                 guard commands <= 65536 else { return nil }
                 if command.name == "a:close" {
-                    guard hasPoint else { return nil }; parts.append("Z"); continue
+                    guard hasPoint else { return nil }
+                    parts.append("Z")
+                    currentX = startX
+                    currentY = startY
+                    continue
+                }
+                if command.name == "a:arcTo" {
+                    guard hasPoint, command.childElements.isEmpty,
+                          let wR = value(command[attribute: "wR"]),
+                          let hR = value(command[attribute: "hR"]),
+                          let stAng = value(command[attribute: "stAng"]),
+                          let swAng = value(command[attribute: "swAng"]),
+                          wR > 0, hR > 0, abs(swAng) <= 21_600_000 else { return nil }
+                    let rx = wR * sx, ry = hR * sy
+                    guard rx.isFinite, ry.isFinite, rx > 0, ry > 0,
+                          abs(rx) <= 1e14, abs(ry) <= 1e14 else { return nil }
+                    if swAng == 0 {
+                        parts.append("L" + SVGNumber.decimal(currentX * sx) + " " + SVGNumber.decimal(currentY * sy))
+                        continue
+                    }
+                    func unitTrig(_ angle: Double) -> (sin: Double, cos: Double) {
+                        let rad = angle * .pi / 10_800_000
+                        let s = sin(rad), c = cos(rad)
+                        return (abs(s) < 1e-12 ? 0 : s, abs(c) < 1e-12 ? 0 : c)
+                    }
+                    let startTrig = unitTrig(stAng)
+                    let startPhi = atan2(startTrig.sin / hR, startTrig.cos / wR)
+                    let cx = currentX - wR * cos(startPhi)
+                    let cy = currentY - hR * sin(startPhi)
+                    let steps = max(1, min(4, Int(ceil(abs(swAng) / 5_400_000))))
+                    let stepSw = swAng / Double(steps)
+                    let sweepFlag = stepSw >= 0 ? 1 : 0
+                    for step in 1...steps {
+                        let stepTrig = unitTrig(stAng + stepSw * Double(step))
+                        let phi = atan2(stepTrig.sin / hR, stepTrig.cos / wR)
+                        let rawEndX = cx + wR * cos(phi)
+                        let rawEndY = cy + hR * sin(phi)
+                        let endX = abs(rawEndX - rawEndX.rounded()) < 1e-9 ? rawEndX.rounded() : rawEndX
+                        let endY = abs(rawEndY - rawEndY.rounded()) < 1e-9 ? rawEndY.rounded() : rawEndY
+                        let rawScaledX = endX * sx, rawScaledY = endY * sy
+                        let scaledX = abs(rawScaledX - rawScaledX.rounded()) < 1e-9 ? rawScaledX.rounded() : rawScaledX
+                        let scaledY = abs(rawScaledY - rawScaledY.rounded()) < 1e-9 ? rawScaledY.rounded() : rawScaledY
+                        guard scaledX.isFinite, scaledY.isFinite,
+                              abs(scaledX) <= 1e14, abs(scaledY) <= 1e14 else { return nil }
+                        parts.append("A" + SVGNumber.decimal(rx) + " " + SVGNumber.decimal(ry)
+                            + " 0 0 \(sweepFlag) " + SVGNumber.decimal(scaledX) + " " + SVGNumber.decimal(scaledY))
+                        currentX = endX
+                        currentY = endY
+                    }
+                    continue
                 }
                 let count: Int, letter: String
                 switch command.name {
@@ -95,6 +145,12 @@ enum SVGCustomGeometry {
                           (x * sx).isFinite, (y * sy).isFinite,
                           abs(x * sx) <= 1e14, abs(y * sy) <= 1e14 else { return nil }
                     coordinates.append(SVGNumber.decimal(x * sx) + " " + SVGNumber.decimal(y * sy))
+                    currentX = x
+                    currentY = y
+                    if command.name == "a:moveTo" {
+                        startX = x
+                        startY = y
+                    }
                 }
                 parts.append(letter + coordinates.joined(separator: " ")); hasPoint = true
             }

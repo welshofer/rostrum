@@ -152,5 +152,27 @@ public struct PackURI: Hashable, Sendable, CustomStringConvertible {
         return (ups + downs).joined(separator: "/")
     }
 
+    /// A percent-decoded fallback URI when at least one path segment contains
+    /// valid percent-escapes that decode to a distinct, safe segment name.
+    /// Rejects empty segments, `.` or `..`, and decoded segments containing `/`.
+    var percentDecoded: PackURI? {
+        guard value.contains("%") else { return nil }
+        var decodedSegments: [String] = []
+        for segment in memberName.split(separator: "/", omittingEmptySubsequences: false) {
+            guard !segment.isEmpty,
+                  let decoded = String(segment).removingPercentEncoding,
+                  !decoded.isEmpty,
+                  decoded != ".",
+                  decoded != "..",
+                  !decoded.contains("/") else {
+                return nil
+            }
+            decodedSegments.append(decoded)
+        }
+        let candidate = "/" + decodedSegments.joined(separator: "/")
+        guard candidate != value else { return nil }
+        return PackURI(candidate)
+    }
+
     public var description: String { value }
 }

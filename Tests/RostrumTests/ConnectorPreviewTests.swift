@@ -29,4 +29,26 @@ import Testing
             #expect(try deck.serializedData() == bytes)
         }
     }
+
+    @Test func multiSegmentBentConnectorsRenderOrthogonalPathsWithoutWarnings() throws {
+        let cases: [(String, String, String)] = [
+            ("bentConnector2", "", "M100 200 H400100 V200200"),
+            ("bentConnector4", "<a:gd name=\"adj1\" fmla=\"val 25000\"/><a:gd name=\"adj2\" fmla=\"val 75000\"/>", "M100 200 H100100 V150200 H400100 V200200"),
+            ("bentConnector5", "<a:gd name=\"adj1\" fmla=\"val 20000\"/><a:gd name=\"adj2\" fmla=\"val 50000\"/><a:gd name=\"adj3\" fmla=\"val 80000\"/>", "M100 200 H80100 V100200 H320100 V200200 H400100"),
+        ]
+        for (preset, guides, expectedPath) in cases {
+            let deck = try Presentation(), slide = try deck.slides[0]
+            let tree = try #require(Slide.existingSpTree(of: slide.part))
+            tree.appendElement(try XML.parse(Data("""
+            <p:cxnSp><p:nvCxnSpPr><p:cNvPr id="78" name="\(preset)"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>
+            <p:spPr><a:xfrm><a:off x="100" y="200"/><a:ext cx="400000" cy="200000"/></a:xfrm>
+            <a:prstGeom prst="\(preset)"><a:avLst>\(guides)</a:avLst></a:prstGeom>
+            <a:ln w="12700"><a:solidFill><a:srgbClr val="0055AA"/></a:solidFill></a:ln></p:spPr></p:cxnSp>
+            """.utf8)))
+            slide.part.markDirty()
+            let result = try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true)
+            #expect(result.problems.isEmpty)
+            #expect(result.svg.contains(expectedPath))
+        }
+    }
 }

@@ -243,4 +243,46 @@ import Testing
         for tick in ticks { #expect(try !bounds(tick).intersects(annotation)) }
         try assertContained(deck)
     }
+
+    @Test func scatterAndBubbleChartsRenderMeasuredXYAxesMarkersAndBubbles() throws {
+        let scatterDeck = try Presentation()
+        try scatterDeck.fonts.register(TestFont.standard(familyName: "Measured"))
+        try scatterDeck.slides[0].shapes.addScatterChart(
+            XYChartData(name: "Trajectory", points: [(x: 1, y: 10), (x: 3, y: 30), (x: 5, y: 20)]),
+            frame: frame,
+            options: .init(title: "Scatter Trajectory", legend: .bottom,
+                           dataLabels: .init(showValue: true, showCategory: true),
+                           valueAxis: .init(title: "Altitude"),
+                           text: .init(font: "Measured", color: Color("112233"), sizePt: 12)))
+        let scatterSVG = try scatterDeck.renderSVG(slideAt: 0)
+        #expect(!scatterSVG.contains("[chart]"))
+        let scatterDOM = try XML.parse(Data(scatterSVG.utf8))
+        #expect(descendants(scatterDOM, "polyline").count == 1)
+        #expect(descendants(scatterDOM, "circle").count == 3)
+        #expect(try groups(scatterDeck, role: "data-label").map(\.textContent) == ["1, 10", "3, 30", "5, 20"])
+        try assertContained(scatterDeck)
+
+        let bubbleDeck = try Presentation()
+        try bubbleDeck.fonts.register(TestFont.standard(familyName: "Measured"))
+        try bubbleDeck.slides[0].shapes.addBubbleChart(
+            BubbleChartData(name: "Clusters", points: [
+                .init(x: 2, y: 15, size: 10),
+                .init(x: 6, y: 45, size: 40),
+            ]),
+            frame: frame,
+            options: .init(title: "Bubble Clusters",
+                           dataLabels: .init(showValue: true),
+                           valueAxis: .init(title: "Score"),
+                           text: .init(font: "Measured", color: Color("112233"), sizePt: 12)))
+        let bubbleSVG = try bubbleDeck.renderSVG(slideAt: 0)
+        #expect(!bubbleSVG.contains("[chart]"))
+        let bubbleDOM = try XML.parse(Data(bubbleSVG.utf8))
+        let circles = descendants(bubbleDOM, "circle")
+        #expect(circles.count == 2)
+        let r0 = try #require(Double(circles[0][attribute: "r"] ?? ""))
+        let r1 = try #require(Double(circles[1][attribute: "r"] ?? ""))
+        #expect(abs(r1 / r0 - 2.0) < 0.05)
+        #expect(try groups(bubbleDeck, role: "data-label").map(\.textContent) == ["15", "45"])
+        try assertContained(bubbleDeck)
+    }
 }

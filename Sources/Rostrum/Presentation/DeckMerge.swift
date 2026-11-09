@@ -48,6 +48,8 @@ final class SlideCopier {
     func copy(_ sourceURI: PackURI) throws -> PackURI {
         if let existing = map[sourceURI] { return existing }
         let sourcePart = try source.part(at: sourceURI)
+        let sourceURI = sourcePart.uri
+        if let existing = map[sourceURI] { return existing }
         // A source part whose DOM was mutated carries a stale blob until
         // flushed; copy the current bytes, not the pre-edit ones.
         sourcePart.flushIfDirty()
