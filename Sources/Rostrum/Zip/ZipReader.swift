@@ -448,6 +448,12 @@ public struct ZipReader {
 
     /// Decode and CRC-verify one entry.
     public func data(forEntry name: String) throws -> Data {
+        try entryPayload(forEntry: name).decoded
+    }
+
+    /// Decode and CRC-verify one entry, returning both the uncompressed bytes
+    /// and the raw archive payload metadata.
+    func entryPayload(forEntry name: String) throws -> (decoded: Data, raw: Data, entry: Entry) {
         guard let index = indexByName[name] else {
             throw RostrumError.partMissing(name)
         }
@@ -503,7 +509,7 @@ public struct ZipReader {
         guard CRC32.checksum(decoded) == entry.crc32 else {
             throw RostrumError.zipCorrupt("CRC-32 mismatch for entry \"\(name)\"")
         }
-        return decoded
+        return (decoded: decoded, raw: raw, entry: entry)
     }
 
     // MARK: - Entry-name decoding

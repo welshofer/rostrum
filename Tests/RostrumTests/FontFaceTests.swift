@@ -80,4 +80,47 @@ import Testing
         #expect(library.metrics(for: "Alias", bold: true, italic: false) == nil)
     }
 
+    @Test func splitLegacyFamilyDoesNotOverwriteTypographicBaseFamily() throws {
+        func namedFont(width: Int, records: [(UInt16, String)]) -> Data {
+            var storage: [UInt8] = []
+            var headers: [UInt8] = []
+            for (nameID, text) in records {
+                let bytes = Array(text.utf16).flatMap { [UInt8($0 >> 8), UInt8($0 & 0xFF)] }
+                headers += TestFont.be16(3) + TestFont.be16(1) + TestFont.be16(0x0409)
+                    + TestFont.be16(Int(nameID)) + TestFont.be16(bytes.count) + TestFont.be16(storage.count)
+                storage += bytes
+            }
+            let nameTable = TestFont.be16(0) + TestFont.be16(records.count)
+                + TestFont.be16(6 + records.count * 12) + headers + storage
+            return Data(TestFont.assemble(tables: [
+                ("head", TestFont.head(upem: 1000)),
+                ("hhea", TestFont.hhea(ascender: 800, descender: -200, lineGap: 0, numberOfHMetrics: 96)),
+                ("maxp", TestFont.maxp(numGlyphs: 96)),
+                ("hmtx", TestFont.hmtx(advances: Array(repeating: width, count: 96))),
+                ("cmap", TestFont.cmapFormat4()),
+                ("name", nameTable),
+                ("OS/2", TestFont.os2(useTypoMetrics: false))
+            ]))
+        }
+
+        let baseRegular = namedFont(width: 520, records: [
+            (1, "Calibri"), (2, "Regular"), (16, "Calibri"), (17, "Regular")
+        ])
+        let lightRegular = namedFont(width: 430, records: [
+            (1, "Calibri Light"), (2, "Regular"), (16, "Calibri"), (17, "Light")
+        ])
+
+        let library = FontLibrary()
+        try library.register(baseRegular)
+        try library.register(lightRegular)
+
+        #expect(library.metrics(for: "Calibri Light", bold: false, italic: false)?.advance(of: "A") == 430)
+        #expect(library.metrics(for: "Calibri", bold: false, italic: false)?.advance(of: "A") == 520)
+
+        let lightOnly = FontLibrary()
+        try lightOnly.register(lightRegular)
+        #expect(lightOnly.metrics(for: "Calibri Light", bold: false, italic: false)?.advance(of: "A") == 430)
+        #expect(lightOnly.metrics(for: "Calibri", bold: false, italic: false) == nil)
+    }
+
 }

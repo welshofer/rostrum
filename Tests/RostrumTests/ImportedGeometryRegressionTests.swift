@@ -142,7 +142,11 @@ import Testing
         <a:custGeom><a:gdLst><a:gd name="mid" fmla="*/ w 1 2"/></a:gdLst><a:pathLst><a:path><a:moveTo><a:pt x="l" y="t"/></a:moveTo><a:lnTo><a:pt x="mid" y="b"/></a:lnTo></a:path></a:pathLst></a:custGeom>
         """)
         #expect(SVGCustomGeometry.paths(geometry, width: 100, height: 200)?.first?.data == "M0 0 L50 200")
-        for xml in ["<a:path w=\"0\"/>", "<a:path><a:lnTo><a:pt x=\"0\" y=\"0\"/></a:lnTo></a:path>", "<a:path><a:moveTo><a:pt x=\"NaN\" y=\"0\"/></a:moveTo></a:path>", "<a:path><a:arcTo/></a:path>"] {
+        let arcGeometry = try parse("""
+        <a:custGeom><a:pathLst><a:path w="100" h="100"><a:moveTo><a:pt x="50" y="0"/></a:moveTo><a:arcTo wR="50" hR="50" stAng="16200000" swAng="5400000"/><a:lnTo><a:pt x="100" y="100"/></a:lnTo><a:close/></a:path></a:pathLst></a:custGeom>
+        """)
+        #expect(SVGCustomGeometry.paths(arcGeometry, width: 200, height: 100)?.first?.data == "M100 0 A100 50 0 0 1 200 50 L200 100 Z")
+        for xml in ["<a:path w=\"0\"/>", "<a:path><a:lnTo><a:pt x=\"0\" y=\"0\"/></a:lnTo></a:path>", "<a:path><a:moveTo><a:pt x=\"NaN\" y=\"0\"/></a:moveTo></a:path>", "<a:path><a:arcTo/></a:path>", "<a:path><a:arcTo wR=\"50\" hR=\"50\" stAng=\"0\" swAng=\"5400000\"/></a:path>"] {
             let bad = try parse("<a:custGeom><a:pathLst>\(xml)</a:pathLst></a:custGeom>")
             #expect(SVGCustomGeometry.paths(bad, width: 100, height: 200) == nil)
         }

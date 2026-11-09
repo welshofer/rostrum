@@ -172,8 +172,11 @@ public struct FontMetrics: Sendable {
         // (MacRoman) are decoded only when pure ASCII — where the encodings
         // agree — so `familyNames.first` is always a faithful name, never a
         // mojibake decode of a non-ASCII Mac record.
-        var unicodeNames: [String] = []
-        var macNames: [String] = []
+        var unicodeLegacyNames: [String] = []
+        var macLegacyNames: [String] = []
+        var unicodeTypographicNames: [String] = []
+        var macTypographicNames: [String] = []
+        var typographicSubfamilies: [String] = []
         if let name = tables["name"], name.length >= 6 {
             let count = (try? reader.u16(name.offset + 2)) ?? 0
             let storage = name.offset + ((try? reader.u16(name.offset + 4)) ?? 0)
@@ -183,23 +186,62 @@ public struct FontMetrics: Sendable {
                       let nameID = try? reader.u16(record + 6),
                       let length = try? reader.u16(record + 8),
                       let offset = try? reader.u16(record + 10),
-                      nameID == 1 || nameID == 16,
+                      nameID == 1 || nameID == 16 || nameID == 17,
                       storage + offset + length <= reader.count else { continue }
                 let bytes = Array(reader.bytes[(storage + offset)..<(storage + offset + length)])
+                let decoded: String?
+                let isUnicode: Bool
                 switch platform {
                 case 0, 3:
-                    if let decoded = String(bytes: bytes, encoding: .utf16BigEndian),
-                       !decoded.isEmpty, !unicodeNames.contains(decoded) {
-                        unicodeNames.append(decoded)
-                    }
+                    decoded = String(bytes: bytes, encoding: .utf16BigEndian)
+                    isUnicode = true
                 case 1 where bytes.allSatisfy({ $0 <= 0x7F }):
-                    if let decoded = String(bytes: bytes, encoding: .ascii),
-                       !decoded.isEmpty, !macNames.contains(decoded) {
-                        macNames.append(decoded)
-                    }
+                    decoded = String(bytes: bytes, encoding: .ascii)
+                    isUnicode = false
+                default:
+                    decoded = nil
+                    isUnicode = false
+                }
+                guard let decoded, !decoded.isEmpty else { continue }
+                switch (nameID, isUnicode) {
+                case (1, true) where !unicodeLegacyNames.contains(decoded):
+                    unicodeLegacyNames.append(decoded)
+                case (1, false) where !macLegacyNames.contains(decoded):
+                    macLegacyNames.append(decoded)
+                case (16, true) where !unicodeTypographicNames.contains(decoded):
+                    unicodeTypographicNames.append(decoded)
+                case (16, false) where !macTypographicNames.contains(decoded):
+                    macTypographicNames.append(decoded)
+                case (17, _) where !typographicSubfamilies.contains(decoded):
+                    typographicSubfamilies.append(decoded)
                 default:
                     break
                 }
+            }
+        }
+        // A split legacy family (e.g. nameID 1 "Calibri Light", nameID 2 "Regular",
+        // nameID 16 "Calibri", nameID 17 "Light") shares the broader typographic
+        // family in nameID 16, but its Regular/Italic legacy slots are not the base
+        // family's RIBBI Regular/Italic faces. Include nameID 16 only when nameID 17
+        // is absent or names a standard 4-face RIBBI subfamily (or when nameID 1 is absent).
+        let standardSubfamilies: Set<String> = [
+            "regular", "normal", "roman", "book", "plain", "standard",
+            "bold", "italic", "oblique", "slanted",
+            "bolditalic", "boldoblique", "boldslanted"
+        ]
+        let includeTypographicFamily = (unicodeLegacyNames.isEmpty && macLegacyNames.isEmpty)
+            || typographicSubfamilies.allSatisfy { subfamily in
+                let normalized = subfamily.lowercased().filter { !$0.isWhitespace && $0 != "-" }
+                return standardSubfamilies.contains(normalized)
+            }
+        var unicodeNames = unicodeLegacyNames
+        var macNames = macLegacyNames
+        if includeTypographicFamily {
+            for name in unicodeTypographicNames where !unicodeNames.contains(name) {
+                unicodeNames.append(name)
+            }
+            for name in macTypographicNames where !macNames.contains(name) {
+                macNames.append(name)
             }
         }
         familyNames = unicodeNames + macNames.filter { !unicodeNames.contains($0) }

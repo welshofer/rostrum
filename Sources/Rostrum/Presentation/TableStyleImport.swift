@@ -202,7 +202,7 @@ final class TableStyleImport {
             let leftPart = try source.part(at: PackURI.resolve(target: leftRel.target, relativeTo: left.uri.baseURI))
             // Previously staged dependencies aren't installed yet. Decline reuse
             // conservatively; the per-source map still deduplicates bulk imports.
-            guard let rightPart = destination.parts[PackURI.resolve(target: rightRel.target, relativeTo: right.uri.baseURI)] else { return false }
+            guard let rightPart = try? destination.part(at: PackURI.resolve(target: rightRel.target, relativeTo: right.uri.baseURI)) else { return false }
             return try matches(leftPart, rightPart)
         }
         for (leftID, rightID) in zip(a.1, b.1) {

@@ -141,7 +141,7 @@ final class RenderImageResources {
             return nil
         }
         guard let relationship = relationship(id, owner: owner), !relationship.isExternal,
-              let part = package.parts[PackURI.resolve(target: relationship.target, relativeTo: owner.uri.baseURI)] else {
+              let part = try? package.part(at: PackURI.resolve(target: relationship.target, relativeTo: owner.uri.baseURI)) else {
             references[key] = .missing
             return nil
         }

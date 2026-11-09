@@ -165,4 +165,74 @@ import Testing
         let reread = try XML.parseDocument(part.blob)
         #expect(XML.document(reread) == part.blob)
     }
+
+    @Test func partLookupTriesVerbatimThenFallsBackToPercentDecoded() throws {
+        let package = OPCPackage()
+        let rawImage = package.addPart(
+            uri: PackURI("/ppt/media/my image.png"),
+            contentType: ContentType.png,
+            blob: Data([0x89, 0x50, 0x4E, 0x47])
+        )
+        let encodedTarget = PackURI.resolve(target: "../media/my%20image.png", relativeTo: "/ppt/slides")
+        #expect(encodedTarget.value == "/ppt/media/my%20image.png")
+        #expect(try package.part(at: encodedTarget) === rawImage)
+
+        // When both verbatim and decoded parts exist, verbatim always wins.
+        let verbatimSlide = package.addPart(
+            uri: PackURI("/ppt/slides/slide%31.xml"),
+            contentType: ContentType.slide,
+            blob: Data("<p:sld xmlns:p=\"x\" id=\"verbatim\"/>".utf8)
+        )
+        let decodedSlide = package.addPart(
+            uri: PackURI("/ppt/slides/slide1.xml"),
+            contentType: ContentType.slide,
+            blob: Data("<p:sld xmlns:p=\"x\" id=\"decoded\"/>".utf8)
+        )
+        #expect(try package.part(at: PackURI("/ppt/slides/slide%31.xml")) === verbatimSlide)
+        #expect(try package.part(at: PackURI("/ppt/slides/slide1.xml")) === decodedSlide)
+
+        // Path-traversal or slash-injecting escapes never fall back.
+        #expect(PackURI("/ppt/slides/%2E%2E/presentation.xml").percentDecoded == nil)
+        #expect(PackURI("/ppt/slides/a%2Fb.xml").percentDecoded == nil)
+    }
+
+    @Test func untouchedPartsPreserveOriginalCompressionMethodOnSave() throws {
+        let repeatedJPEG = Data(repeating: 0x42, count: 512)
+        let deflated = Deflate.deflate(repeatedJPEG)
+        #expect(deflated.count < repeatedJPEG.count)
+
+        var contentTypes = ContentTypesMap()
+        contentTypes.setDefault(extension: "jpeg", contentType: ContentType.jpeg)
+        contentTypes.setOverride(partName: PackURI("/ppt/presentation.xml"), contentType: ContentType.presentationMain)
+
+        let rels = Relationships()
+        rels.add(type: RelType.officeDocument, target: "ppt/presentation.xml")
+
+        var writer = ZipWriter()
+        writer.addFile(name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
+        writer.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
+        writer.addFile(name: "ppt/presentation.xml", data: Data("<p:presentation xmlns:p=\"x\"/>".utf8))
+        writer.addFile(
+            name: "ppt/media/foreign.jpeg",
+            payload: ZipWriter.Payload(
+                data: deflated,
+                method: 8,
+                size: UInt32(repeatedJPEG.count),
+                crc: CRC32.checksum(repeatedJPEG)
+            )
+        )
+
+        let package = try OPCPackage.read(data: try writer.finalize())
+        let resaved = try ZipReader(data: try package.serialize())
+        let untouchedEntry = try #require(resaved.allEntries.first { $0.name == "ppt/media/foreign.jpeg" })
+        #expect(untouchedEntry.method == 8)
+        #expect(try resaved.data(forEntry: "ppt/media/foreign.jpeg") == repeatedJPEG)
+
+        // Mutating the blob re-applies Rostrum's storedExtensions policy (STORED for JPEG).
+        let part = try package.part(at: PackURI("/ppt/media/foreign.jpeg"))
+        part.replaceBlob(Data(repeating: 0x24, count: 512))
+        let afterReplace = try ZipReader(data: try package.serialize())
+        let replacedEntry = try #require(afterReplace.allEntries.first { $0.name == "ppt/media/foreign.jpeg" })
+        #expect(replacedEntry.method == 0)
+    }
 }

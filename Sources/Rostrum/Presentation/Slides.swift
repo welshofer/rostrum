@@ -116,9 +116,10 @@ public final class Slides: Sequence {
         if let rId = entry[attribute: "r:id"],
            let rel = presentationPart.rels.relationship(withId: rId) {
             let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
-            let annotations = try annotationRemovalPlan(for: try package.part(at: uri))
+            let slidePart = try package.part(at: uri)
+            let annotations = try annotationRemovalPlan(for: slidePart)
             presentationPart.rels.remove(rId: rId)
-            package.removePart(at: uri)
+            package.removePart(at: slidePart.uri)
             for annotationURI in annotations.removed { package.removePart(at: annotationURI) }
             for (part, relationships) in annotations.retained {
                 part.rels.setItems(relationships)

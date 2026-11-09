@@ -281,7 +281,7 @@ struct SVGRenderer {
             ?? colorHex(in: node.firstChild(named: "p:style")?.firstChild(named: "a:lnRef")) ?? "#000000"
         let width = max(1, line?.coordinate("w") ?? 12700)
         let preset = properties.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "line"
-        if !["line", "straightConnector1", "bentConnector3"].contains(preset) {
+        if !["line", "straightConnector1", "bentConnector2", "bentConnector3", "bentConnector4", "bentConnector5"].contains(preset) {
             diagnostics.record(.unsupportedGeometry, .approximation,
                 "Preview approximates this bent or curved connector with a straight line.")
         }
@@ -318,23 +318,48 @@ struct SVGRenderer {
             defs += "<marker id=\"\(id)\" viewBox=\"0 0 10 10\" refX=\"\(start ? 0 : 10)\" refY=\"5\" markerWidth=\"\(markerWidth)\" markerHeight=\"\(markerHeight)\" orient=\"auto\" overflow=\"visible\">\(marker)</marker>"
             attrs += " \(attribute)=\"url(#\(id))\""
         }
-        if preset == "bentConnector3" {
-            var adjustment = 0.5
-            if let guide = properties.firstChild(named: "a:prstGeom")?.firstChild(named: "a:avLst")?
-                .children(named: "a:gd").first(where: { $0[attribute: "name"] == "adj1" }) {
-                let formula = (guide[attribute: "fmla"] ?? "").split(whereSeparator: \.isWhitespace)
-                if formula.count == 2, formula.first == "val", let value = Double(formula[1]),
-                   value.isFinite, abs(value) <= 1_000_000 {
-                    adjustment = value / 100_000
-                } else {
-                    diagnostics.record(.unsupportedGeometry, .approximation,
-                        "Unsupported connector guide formula uses the default elbow adjustment.")
-                }
+        func adjustment(_ name: String, default fallback: Double = 0.5) -> Double {
+            guard let guide = properties.firstChild(named: "a:prstGeom")?.firstChild(named: "a:avLst")?
+                .children(named: "a:gd").first(where: { $0[attribute: "name"] == name }) else {
+                return fallback
             }
-            if h != 0 || !(0...1).contains(adjustment) {
-                let middle = coord(Double(x) + Double(w) * adjustment)
+            let formula = (guide[attribute: "fmla"] ?? "").split(whereSeparator: \.isWhitespace)
+            if formula.count == 2, formula.first == "val", let value = Double(formula[1]),
+               value.isFinite, abs(value) <= 1_000_000 {
+                return value / 100_000
+            }
+            diagnostics.record(.unsupportedGeometry, .approximation,
+                "Unsupported connector guide formula uses the default elbow adjustment.")
+            return fallback
+        }
+        switch preset {
+        case "bentConnector2":
+            if w != 0 && h != 0 {
+                return "<path d=\"M\(x) \(y) H\(x + w) V\(y + h)\" \(attrs)/>"
+            }
+        case "bentConnector3":
+            let adj1 = adjustment("adj1")
+            if h != 0 || !(0...1).contains(adj1) {
+                let middle = coord(Double(x) + Double(w) * adj1)
                 return "<path d=\"M\(x) \(y) H\(middle) V\(y + h) H\(x + w)\" \(attrs)/>"
             }
+        case "bentConnector4":
+            let adj1 = adjustment("adj1"), adj2 = adjustment("adj2")
+            if w != 0 || h != 0 || !(0...1).contains(adj1) || !(0...1).contains(adj2) {
+                let x1 = coord(Double(x) + Double(w) * adj1)
+                let y2 = coord(Double(y) + Double(h) * adj2)
+                return "<path d=\"M\(x) \(y) H\(x1) V\(y2) H\(x + w) V\(y + h)\" \(attrs)/>"
+            }
+        case "bentConnector5":
+            let adj1 = adjustment("adj1"), adj2 = adjustment("adj2"), adj3 = adjustment("adj3")
+            if w != 0 || h != 0 || !(0...1).contains(adj1) || !(0...1).contains(adj2) || !(0...1).contains(adj3) {
+                let x1 = coord(Double(x) + Double(w) * adj1)
+                let y2 = coord(Double(y) + Double(h) * adj2)
+                let x3 = coord(Double(x) + Double(w) * adj3)
+                return "<path d=\"M\(x) \(y) H\(x1) V\(y2) H\(x3) V\(y + h) H\(x + w)\" \(attrs)/>"
+            }
+        default:
+            break
         }
         return "<line x1=\"\(x)\" y1=\"\(y)\" x2=\"\(x + w)\" y2=\"\(y + h)\" \(attrs)/>"
     }
@@ -1050,7 +1075,7 @@ struct SVGRenderer {
     }
     private struct ChartLabel {
         let hidden: Bool
-        let showValue: Bool, showCategory: Bool, showSeries: Bool, showPercent: Bool
+        let showValue: Bool, showCategory: Bool, showSeries: Bool, showPercent: Bool, showBubbleSize: Bool
         let position: String, separator: String
         let format: ChartNumberFormat
         let percentFormat: ChartNumberFormat
@@ -1075,14 +1100,16 @@ struct SVGRenderer {
             let percentCode = explicitCode ?? "0%"
             let percentFormat = formats[percentCode] ?? chartNumberFormat(percentCode)
             formats[percentCode] = percentFormat
-            let position = property("c:dLblPos")?[attribute: "val"] ?? (kind == "lineChart" ? "t" : "outEnd")
+            let defaultPos = ["lineChart", "scatterChart", "bubbleChart"].contains(kind) ? "t" : "outEnd"
+            let position = property("c:dLblPos")?[attribute: "val"] ?? defaultPos
             if !["outEnd", "inEnd", "inBase", "ctr", "bestFit", "t", "b", "l", "r"].contains(position)
                 || (flag("c:showPercent") && !["pieChart", "doughnutChart"].contains(kind)) || property("c:tx") != nil {
                 diagnostics.record(.chartApproximation, .approximation,
                     "Custom chart label text or unsupported label properties are approximated.")
             }
             return ChartLabel(hidden: flag("c:delete"), showValue: flag("c:showVal"),
-                showCategory: flag("c:showCatName"), showSeries: flag("c:showSerName"), showPercent: flag("c:showPercent"),
+                showCategory: flag("c:showCatName"), showSeries: flag("c:showSerName"),
+                showPercent: flag("c:showPercent"), showBubbleSize: flag("c:showBubbleSize"),
                 position: position, separator: property("c:separator")?.textContent ?? ", ", format: format,
                 percentFormat: percentFormat,
                 style: chartTextStyle([chartText] + nodes.map { $0.firstChild(named: "c:txPr") }, color: "#666666"))
@@ -1247,24 +1274,40 @@ struct SVGRenderer {
     }
 
     private func prepareChartLabels(_ specs: [ChartLabels], series: [ChartData.Series], categories: [String],
-                                    kind: String, measure: ChartTextMeasurer,
+                                    xySeries: [Chart.XYSeries] = [], kind: String, measure: ChartTextMeasurer,
                                     bounds: ChartTextRect) -> [[Int: ChartPreparedLabel]] {
         var count = 0
         let pie = ["pieChart", "doughnutChart"].contains(kind)
+        let isXY = ["scatterChart", "bubbleChart"].contains(kind)
         return series.enumerated().map { s, entry in
             var result: [Int: ChartPreparedLabel] = [:]
             let positive = entry.values.prefix(512).compactMap { $0 }.filter { $0.isFinite && $0 > 0 }
             // Normalize before summing so very large finite pie values remain usable.
             let largest = positive.max() ?? 1
             let total = positive.reduce(0) { $0 + $1 / largest }
+            let xy = s < xySeries.count ? xySeries[s] : nil
             for index in 0..<min(512, entry.values.count) {
                 guard let value = Self.finite(entry, index), !pie || value > 0 else { continue }
                 let spec = specs[s].points[index] ?? specs[s].standard
                 guard !spec.hidden else { continue }
                 var fields: [String] = []
                 if spec.showSeries { fields.append(entry.name) }
-                if spec.showCategory, categories.indices.contains(index) { fields.append(categories[index]) }
+                if spec.showCategory {
+                    if isXY, let xy {
+                        if index < xy.points.count, let x = xy.points[index].x, x.isFinite {
+                            fields.append(spec.format.string(x))
+                        } else if index < xy.xLabels.count, !xy.xLabels[index].isEmpty {
+                            fields.append(xy.xLabels[index])
+                        }
+                    } else if categories.indices.contains(index) {
+                        fields.append(categories[index])
+                    }
+                }
                 if spec.showValue { fields.append(spec.format.string(value)) }
+                if spec.showBubbleSize, kind == "bubbleChart", let xy, index < xy.points.count,
+                   let size = xy.points[index].size, size.isFinite {
+                    fields.append(spec.format.string(size))
+                }
                 if spec.showPercent && pie { fields.append(spec.percentFormat.string(total > 0 ? value / largest / total : 0)) }
                 guard !fields.isEmpty else { continue }
                 guard count < 512 else { chartOmission("data labels above the 512-label preview bound"); continue }
@@ -1441,15 +1484,31 @@ struct SVGRenderer {
         else { return nil }
         let chart = Chart(part: part, package: package)
         guard let kind = chart.plotType else { return nil }
+        let isXY = ["scatterChart", "bubbleChart"].contains(kind)
         // A fuzzed file can declare any number of series/points; bound both
         // rather than loop over whatever it claims.
-        let candidates = zip(chart.series, chart.seriesElements).filter { !$0.0.values.isEmpty }
-        let entries = Array(candidates.prefix(32))
-        if candidates.count > 32 {
-            diagnostics.record(.chartApproximation, .omission, "Chart preview shows the first 32 nonempty series; additional series are omitted.")
+        let series: [ChartData.Series]
+        let styles: [XML.Element]
+        let xyEntries: [Chart.XYSeries]
+        if isXY {
+            let xyCandidates = zip(chart.xySeries, chart.seriesElements).filter { !$0.0.points.isEmpty }
+            let picked = Array(xyCandidates.prefix(32))
+            if xyCandidates.count > 32 {
+                diagnostics.record(.chartApproximation, .omission, "Chart preview shows the first 32 nonempty series; additional series are omitted.")
+            }
+            xyEntries = picked.map { $0.0 }
+            styles = picked.map { $0.1 }
+            series = xyEntries.map { ChartData.Series(name: $0.name, values: $0.points.map(\.y)) }
+        } else {
+            let candidates = zip(chart.series, chart.seriesElements).filter { !$0.0.values.isEmpty }
+            let entries = Array(candidates.prefix(32))
+            if candidates.count > 32 {
+                diagnostics.record(.chartApproximation, .omission, "Chart preview shows the first 32 nonempty series; additional series are omitted.")
+            }
+            series = entries.map { $0.0 }
+            styles = entries.map { $0.1 }
+            xyEntries = []
         }
-        let series = entries.map { $0.0 }
-        let styles = entries.map { $0.1 }
         let chartNode = chart.root?.firstChild(named: "c:chart")
         let legendNode = chartNode?.firstChild(named: "c:legend")
         let pointStyles: [[Int: XML.Element]] = styles.map { node in
@@ -1466,7 +1525,8 @@ struct SVGRenderer {
             let override = point.flatMap { pointStyles[seriesIndex][$0] }
             if override?.firstChild(named: "a:noFill") != nil { return "none" }
             if let fill = colorHex(in: override?.firstChild(named: "a:solidFill")) { return fill }
-            if kind == "lineChart", let fill = colorHex(in: properties?.firstChild(named: "a:ln")?.firstChild(named: "a:solidFill")) { return fill }
+            if ["lineChart", "scatterChart"].contains(kind),
+               let fill = colorHex(in: properties?.firstChild(named: "a:ln")?.firstChild(named: "a:solidFill")) { return fill }
             if properties?.firstChild(named: "a:noFill") != nil { return "none" }
             if let fill = colorHex(in: properties?.firstChild(named: "a:solidFill")) { return fill }
             return seriesColor(point != nil && ["pieChart", "doughnutChart"].contains(kind) ? point! : seriesIndex)
@@ -1514,11 +1574,138 @@ struct SVGRenderer {
         }
         let plot = chart.plots.first
         let specs = chartLabels(plot: plot, series: styles, chartText: chartText, kind: kind)
-        let labels = prepareChartLabels(specs, series: series, categories: categories, kind: kind,
-                                        measure: measure, bounds: content)
+        let labels = prepareChartLabels(specs, series: series, categories: categories, xySeries: xyEntries,
+                                        kind: kind, measure: measure, bounds: content)
         if pie {
             out += measuredPie(series[0], kind: kind, plot: plot, bounds: content,
                                labels: labels[0], color: { color(0, $0) })
+            return out
+        }
+        if isXY {
+            let plotArea = chartNode?.firstChild(named: "c:plotArea")
+            let valAxes = plotArea?.children(named: "c:valAx") ?? []
+            let xAxis = valAxes.first { ["b", "t"].contains($0.firstChild(named: "c:axPos")?[attribute: "val"] ?? "") }
+                ?? plotArea?.firstChild(named: "c:catAx")
+                ?? valAxes.first
+            let yAxis = valAxes.first { $0 !== xAxis && ["l", "r"].contains($0.firstChild(named: "c:axPos")?[attribute: "val"] ?? "") }
+                ?? valAxes.dropFirst().first { $0 !== xAxis }
+                ?? valAxes.first
+            let xSeries = xyEntries.map { xy in
+                ChartData.Series(name: xy.name, values: (0..<min(catCount, xy.points.count)).map { index in
+                    if let xVal = xy.points[index].x, xVal.isFinite { return xVal }
+                    if index < xy.xLabels.count { return Double(index + 1) }
+                    return nil
+                })
+            }
+            let xScale = ValueScale(series: xSeries, catCount: catCount, grouping: "standard", axis: xAxis?.firstChild(named: "c:scaling"))
+            let yScale = ValueScale(series: series, catCount: catCount, grouping: "standard", axis: yAxis?.firstChild(named: "c:scaling"))
+            out += chartAxisTitle(yAxis, chartText: chartText, measure: measure, content: &content, vertical: true)
+            out += chartAxisTitle(xAxis, chartText: chartText, measure: measure, content: &content, vertical: false)
+            let yTicks = chartTicks(scale: yScale, axis: yAxis,
+                style: chartTextStyle([chartText, yAxis?.firstChild(named: "c:txPr")], color: "#666666"),
+                measure: measure, width: content.width * 0.35)
+            let xTicks = chartTicks(scale: xScale, axis: xAxis,
+                style: chartTextStyle([chartText, xAxis?.firstChild(named: "c:txPr")], color: "#666666"),
+                measure: measure, width: content.width * 0.25)
+            let yTickWidth = yTicks.compactMap(\.text).map { $0.block.width }.max() ?? 0
+            let yTickHeight = yTicks.compactMap(\.text).map { $0.block.height }.max() ?? 0
+            let xTickWidth = xTicks.compactMap(\.text).map { $0.block.width }.max() ?? 0
+            let xTickHeight = xTicks.compactMap(\.text).map { $0.block.height }.max() ?? 0
+            let flattened = labels.flatMap { $0.values }
+            let outside = flattened.filter { $0.position != "ctr" }
+            let labelWidth = outside.map { $0.text.block.width }.max() ?? 0
+            let labelHeight = outside.map { $0.text.block.height }.max() ?? 0
+            let outsideX = labelWidth > 0 ? labelWidth + gap : 0
+            let outsideY = labelHeight > 0 ? labelHeight + gap * 2 : 0
+            let leftTick = max(yTickWidth + (yTickWidth > 0 ? gap : 0), xTickWidth / 2)
+            let rightTick = xTickWidth / 2
+            let topTick = yTickHeight / 2
+            let bottomTick = max(xTickHeight + (xTickHeight > 0 ? gap : 0), yTickHeight / 2)
+            let left = leftTick + outsideX
+            let right = rightTick + outsideX
+            let top = max(topTick, outsideY)
+            let bottom = bottomTick + outsideY
+            let area = ChartTextRect(x: content.x + left, y: content.y + top,
+                width: content.width - left - right, height: content.height - top - bottom)
+            guard area.width >= Double(emuPerPoint), area.height >= Double(emuPerPoint) else {
+                chartOmission("the plot because its measured labels leave no plotting area")
+                return out
+            }
+            let labelBounds = ChartTextRect(x: area.x - outsideX, y: area.y - outsideY,
+                width: area.width + outsideX * 2, height: area.height + outsideY * 2)
+            let placements = ChartLabelPlacement(bounds: labelBounds)
+            out += measuredAxes(area: area, scale: yScale, axis: yAxis, ticks: yTicks, horizontal: false,
+                                labelX: area.x - outsideX - gap, labelY: area.bottom + outsideY + gap, bounds: content)
+            out += measuredAxes(area: area, scale: xScale, axis: xAxis, ticks: xTicks, horizontal: true,
+                                labelX: area.x - outsideX - gap, labelY: area.bottom + outsideY + gap, bounds: content)
+            var body = ""
+            var decorations = ""
+            if kind == "bubbleChart" {
+                let showNeg = ["1", "true"].contains(plot?.firstChild(named: "c:showNegBubbles")?[attribute: "val"] ?? "0")
+                let bubbleScale = Double(plot?.firstChild(named: "c:bubbleScale")?.boundedInt("val", in: 0...300) ?? 100) / 100.0
+                let sizes = xyEntries.flatMap { $0.points.prefix(catCount) }.compactMap(\.size).filter {
+                    $0.isFinite && ($0 > 0 || (showNeg && $0 < 0))
+                }.map(abs)
+                let maxSize = sizes.max() ?? 1
+                let maxRadius = max(Double(3 * emuPerPoint), min(area.width, area.height) * 0.12 * max(0.25, bubbleScale))
+                for (s, xy) in xyEntries.enumerated() {
+                    for index in 0..<min(catCount, xy.points.count) {
+                        guard let xVal = Self.finite(xSeries[s], index),
+                              let yVal = Self.finite(series[s], index) else { continue }
+                        let rawSize = xy.points[index].size ?? 1
+                        guard rawSize.isFinite, rawSize > 0 || (showNeg && rawSize < 0) else { continue }
+                        let px = area.x + area.width * xScale.fraction(xVal)
+                        let py = area.y + area.height * (1 - yScale.fraction(yVal))
+                        let r = max(Double(2 * emuPerPoint), maxRadius * sqrt(abs(rawSize) / max(maxSize, 1e-12)))
+                        let ptColor = color(s, index)
+                        let stroke = ptColor == "none" ? "none" : ptColor
+                        body += "<circle cx=\"\(coord(px))\" cy=\"\(coord(py))\" r=\"\(coord(r))\" fill=\"\(ptColor)\" fill-opacity=\"0.65\" stroke=\"\(stroke)\" stroke-width=\"12700\"/>"
+                        if px >= area.x - 0.01 && px <= area.right + 0.01 && py >= area.y - 0.01 && py <= area.bottom + 0.01 {
+                            decorations += renderPointLabel(labels[s][index], x: px, y: py, placements: placements)
+                        }
+                    }
+                }
+            } else {
+                let scatterStyle = plot?.firstChild(named: "c:scatterStyle")?[attribute: "val"] ?? "lineMarker"
+                let defaultLine = ["line", "lineMarker", "smooth", "smoothMarker"].contains(scatterStyle)
+                let defaultMarkers = ["lineMarker", "smoothMarker", "marker"].contains(scatterStyle)
+                let fallbackMarker = XML.Element("c:marker", children: [
+                    .element(XML.Element("c:symbol", attributes: [("val", "circle")]))
+                ])
+                for (s, xy) in xyEntries.enumerated() {
+                    var points: [(Double, Double)] = []
+                    let seriesMarker = styles[s].firstChild(named: "c:marker") ?? (defaultMarkers ? fallbackMarker : nil)
+                    var pointMarkers: [Int: XML.Element] = [:]
+                    for point in styles[s].children(named: "c:dPt") {
+                        if let index = point.firstChild(named: "c:idx")?.boundedInt("val", in: 0...511),
+                           let marker = point.firstChild(named: "c:marker") { pointMarkers[index] = marker }
+                    }
+                    let seriesCol = color(s, nil)
+                    for index in 0..<min(catCount, xy.points.count) {
+                        guard let xVal = Self.finite(xSeries[s], index),
+                              let yVal = Self.finite(series[s], index) else { continue }
+                        let px = area.x + area.width * xScale.fraction(xVal)
+                        let py = area.y + area.height * (1 - yScale.fraction(yVal))
+                        points.append((px, py))
+                        if px >= area.x - 0.01 && px <= area.right + 0.01 && py >= area.y - 0.01 && py <= area.bottom + 0.01 {
+                            decorations += chartMarker(pointMarkers[index], inherited: seriesMarker,
+                                x: px, y: py, defaultColor: color(s, index))
+                            decorations += renderPointLabel(labels[s][index], x: px, y: py, placements: placements)
+                        }
+                    }
+                    let properties = styles[s].firstChild(named: "c:spPr")
+                    let ln = properties?.firstChild(named: "a:ln")
+                    let hasExplicitLine = ln?.firstChild(named: "a:solidFill") != nil
+                    if points.count > 1, (defaultLine || hasExplicitLine), ln?.firstChild(named: "a:noFill") == nil {
+                        let path = points.map { "\(coord($0.0)),\(coord($0.1))" }.joined(separator: " ")
+                        let stroke = colorHex(in: ln?.firstChild(named: "a:solidFill")) ?? seriesCol
+                        let lineWidth = ln?.coordinate("w") ?? 25400
+                        let dash = dashAttributes(ln, width: lineWidth)
+                        body += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" stroke-width=\"\(lineWidth)\"\(dash) stroke-linejoin=\"round\"/>"
+                    }
+                }
+            }
+            out += "<svg x=\"\(area.x)\" y=\"\(area.y)\" width=\"\(area.width)\" height=\"\(area.height)\" viewBox=\"\(area.x) \(area.y) \(area.width) \(area.height)\" overflow=\"hidden\">\(body)</svg>" + decorations
             return out
         }
         guard ["barChart", "lineChart", "areaChart"].contains(kind) else { return nil }
