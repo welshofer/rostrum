@@ -343,4 +343,52 @@ import Testing
 
         #expect(try String(contentsOf: bystander, encoding: .utf8) == "keep me")
     }
+
+    @Test func videoPosterExtractionIsOptInAndSkipsFallbackPixel() throws {
+        let deck = try Presentation()
+        let mp4 = Data([0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70, 0x6D, 0x70, 0x34, 0x32])
+        _ = try deck.slides[0].shapes.addMedia(mp4, format: .mp4, frame: frame, poster: Self.png)
+        _ = try deck.slides[0].shapes.addMedia(Data([0x01, 0x02, 0x03, 0x04]), format: .mp4, frame: frame, poster: nil)
+
+        // Default outline omits video poster frames from extracted assets; only the 2 video streams appear.
+        let defaultAssets = deck.outline().slides[0].assets
+        #expect(defaultAssets.map(\.kind) == [.video, .video])
+
+        // Opt-in includeVideoPosters extracts the custom poster PNG and skips the 1x1 fallback pixel.
+        let withPosters = deck.outline(includeVideoPosters: true).slides[0].assets
+        #expect(withPosters.map(\.kind) == [.video, .image, .video])
+
+        let root = scratchDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let summary = try DeckExport.write(deck, to: root, named: "Deck", includeVideoPosters: true)
+        #expect(summary.assetsWritten == 3)
+        #expect(summary.warnings.isEmpty)
+    }
+
+    @Test func slideTransitionAndTimingOrderingAndDeduplicatedMedia() throws {
+        let emptySld = XML.Element("p:sld", attributes: [("xmlns:p", MinimalTemplate.nsP)])
+        emptySld.appendElement(XML.Element("p:transition"))
+        emptySld.appendElement(XML.Element("p:timing"))
+        emptySld.appendElement(XML.Element("p:extLst"))
+        let part = Part(uri: PackURI("/ppt/slides/slide99.xml"),
+                        contentType: ContentType.slide,
+                        blob: XML.document(emptySld))
+        let slide = Slide(part: part, package: OPCPackage())
+        #expect(slide.hasTransition)
+        #expect(slide.hasTiming)
+        // Materializing spTree inserts p:cSld before p:transition, p:timing, and p:extLst.
+        _ = try Slide.spTree(of: part)
+        let names = try part.dom().childElements.map(\.name)
+        #expect(names == ["p:cSld", "p:transition", "p:timing", "p:extLst"])
+
+        // Adding identical media twice reuses the same indexed media part in O(1).
+        let deck = try Presentation()
+        let mp3 = Data(repeating: 0xAA, count: 64)
+        _ = try deck.slides[0].shapes.addMedia(mp3, format: .mp3, frame: frame)
+        _ = try deck.slides[0].shapes.addMedia(mp3, format: .mp3, frame: frame)
+        #expect(try deck.slides[0].hasTiming)
+        let mediaParts = deck.package.parts.keys.filter { $0.value.hasPrefix("/ppt/media/media") }
+        #expect(mediaParts.count == 1)
+    }
 }
+

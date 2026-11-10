@@ -72,9 +72,7 @@ public extension ShapeCollection {
         // writes media.
         // Reuse an identical clip already in the package, the way image parts
         // dedup — embedding the same video twice should not double the file.
-        let existing = package.parts.first {
-            $0.key.value.hasPrefix("/ppt/media/") && $0.value.blob == data
-        }?.key
+        let existing = package.matchingMedia(for: data)?.uri
         let mediaURI: PackURI
         if let existing {
             mediaURI = existing
@@ -197,8 +195,8 @@ public extension ShapeCollection {
     /// do. See ROADMAP.
     private func registerMediaTiming(shapeID: Int, isAudio: Bool) throws {
         let slide = try part.dom()
-        // p:timing is the last child of p:sld.
-        let timing = slide.getOrAddChild("p:timing")
+        // p:timing precedes p:extLst in CT_Slide schema order.
+        let timing = slide.getOrAddChild("p:timing", beforeAnyOf: ["p:extLst"])
         let tnLst = timing.getOrAddChild("p:tnLst")
 
         // The timing root: one p:par > p:cTn[nodeType=tmRoot] per slide.
@@ -260,7 +258,7 @@ public extension ShapeCollection {
     private static let p14Namespace = "http://schemas.microsoft.com/office/powerpoint/2010/main"
 
     /// 1×1 fully transparent PNG — the poster of last resort.
-    private static let transparentPixelPNG = Data([
+    static let transparentPixelPNG = Data([
         0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
         0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
         0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,

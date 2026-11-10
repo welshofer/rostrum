@@ -331,6 +331,51 @@ public final class OPCPackage {
         return try part(at: PackURI.resolve(target: rel.target, relativeTo: "/"))
     }
 
+    /// Every part URI reachable from the package-level relationship graph
+    /// (`/_rels/.rels`) by following internal relationships.
+    public var reachablePartURIs: Set<PackURI> {
+        var visited: Set<PackURI> = []
+        var stack: [Part] = []
+        for rel in rels.items where !rel.isExternal {
+            let targetURI = PackURI.resolve(target: rel.target, relativeTo: "/")
+            if let target = try? part(at: targetURI), visited.insert(target.uri).inserted {
+                stack.append(target)
+            }
+        }
+        while let current = stack.popLast() {
+            let base = current.uri.baseURI
+            for rel in current.rels.items where !rel.isExternal {
+                let targetURI = PackURI.resolve(target: rel.target, relativeTo: base)
+                if let target = try? part(at: targetURI), visited.insert(target.uri).inserted {
+                    stack.append(target)
+                }
+            }
+        }
+        return visited
+    }
+
+    /// Parts in `parts` that are not reachable from `/_rels/.rels`, sorted by
+    /// part URI. Ordinary saves preserve these parts for lossless round-trips;
+    /// call `prune()` to remove them explicitly.
+    public var orphanPartURIs: [PackURI] {
+        let reachable = reachablePartURIs
+        return parts.keys.filter { !reachable.contains($0) }.sorted { $0.value < $1.value }
+    }
+
+    /// Remove all parts unreachable from `/_rels/.rels` along with any carried
+    /// orphan `.rels` streams and untyped entries, returning the removed part
+    /// URIs in sorted order.
+    @discardableResult
+    public func prune() -> [PackURI] {
+        let orphans = orphanPartURIs
+        for uri in orphans {
+            removePart(at: uri)
+        }
+        orphanRelationshipStreams.removeAll()
+        untypedEntries.removeAll()
+        return orphans
+    }
+
     /// Extensions whose bytes are already a compressed container. Re-DEFLATEing
     /// one costs a full pass plus several times the payload in transient
     /// buffers and never shrinks it, so the result is thrown away. `wav` is
