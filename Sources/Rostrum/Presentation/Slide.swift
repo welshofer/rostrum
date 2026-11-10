@@ -32,7 +32,7 @@ public final class Slide {
     }
 
     static func cSld(of part: Part) throws -> XML.Element {
-        try part.dom().getOrAddChild("p:cSld", beforeAnyOf: ["p:clrMapOvr", "p:timing"])
+        try part.dom().getOrAddChild("p:cSld", beforeAnyOf: ["p:clrMapOvr", "p:transition", "p:timing", "p:extLst"])
     }
 
     static func spTree(of part: Part) throws -> XML.Element {
@@ -45,6 +45,16 @@ public final class Slide {
     /// enumerating an untouched part leaves it byte-identical.
     static func existingSpTree(of part: Part) -> XML.Element? {
         (try? part.dom())?.firstChild(named: "p:cSld")?.firstChild(named: "p:spTree")
+    }
+
+    /// True when the slide carries a slide-entry transition (`p:transition`).
+    public var hasTransition: Bool {
+        (try? part.dom())?.firstChild(named: "p:transition") != nil
+    }
+
+    /// True when the slide carries an animation or media timing tree (`p:timing`).
+    public var hasTiming: Bool {
+        (try? part.dom())?.firstChild(named: "p:timing") != nil
     }
 
     /// The slide's own solid background colour, if it sets one.

@@ -209,4 +209,18 @@ public final class Presentation {
     public func save(to url: URL) throws {
         try package.writeAtomically(to: url)
     }
+
+    // MARK: - Package hygiene
+
+    /// Package parts unreachable from the root relationship graph, sorted by URI.
+    public var orphanPartURIs: [PackURI] {
+        package.orphanPartURIs
+    }
+
+    /// Opt-in removal of parts unreachable from the root relationship graph,
+    /// plus carried orphan `.rels` streams and untyped entries.
+    @discardableResult
+    public func prune() -> [PackURI] {
+        package.prune()
+    }
 }

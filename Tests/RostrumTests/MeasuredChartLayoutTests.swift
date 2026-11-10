@@ -285,4 +285,61 @@ import Testing
         #expect(try groups(bubbleDeck, role: "data-label").map(\.textContent) == ["15", "45"])
         try assertContained(bubbleDeck)
     }
+
+    @Test func radarAndComboChartsRenderMeasuredWebSpokesSecondaryAxisAndSeries() throws {
+        let radarDeck = try Presentation()
+        try radarDeck.fonts.register(TestFont.standard(familyName: "Measured"))
+        try radarDeck.slides[0].shapes.addChart(
+            .radarFilled,
+            data: ChartData(categories: ["Speed", "Reliability", "Efficiency", "Reach"],
+                            series: [.init(name: "Current", values: [80, 90, 70, 85])]),
+            frame: frame,
+            options: .init(title: "Capability Radar",
+                           dataLabels: .init(showValue: true),
+                           text: .init(font: "Measured", color: Color("112233"), sizePt: 12)))
+        let radarSVG = try radarDeck.renderSVG(slideAt: 0)
+        #expect(!radarSVG.contains("[chart]"))
+        let radarDOM = try XML.parse(Data(radarSVG.utf8))
+        // 4 concentric web polygons + 1 filled series polygon = 5 polygons; 4 radial spokes.
+        #expect(descendants(radarDOM, "polygon").count == 5)
+        #expect(descendants(radarDOM, "line").count == 4)
+        #expect(try groups(radarDeck, role: "category").map(\.textContent) == ["Speed", "Reliability", "Efficiency", "Reach"])
+        #expect(try groups(radarDeck, role: "data-label").map(\.textContent) == ["80", "90", "70", "85"])
+        try assertContained(radarDeck)
+
+        let comboDeck = try Presentation()
+        try comboDeck.fonts.register(TestFont.standard(familyName: "Measured"))
+        try comboDeck.slides[0].shapes.addComboChart(
+            ComboChartData(
+                categories: ["Q1", "Q2", "Q3"],
+                groups: [
+                    .init(kind: .barClustered,
+                          series: [.init(name: "Revenue", values: [120, 180, 240])],
+                          axis: .primary,
+                          colors: [Color("225588")],
+                          dataLabels: .init(showValue: true)),
+                    .init(kind: .line,
+                          series: [.init(name: "Margin", values: [12, 18, 25])],
+                          axis: .secondary,
+                          colors: [Color("CC4422")],
+                          dataLabels: .init(showValue: true)),
+                ]),
+            frame: frame,
+            options: .init(title: "Revenue vs Margin",
+                           legend: .top,
+                           valueAxis: .init(title: "Revenue"),
+                           categoryAxisTitle: "Quarter",
+                           secondaryValueAxis: .init(title: "Margin %"),
+                           text: .init(font: "Measured", color: Color("112233"), sizePt: 11)))
+        let comboSVG = try comboDeck.renderSVG(slideAt: 0)
+        #expect(!comboSVG.contains("[chart]"))
+        let comboDOM = try XML.parse(Data(comboSVG.utf8))
+        #expect(descendants(comboDOM, "polyline").count == 1)
+        #expect(comboSVG.contains("#225588"))
+        #expect(comboSVG.contains("#CC4422"))
+        #expect(try groups(comboDeck, role: "axis-title").count == 3)
+        #expect(try groups(comboDeck, role: "category").map(\.textContent) == ["Q1", "Q2", "Q3"])
+        try assertContained(comboDeck)
+    }
 }
+

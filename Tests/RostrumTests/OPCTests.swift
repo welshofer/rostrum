@@ -235,4 +235,25 @@ import Testing
         let replacedEntry = try #require(afterReplace.allEntries.first { $0.name == "ppt/media/foreign.jpeg" })
         #expect(replacedEntry.method == 0)
     }
+
+    @Test func orphanAuditAndPruneRemovesUnreachablePartsWhileKeepingReachableGraph() throws {
+        let deck = try Presentation()
+        #expect(deck.orphanPartURIs.isEmpty)
+
+        let orphanURI = PackURI("/ppt/media/dangling.png")
+        _ = deck.package.addPart(uri: orphanURI, contentType: ContentType.png, blob: Data([1, 2, 3, 4]))
+        #expect(deck.orphanPartURIs == [orphanURI])
+
+        // Without prune(), saving preserves unreferenced parts for round-trip safety.
+        let unpruned = try Presentation(data: deck.serializedData())
+        #expect(unpruned.orphanPartURIs == [orphanURI])
+
+        // Opt-in prune() removes unreachable parts and returns their sorted URIs.
+        let removed = deck.prune()
+        #expect(removed == [orphanURI])
+        #expect(deck.orphanPartURIs.isEmpty)
+        let pruned = try Presentation(data: deck.serializedData())
+        #expect((try? pruned.package.part(at: orphanURI)) == nil)
+    }
 }
+

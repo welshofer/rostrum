@@ -1086,9 +1086,10 @@ struct SVGRenderer {
         let points: [Int: ChartLabel]
     }
 
-    private func chartLabels(plot: XML.Element?, series: [XML.Element], chartText: XML.Element?, kind: String) -> [ChartLabels] {
+    private func chartLabels(plot: XML.Element?, series: [XML.Element], chartText: XML.Element?,
+                             kind: String, seriesPlots: [XML.Element] = []) -> [ChartLabels] {
         var formats: [String: ChartNumberFormat] = [:]
-        func label(_ nodes: [XML.Element]) -> ChartLabel {
+        func label(_ nodes: [XML.Element], plotKind: String) -> ChartLabel {
             func property(_ name: String) -> XML.Element? {
                 nodes.reversed().lazy.compactMap { $0.firstChild(named: name) }.first
             }
@@ -1100,10 +1101,10 @@ struct SVGRenderer {
             let percentCode = explicitCode ?? "0%"
             let percentFormat = formats[percentCode] ?? chartNumberFormat(percentCode)
             formats[percentCode] = percentFormat
-            let defaultPos = ["lineChart", "scatterChart", "bubbleChart"].contains(kind) ? "t" : "outEnd"
+            let defaultPos = ["lineChart", "scatterChart", "bubbleChart", "radarChart"].contains(plotKind) ? "t" : "outEnd"
             let position = property("c:dLblPos")?[attribute: "val"] ?? defaultPos
             if !["outEnd", "inEnd", "inBase", "ctr", "bestFit", "t", "b", "l", "r"].contains(position)
-                || (flag("c:showPercent") && !["pieChart", "doughnutChart"].contains(kind)) || property("c:tx") != nil {
+                || (flag("c:showPercent") && !["pieChart", "doughnutChart"].contains(plotKind)) || property("c:tx") != nil {
                 diagnostics.record(.chartApproximation, .approximation,
                     "Custom chart label text or unsupported label properties are approximated.")
             }
@@ -1114,9 +1115,11 @@ struct SVGRenderer {
                 percentFormat: percentFormat,
                 style: chartTextStyle([chartText] + nodes.map { $0.firstChild(named: "c:txPr") }, color: "#666666"))
         }
-        return series.map { series in
-            let nodes = [plot?.firstChild(named: "c:dLbls"), series.firstChild(named: "c:dLbls")].compactMap { $0 }
-            let standard = label(nodes)
+        return series.enumerated().map { s, series in
+            let owningPlot = s < seriesPlots.count ? seriesPlots[s] : plot
+            let plotKind = owningPlot?.name.split(separator: ":").last.map(String.init) ?? kind
+            let nodes = [owningPlot?.firstChild(named: "c:dLbls"), series.firstChild(named: "c:dLbls")].compactMap { $0 }
+            let standard = label(nodes, plotKind: plotKind)
             var overrides: [Int: [XML.Element]] = [:]
             for node in nodes {
                 for point in node.children(named: "c:dLbl") {
@@ -1126,7 +1129,7 @@ struct SVGRenderer {
                 }
             }
             var points: [Int: ChartLabel] = [:]
-            for index in overrides.keys.sorted() { points[index] = label(nodes + overrides[index]!) }
+            for index in overrides.keys.sorted() { points[index] = label(nodes + overrides[index]!, plotKind: plotKind) }
             return ChartLabels(standard: standard, points: points)
         }
     }
@@ -1194,7 +1197,8 @@ struct SVGRenderer {
     }
 
     private func chartAxisTitle(_ axis: XML.Element?, chartText: XML.Element?,
-                                measure: ChartTextMeasurer, content: inout ChartTextRect, vertical: Bool) -> String {
+                                measure: ChartTextMeasurer, content: inout ChartTextRect,
+                                vertical: Bool, rightSide: Bool = false) -> String {
         guard !["1", "true"].contains(axis?.firstChild(named: "c:delete")?[attribute: "val"] ?? "0"),
               let node = axis?.firstChild(named: "c:title") else { return "" }
         func text(_ node: XML.Element, depth: Int = 0) -> String {
@@ -1214,14 +1218,16 @@ struct SVGRenderer {
         let gap = 6.0 * Double(emuPerPoint), height = prepared.block.height
         if vertical {
             let centerY = content.y + content.height / 2
-            let rect = ChartTextRect(x: content.x, y: centerY - prepared.block.width / 2,
+            let xPos = rightSide ? content.right - height : content.x
+            let rect = ChartTextRect(x: xPos, y: centerY - prepared.block.width / 2,
                                      width: height, height: prepared.block.width)
-            var out = "<g data-rostrum-chart-role=\"axis-title\" data-rostrum-chart-bounds=\"\(coord(rect.x)) \(coord(rect.y)) \(coord(rect.width)) \(coord(rect.height))\" transform=\"translate(\(coord(content.x)),\(coord(centerY))) rotate(-90)\">"
+            var out = "<g data-rostrum-chart-role=\"axis-title\" data-rostrum-chart-bounds=\"\(coord(rect.x)) \(coord(rect.y)) \(coord(rect.width)) \(coord(rect.height))\" transform=\"translate(\(coord(xPos)),\(coord(centerY))) rotate(-90)\">"
             for (index, line) in prepared.block.lines.enumerated() {
                 out += chartTextElement(line.text, x: 0, baseline: prepared.block.ascent + Double(index) * prepared.block.lineHeight,
                     style: style, anchor: "middle")
             }
-            content.x += height + gap; content.width -= height + gap
+            if !rightSide { content.x += height + gap }
+            content.width -= height + gap
             return out + "</g>"
         }
         let rect = ChartTextRect(x: content.x, y: content.bottom - height, width: content.width, height: height)
@@ -1489,6 +1495,7 @@ struct SVGRenderer {
         // rather than loop over whatever it claims.
         let series: [ChartData.Series]
         let styles: [XML.Element]
+        let seriesPlots: [XML.Element]
         let xyEntries: [Chart.XYSeries]
         if isXY {
             let xyCandidates = zip(chart.xySeries, chart.seriesElements).filter { !$0.0.points.isEmpty }
@@ -1499,6 +1506,9 @@ struct SVGRenderer {
             xyEntries = picked.map { $0.0 }
             styles = picked.map { $0.1 }
             series = xyEntries.map { ChartData.Series(name: $0.name, values: $0.points.map(\.y)) }
+            seriesPlots = styles.compactMap { serEl in
+                chart.plots.first { $0.children(named: "c:ser").contains { $0 === serEl } }
+            }
         } else {
             let candidates = zip(chart.series, chart.seriesElements).filter { !$0.0.values.isEmpty }
             let entries = Array(candidates.prefix(32))
@@ -1507,6 +1517,9 @@ struct SVGRenderer {
             }
             series = entries.map { $0.0 }
             styles = entries.map { $0.1 }
+            seriesPlots = styles.compactMap { serEl in
+                chart.plots.first { $0.children(named: "c:ser").contains { $0 === serEl } }
+            }
             xyEntries = []
         }
         let chartNode = chart.root?.firstChild(named: "c:chart")
@@ -1525,7 +1538,10 @@ struct SVGRenderer {
             let override = point.flatMap { pointStyles[seriesIndex][$0] }
             if override?.firstChild(named: "a:noFill") != nil { return "none" }
             if let fill = colorHex(in: override?.firstChild(named: "a:solidFill")) { return fill }
-            if ["lineChart", "scatterChart"].contains(kind),
+            let seriesKind = seriesIndex < seriesPlots.count
+                ? (seriesPlots[seriesIndex].name.split(separator: ":").last.map(String.init) ?? kind)
+                : kind
+            if ["lineChart", "scatterChart", "radarChart"].contains(seriesKind),
                let fill = colorHex(in: properties?.firstChild(named: "a:ln")?.firstChild(named: "a:solidFill")) { return fill }
             if properties?.firstChild(named: "a:noFill") != nil { return "none" }
             if let fill = colorHex(in: properties?.firstChild(named: "a:solidFill")) { return fill }
@@ -1573,12 +1589,134 @@ struct SVGRenderer {
                 measure: measure, content: &content, color: { pie ? color(0, $0) : color($0, nil) })
         }
         let plot = chart.plots.first
-        let specs = chartLabels(plot: plot, series: styles, chartText: chartText, kind: kind)
+        let specs = chartLabels(plot: plot, series: styles, chartText: chartText, kind: kind, seriesPlots: seriesPlots)
         let labels = prepareChartLabels(specs, series: series, categories: categories, xySeries: xyEntries,
                                         kind: kind, measure: measure, bounds: content)
         if pie {
             out += measuredPie(series[0], kind: kind, plot: plot, bounds: content,
                                labels: labels[0], color: { color(0, $0) })
+            return out
+        }
+        if kind == "radarChart" {
+            let plotArea = chartNode?.firstChild(named: "c:plotArea")
+            let axis = plotArea?.firstChild(named: "c:valAx")
+            let categoryAxis = plotArea?.firstChild(named: "c:catAx")
+            let scale = ValueScale(series: series, catCount: catCount, grouping: "standard", axis: axis?.firstChild(named: "c:scaling"))
+            let categoryStyle = chartTextStyle([chartText, categoryAxis?.firstChild(named: "c:txPr")], color: "#808080")
+            let categoriesVisible = !["1", "true"].contains(categoryAxis?.firstChild(named: "c:delete")?[attribute: "val"] ?? "0")
+                && categoryAxis?.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none"
+            var preparedCategories: [(Int, ChartPreparedText)] = []
+            if categoriesVisible && !categories.isEmpty {
+                for index in 0..<min(catCount, categories.count) where !categories[index].isEmpty {
+                    if let text = prepareChartText(categories[index], style: categoryStyle,
+                                                   measure: measure, width: content.width * 0.28, lines: 2) {
+                        preparedCategories.append((index, text))
+                    } else {
+                        chartOmission("category labels")
+                    }
+                }
+            }
+            let flattened = labels.flatMap { $0.values }
+            let outsideLabelW = flattened.map { $0.text.block.width }.max() ?? 0
+            let outsideLabelH = flattened.map { $0.text.block.height }.max() ?? 0
+            let maxCatW = preparedCategories.map { $0.1.block.width }.max() ?? 0
+            let maxCatH = preparedCategories.map { $0.1.block.height }.max() ?? 0
+            let catOffsetX = max(gap * 1.5, outsideLabelW / 2 + gap * 1.5)
+            let catOffsetY = gap * 1.5
+            let padX = max(maxCatW > 0 ? maxCatW + catOffsetX + gap : gap, outsideLabelW > 0 ? outsideLabelW + gap : gap)
+            let padY = max(maxCatH > 0 ? maxCatH + catOffsetY + gap : gap, outsideLabelH > 0 ? outsideLabelH + gap : gap)
+            var radius = min(content.width / 2 - padX, content.height / 2 - padY)
+            if radius < Double(6 * emuPerPoint) && !preparedCategories.isEmpty {
+                preparedCategories.removeAll()
+                chartOmission("category labels")
+                radius = min(content.width / 2 - gap * 2, content.height / 2 - gap * 2)
+            }
+            guard radius >= Double(emuPerPoint) else {
+                chartOmission("the plot because its measured labels leave no plotting area")
+                return out
+            }
+            let cx = content.x + content.width / 2
+            let cy = content.y + content.height / 2
+            func vertexAngle(_ index: Int) -> Double {
+                -Double.pi / 2 + 2 * Double.pi * Double(index) / Double(max(1, catCount))
+            }
+            for ring in 1...4 {
+                let r = radius * Double(ring) / 4.0
+                if catCount >= 3 {
+                    let ringPts = (0..<catCount).map { i -> String in
+                        let a = vertexAngle(i)
+                        return "\(coord(cx + r * cos(a))),\(coord(cy + r * sin(a)))"
+                    }.joined(separator: " ")
+                    out += "<polygon points=\"\(ringPts)\" fill=\"none\" stroke=\"#D9D9D9\" stroke-width=\"6350\"/>"
+                } else {
+                    out += "<circle cx=\"\(coord(cx))\" cy=\"\(coord(cy))\" r=\"\(coord(r))\" fill=\"none\" stroke=\"#D9D9D9\" stroke-width=\"6350\"/>"
+                }
+            }
+            for i in 0..<catCount {
+                let a = vertexAngle(i)
+                out += "<line x1=\"\(coord(cx))\" y1=\"\(coord(cy))\" x2=\"\(coord(cx + radius * cos(a)))\" y2=\"\(coord(cy + radius * sin(a)))\" stroke=\"#D9D9D9\" stroke-width=\"6350\"/>"
+            }
+            let radarStyle = plot?.firstChild(named: "c:radarStyle")?[attribute: "val"] ?? "standard"
+            let isFilled = radarStyle == "filled"
+            let defaultMarkers = radarStyle == "marker"
+            let fallbackMarker = XML.Element("c:marker", children: [
+                .element(XML.Element("c:symbol", attributes: [("val", "circle")]))
+            ])
+            let placements = ChartLabelPlacement(bounds: content)
+            var categorySVG = ""
+            for (index, text) in preparedCategories {
+                let a = vertexAngle(index)
+                let c = cos(a), s = sin(a)
+                let ax = cx + (radius + (abs(c) < 0.2 ? catOffsetY : catOffsetX)) * c
+                let ay = cy + (radius + catOffsetY) * s
+                let w = text.block.width, h = text.block.height
+                let desired: ChartTextRect
+                let anchor: String
+                if abs(c) < 0.2 {
+                    anchor = "middle"
+                    desired = ChartTextRect(x: ax - w / 2, y: s < 0 ? ay - h : ay, width: w, height: h)
+                } else if c > 0 {
+                    anchor = "start"
+                    desired = ChartTextRect(x: ax, y: ay - h / 2, width: w, height: h)
+                } else {
+                    anchor = "end"
+                    desired = ChartTextRect(x: ax - w, y: ay - h / 2, width: w, height: h)
+                }
+                guard let rect = placements.place([desired]) else { chartOmission("category labels"); continue }
+                categorySVG += chartTextBlock(text, in: rect, anchor: anchor, role: "category")
+            }
+            var decorations = ""
+            for (s, entry) in series.enumerated() {
+                var points: [(Double, Double)] = []
+                let seriesMarker = styles[s].firstChild(named: "c:marker") ?? (defaultMarkers ? fallbackMarker : nil)
+                var pointMarkers: [Int: XML.Element] = [:]
+                for point in styles[s].children(named: "c:dPt") {
+                    if let index = point.firstChild(named: "c:idx")?.boundedInt("val", in: 0...511),
+                       let marker = point.firstChild(named: "c:marker") { pointMarkers[index] = marker }
+                }
+                for index in 0..<catCount {
+                    guard let value = Self.finite(entry, index) else { continue }
+                    let frac = max(0, min(1, scale.fraction(value)))
+                    let a = vertexAngle(index)
+                    let px = cx + radius * frac * cos(a)
+                    let py = cy + radius * frac * sin(a)
+                    points.append((px, py))
+                    decorations += chartMarker(pointMarkers[index], inherited: seriesMarker,
+                                               x: px, y: py, defaultColor: color(s, index))
+                    decorations += renderPointLabel(labels[s][index], x: px, y: py, placements: placements)
+                }
+                guard points.count >= 2 else { continue }
+                let path = points.map { "\(coord($0.0)),\(coord($0.1))" }.joined(separator: " ")
+                let serColor = color(s, nil)
+                let properties = styles[s].firstChild(named: "c:spPr")
+                let ln = properties?.firstChild(named: "a:ln")
+                let stroke = ln?.firstChild(named: "a:noFill") != nil ? "none" : colorHex(in: ln?.firstChild(named: "a:solidFill")) ?? serColor
+                let lineWidth = ln?.coordinate("w") ?? 25400
+                let dash = dashAttributes(ln, width: lineWidth)
+                let fillAttr = isFilled ? " fill=\"\(serColor)\" fill-opacity=\"0.35\"" : " fill=\"none\""
+                out += "<polygon points=\"\(path)\"\(fillAttr) stroke=\"\(stroke)\" stroke-width=\"\(lineWidth)\"\(dash) stroke-linejoin=\"round\"/>"
+            }
+            out += decorations + categorySVG
             return out
         }
         if isXY {
@@ -1708,22 +1846,63 @@ struct SVGRenderer {
             out += "<svg x=\"\(area.x)\" y=\"\(area.y)\" width=\"\(area.width)\" height=\"\(area.height)\" viewBox=\"\(area.x) \(area.y) \(area.width) \(area.height)\" overflow=\"hidden\">\(body)</svg>" + decorations
             return out
         }
-        guard ["barChart", "lineChart", "areaChart"].contains(kind) else { return nil }
+        let allPlotKinds = chart.plotTypes
+        guard !allPlotKinds.isEmpty, allPlotKinds.allSatisfy({ ["barChart", "lineChart", "areaChart"].contains($0) }) else { return nil }
         let plotArea = chartNode?.firstChild(named: "c:plotArea")
-        let axis = plotArea?.firstChild(named: "c:valAx")
+        let valAxes = plotArea?.children(named: "c:valAx") ?? []
+        let axis = valAxes.first
+        let secondaryAxis = chart.isCombo ? valAxes.dropFirst().first : nil
+        let secondaryAxisID = secondaryAxis?.firstChild(named: "c:axId")?[attribute: "val"]
         let categoryAxis = plotArea?.firstChild(named: "c:catAx")
-        let horizontal = kind == "barChart" && plot?.firstChild(named: "c:barDir")?[attribute: "val"] == "bar"
-        let grouping = plot?.firstChild(named: "c:grouping")?[attribute: "val"] ?? "clustered"
-        let scale = ValueScale(series: series, catCount: catCount, grouping: grouping, axis: axis?.firstChild(named: "c:scaling"))
+        let horizontal = !chart.isCombo && kind == "barChart" && plot?.firstChild(named: "c:barDir")?[attribute: "val"] == "bar"
+
+        struct PlotEntry {
+            let element: XML.Element
+            let kind: String
+            let seriesIndices: [Int]
+            let usesSecondaryAxis: Bool
+            let rawScale: ValueScale
+        }
+        let plotEntries: [PlotEntry] = chart.plots.compactMap { plotEl in
+            let indices = series.indices.filter { $0 < seriesPlots.count && seriesPlots[$0] === plotEl }
+            guard !indices.isEmpty else { return nil }
+            let pKind = plotEl.name.split(separator: ":").last.map(String.init) ?? kind
+            let axIDs = plotEl.children(named: "c:axId").compactMap { $0[attribute: "val"] }
+            let isSec = secondaryAxisID != nil && axIDs.contains(secondaryAxisID!)
+            let targetAxis = isSec ? secondaryAxis : axis
+            let grp = plotEl.firstChild(named: "c:grouping")?[attribute: "val"] ?? (pKind == "barChart" ? "clustered" : "standard")
+            let raw = ValueScale(series: indices.map { series[$0] }, catCount: catCount,
+                                 grouping: grp, axis: targetAxis?.firstChild(named: "c:scaling"))
+            return PlotEntry(element: plotEl, kind: pKind, seriesIndices: indices, usesSecondaryAxis: isSec, rawScale: raw)
+        }
+        let primaryEntries = plotEntries.filter { !$0.usesSecondaryAxis }
+        let secondaryEntries = plotEntries.filter { $0.usesSecondaryAxis }
+        let scale = ValueScale.merged(primaryEntries.map(\.rawScale))
+            ?? ValueScale(series: series, catCount: catCount,
+                          grouping: plot?.firstChild(named: "c:grouping")?[attribute: "val"] ?? "clustered",
+                          axis: axis?.firstChild(named: "c:scaling"))
+        let secondaryScale = ValueScale.merged(secondaryEntries.map(\.rawScale))
+
         out += chartAxisTitle(horizontal ? categoryAxis : axis, chartText: chartText,
                               measure: measure, content: &content, vertical: true)
+        if let secondaryAxis, secondaryScale != nil {
+            out += chartAxisTitle(secondaryAxis, chartText: chartText,
+                                  measure: measure, content: &content, vertical: true, rightSide: true)
+        }
         out += chartAxisTitle(horizontal ? axis : categoryAxis, chartText: chartText,
                               measure: measure, content: &content, vertical: false)
         let ticks = chartTicks(scale: scale, axis: axis,
             style: chartTextStyle([chartText, axis?.firstChild(named: "c:txPr")], color: "#666666"),
             measure: measure, width: content.width * 0.35)
+        let secondaryTicks: [ChartTick] = if let secondaryAxis, let secondaryScale {
+            chartTicks(scale: secondaryScale, axis: secondaryAxis,
+                style: chartTextStyle([chartText, secondaryAxis.firstChild(named: "c:txPr")], color: "#666666"),
+                measure: measure, width: content.width * 0.35)
+        } else { [] }
         let tickWidth = ticks.compactMap(\.text).map { $0.block.width }.max() ?? 0
         let tickHeight = ticks.compactMap(\.text).map { $0.block.height }.max() ?? 0
+        let secTickWidth = secondaryTicks.compactMap(\.text).map { $0.block.width }.max() ?? 0
+        let secTickHeight = secondaryTicks.compactMap(\.text).map { $0.block.height }.max() ?? 0
         let categoryStyle = chartTextStyle([chartText, categoryAxis?.firstChild(named: "c:txPr")], color: "#808080")
         let categoriesVisible = !["1", "true"].contains(categoryAxis?.firstChild(named: "c:delete")?[attribute: "val"] ?? "0")
             && categoryAxis?.firstChild(named: "c:tickLblPos")?[attribute: "val"] != "none"
@@ -1733,15 +1912,16 @@ struct SVGRenderer {
         let labelHeight = outside.map { $0.text.block.height }.max() ?? 0
         let hasPositive = series.contains { $0.values.prefix(catCount).contains { ($0 ?? 0) >= 0 } }
         let hasNegative = series.contains { $0.values.prefix(catCount).contains { ($0 ?? 0) < 0 } }
-        let outsideX = horizontal && labelWidth > 0 ? labelWidth + gap : kind == "lineChart" && labelWidth > 0 ? labelWidth + gap : 0
+        let hasLinePlot = allPlotKinds.contains("lineChart")
+        let outsideX = horizontal && labelWidth > 0 ? labelWidth + gap : hasLinePlot && labelWidth > 0 ? labelWidth + gap : 0
         let outsideTop = !horizontal && labelHeight > 0 && hasPositive ? labelHeight + gap * 2 : 0
-        let outsideBottom = !horizontal && labelHeight > 0 && (hasNegative || kind == "lineChart") ? labelHeight + gap * 2 : 0
+        let outsideBottom = !horizontal && labelHeight > 0 && (hasNegative || hasLinePlot) ? labelHeight + gap * 2 : 0
         let leftOutside = horizontal ? (hasNegative ? outsideX : 0) : outsideX
         let rightOutside = horizontal ? (hasPositive ? outsideX : 0) : outsideX
         let leftTick = horizontal ? tickWidth / 2 : tickWidth + (tickWidth > 0 ? gap : 0)
-        let rightTick = horizontal ? tickWidth / 2 : 0
-        let topTick = horizontal ? 0 : tickHeight / 2
-        let bottomTick = horizontal ? tickHeight + (tickHeight > 0 ? gap : 0) : tickHeight / 2
+        let rightTick = horizontal ? tickWidth / 2 : secTickWidth + (secTickWidth > 0 ? gap : 0)
+        let topTick = horizontal ? 0 : max(tickHeight / 2, secTickHeight / 2)
+        let bottomTick = horizontal ? tickHeight + (tickHeight > 0 ? gap : 0) : max(tickHeight / 2, secTickHeight / 2)
         var categoryTexts: [(Int, ChartPreparedText)] = []
         var categoryWidth = 0.0, categoryHeight = 0.0
         // Each trial reuses measured strings; only the available label slot changes.
@@ -1784,23 +1964,38 @@ struct SVGRenderer {
         let placements = ChartLabelPlacement(bounds: labelBounds)
         out += measuredAxes(area: area, scale: scale, axis: axis, ticks: ticks, horizontal: horizontal,
                             labelX: area.x - leftOutside - gap, labelY: area.bottom + outsideBottom + gap, bounds: content)
-        if kind == "barChart" {
-            out += barBody(series, catCount: catCount, scale: scale, horizontal: horizontal,
-                plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height, color: color,
-                label: { s, index, rect in
-                    renderBarLabel(labels[s][index], value: Self.finite(series[s], index) ?? 0,
-                        rect: rect, horizontal: horizontal, placements: placements)
-                })
-        } else {
-            var decorations = ""
-            let body = lineBody(series, catCount: catCount, scale: scale, filled: kind == "areaChart",
-                plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height,
-                styles: styles, color: { color($0, nil) }, decoration: { s, index, px, py, marker in
-                    guard py >= area.y - 0.01 && py <= area.bottom + 0.01 else { return }
-                    decorations += marker
-                    decorations += renderPointLabel(labels[s][index], x: px, y: py, placements: placements)
-                })
-            out += "<svg x=\"\(area.x)\" y=\"\(area.y)\" width=\"\(area.width)\" height=\"\(area.height)\" viewBox=\"\(area.x) \(area.y) \(area.width) \(area.height)\" overflow=\"hidden\">\(body)</svg>" + decorations
+        if let secondaryAxis, let secondaryScale {
+            out += measuredAxes(area: area, scale: secondaryScale, axis: secondaryAxis, ticks: secondaryTicks,
+                                horizontal: false, labelX: area.right + rightOutside + gap,
+                                labelY: area.bottom + outsideBottom + gap, bounds: content, rightSide: true)
+        }
+        for entry in plotEntries {
+            let axisScale = entry.usesSecondaryAxis ? (secondaryScale ?? scale) : scale
+            let plotScale = entry.rawScale.withDomain(of: axisScale)
+            let groupSeries = entry.seriesIndices.map { series[$0] }
+            let groupStyles = entry.seriesIndices.map { styles[$0] }
+            if entry.kind == "barChart" {
+                out += barBody(groupSeries, catCount: catCount, scale: plotScale, horizontal: horizontal,
+                    plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height,
+                    color: { localS, pt in color(entry.seriesIndices[localS], pt) },
+                    label: { localS, index, rect in
+                        let globalS = entry.seriesIndices[localS]
+                        return renderBarLabel(labels[globalS][index], value: Self.finite(series[globalS], index) ?? 0,
+                            rect: rect, horizontal: horizontal, placements: placements)
+                    })
+            } else {
+                var decorations = ""
+                let body = lineBody(groupSeries, catCount: catCount, scale: plotScale, filled: entry.kind == "areaChart",
+                    plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height,
+                    styles: groupStyles, color: { localS in color(entry.seriesIndices[localS], nil) },
+                    decoration: { localS, index, px, py, marker in
+                        guard py >= area.y - 0.01 && py <= area.bottom + 0.01 else { return }
+                        let globalS = entry.seriesIndices[localS]
+                        decorations += marker
+                        decorations += renderPointLabel(labels[globalS][index], x: px, y: py, placements: placements)
+                    })
+                out += "<svg x=\"\(area.x)\" y=\"\(area.y)\" width=\"\(area.width)\" height=\"\(area.height)\" viewBox=\"\(area.x) \(area.y) \(area.width) \(area.height)\" overflow=\"hidden\">\(body)</svg>" + decorations
+            }
         }
         let categoryPlacements = ChartLabelPlacement(bounds: content)
         for (index, text) in categoryTexts {
@@ -1830,6 +2025,13 @@ struct SVGRenderer {
         let range: Double
         let stacked: Bool
         let percent: Bool
+
+        init(minimum: Double, range: Double, stacked: Bool, percent: Bool) {
+            self.minimum = minimum
+            self.range = range
+            self.stacked = stacked
+            self.percent = percent
+        }
 
         init(series: [ChartData.Series], catCount: Int, grouping: String, axis: XML.Element? = nil) {
             percent = grouping == "percentStacked"
@@ -1865,6 +2067,20 @@ struct SVGRenderer {
             range = high - low
         }
 
+        static func merged(_ scales: [ValueScale]) -> ValueScale? {
+            guard let first = scales.first else { return nil }
+            if scales.count == 1 { return first }
+            let low = scales.map(\.minimum).min() ?? first.minimum
+            let high = scales.map { $0.minimum + $0.range }.max() ?? (first.minimum + first.range)
+            let range = high - low
+            guard low.isFinite, high.isFinite, range.isFinite, range > 0 else { return first }
+            return ValueScale(minimum: low, range: range, stacked: first.stacked, percent: first.percent)
+        }
+
+        func withDomain(of domain: ValueScale) -> ValueScale {
+            ValueScale(minimum: domain.minimum, range: domain.range, stacked: stacked, percent: percent)
+        }
+
         /// Where `value` sits in the plot, 0 at the bottom edge and 1 at the top.
         func fraction(_ value: Double) -> Double {
             guard value.isFinite else { return 0 }
@@ -1874,7 +2090,8 @@ struct SVGRenderer {
     }
 
     private func measuredAxes(area: ChartTextRect, scale: ValueScale, axis: XML.Element?, ticks: [ChartTick],
-                              horizontal: Bool, labelX: Double, labelY: Double, bounds: ChartTextRect) -> String {
+                              horizontal: Bool, labelX: Double, labelY: Double, bounds: ChartTextRect,
+                              rightSide: Bool = false) -> String {
         guard !["1", "true"].contains(axis?.firstChild(named: "c:delete")?[attribute: "val"] ?? "0") else { return "" }
         let zero = horizontal ? area.x + area.width * scale.zeroFraction : area.y + area.height * (1 - scale.zeroFraction)
         var out = horizontal
@@ -1895,10 +2112,11 @@ struct SVGRenderer {
                     : "<line x1=\"\(coord(area.x))\" y1=\"\(coord(position))\" x2=\"\(coord(area.right))\" y2=\"\(coord(position))\"\(stroke)/>"
             }
             if let text = tick.text {
-                let desired = ChartTextRect(x: horizontal ? position - text.block.width / 2 : labelX - text.block.width,
+                let xPos = horizontal ? position - text.block.width / 2 : rightSide ? labelX : labelX - text.block.width
+                let desired = ChartTextRect(x: xPos,
                     y: horizontal ? labelY : position - text.block.height / 2, width: text.block.width, height: text.block.height)
                 if let rect = placements.place([desired]) {
-                    out += chartTextBlock(text, in: rect, anchor: horizontal ? "middle" : "end", role: "value-axis")
+                    out += chartTextBlock(text, in: rect, anchor: horizontal ? "middle" : rightSide ? "start" : "end", role: "value-axis")
                 } else { chartOmission("value-axis labels") }
             }
         }

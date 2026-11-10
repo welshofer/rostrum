@@ -54,13 +54,19 @@ public enum DeckExport {
                              to directory: URL,
                              named name: String? = nil,
                              fileManager: FileManager = .default) throws -> Summary {
-        let outline = deck.outline()
+        try write(deck, to: directory, named: name, includeVideoPosters: false, fileManager: fileManager)
+    }
+
+    @discardableResult
+    public static func write(_ deck: Presentation,
+                             to directory: URL,
+                             named name: String? = nil,
+                             includeVideoPosters: Bool,
+                             fileManager: FileManager = .default) throws -> Summary {
+        let outline = deck.outline(includeVideoPosters: includeVideoPosters)
         var warnings = outline.warnings
 
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
-
-        var parts: [String: Part] = [:]
-        for (uri, part) in deck.package.parts { parts[uri.value] = part }
 
         let stem = SlideOutline.sanitized(name ?? directory.lastPathComponent, fallback: "deck")
         let documentName = stem.lowercased().hasSuffix(".md") ? stem : stem + ".md"
@@ -78,7 +84,8 @@ public enum DeckExport {
             folders += 1
 
             for asset in slide.assets {
-                guard let part = parts[asset.partName] else {
+                guard asset.partName.hasPrefix("/"),
+                      let part = try? deck.package.part(at: PackURI(asset.partName)) else {
                     warnings.append("slide \(slide.number): \(asset.partName) is referenced but not in the package")
                     continue
                 }

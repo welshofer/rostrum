@@ -152,6 +152,10 @@ extension Presentation {
     /// of it would be a poor trade; a slide that cannot be read becomes a line
     /// in `warnings` and the rest of the deck still comes out.
     public func outline() -> DeckOutline {
+        outline(includeVideoPosters: false)
+    }
+
+    public func outline(includeVideoPosters: Bool) -> DeckOutline {
         let count = slides.count
         let width = max(2, String(count).count)
         var out: [SlideOutline] = []
@@ -160,7 +164,8 @@ extension Presentation {
             let number = index + 1
             do {
                 let slide = try slides.slide(at: index)
-                out.append(SlideOutline(extracting: slide, number: number, folderWidth: width, warnings: &warnings))
+                out.append(SlideOutline(extracting: slide, number: number, folderWidth: width,
+                                        includeVideoPosters: includeVideoPosters, warnings: &warnings))
             } catch {
                 warnings.append("slide \(number) could not be read: \(error)")
             }
@@ -170,7 +175,8 @@ extension Presentation {
 }
 
 extension SlideOutline {
-    init(extracting slide: Slide, number: Int, folderWidth: Int, warnings: inout [String]) {
+    init(extracting slide: Slide, number: Int, folderWidth: Int,
+         includeVideoPosters: Bool = false, warnings: inout [String]) {
         let flat = SlideOutline.flattened(slide.shapes.all)
 
         // Filenames are handed out once per slide folder, case-insensitively,
@@ -202,10 +208,17 @@ extension SlideOutline {
                 continue
             }
 
-            if let picture = shape as? Picture,
-               let asset = SlideOutline.asset(from: picture, seen: &seenParts, name: unique) {
-                assets.append(asset)
-                continue
+            if let picture = shape as? Picture {
+                if let asset = SlideOutline.asset(from: picture, seen: &seenParts, name: unique) {
+                    assets.append(asset)
+                }
+                if includeVideoPosters,
+                   let poster = SlideOutline.videoPosterAsset(from: picture, seen: &seenParts, name: unique) {
+                    assets.append(poster)
+                }
+                if picture.isMedia || picture.imagePart != nil {
+                    continue
+                }
             }
 
             guard let frame = shape.textFrame else { continue }
@@ -321,6 +334,27 @@ extension SlideOutline {
                             filename: unique(sanitized(part.uri.filename, fallback: "\(kind.rawValue).bin")),
                             partName: partName,
                             byteCount: part.blob.count,
+                            altText: picture.altText.flatMap { $0.isEmpty ? nil : $0 })
+    }
+
+    private static func videoPosterAsset(from picture: Picture,
+                                         seen: inout Set<String>,
+                                         name unique: (String) -> String) -> OutlineAsset? {
+        guard picture.isMedia, !picture.isAudio,
+              let image = picture.imagePart,
+              image.blob != ShapeCollection.transparentPixelPNG,
+              let id = picture.imageRelationshipID,
+              let relationship = picture.part.rels.relationship(withId: id),
+              !relationship.isExternal, relationship.type == RelType.image,
+              !relationship.target.isEmpty, image.contentType.hasPrefix("image/") else {
+            return nil
+        }
+        let partName = image.uri.value
+        guard seen.insert(partName).inserted else { return nil }
+        return OutlineAsset(kind: .image,
+                            filename: unique(sanitized(image.uri.filename, fallback: "poster.bin")),
+                            partName: partName,
+                            byteCount: image.blob.count,
                             altText: picture.altText.flatMap { $0.isEmpty ? nil : $0 })
     }
 
