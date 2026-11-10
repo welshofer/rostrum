@@ -6,6 +6,25 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Previews draw the `mc:Fallback` of shape-tree alternate content, so equations
+  and ink appear as the pictures Office saved for them instead of being omitted.
+  Diagnostics inspect only the drawn branch. Saved XML is unchanged.
+
+- Placeholder previews inherit frame, geometry, fill and line from the matching
+  layout or master placeholder. Pictures placed in a shaped placeholder now draw
+  in its frame and shape instead of failing to resolve.
+
+- Group members with `a:grpFill` paint with the enclosing group's fill instead of
+  drawing unfilled.
+
+- Merge the preview and table/background/text color resolvers into one. All
+  DrawingML color sources now resolve, including HSL and every preset color name,
+  and tables and backgrounds apply the same full transform set as shapes.
+
+- Preview text in layout and master artwork inherits the master's other-text
+  style instead of the renderer's own defaults, and slide text falls back to the
+  presentation's `p:defaultTextStyle` when nothing nearer sets a property.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed

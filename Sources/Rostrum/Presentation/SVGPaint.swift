@@ -15,9 +15,10 @@ struct SVGDefinitions: CustomStringConvertible {
     static func += (lhs: inout Self, rhs: String) { lhs.xml += rhs }
 }
 
-/// Bounded preview subset; not a complete DrawingML color interpreter.
+/// A resolved preview paint. Resolution is shared with tables, backgrounds and
+/// rich text through `DrawingColor`; this adds only the SVG serialization.
 struct SVGPaint {
-    static let colorElements = ["a:srgbClr", "a:schemeClr", "a:sysClr"]
+    static let colorElements = DrawingColor.colorElements
     let color: Color
     let opacity: Double
     var hex: String { "#" + color.hex }
@@ -26,68 +27,7 @@ struct SVGPaint {
     }
 
     static func resolve(in container: XML.Element?, theme: Theme) -> Self? {
-        guard let element = container?.childElements.first(where: { colorElements.contains($0.name) }) else { return nil }
-        let base: Color?
-        switch element.name {
-        case "a:schemeClr":
-            base = element[attribute: "val"].flatMap(SchemeColor.init(rawValue:)).flatMap { theme.resolve($0) }
-        case "a:sysClr": base = element[attribute: "lastClr"].flatMap(Color.init(validating:))
-        default: base = element[attribute: "val"].flatMap(Color.init(validating:))
-        }
-        guard let base else { return nil }
-        var rgb = RGB(base), alpha = 1.0
-        for transform in element.childElements {
-            switch transform.name {
-            case "a:comp": rgb = rgb.adjustingHSL { ($0 + 0.5, $1, $2) }; continue
-            case "a:inv": rgb = rgb.map { 255 - $0 }; continue
-            case "a:gray":
-                let gray = rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722
-                rgb = RGB(r: gray, g: gray, b: gray); continue
-            case "a:gamma":
-                rgb = rgb.map { channel in
-                    let c = channel / 255
-                    return 255 * (c <= 0.0031308 ? 12.92 * c : 1.055 * pow(c, 1 / 2.4) - 0.055)
-                }; continue
-            case "a:invGamma":
-                rgb = rgb.map { channel in
-                    let c = channel / 255
-                    return 255 * (c <= 0.04045 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4))
-                }; continue
-            default: break
-            }
-            // DrawingML percentages use integer thousandths of one percent.
-            // Reject malformed/unbounded input before arithmetic or SVG output.
-            guard let raw = transform.boundedInt("val", in: -2_147_483_648...2_147_483_647) else { continue }
-            let value = Double(raw) / 100_000
-            switch transform.name {
-            case "a:tint" where (0...1).contains(value): rgb = rgb.applying(.tint(value))
-            case "a:shade" where (0...1).contains(value): rgb = rgb.applying(.shade(value))
-            case "a:satMod" where value >= 0: rgb = rgb.applying(.satMod(value))
-            case "a:sat" where (0...1).contains(value): rgb = rgb.adjustingHSL { ($0, value, $2) }
-            case "a:satOff": rgb = rgb.adjustingHSL { ($0, $1 + value, $2) }
-            case "a:lum" where (0...1).contains(value): rgb = rgb.adjustingHSL { h, s, _ in (h, s, value) }
-            case "a:lumMod" where value >= 0: rgb = rgb.applying(.lumMod(value))
-            case "a:lumOff": rgb = rgb.applying(.lumOff(value))
-            case "a:hue" where (0..<21_600_000).contains(raw): rgb = rgb.adjustingHSL { (_, s, l) in (Double(raw) / 21_600_000, s, l) }
-            case "a:hueOff": rgb = rgb.adjustingHSL { ($0 + Double(raw) / 21_600_000, $1, $2) }
-            case "a:hueMod" where value >= 0: rgb = rgb.adjustingHSL { ($0 * value, $1, $2) }
-            case "a:red", "a:green", "a:blue", "a:redOff", "a:greenOff", "a:blueOff", "a:redMod", "a:greenMod", "a:blueMod":
-                let name = transform.name
-                func channel(_ original: Double) -> Double {
-                    let result = name.hasSuffix("Off") ? original + value * 255
-                        : name.hasSuffix("Mod") ? original * value : value * 255
-                    return min(255, max(0, result))
-                }
-                if name.hasPrefix("a:red") { rgb.r = channel(rgb.r) }
-                if name.hasPrefix("a:green") { rgb.g = channel(rgb.g) }
-                if name.hasPrefix("a:blue") { rgb.b = channel(rgb.b) }
-            case "a:alpha" where (0...1).contains(value): alpha = value
-            case "a:alphaMod" where value >= 0: alpha = min(1, alpha * value)
-            case "a:alphaOff": alpha = min(1, max(0, alpha + value))
-            default: continue
-            }
-        }
-        return Self(color: rgb.color, opacity: alpha)
+        DrawingColor.resolve(in: container, theme: theme).map { Self(color: $0.color, opacity: $0.alpha) }
     }
 
     /// DrawingML's clockwise vector, scaled by the fill bounds when requested.

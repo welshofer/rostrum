@@ -61,6 +61,14 @@ instead of being synthesized; the original workbook remains preserved.
 approximated content. Groups are traversed on slides, layouts and masters; their
 children retain the owning part for relationship resolution. Traversal stops at 64
 levels with a warning. Malformed group coordinates also produce a warning.
+Shape-tree `mc:AlternateContent` draws its `mc:Fallback`, so equations and ink show
+the pictures Office saved for them; alternate content without a fallback is
+diagnosed as omitted. Both branches stay in the saved part.
+Slide placeholders, pictures included, take any frame, geometry, fill or line they
+leave unset from the matching layout, then master, placeholder; inherited properties
+are diagnosed at the part that holds them.
+Shapes with `a:grpFill` paint with the nearest enclosing group's fill; group
+gradients and pictures are painted within each member and diagnosed as approximate.
 
 Lectern's inspector reports these separately from file damage, identifies the slide,
 and includes limitations in preview accessibility labels. Generated/recovered decks
@@ -70,13 +78,16 @@ layout, font substitution, image cropping, effects and chart appearance still ha
 approximation limits.
 
 Gradient previews retain stop precision, clockwise linear direction and the
-`scaled` aspect-ratio setting. RGB, scheme and system fallback colors apply tint,
+`scaled` aspect-ratio setting. RGB, scheme, system, scRGB, HSL and all preset
+(named) colors apply tint,
 shade, hue, saturation, HSL luminance, RGB channel, complement, inverse, grayscale,
 gamma and alpha transforms in XML order, including style reference and placeholder
-transforms. Ordinary outer shadows resolve direct or theme effects, color, opacity,
+transforms; previews, tables, backgrounds and text share one resolver. Ordinary outer shadows resolve direct or theme effects, color, opacity,
 blur and offset; an explicit empty effect list suppresses theme effects. Scaled or
 skewed shadows are diagnosed. Text inherits presentation, master and matched
 placeholder run defaults per paragraph level, with local overrides merged by property.
+Text in layout and master artwork inherits the master's other-text style, and the
+presentation's default text style is the base of every slide and artwork chain.
 Missing font resources are reported. Hosts can register exact faces or opt into
 `FontLibrary.previewFallbackFamily` for matching fallback measurement and drawing;
 the source typeface stays unchanged. See the [preview guide](IMPORTING-AND-PREVIEWING.md).

@@ -1015,6 +1015,15 @@ public struct RichTextLayout: Sendable {
         return result
     }
 
+    /// Text defaults for a layout's or master's own non-placeholder artwork:
+    /// the master's otherStyle without marker choices, as for ordinary slide
+    /// shapes. Any other owner (a drawing part, a notes master) has none.
+    package static func inheritedStyles(forFurnitureOwnedBy owner: Part, package: OPCPackage) -> [XML.Element] {
+        let master = (try? owner.related(by: RelType.slideMaster, in: package)) ?? owner
+        guard let style = (try? master.dom())?.firstChild(named: "p:txStyles")?.firstChild(named: "p:otherStyle") else { return [] }
+        return [withoutInheritedMasterMarkers(style)]
+    }
+
     /// Native PowerPoint's title fallback for masters without p:titleStyle.
     /// Older Rostrum decks omitted p:txStyles entirely. Resolve the observed
     /// 44 pt title without modifying their imported master or layout parts.

@@ -253,31 +253,36 @@ extension Slide {
     /// orphan placeholder with no geometry anywhere in the chain.
     public func effectiveFrame(of shape: Shape) -> Rect? {
         if let own = explicitFrame(of: shape.element) { return own }
-        guard let ph = shape.placeholder else { return nil }
-
-        guard let layoutRel = part.rels.first(ofType: RelType.slideLayout),
-              let layoutPart = try? package.part(
-                at: PackURI.resolve(target: layoutRel.target, relativeTo: part.uri.baseURI))
-        else { return nil }
-
-        // Slide → layout: match on idx only.
-        if let layoutSp = try? placeholderSp(in: layoutPart, matching: { lph in
-            (lph[attribute: "idx"].flatMap { Int($0) } ?? 0) == ph.idx
-        }) {
-            if let frame = explicitFrame(of: layoutSp) { return frame }
-            // Layout → master: match on reduced type.
-            let layoutType = Placeholders.phElement(of: layoutSp)?[attribute: "type"] ?? "obj"
-            let masterType = Self.masterTypeReduction[layoutType] ?? "body"
-            if let masterRel = layoutPart.rels.first(ofType: RelType.slideMaster),
-               let masterPart = try? package.part(
-                at: PackURI.resolve(target: masterRel.target, relativeTo: layoutPart.uri.baseURI)),
-               let masterSp = try? placeholderSp(in: masterPart, matching: { mph in
-                   (mph[attribute: "type"] ?? "obj") == masterType
-               }) {
-                return explicitFrame(of: masterSp)
-            }
+        for source in inheritedPlaceholders(of: shape) {
+            if let frame = explicitFrame(of: source.element) { return frame }
         }
         return nil
+    }
+
+    /// The layout and master placeholders a slide placeholder inherits from,
+    /// nearest first: the layout's matching idx, then the master's matching
+    /// reduced type. Empty for a non-placeholder or a broken chain.
+    func inheritedPlaceholders(of shape: Shape) -> [(element: XML.Element, part: Part)] {
+        guard let ph = shape.placeholder,
+              let layoutRel = part.rels.first(ofType: RelType.slideLayout),
+              let layoutPart = try? package.part(
+                at: PackURI.resolve(target: layoutRel.target, relativeTo: part.uri.baseURI)),
+              // Slide → layout: match on idx only.
+              let layoutSp = try? placeholderSp(in: layoutPart, matching: { lph in
+                  (lph[attribute: "idx"].flatMap { Int($0) } ?? 0) == ph.idx
+              })
+        else { return [] }
+        // Layout → master: match on reduced type.
+        let layoutType = Placeholders.phElement(of: layoutSp)?[attribute: "type"] ?? "obj"
+        let masterType = Self.masterTypeReduction[layoutType] ?? "body"
+        guard let masterRel = layoutPart.rels.first(ofType: RelType.slideMaster),
+              let masterPart = try? package.part(
+                at: PackURI.resolve(target: masterRel.target, relativeTo: layoutPart.uri.baseURI)),
+              let masterSp = try? placeholderSp(in: masterPart, matching: { mph in
+                  (mph[attribute: "type"] ?? "obj") == masterType
+              })
+        else { return [(element: layoutSp, part: layoutPart)] }
+        return [(element: layoutSp, part: layoutPart), (element: masterSp, part: masterPart)]
     }
 
     static let masterTypeReduction: [String: String] = [

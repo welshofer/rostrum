@@ -615,7 +615,7 @@ public struct TableStyleResolver {
         var stack = [root]
         while let node = stack.popLast() {
             if node.name == "a:srgbClr", node.childElements.isEmpty { continue }
-            guard ["a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr"].contains(node.name) else {
+            guard DrawingColor.colorElements.contains(node.name) else {
                 stack.append(contentsOf: node.childElements)
                 continue
             }
