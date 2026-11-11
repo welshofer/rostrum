@@ -503,7 +503,15 @@ public class Shape {
     ///   `p:spPr` to put a fill in — graphic frames (charts, tables, SmartArt)
     ///   and groups. Style those through their own content instead.
     public func setFill(_ fill: Fill) throws {
-        guard let spPr = mutableSpPr else {
+        let target: XML.Element?
+        if let spPr = mutableSpPr {
+            target = spPr
+        } else if element.name == "p:grpSp" {
+            target = element.getOrAddChild("p:grpSpPr")
+        } else {
+            target = nil
+        }
+        guard let spPr = target else {
             throw RostrumError.packageInvalid("\(element.name) has no p:spPr to fill")
         }
         for name in Fill.choiceNames { spPr.removeChildren(named: name) }
@@ -541,10 +549,116 @@ public class Shape {
         element.firstChild(named: "p:spPr")?.firstChild(named: "a:custGeom") != nil
     }
 
+    /// Literal adjustment guides (`a:prstGeom/a:avLst/a:gd` with `fmla="val N"`)
+    /// keyed by guide name (`"adj"`, `"adj1"`, `"adj2"`, …). Pure read.
+    public var adjustments: [String: Int] {
+        guard let avLst = element.firstChild(named: "p:spPr")?
+            .firstChild(named: "a:prstGeom")?.firstChild(named: "a:avLst") else { return [:] }
+        var result: [String: Int] = [:]
+        for gd in avLst.children(named: "a:gd") {
+            guard let name = gd[attribute: "name"], !name.isEmpty,
+                  let fmla = gd[attribute: "fmla"] else { continue }
+            let parts = fmla.split(whereSeparator: \.isWhitespace)
+            if parts.count == 2, parts[0] == "val", let val = Int(parts[1]) {
+                result[name] = val
+            }
+        }
+        return result
+    }
+
+    /// Read a single literal adjustment guide (`"adj"`, `"adj1"`, …) on `a:prstGeom/a:avLst`.
+    public func adjustment(_ name: String) -> Int? {
+        adjustments[name]
+    }
+
+    /// Set or remove a literal adjustment guide (`fmla="val N"`) on `a:prstGeom/a:avLst`.
+    /// Passing `nil` removes the named guide so PowerPoint's preset default applies.
+    public func setAdjustment(_ name: String, value: Int?) {
+        guard let spPr = mutableSpPr,
+              let prstGeom = spPr.firstChild(named: "a:prstGeom") else { return }
+        let avLst = prstGeom.getOrAddChild("a:avLst")
+        if let value {
+            if let existing = avLst.children(named: "a:gd").first(where: { $0[attribute: "name"] == name }) {
+                existing[attribute: "fmla"] = "val \(value)"
+            } else {
+                avLst.appendElement(XML.Element("a:gd", attributes: [
+                    ("name", name), ("fmla", "val \(value)"),
+                ]))
+            }
+        } else {
+            avLst.children.removeAll { node in
+                guard case .element(let el) = node else { return false }
+                return el.name == "a:gd" && el[attribute: "name"] == name
+            }
+        }
+        part.markDirty()
+    }
+
+    /// The click hyperlink target on this shape (`p:cNvPr/a:hlinkClick`), resolved
+    /// through the owning part's relationships (or the `action` URI when no relationship is used).
+    public var hyperlink: String? {
+        guard let hlink = element.childElements.first?.firstChild(named: "p:cNvPr")?
+            .firstChild(named: "a:hlinkClick") else { return nil }
+        if let rId = hlink[attribute: "r:id"], !rId.isEmpty,
+           let target = part.rels.relationship(withId: rId)?.target {
+            return target
+        }
+        return hlink[attribute: "action"]
+    }
+
+    /// Turn this shape (autoshape, picture, connector, or group) into an external
+    /// click hyperlink (`p:cNvPr/a:hlinkClick`), or pass `nil` to remove the link.
+    public func setHyperlink(_ url: String?) {
+        guard let cNvPr = element.childElements.first?.firstChild(named: "p:cNvPr") else { return }
+        cNvPr.removeChildren(named: "a:hlinkClick")
+        if let url {
+            let rId = part.rels.add(type: RelType.hyperlink, target: url, isExternal: true)
+            cNvPr.insertChild(
+                XML.Element("a:hlinkClick", attributes: [("r:id", rId)]),
+                beforeAnyOf: ["a:hlinkHover", "a:extLst"])
+        }
+        part.markDirty()
+    }
+
+    /// Link this shape to another slide in the same deck (`ppaction://hlinksldjump`).
+    public func setSlideLink(to slide: Slide) {
+        guard let cNvPr = element.childElements.first?.firstChild(named: "p:cNvPr") else { return }
+        let rId = part.rels.add(type: RelType.slide,
+                                target: part.uri.relativeReference(to: slide.part.uri))
+        cNvPr.removeChildren(named: "a:hlinkClick")
+        cNvPr.insertChild(
+            XML.Element("a:hlinkClick", attributes: [
+                ("r:id", rId), ("action", "ppaction://hlinksldjump"),
+            ]),
+            beforeAnyOf: ["a:hlinkHover", "a:extLst"])
+        part.markDirty()
+    }
+
+    /// Link this shape to a built-in slide show navigation action (next/previous/first/last/endShow).
+    public func setActionLink(_ action: SlideAction) {
+        guard let cNvPr = element.childElements.first?.firstChild(named: "p:cNvPr") else { return }
+        cNvPr.removeChildren(named: "a:hlinkClick")
+        cNvPr.insertChild(
+            XML.Element("a:hlinkClick", attributes: [
+                ("r:id", ""), ("action", action.rawValue),
+            ]),
+            beforeAnyOf: ["a:hlinkHover", "a:extLst"])
+        part.markDirty()
+    }
+
     /// The shape's text body. Every Rostrum-created shape has one.
     public var textFrame: TextFrame? {
-        element.firstChild(named: "p:txBody").map { TextFrame(txBody: $0, part: part) }
+        element.firstChild(named: "p:txBody").map { TextFrame(txBody: $0, part: part, package: package, shapeElement: element) }
     }
+}
+
+/// Built-in PowerPoint slide-show navigation actions (`a:hlinkClick@action`).
+public enum SlideAction: String, Sendable, CaseIterable, Equatable {
+    case nextSlide = "ppaction://hlinkshowjump?jump=nextslide"
+    case previousSlide = "ppaction://hlinkshowjump?jump=previousslide"
+    case firstSlide = "ppaction://hlinkshowjump?jump=firstslide"
+    case lastSlide = "ppaction://hlinkshowjump?jump=lastslide"
+    case endShow = "ppaction://hlinkshowjump?jump=endshow"
 }
 
 #if DEBUG

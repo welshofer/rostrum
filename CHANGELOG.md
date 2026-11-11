@@ -6,6 +6,42 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Expand `SVGPresetGeometry` to 75+ ECMA-376 preset shape outlines with inset
+  `textFrame` bounds, add `Shape.adjustments` / `adjustment(_:)` /
+  `setAdjustment(_:value:)`, and render `curvedConnector2`/`3`/`4`/`5` cubic
+  Bezier paths in SVG previews and `--strict` diagnostics.
+- Add hierarchical SmartArt authoring (`SmartArt.Node`, `Slide.smartArtTrees`,
+  `ShapeCollection.addSmartArt(nodes:frame:colors:includeDrawing:)`) and
+  `addSmartArt(items:frame:colors:layout:includeDrawing:)`, fix `.pyramid`
+  width/height constraints, and honor `dsp:grpSpPr` coordinate transforms and
+  `dsp:cxnSp` connectors when rendering `dsp:drawing` caches.
+- Add `PatternFillPreset` (all 54 ECMA-376 pattern fills), `PatternFill`,
+  `Fill.pattern`, and `Fill.group` inheritance; add `GradientFill` focal center
+  read/write (`focalCenterX`/`focalCenterY`, `GradientFill.radial(stops:focalX:focalY:)`)
+  and SVG `fx`/`fy` rendering; and support `Picture` blip effects (`alphaModFix`,
+  `grayscl`, `biLevel`, `lum`, `duotone`) with SVG `<filter>` rendering.
+- Add `BodyTextDirection` (`TextFrame.textDirection` for `horz`/`vert`/`vert270`),
+  multi-column text frames (`columnCount`, `columnSpacing`), `TextCaps`
+  (`Run.caps` `.small`/`.all`), `StrikethroughStyle` (`Run.strikethroughStyle`
+  `.single`/`.double`), picture bullets (`Paragraph.setPictureBullet(_:)`,
+  `hasPictureBullet`), and `TextFrame.shapeAutoFit` / `fitShapeToText(fonts:)`.
+- Add Office 2016+ `ChartEx` (`cx:chartSpace`) read-back, authoring, outline CSV
+  extraction, and SVG rendering (`ExtendedChartKind`: `.waterfall`, `.funnel`,
+  `.treemap`, `.sunburst`, `.boxWhisker`, `.histogram`; `Slide.extendedCharts`,
+  `Presentation.extendedCharts`, `ShapeCollection.addExtendedChart`); and render
+  classic 3D charts (`c:bar3DChart`, `c:line3DChart`, `c:pie3DChart`,
+  `c:area3DChart`), `c:ofPieChart`, `c:stockChart`, `c:surfaceChart`, `c:dateAx`,
+  `c:trendline`, `c:errBars`, and custom `c:dLbl/c:tx` data labels in SVG.
+- Add dual-payload vector SVG pictures (`ShapeCollection.addSVGPicture`,
+  `Picture.svgImagePart`, `Picture.svgData` via `asvg:svgBlip`), broaden safe
+  self-contained SVG validation (`<defs>`, `<style>`, `url(#id)`, embedded
+  raster `data:image/*`), sniff `.bmp`, `.tiff`, and `.webp` dimensions in
+  `ImageSniffer`, and support shape/run hyperlinks, slide jumps
+  (`setSlideLink(to:)`), and presentation actions (`SlideAction`,
+  `setActionLink(_:)`) with SVG `<a href>` wrapping.
+- Apply `rotWithShape="0"` counter-rotation to image pattern fills on rotated
+  shapes in SVG previews and emit per-cluster `<tspan dx dy>` GPOS mark
+  attachment offsets in `SVGRichText`.
 - Add write-side authoring for connectors (`ShapeCollection.addConnector`,
   `ConnectorGeometry`, `Connector.startPoint`/`endPoint`, and `Line` /
   `ReadLine` `headEnd`/`tailEnd` arrowheads), group shapes

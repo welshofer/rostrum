@@ -128,6 +128,46 @@ public extension Shape {
         appearanceProperties.flatMap(ReadFill.init(container:))
     }
 
+    /// Typed pattern fill read-back (`a:pattFill`), when present with sRGB foreground/background.
+    var patternFill: PatternFill? {
+        guard let patt = appearanceProperties?.firstChild(named: "a:pattFill"),
+              let prst = patt[attribute: "prst"].flatMap(PatternFillPreset.init(rawValue:)),
+              let fgHex = patt.firstChild(named: "a:fgClr")?.firstChild(named: "a:srgbClr")?[attribute: "val"],
+              let fg = Color(validating: fgHex) else { return nil }
+        let bgHex = patt.firstChild(named: "a:bgClr")?.firstChild(named: "a:srgbClr")?[attribute: "val"]
+        let bg = bgHex.flatMap(Color.init(validating:)) ?? .white
+        return PatternFill(preset: prst, foreground: fg, background: bg)
+    }
+
+    /// Typed gradient fill read-back (`a:gradFill`), including radial/path focal center when present.
+    var gradientFill: GradientFill? {
+        guard let grad = appearanceProperties?.firstChild(named: "a:gradFill") else { return nil }
+        let stops = (grad.firstChild(named: "a:gsLst")?.children(named: "a:gs") ?? [])
+            .compactMap { gs -> GradientStop? in
+                guard let srgb = gs.firstChild(named: "a:srgbClr"),
+                      let hex = srgb[attribute: "val"],
+                      let color = Color(validating: hex) else { return nil }
+                let position = gs[attribute: "pos"].flatMap { Int($0) }
+                    .map { Double($0) / 100_000 } ?? 0
+                let alpha = srgb.firstChild(named: "a:alpha")?[attribute: "val"]
+                    .flatMap { Int($0) }.map { Double($0) / 100_000 } ?? 1
+                return GradientStop(position: position, color: color, alpha: alpha)
+            }
+        guard stops.count >= 2 else { return nil }
+        if let path = grad.firstChild(named: "a:path") {
+            let rect = path.firstChild(named: "a:fillToRect")
+            let l = rect?.boundedInt("l", in: -100_000...200_000).map { Double($0) / 100_000.0 }
+            let r = rect?.boundedInt("r", in: -100_000...200_000).map { Double($0) / 100_000.0 }
+            let t = rect?.boundedInt("t", in: -100_000...200_000).map { Double($0) / 100_000.0 }
+            let b = rect?.boundedInt("b", in: -100_000...200_000).map { Double($0) / 100_000.0 }
+            let fx = (l != nil && r != nil) ? ((l! + (1.0 - r!)) * 0.5) : l
+            let fy = (t != nil && b != nil) ? ((t! + (1.0 - b!)) * 0.5) : t
+            return GradientFill(stops: stops, isRadial: true, focalCenterX: fx, focalCenterY: fy)
+        }
+        let ang = Double(grad.firstChild(named: "a:lin")?.boundedInt("ang", in: 0...21_600_000) ?? 5_400_000) / 60_000.0
+        return GradientFill(stops: stops, angleDegrees: ang, isRadial: false)
+    }
+
     /// The outline written on this shape, or nil when it carries none.
     var line: ReadLine? {
         appearanceProperties?.firstChild(named: "a:ln").map(ReadLine.init(element:))

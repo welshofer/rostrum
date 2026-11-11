@@ -37,6 +37,120 @@ public final class Picture: Shape {
     /// The image's file extension in the package (`png`, `jpeg`, `gif`, …),
     /// which is how OPC records its format.
     public var imageFormat: String? { imagePart?.uri.ext }
+
+    /// The relationship id of the vector SVG alternate (`asvg:svgBlip@r:embed`), when present.
+    public var svgRelationshipID: String? {
+        guard let blip = element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip") else {
+            return nil
+        }
+        return SVGEmbeddedImage.svgReference(in: blip)
+    }
+
+    /// The package part holding this picture's vector SVG bytes (`asvg:svgBlip`), when present.
+    public var svgPart: Part? {
+        guard let rId = svgRelationshipID,
+              let rel = part.rels.relationship(withId: rId),
+              let package else { return nil }
+        let uri = PackURI.resolve(target: rel.target, relativeTo: part.uri.baseURI)
+        return try? package.part(at: uri)
+    }
+
+    /// The vector SVG bytes stored in the package (`asvg:svgBlip`), when present.
+    public var svgData: Data? { svgPart?.blob }
+
+    /// Picture opacity (`a:alphaModFix@amt`), expressed in `0.0...1.0`, or `nil` when unmodified.
+    public var opacity: Double? {
+        guard let amt = element.firstChild(named: "p:blipFill")?
+            .firstChild(named: "a:blip")?
+            .firstChild(named: "a:alphaModFix")?
+            .boundedInt("amt", in: 0...100_000) else { return nil }
+        return Double(amt) / 100_000.0
+    }
+
+    /// Set or clear picture opacity (`a:alphaModFix@amt`, clamped to `0.0...1.0`).
+    public func setOpacity(_ value: Double?) {
+        guard let blip = element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip") else { return }
+        blip.removeChildren(named: "a:alphaModFix")
+        if let value {
+            let clamped = min(max(value, 0.0), 1.0)
+            let amt = Int((clamped * 100_000).rounded())
+            let alpha = blip.getOrAddChild("a:alphaModFix", beforeAnyOf: ["a:extLst"])
+            alpha[attribute: "amt"] = String(amt)
+        }
+        part.markDirty()
+    }
+
+    /// Whether the picture has a grayscale blip effect (`a:grayscl`).
+    public var isGrayscale: Bool {
+        element.firstChild(named: "p:blipFill")?
+            .firstChild(named: "a:blip")?
+            .firstChild(named: "a:grayscl") != nil
+    }
+
+    /// Enable or disable the grayscale blip effect (`a:grayscl`).
+    public func setGrayscale(_ enabled: Bool) {
+        guard let blip = element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip") else { return }
+        blip.removeChildren(named: "a:grayscl")
+        if enabled {
+            _ = blip.getOrAddChild("a:grayscl", beforeAnyOf: ["a:extLst"])
+        }
+        part.markDirty()
+    }
+
+    /// Bi-level threshold (`a:biLevel@thresh`), expressed in `0.0...1.0`, or `nil` when absent.
+    public var biLevelThreshold: Double? {
+        guard let thresh = element.firstChild(named: "p:blipFill")?
+            .firstChild(named: "a:blip")?
+            .firstChild(named: "a:biLevel")?
+            .boundedInt("thresh", in: 0...100_000) else { return nil }
+        return Double(thresh) / 100_000.0
+    }
+
+    /// Set or clear a bi-level threshold effect (`a:biLevel@thresh`, clamped to `0.0...1.0`).
+    public func setBiLevel(threshold: Double?) {
+        guard let blip = element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip") else { return }
+        blip.removeChildren(named: "a:biLevel")
+        if let threshold {
+            let clamped = min(max(threshold, 0.0), 1.0)
+            let biLevel = blip.getOrAddChild("a:biLevel", beforeAnyOf: ["a:extLst"])
+            biLevel[attribute: "thresh"] = String(Int((clamped * 100_000).rounded()))
+        }
+        part.markDirty()
+    }
+
+    /// Brightness and contrast adjustments (`a:lum`), each in `-1.0...1.0`, or `nil` when absent.
+    public var luminanceEffect: (brightness: Double, contrast: Double)? {
+        guard let lum = element.firstChild(named: "p:blipFill")?
+            .firstChild(named: "a:blip")?
+            .firstChild(named: "a:lum") else { return nil }
+        let b = Double(lum.boundedInt("bright", in: -100_000...100_000) ?? 0) / 100_000.0
+        let c = Double(lum.boundedInt("contrast", in: -100_000...100_000) ?? 0) / 100_000.0
+        return (b, c)
+    }
+
+    /// Set or clear brightness and contrast adjustments (`a:lum`, each clamped to `-1.0...1.0`).
+    public func setBrightnessContrast(brightness: Double, contrast: Double) {
+        guard let blip = element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip") else { return }
+        blip.removeChildren(named: "a:lum")
+        let b = Int((min(max(brightness, -1.0), 1.0) * 100_000).rounded())
+        let c = Int((min(max(contrast, -1.0), 1.0) * 100_000).rounded())
+        if b != 0 || c != 0 {
+            let lum = blip.getOrAddChild("a:lum", beforeAnyOf: ["a:extLst"])
+            if b != 0 { lum[attribute: "bright"] = String(b) }
+            if c != 0 { lum[attribute: "contrast"] = String(c) }
+        }
+        part.markDirty()
+    }
+
+    /// Set or clear a duotone color-mapping effect (`a:duotone`).
+    public func setDuotone(shadow: Color, highlight: Color) {
+        guard let blip = element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip") else { return }
+        blip.removeChildren(named: "a:duotone")
+        let duotone = blip.getOrAddChild("a:duotone", beforeAnyOf: ["a:extLst"])
+        duotone.appendElement(shadow.srgbElement())
+        duotone.appendElement(highlight.srgbElement())
+        part.markDirty()
+    }
 }
 
 /// Preset connector geometries (`p:cxnSp` / `a:prstGeom@prst`).

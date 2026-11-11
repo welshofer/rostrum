@@ -12,6 +12,7 @@ public struct ResolvedTextRun: Equatable, Sendable {
     public var tracking: Double
     public var decoration: String = ""
     public var baselineShift: Double = 0
+    public var smallCaps: Bool = false
     /// Minimum rendered point size at which DrawingML enables kerning.
     /// Native DrawingML resolves absent/zero kerning as disabled; general runs retain their default.
     public var kerningThreshold: Double = 0
@@ -1115,6 +1116,7 @@ public struct RichTextLayout: Sendable {
             decoration: (["sng", "dbl"].contains(attr("u") ?? "") ? ["underline"] : []) .joined(separator: " ")
                 + (["sngStrike", "dblStrike"].contains(attr("strike") ?? "") ? " line-through" : ""),
             baselineShift: bounded(attr("baseline").flatMap(Double.init) ?? 0, -100000...100000) / 1000,
+            smallCaps: attr("cap") == "small",
             kerningThreshold: bounded(attr("kern").flatMap(Double.init) ?? 0, 0...400000) / 100,
             explicitlyDisablesKerning: attr("kern").flatMap(Double.init) == 0)
     }

@@ -191,9 +191,37 @@ struct SVGRenderer {
 
     // MARK: - Shape tree and transforms
 
+    private func shapeHyperlinkHref(_ node: XML.Element, ownedBy owner: Part) -> String? {
+        guard let hlink = node.childElements.first?.firstChild(named: "p:cNvPr")?.firstChild(named: "a:hlinkClick") else {
+            return nil
+        }
+        let action = hlink[attribute: "action"]
+        if action == "ppaction://media" { return nil }
+        if let rId = hlink[attribute: "r:id"], !rId.isEmpty,
+           let rel = owner.rels.relationship(withId: rId) {
+            if !rel.isExternal, rel.type == RelType.slide {
+                let targetURI = PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)
+                if let main = try? package.mainDocumentPart(),
+                   let sldIdLst = (try? main.dom())?.firstChild(named: "p:sldIdLst") {
+                    for (idx, sldId) in sldIdLst.children(named: "p:sldId").enumerated() {
+                        if let sRelId = sldId[attribute: "r:id"],
+                           let sRel = main.rels.relationship(withId: sRelId),
+                           PackURI.resolve(target: sRel.target, relativeTo: main.uri.baseURI) == targetURI {
+                            return "#slide-\(idx + 1)"
+                        }
+                    }
+                }
+            }
+            return rel.target
+        }
+        if let action, !action.isEmpty { return action }
+        return nil
+    }
+
     private func renderNode(_ node: XML.Element, ownedBy owner: Part, defs: inout SVGDefinitions,
                             problems: inout SlideRenderProblems, inherited: Bool = false,
-                            depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false) -> String {
+                            depth: Int = 0, flippedTextH: Bool = false, flippedTextV: Bool = false,
+                            groupFill: (properties: XML.Element, owner: Part)? = nil) -> String {
         guard !ShapeCollection.isHidden(node) else { return "" }
         guard depth < 64 else {
             problems.record("Preview omitted shapes nested more than 64 levels deep.")
@@ -208,6 +236,14 @@ struct SVGRenderer {
         switch node.name {
         case "p:nvGrpSpPr", "p:grpSpPr", "p:extLst": return ""
         case "p:grpSp":
+            let grpSpPr = node.firstChild(named: "p:grpSpPr")
+            let directFills = ["a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:noFill"]
+            let childGroupFill: (properties: XML.Element, owner: Part)?
+            if let grpSpPr, grpSpPr.childElements.contains(where: { directFills.contains($0.name) }) {
+                childGroupFill = (grpSpPr, owner)
+            } else {
+                childGroupFill = groupFill
+            }
             let groupLocation = diagnostics.location
             var occurrences: [String: Int] = [:]
             let children = node.childElements.map { child in
@@ -220,7 +256,8 @@ struct SVGRenderer {
                     path: groupLocation.path + "/\(child.name)[\(occurrences[child.name]!)]")
                 defer { diagnostics.location = groupLocation }
                 return renderNode(child, ownedBy: owner, defs: &defs, problems: &problems,
-                           inherited: inherited, depth: depth + 1, flippedTextH: textFlipH, flippedTextV: textFlipV)
+                           inherited: inherited, depth: depth + 1, flippedTextH: textFlipH, flippedTextV: textFlipV,
+                           groupFill: childGroupFill)
             }.joined()
             let transform = ShapeTransform.element(of: node)
             guard let outer = ShapeTransform.rect(transform),
@@ -250,7 +287,8 @@ struct SVGRenderer {
             if (flippedTextH || flippedTextV) && ShapeTransform.rotation(of: node) != 0 {
                 problems.record("Preview may differ for rotated text inside a flipped group.")
             }
-            content = renderShape(node, ownedBy: owner, defs: &defs, problems: &problems, textFlipH: textFlipH, textFlipV: textFlipV)
+            content = renderShape(node, ownedBy: owner, defs: &defs, problems: &problems,
+                                  textFlipH: textFlipH, textFlipV: textFlipV, groupFill: groupFill)
         case "p:pic": content = renderPicture(node, ownedBy: owner, defs: &defs, problems: &problems)
         case "p:cxnSp": content = renderConnector(node, defs: &defs, problems: &problems)
         case "p:graphicFrame": content = renderGraphicFrame(node, ownedBy: owner, defs: &defs, problems: &problems)
@@ -258,16 +296,27 @@ struct SVGRenderer {
             problems.record("Preview omitted an unsupported shape-tree element.")
             return ""
         }
-        guard let transform = ShapeTransform.element(of: node),
-              let bounds = ShapeTransform.rect(transform) else { return content }
-        // DrawingML flips about the shape/group center, then rotates clockwise.
-        let rotation = ShapeTransform.rotation(of: node).truncatingRemainder(dividingBy: 360)
-        let flipH = ["1", "true"].contains(transform[attribute: "flipH"] ?? "")
-        let flipV = ["1", "true"].contains(transform[attribute: "flipV"] ?? "")
-        guard rotation != 0 || flipH || flipV else { return content }
-        let cx = Double(bounds.x.rawValue) + Double(bounds.width.rawValue) / 2
-        let cy = Double(bounds.y.rawValue) + Double(bounds.height.rawValue) / 2
-        return "<g transform=\"translate(\(cx) \(cy)) rotate(\(rotation)) scale(\(flipH ? -1 : 1) \(flipV ? -1 : 1)) translate(\(-cx) \(-cy))\">\(content)</g>"
+        let transformed: String
+        if let transform = ShapeTransform.element(of: node),
+           let bounds = ShapeTransform.rect(transform) {
+            // DrawingML flips about the shape/group center, then rotates clockwise.
+            let rotation = ShapeTransform.rotation(of: node).truncatingRemainder(dividingBy: 360)
+            let flipH = ["1", "true"].contains(transform[attribute: "flipH"] ?? "")
+            let flipV = ["1", "true"].contains(transform[attribute: "flipV"] ?? "")
+            if rotation != 0 || flipH || flipV {
+                let cx = Double(bounds.x.rawValue) + Double(bounds.width.rawValue) / 2
+                let cy = Double(bounds.y.rawValue) + Double(bounds.height.rawValue) / 2
+                transformed = "<g transform=\"translate(\(cx) \(cy)) rotate(\(rotation)) scale(\(flipH ? -1 : 1) \(flipV ? -1 : 1)) translate(\(-cx) \(-cy))\">\(content)</g>"
+            } else {
+                transformed = content
+            }
+        } else {
+            transformed = content
+        }
+        if !transformed.isEmpty, let href = shapeHyperlinkHref(node, ownedBy: owner) {
+            return "<a href=\"\(escape(href))\">\(transformed)</a>"
+        }
+        return transformed
     }
 
     private func renderConnector(_ node: XML.Element, defs: inout SVGDefinitions,
@@ -281,7 +330,8 @@ struct SVGRenderer {
             ?? colorHex(in: node.firstChild(named: "p:style")?.firstChild(named: "a:lnRef")) ?? "#000000"
         let width = max(1, line?.coordinate("w") ?? 12700)
         let preset = properties.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "line"
-        if !["line", "straightConnector1", "bentConnector2", "bentConnector3", "bentConnector4", "bentConnector5"].contains(preset) {
+        if !["line", "straightConnector1", "bentConnector2", "bentConnector3", "bentConnector4", "bentConnector5",
+             "curvedConnector2", "curvedConnector3", "curvedConnector4", "curvedConnector5"].contains(preset) {
             diagnostics.record(.unsupportedGeometry, .approximation,
                 "Preview approximates this bent or curved connector with a straight line.")
         }
@@ -330,6 +380,37 @@ struct SVGRenderer {
                 let x3 = coord(Double(x) + Double(w) * adj3)
                 return "<path d=\"M\(x) \(y) H\(x1) V\(y2) H\(x3) V\(y + h) H\(x + w)\" \(attrs)/>"
             }
+        case "curvedConnector2":
+            if w != 0 && h != 0 {
+                let cx = coord(Double(x) + Double(w) * 0.5)
+                let cy = coord(Double(y) + Double(h) * 0.5)
+                return "<path d=\"M\(x) \(y) C\(cx) \(y) \(x + w) \(cy) \(x + w) \(y + h)\" \(attrs)/>"
+            }
+        case "curvedConnector3":
+            let adj1 = adjustment("adj1")
+            if h != 0 || !(0...1).contains(adj1) {
+                let x1 = coord(Double(x) + Double(w) * adj1)
+                let cy = coord(Double(y) + Double(h) * 0.5)
+                let hx1 = coord(Double(x) + Double(w) * adj1 * 0.5)
+                let hx2 = coord(Double(x1) + Double(x + w - x1) * 0.5)
+                return "<path d=\"M\(x) \(y) C\(hx1) \(y) \(x1) \( coord(Double(y) + Double(h) * 0.25) ) \(x1) \(cy) C\(x1) \( coord(Double(y) + Double(h) * 0.75) ) \(hx2) \(y + h) \(x + w) \(y + h)\" \(attrs)/>"
+            }
+        case "curvedConnector4":
+            let adj1 = adjustment("adj1"), adj2 = adjustment("adj2")
+            if w != 0 || h != 0 || !(0...1).contains(adj1) || !(0...1).contains(adj2) {
+                let x1 = coord(Double(x) + Double(w) * adj1)
+                let y2 = coord(Double(y) + Double(h) * adj2)
+                let mx = coord(Double(x1) + Double(x + w - x1) * 0.5)
+                return "<path d=\"M\(x) \(y) C\(x1) \(y) \(x1) \(y2) \(mx) \(y2) C\(x + w) \(y2) \(x + w) \( coord(Double(y2) + Double(y + h - y2) * 0.5) ) \(x + w) \(y + h)\" \(attrs)/>"
+            }
+        case "curvedConnector5":
+            let adj1 = adjustment("adj1"), adj2 = adjustment("adj2"), adj3 = adjustment("adj3")
+            if w != 0 || h != 0 || !(0...1).contains(adj1) || !(0...1).contains(adj2) || !(0...1).contains(adj3) {
+                let x1 = coord(Double(x) + Double(w) * adj1)
+                let y2 = coord(Double(y) + Double(h) * adj2)
+                let x3 = coord(Double(x) + Double(w) * adj3)
+                return "<path d=\"M\(x) \(y) C\(x1) \(y) \(x1) \(y2) \( coord(Double(x1 + x3) * 0.5) ) \(y2) C\(x3) \(y2) \(x3) \(y + h) \(x + w) \(y + h)\" \(attrs)/>"
+            }
         default:
             break
         }
@@ -339,7 +420,9 @@ struct SVGRenderer {
     // MARK: - Shapes
 
     private func renderShape(_ sp: XML.Element, ownedBy owner: Part,
-                             defs: inout SVGDefinitions, problems: inout SlideRenderProblems, textFlipH: Bool = false, textFlipV: Bool = false) -> String {
+                             defs: inout SVGDefinitions, problems: inout SlideRenderProblems,
+                             textFlipH: Bool = false, textFlipV: Bool = false,
+                             groupFill: (properties: XML.Element, owner: Part)? = nil) -> String {
         let sp = owner === slidePart ? notesContext?.effectiveShape(sp) ?? sp : sp
         if notesContext != nil {
             let location = diagnostics.location
@@ -360,8 +443,9 @@ struct SVGRenderer {
         let preset = spPr.firstChild(named: "a:prstGeom")
         let prst = spPr.firstChild(named: "a:custGeom") != nil ? "rect" : preset?[attribute: "prst"] ?? "rect"
         let style = sp.firstChild(named: "p:style")
-        let selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner)
+        let selectedFill = effectiveFill(spPr, reference: style?.firstChild(named: "a:fillRef"), ownedBy: owner, groupFill: groupFill)
         let fill: String?
+        let shapeRotation = ShapeTransform.rotation(of: sp).truncatingRemainder(dividingBy: 360)
         if let blip = selectedFill.properties.firstChild(named: "a:blipFill") {
             if selectedFill.properties !== spPr {
                 // Direct paint was inspected with the shape. Referenced paint
@@ -372,9 +456,9 @@ struct SVGRenderer {
                     path: location.path + "/p:style/a:fillRef", package: package)
                 diagnostics.location = location
             }
-            fill = imagePattern(blip, ownedBy: selectedFill.owner, box: f, defs: &defs)
+            fill = imagePattern(blip, ownedBy: selectedFill.owner, box: f, defs: &defs, shapeRotation: shapeRotation)
         } else {
-            fill = paint(for: selectedFill.properties, box: f, defs: &defs, ownedBy: selectedFill.owner)
+            fill = paint(for: selectedFill.properties, box: f, defs: &defs, ownedBy: selectedFill.owner, shapeRotation: shapeRotation)
         }
         let lineProperties = effectiveLine(spPr, reference: style?.firstChild(named: "a:lnRef"))
         let stroke = strokeAttrs(lineProperties)
@@ -422,7 +506,8 @@ struct SVGRenderer {
                 ?? SVGPresetGeometry.textFrame(prst, adjustments: preset?.firstChild(named: "a:avLst"), frame: f)
             let text = renderText(txBody, box: textFrame,
                                   inheriting: inheritedRunDefaults(for: sp, ownedBy: owner),
-                                  fontReference: style?.firstChild(named: "a:fontRef"), respectInsets: true)
+                                  fontReference: style?.firstChild(named: "a:fontRef"), respectInsets: true,
+                                  owner: owner)
             // PowerPoint flips the shape and its placement, not the glyphs.
             // Counter-reflect text locally before the enclosing SVG transforms.
             if textFlipH || textFlipV {
@@ -601,7 +686,61 @@ struct SVGRenderer {
     private func renderText(_ txBody: XML.Element, box f: (Int, Int, Int, Int),
                             inheriting defaults: XML.Element? = nil, fontReference: XML.Element? = nil, respectInsets: Bool = false,
                             insets: (left: Double, top: Double, right: Double, bottom: Double)? = nil,
-                            verticalAnchor: String? = nil, context: RichTextLayout.Context = .shape) -> String {
+                            verticalAnchor: String? = nil, context: RichTextLayout.Context = .shape,
+                            owner: Part? = nil) -> String {
+        if context == .shape, let bodyPr = txBody.firstChild(named: "a:bodyPr") {
+            let vert = bodyPr[attribute: "vert"] ?? "horz"
+            let numColRaw = bodyPr[attribute: "numCol"]
+            let numCol = bodyPr.boundedInt("numCol", in: 1...16) ?? 1
+            if (vert == "vert" || vert == "vert270") && (numColRaw == nil || numColRaw == "1") {
+                let copy = txBody.deepCopy()
+                copy.firstChild(named: "a:bodyPr")?[attribute: "vert"] = nil
+                let transform = vert == "vert"
+                    ? "translate(\(f.0 + f.2) \(f.1)) rotate(90)"
+                    : "translate(\(f.0) \(f.1 + f.3)) rotate(-90)"
+                let inner = renderText(copy, box: (0, 0, f.3, f.2), inheriting: defaults,
+                                       fontReference: fontReference, respectInsets: respectInsets,
+                                       insets: insets, verticalAnchor: verticalAnchor,
+                                       context: context, owner: owner)
+                return inner.isEmpty ? "" : "<g transform=\"\(transform)\">\(inner)</g>"
+            }
+            if numCol > 1 && vert == "horz" {
+                let paragraphs = txBody.children(named: "a:p")
+                if !paragraphs.isEmpty {
+                    let spcCol = max(0, bodyPr.coordinate("spcCol") ?? 0)
+                    let lIns = max(0, bodyPr.coordinate("lIns") ?? 91440)
+                    let rIns = max(0, bodyPr.coordinate("rIns") ?? 91440)
+                    let usableW = max(1, f.2 - lIns - rIns - spcCol * (numCol - 1))
+                    let colW = max(1, usableW / numCol)
+                    let perCol = max(1, (paragraphs.count + numCol - 1) / numCol)
+                    var colSVG = ""
+                    for col in 0..<numCol {
+                        let startIdx = col * perCol
+                        guard startIdx < paragraphs.count else { break }
+                        let endIdx = min(paragraphs.count, startIdx + perCol)
+                        let sliceBody = XML.Element(txBody.name, attributes: txBody.attributes)
+                        let slicePr = bodyPr.deepCopy()
+                        slicePr[attribute: "numCol"] = nil
+                        slicePr[attribute: "spcCol"] = nil
+                        slicePr[attribute: "lIns"] = "0"
+                        slicePr[attribute: "rIns"] = "0"
+                        sliceBody.appendElement(slicePr)
+                        if let lstStyle = txBody.firstChild(named: "a:lstStyle") {
+                            sliceBody.appendElement(lstStyle.deepCopy())
+                        }
+                        for p in paragraphs[startIdx..<endIdx] {
+                            sliceBody.appendElement(p.deepCopy())
+                        }
+                        let colX = f.0 + lIns + col * (colW + spcCol)
+                        colSVG += renderText(sliceBody, box: (colX, f.1, colW, f.3), inheriting: defaults,
+                                             fontReference: fontReference, respectInsets: respectInsets,
+                                             insets: insets, verticalAnchor: verticalAnchor,
+                                             context: context, owner: owner)
+                    }
+                    return colSVG
+                }
+            }
+        }
         var inherited = defaults.map { $0.name == "rostrum:inheritedStyles" ? $0.childElements : [$0] } ?? []
         if let reference = fontReference {
             let properties = XML.Element("a:defRPr")
@@ -627,6 +766,25 @@ struct SVGRenderer {
             && layout.lines.contains { !$0.spans.isEmpty }
             && layout.lines.allSatisfy { $0.spans.allSatisfy { !$0.run.usesStandardLigatures } }
         let ligatureStyle = " style=\"font-feature-settings: 'liga' 0\""
+        var pictureBulletsSVG = ""
+        let paragraphs = txBody.children(named: "a:p")
+        if paragraphs.contains(where: { $0.firstChild(named: "a:pPr")?.firstChild(named: "a:buBlip") != nil }) {
+            let resolvedOwner = owner ?? slidePart
+            for (pIndex, p) in paragraphs.enumerated() where pIndex < layout.lines.count {
+                guard let buBlip = p.firstChild(named: "a:pPr")?.firstChild(named: "a:buBlip")?.firstChild(named: "a:blip"),
+                      let resource = SVGEmbeddedImage.resolve(in: buBlip, owner: resolvedOwner, package: package, resources: diagnostics.images),
+                      resource.supported,
+                      let url = diagnostics.images.url(for: resource) else { continue }
+                let line = layout.lines[pIndex]
+                let firstSpan = line.spans.first
+                let fontSize = firstSpan?.run.fontSize ?? 18.0
+                let sizeEMU = max(12700, Int((fontSize * 0.75 * Double(emuPerPoint)).rounded()))
+                let spanX = firstSpan?.x ?? 0
+                let bx = f.0 + max(0, Int((spanX * Double(emuPerPoint)).rounded()) - Int(Double(sizeEMU) * 1.35))
+                let by = Int((Double(f.1) + line.baseline * Double(emuPerPoint)).rounded()) - Int(Double(sizeEMU) * 0.85)
+                pictureBulletsSVG += "<image data-rostrum-bullet=\"blip\" x=\"\(bx)\" y=\"\(by)\" width=\"\(sizeEMU)\" height=\"\(sizeEMU)\" href=\"\(url)\"/>"
+            }
+        }
         let text = layout.lines.map { line in
             let lineDisablesLigatures = !blockDisablesLigatures && !line.spans.isEmpty
                 && line.spans.allSatisfy { !$0.run.usesStandardLigatures }
@@ -645,10 +803,41 @@ struct SVGRenderer {
                 }
                 if !span.followsPreviousRun { usesViewerAdvances = false }
                 result += "<tspan"
+                var markOffsetsApplied = false
+                if !usesViewerAdvances, let previewFace,
+                   run.text.unicodeScalars.contains(where: { $0.properties.isGraphemeExtend }),
+                   let metrics = fonts.metrics(for: previewFace) {
+                    let shaped = TextShaper(metrics).shape(
+                        run.text,
+                        pointSize: run.measurementPointSize,
+                        kerning: run.usesKerning,
+                        standardLigatures: run.usesStandardLigatures
+                    )
+                    if shaped.isSupported,
+                       shaped.glyphs.count == run.text.unicodeScalars.count,
+                       shaped.glyphs.contains(where: { $0.xOffset != 0 || $0.yOffset != 0 }) {
+                        var xs: [String] = []
+                        var dys: [String] = []
+                        var pen = span.x
+                        var prevY = 0.0
+                        for g in shaped.glyphs {
+                            xs.append(decimal(pen + g.xOffset))
+                            let curY = -g.yOffset
+                            dys.append(decimal(curY - prevY))
+                            prevY = curY
+                            pen += g.advance
+                        }
+                        result += " x=\"\(xs.joined(separator: " "))\""
+                        if shaped.glyphs.contains(where: { $0.yOffset != 0 }) {
+                            result += " dy=\"\(dys.joined(separator: " "))\""
+                        }
+                        markOffsetsApplied = true
+                    }
+                }
                 // Once a run uses an unregistered viewer font, let adjacent
                 // runs follow its actual advance. An estimated absolute x can
                 // overlap the preceding glyphs. Tabs and bullets reset flow.
-                if !usesViewerAdvances {
+                if !usesViewerAdvances && !markOffsetsApplied {
                     let positions = span.scalarPositions.map { $0.map(decimal).joined(separator: " ") } ?? decimal(span.x)
                     result += " x=\"\(positions)\""
                 }
@@ -656,13 +845,14 @@ struct SVGRenderer {
                 // An estimated width is useful for wrapping, but must not
                 // squeeze the viewer's real glyphs into that estimate.
                 let measured = previewFace != nil
-                if measured, run.nativeSizing == nil, span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
+                if measured, !markOffsetsApplied, run.nativeSizing == nil, span.width > 0 { result += " textLength=\"\(decimal(span.width))\" lengthAdjust=\"spacingAndGlyphs\"" }
                 usesViewerAdvances = usesViewerAdvances || !measured
                 result += ">" + escape(run.text) + "</tspan>"
             }
             return result + "</text>"
         }.joined()
-        return blockDisablesLigatures ? "<g" + ligatureStyle + ">" + text + "</g>" : text
+        let fullText = blockDisablesLigatures ? "<g" + ligatureStyle + ">" + text + "</g>" : text
+        return pictureBulletsSVG + fullText
     }
 
     // MARK: - Text emission
@@ -833,17 +1023,17 @@ struct SVGRenderer {
         guard let spPr = pic.firstChild(named: "p:spPr"), let blip = pic.firstChild(named: "p:blipFill") else { return "" }
         diagnoseReferencedEffects(of: pic, properties: spPr)
         let f = frame(of: spPr)
-        guard let fill = imagePattern(blip, ownedBy: owner, box: f, defs: &defs) else {
+        let shapeRotation = ShapeTransform.rotation(of: pic).truncatingRemainder(dividingBy: 360)
+        guard let fill = imagePattern(blip, ownedBy: owner, box: f, defs: &defs, shapeRotation: shapeRotation) else {
             problems.record("Preview could not resolve a picture or its crop bounds."); return ""
         }
         let geom = spPr.firstChild(named: "a:prstGeom")
         return SVGPresetGeometry.render(geom?[attribute: "prst"] ?? "rect", adjustments: geom?.firstChild(named: "a:avLst"), frame: f, fill: fill, stroke: strokeAttrs(spPr))
     }
 
-    /// Read supported embedded raster bytes without recoding. Unsupported
-    /// formats remain preserved in the package, but are not mislabeled PNGs.
-    private func imageResource(rId: String, ownedBy owner: Part) -> (url: String, nativeSize: (width: Double, height: Double))? {
-        guard let resource = diagnostics.images.resolve(rId, owner: owner, package: package),
+    /// Read supported embedded raster or self-contained SVG bytes without recoding.
+    private func imageResource(in blip: XML.Element, ownedBy owner: Part) -> (url: String, nativeSize: (width: Double, height: Double))? {
+        guard let resource = SVGEmbeddedImage.resolve(in: blip, owner: owner, package: package, resources: diagnostics.images),
               let size = resource.nativeSize, let url = diagnostics.images.url(for: resource) else { return nil }
         return (url, size)
     }
@@ -852,12 +1042,28 @@ struct SVGRenderer {
     /// the image's physical native size, percentage scale, alignment, offsets
     /// and optional alternating mirror tiles. SVG preserves intrinsic alpha.
     private func imagePattern(_ blip: XML.Element, ownedBy owner: Part,
-                              box frame: (Int, Int, Int, Int), defs: inout SVGDefinitions) -> String? {
-        guard let node = blip.firstChild(named: "a:blip"), let rId = SVGEmbeddedImage.reference(in: node),
-              let resource = imageResource(rId: rId, ownedBy: owner), frame.2 > 0, frame.3 > 0 else { return nil }
+                              box frame: (Int, Int, Int, Int), defs: inout SVGDefinitions,
+                              shapeRotation: Double = 0) -> String? {
+        guard let node = blip.firstChild(named: "a:blip"),
+              let resource = imageResource(in: node, ownedBy: owner), frame.2 > 0, frame.3 > 0 else { return nil }
         // Definitions only grow; byte count gives unique IDs without rescanning
         // all preceding base64 image data for extended grapheme clusters.
         let id = defs.nextID("image")
+        let blipEffect = SVGPaint.blipFilterSVG(id: "\(id)Filter", blip: node, theme: theme)
+        var filterAttr = ""
+        if let filterDef = blipEffect.filterDef {
+            defs += filterDef
+            filterAttr = " filter=\"url(#\(id)Filter)\""
+        }
+        if let opacity = blipEffect.opacity {
+            filterAttr += " opacity=\"\(SVGNumber.decimal(opacity))\""
+        }
+        var patternTransformAttr = ""
+        if (blip[attribute: "rotWithShape"] == "0" || blip[attribute: "rotWithShape"] == "false") && shapeRotation != 0 {
+            let cx = Double(frame.0) + Double(frame.2) / 2
+            let cy = Double(frame.1) + Double(frame.3) / 2
+            patternTransformAttr = " patternTransform=\"rotate(\(SVGNumber.decimal(-shapeRotation)) \(cx) \(cy))\""
+        }
         if let tile = blip.firstChild(named: "a:tile") {
             let crop = PictureCrop.read(blip.firstChild(named: "a:srcRect"))
             guard crop.valid else { return nil }
@@ -876,8 +1082,8 @@ struct SVGRenderer {
             let imageWidth = width / (1 - crop.left - crop.right), imageHeight = height / (1 - crop.top - crop.bottom)
             let clipID = "\(id)Clip"
             defs += "<clipPath id=\"\(clipID)\"><rect width=\"\(width)\" height=\"\(height)\"/></clipPath>"
-            let image = "<g clip-path=\"url(#\(clipID))\"><image x=\"\(-crop.left * imageWidth)\" y=\"\(-crop.top * imageHeight)\" width=\"\(imageWidth)\" height=\"\(imageHeight)\" preserveAspectRatio=\"none\" href=\"\(resource.url)\"/></g>"
-            defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(x)\" y=\"\(y)\" width=\"\(width * (mirrorX ? 2 : 1))\" height=\"\(height * (mirrorY ? 2 : 1))\">\(image)"
+            let image = "<g clip-path=\"url(#\(clipID))\"><image x=\"\(-crop.left * imageWidth)\" y=\"\(-crop.top * imageHeight)\" width=\"\(imageWidth)\" height=\"\(imageHeight)\" preserveAspectRatio=\"none\"\(filterAttr) href=\"\(resource.url)\"/></g>"
+            defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(x)\" y=\"\(y)\" width=\"\(width * (mirrorX ? 2 : 1))\" height=\"\(height * (mirrorY ? 2 : 1))\"\(patternTransformAttr)>\(image)"
             if mirrorX { defs += "<g transform=\"translate(\(2 * width) 0) scale(-1 1)\">\(image)</g>" }
             if mirrorY { defs += "<g transform=\"translate(0 \(2 * height)) scale(1 -1)\">\(image)</g>" }
             if mirrorX && mirrorY { defs += "<g transform=\"translate(\(2 * width) \(2 * height)) scale(-1 -1)\">\(image)</g>" }
@@ -886,8 +1092,8 @@ struct SVGRenderer {
             guard let mapping = ImagePlacement(fill: blip, frame: frame) else { return nil }
             let clipID = "\(id)Clip"
             defs += "<clipPath id=\"\(clipID)\"><rect x=\"\(mapping.clip.x - Double(frame.0))\" y=\"\(mapping.clip.y - Double(frame.1))\" width=\"\(mapping.clip.width)\" height=\"\(mapping.clip.height)\"/></clipPath>"
-            defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(frame.0)\" y=\"\(frame.1)\" width=\"\(frame.2)\" height=\"\(frame.3)\">"
-                + "<g clip-path=\"url(#\(clipID))\"><image x=\"\(mapping.image.x - Double(frame.0))\" y=\"\(mapping.image.y - Double(frame.1))\" width=\"\(mapping.image.width)\" height=\"\(mapping.image.height)\" preserveAspectRatio=\"none\" href=\"\(resource.url)\"/></g></pattern>"
+            defs += "<pattern id=\"\(id)\" patternUnits=\"userSpaceOnUse\" x=\"\(frame.0)\" y=\"\(frame.1)\" width=\"\(frame.2)\" height=\"\(frame.3)\"\(patternTransformAttr)>"
+                + "<g clip-path=\"url(#\(clipID))\"><image x=\"\(mapping.image.x - Double(frame.0))\" y=\"\(mapping.image.y - Double(frame.1))\" width=\"\(mapping.image.width)\" height=\"\(mapping.image.height)\" preserveAspectRatio=\"none\"\(filterAttr) href=\"\(resource.url)\"/></g></pattern>"
         }
         return "url(#\(id))"
     }
@@ -911,6 +1117,9 @@ struct SVGRenderer {
         if uri.hasSuffix("/chart"), let plot = renderChart(gf, ownedBy: owner, x: x, y: y, w: w, h: h) {
             return plot
         }
+        if uri == ExtendedChart.namespace, let plot = renderExtendedChart(gf, ownedBy: owner, x: x, y: y, w: w, h: h) {
+            return plot
+        }
         if uri == GraphicDataURI.diagram,
            let cached = renderCachedDiagram(gf, ownedBy: owner, x: x, y: y, defs: &defs, problems: &problems) {
             return cached
@@ -919,7 +1128,7 @@ struct SVGRenderer {
         // here — keeps the labeled placeholder. Named rather than "[object]"
         // so a thumbnail says which thing it could not draw.
         let label: String
-        if uri.hasSuffix("/chart") { label = "[chart]" }
+        if uri.hasSuffix("/chart") || uri == ExtendedChart.namespace { label = "[chart]" }
         else if uri == GraphicDataURI.diagram { label = "[SmartArt]" }
         else if uri == GraphicDataURI.ole { label = "[embedded object]" }
         else { label = "[object]" }
@@ -948,17 +1157,26 @@ struct SVGRenderer {
               relation.type.hasSuffix("/diagramDrawing"),
               let drawing = try? package.part(at: PackURI.resolve(target: relation.target, relativeTo: owner.uri.baseURI)),
               let tree = try? drawing.dom().firstChild(named: "dsp:spTree") else { return nil }
-        // Nontrivial cached root mappings need their own coordinate conversion.
+        var groupTransform = "translate(\(x) \(y))"
         if let transform = tree.firstChild(named: "dsp:grpSpPr")?.firstChild(named: "a:xfrm"),
            transform.childElements.contains(where: { $0.attributes.contains { Double($0.value) != 0 } }) {
-            return nil
+            if let outer = ShapeTransform.rect(transform),
+               let child = ShapeTransform.childSpace(transform),
+               outer.width.rawValue > 0, outer.height.rawValue > 0,
+               child.width.rawValue > 0, child.height.rawValue > 0 {
+                let sx = Double(outer.width.rawValue) / Double(child.width.rawValue)
+                let sy = Double(outer.height.rawValue) / Double(child.height.rawValue)
+                groupTransform = "translate(\(x + outer.x.rawValue) \(y + outer.y.rawValue)) scale(\(sx) \(sy)) translate(\(-child.x.rawValue) \(-child.y.rawValue))"
+            } else {
+                return nil
+            }
         }
         // Copies keep all unknown diagram XML byte-faithful in the package.
         func normalize(_ node: XML.Element, depth: Int = 0) -> XML.Element? {
             guard depth < 64 else { return nil }
             let copy = XML.Element(node.name, attributes: node.attributes)
-            if ["dsp:sp", "dsp:grpSp", "dsp:spPr", "dsp:grpSpPr", "dsp:nvSpPr", "dsp:nvGrpSpPr",
-                "dsp:cNvPr", "dsp:cNvSpPr", "dsp:cNvGrpSpPr", "dsp:style", "dsp:txBody"].contains(node.name) {
+            if ["dsp:sp", "dsp:grpSp", "dsp:cxnSp", "dsp:spPr", "dsp:grpSpPr", "dsp:nvSpPr", "dsp:nvGrpSpPr", "dsp:nvCxnSpPr",
+                "dsp:cNvPr", "dsp:cNvSpPr", "dsp:cNvGrpSpPr", "dsp:cNvCxnSpPr", "dsp:style", "dsp:txBody"].contains(node.name) {
                 copy.name = "p:" + node.name.dropFirst(4)
             }
             for child in node.children {
@@ -969,17 +1187,17 @@ struct SVGRenderer {
             }
             return copy
         }
-        guard tree.childElements.contains(where: { ["dsp:sp", "dsp:grpSp"].contains($0.name) }) else { return nil }
+        guard tree.childElements.contains(where: { ["dsp:sp", "dsp:grpSp", "dsp:cxnSp"].contains($0.name) }) else { return nil }
         var output = ""
         let location = diagnostics.location
         defer { diagnostics.location = location }
         for node in tree.childElements where !["dsp:nvGrpSpPr", "dsp:grpSpPr", "dsp:extLst"].contains(node.name) {
-            guard let shape = normalize(node), ["p:sp", "p:grpSp"].contains(shape.name) else { return nil }
+            guard let shape = normalize(node), ["p:sp", "p:grpSp", "p:cxnSp"].contains(shape.name) else { return nil }
             diagnostics.inspect(shape, owner: drawing, slideIndex: slideNumber - 1,
                 path: "/dsp:drawing/dsp:spTree/" + node.name, package: package)
             output += renderNode(shape, ownedBy: drawing, defs: &defs, problems: &problems)
         }
-        return "<g data-rostrum-diagram=\"cached\" transform=\"translate(\(x) \(y))\">\(output)</g>"
+        return "<g data-rostrum-diagram=\"cached\" transform=\"\(groupTransform)\">\(output)</g>"
     }
 
     // MARK: - Charts
@@ -1059,6 +1277,7 @@ struct SVGRenderer {
     private struct ChartLabel {
         let hidden: Bool
         let showValue: Bool, showCategory: Bool, showSeries: Bool, showPercent: Bool, showBubbleSize: Bool
+        let customText: String?
         let position: String, separator: String
         let format: ChartNumberFormat
         let percentFormat: ChartNumberFormat
@@ -1067,6 +1286,30 @@ struct SVGRenderer {
     private struct ChartLabels {
         let standard: ChartLabel
         let points: [Int: ChartLabel]
+    }
+
+    private static func extractChartTxText(_ tx: XML.Element?) -> String? {
+        guard let tx else { return nil }
+        if let rich = tx.firstChild(named: "c:rich") {
+            let text = rich.children(named: "a:p").map { p in
+                p.childElements.compactMap { child -> String? in
+                    switch child.name {
+                    case "a:r", "a:fld": return child.firstChild(named: "a:t")?.textContent
+                    case "a:br": return "\n"
+                    default: return nil
+                    }
+                }.joined()
+            }.joined(separator: "\n")
+            if !text.isEmpty { return text }
+        }
+        if let pts = tx.firstChild(named: "c:strRef")?.firstChild(named: "c:strCache")?.children(named: "c:pt") {
+            let text = pts.compactMap { $0.firstChild(named: "c:v")?.textContent }.joined(separator: " ")
+            if !text.isEmpty { return text }
+        }
+        if let v = tx.firstChild(named: "c:v")?.textContent, !v.isEmpty {
+            return v
+        }
+        return nil
     }
 
     private func chartLabels(plot: XML.Element?, series: [XML.Element], chartText: XML.Element?,
@@ -1084,19 +1327,24 @@ struct SVGRenderer {
             let percentCode = explicitCode ?? "0%"
             let percentFormat = formats[percentCode] ?? chartNumberFormat(percentCode)
             formats[percentCode] = percentFormat
-            let defaultPos = ["lineChart", "scatterChart", "bubbleChart", "radarChart"].contains(plotKind) ? "t" : "outEnd"
+            let defaultPos = ["lineChart", "line3DChart", "scatterChart", "bubbleChart", "radarChart"].contains(plotKind) ? "t" : "outEnd"
             let position = property("c:dLblPos")?[attribute: "val"] ?? defaultPos
+            let customTxNode = property("c:tx")
+            let customText = Self.extractChartTxText(customTxNode)
             if !["outEnd", "inEnd", "inBase", "ctr", "bestFit", "t", "b", "l", "r"].contains(position)
-                || (flag("c:showPercent") && !["pieChart", "doughnutChart"].contains(plotKind)) || property("c:tx") != nil {
+                || (flag("c:showPercent") && !["pieChart", "pie3DChart", "doughnutChart", "ofPieChart"].contains(plotKind))
+                || (customTxNode != nil && customText == nil) {
                 diagnostics.record(.chartApproximation, .approximation,
                     "Custom chart label text or unsupported label properties are approximated.")
             }
             return ChartLabel(hidden: flag("c:delete"), showValue: flag("c:showVal"),
                 showCategory: flag("c:showCatName"), showSeries: flag("c:showSerName"),
                 showPercent: flag("c:showPercent"), showBubbleSize: flag("c:showBubbleSize"),
+                customText: customText,
                 position: position, separator: property("c:separator")?.textContent ?? ", ", format: format,
                 percentFormat: percentFormat,
-                style: chartTextStyle([chartText] + nodes.map { $0.firstChild(named: "c:txPr") }, color: "#666666"))
+                style: chartTextStyle([chartText] + nodes.map { $0.firstChild(named: "c:txPr") }
+                    + [customTxNode?.firstChild(named: "c:rich")], color: "#666666"))
         }
         return series.enumerated().map { s, series in
             let owningPlot = s < seriesPlots.count ? seriesPlots[s] : plot
@@ -1266,7 +1514,7 @@ struct SVGRenderer {
                                     xySeries: [Chart.XYSeries] = [], kind: String, measure: ChartTextMeasurer,
                                     bounds: ChartTextRect) -> [[Int: ChartPreparedLabel]] {
         var count = 0
-        let pie = ["pieChart", "doughnutChart"].contains(kind)
+        let pie = ["pieChart", "pie3DChart", "doughnutChart", "ofPieChart"].contains(kind)
         let isXY = ["scatterChart", "bubbleChart"].contains(kind)
         return series.enumerated().map { s, entry in
             var result: [Int: ChartPreparedLabel] = [:]
@@ -1279,29 +1527,35 @@ struct SVGRenderer {
                 guard let value = Self.finite(entry, index), !pie || value > 0 else { continue }
                 let spec = specs[s].points[index] ?? specs[s].standard
                 guard !spec.hidden else { continue }
-                var fields: [String] = []
-                if spec.showSeries { fields.append(entry.name) }
-                if spec.showCategory {
-                    if isXY, let xy {
-                        if index < xy.points.count, let x = xy.points[index].x, x.isFinite {
-                            fields.append(spec.format.string(x))
-                        } else if index < xy.xLabels.count, !xy.xLabels[index].isEmpty {
-                            fields.append(xy.xLabels[index])
+                let labelString: String
+                if let customText = spec.customText, !customText.isEmpty {
+                    labelString = customText
+                } else {
+                    var fields: [String] = []
+                    if spec.showSeries { fields.append(entry.name) }
+                    if spec.showCategory {
+                        if isXY, let xy {
+                            if index < xy.points.count, let x = xy.points[index].x, x.isFinite {
+                                fields.append(spec.format.string(x))
+                            } else if index < xy.xLabels.count, !xy.xLabels[index].isEmpty {
+                                fields.append(xy.xLabels[index])
+                            }
+                        } else if categories.indices.contains(index) {
+                            fields.append(categories[index])
                         }
-                    } else if categories.indices.contains(index) {
-                        fields.append(categories[index])
                     }
+                    if spec.showValue { fields.append(spec.format.string(value)) }
+                    if spec.showBubbleSize, kind == "bubbleChart", let xy, index < xy.points.count,
+                       let size = xy.points[index].size, size.isFinite {
+                        fields.append(spec.format.string(size))
+                    }
+                    if spec.showPercent && pie { fields.append(spec.percentFormat.string(total > 0 ? value / largest / total : 0)) }
+                    guard !fields.isEmpty else { continue }
+                    labelString = fields.joined(separator: spec.separator)
                 }
-                if spec.showValue { fields.append(spec.format.string(value)) }
-                if spec.showBubbleSize, kind == "bubbleChart", let xy, index < xy.points.count,
-                   let size = xy.points[index].size, size.isFinite {
-                    fields.append(spec.format.string(size))
-                }
-                if spec.showPercent && pie { fields.append(spec.percentFormat.string(total > 0 ? value / largest / total : 0)) }
-                guard !fields.isEmpty else { continue }
                 guard count < 512 else { chartOmission("data labels above the 512-label preview bound"); continue }
                 count += 1
-                guard let text = prepareChartText(fields.joined(separator: spec.separator), style: spec.style,
+                guard let text = prepareChartText(labelString, style: spec.style,
                     measure: measure, width: bounds.width * 0.35, lines: 3), text.block.height <= bounds.height * 0.35 else {
                     chartOmission("data labels"); continue
                 }
@@ -1462,6 +1716,212 @@ struct SVGRenderer {
         }
     }
 
+    /// Render `c:trendline` (linear OLS regression) and `c:errBars` whiskers for a series.
+    private func renderSeriesOverlays(_ seriesElement: XML.Element, points: [(x: Double, y: Double, val: Double)],
+                                      scale: ValueScale, area: ChartTextRect, horizontal: Bool,
+                                      defaultColor: String) -> String {
+        var svg = ""
+        if let errBars = seriesElement.firstChild(named: "c:errBars"), !points.isEmpty {
+            let errValType = errBars.firstChild(named: "c:errValType")?[attribute: "val"] ?? "fixedVal"
+            let rawVal = errBars.firstChild(named: "c:val")?[attribute: "val"].flatMap(Double.init) ?? 5.0
+            let ln = errBars.firstChild(named: "c:spPr")?.firstChild(named: "a:ln")
+            let stroke = colorHex(in: ln?.firstChild(named: "a:solidFill")) ?? "#595959"
+            let width = max(6350, ln?.coordinate("w") ?? 12700)
+            let capHalf = Double(3 * emuPerPoint)
+            let noEndCap = ["1", "true"].contains(errBars.firstChild(named: "c:noEndCap")?[attribute: "val"] ?? "0")
+            for pt in points {
+                let delta: Double
+                switch errValType {
+                case "percentage": delta = abs(pt.val) * (rawVal / 100.0)
+                default: delta = abs(rawVal)
+                }
+                guard delta > 0, delta.isFinite else { continue }
+                if horizontal {
+                    let xLo = area.x + area.width * max(0, min(1, scale.fraction(pt.val - delta)))
+                    let xHi = area.x + area.width * max(0, min(1, scale.fraction(pt.val + delta)))
+                    svg += "<line data-rostrum-chart-role=\"error-bar\" x1=\"\(coord(xLo))\" y1=\"\(coord(pt.y))\" x2=\"\(coord(xHi))\" y2=\"\(coord(pt.y))\" stroke=\"\(stroke)\" stroke-width=\"\(width)\"/>"
+                    if !noEndCap {
+                        svg += "<line x1=\"\(coord(xLo))\" y1=\"\(coord(pt.y - capHalf))\" x2=\"\(coord(xLo))\" y2=\"\(coord(pt.y + capHalf))\" stroke=\"\(stroke)\" stroke-width=\"\(width)\"/>"
+                        svg += "<line x1=\"\(coord(xHi))\" y1=\"\(coord(pt.y - capHalf))\" x2=\"\(coord(xHi))\" y2=\"\(coord(pt.y + capHalf))\" stroke=\"\(stroke)\" stroke-width=\"\(width)\"/>"
+                    }
+                } else {
+                    let yHi = area.y + area.height * (1 - max(0, min(1, scale.fraction(pt.val + delta))))
+                    let yLo = area.y + area.height * (1 - max(0, min(1, scale.fraction(pt.val - delta))))
+                    svg += "<line data-rostrum-chart-role=\"error-bar\" x1=\"\(coord(pt.x))\" y1=\"\(coord(yHi))\" x2=\"\(coord(pt.x))\" y2=\"\(coord(yLo))\" stroke=\"\(stroke)\" stroke-width=\"\(width)\"/>"
+                    if !noEndCap {
+                        svg += "<line x1=\"\(coord(pt.x - capHalf))\" y1=\"\(coord(yHi))\" x2=\"\(coord(pt.x + capHalf))\" y2=\"\(coord(yHi))\" stroke=\"\(stroke)\" stroke-width=\"\(width)\"/>"
+                        svg += "<line x1=\"\(coord(pt.x - capHalf))\" y1=\"\(coord(yLo))\" x2=\"\(coord(pt.x + capHalf))\" y2=\"\(coord(yLo))\" stroke=\"\(stroke)\" stroke-width=\"\(width)\"/>"
+                    }
+                }
+            }
+        }
+        for trendline in seriesElement.children(named: "c:trendline") where points.count >= 2 {
+            let n = Double(points.count)
+            let sumX = points.reduce(0.0) { $0 + $1.x }
+            let sumY = points.reduce(0.0) { $0 + $1.y }
+            let meanX = sumX / n, meanY = sumY / n
+            var num = 0.0, den = 0.0
+            for pt in points {
+                num += (pt.x - meanX) * (pt.y - meanY)
+                den += (pt.x - meanX) * (pt.x - meanX)
+            }
+            guard den > 1e-9 else { continue }
+            let slope = num / den
+            let intercept = meanY - slope * meanX
+            let x1 = points.first!.x, x2 = points.last!.x
+            let y1 = slope * x1 + intercept, y2 = slope * x2 + intercept
+            let ln = trendline.firstChild(named: "c:spPr")?.firstChild(named: "a:ln")
+            let stroke = colorHex(in: ln?.firstChild(named: "a:solidFill")) ?? defaultColor
+            let width = max(6350, ln?.coordinate("w") ?? 19050)
+            let dash = dashAttributes(ln, width: width).isEmpty
+                ? " stroke-dasharray=\"\(width * 3) \(width * 2)\""
+                : dashAttributes(ln, width: width)
+            svg += "<line data-rostrum-chart-role=\"trendline\" x1=\"\(coord(x1))\" y1=\"\(coord(y1))\" x2=\"\(coord(x2))\" y2=\"\(coord(y2))\" stroke=\"\(stroke)\" stroke-width=\"\(width)\"\(dash)/>"
+        }
+        return svg
+    }
+
+    private func renderExtendedChart(_ gf: XML.Element, ownedBy owner: Part,
+                                     x: Int, y: Int, w: Int, h: Int) -> String? {
+        guard w > 0, h > 0 else { return nil }
+        let frame = GraphicFrame(element: gf, part: owner, package: package)
+        guard let extChart = frame.extendedChart,
+              let firstSeries = extChart.series.first,
+              !firstSeries.values.isEmpty else { return nil }
+        let values = firstSeries.values.prefix(512).map { $0 ?? 0 }
+        let categories = extChart.categories
+        let count = values.count
+        guard count > 0 else { return nil }
+        let measure = ChartTextMeasurer(fonts: fonts) { code, impact, message in
+            diagnostics.record(code, impact, message)
+        }
+        let gap = 4.0 * Double(emuPerPoint)
+        let margin = min(max(6.0 * Double(emuPerPoint), Double(12 * emuPerPoint)), Double(min(w, h)) * 0.05)
+        var content = ChartTextRect(x: Double(x) + margin, y: Double(y) + margin,
+                                    width: Double(w) - 2 * margin, height: Double(h) - 2 * margin)
+        var out = ""
+        if let title = extChart.title, !title.isEmpty {
+            let style = chartTextStyle([], color: "#666666", size: 13 * emuPerPoint)
+            if let text = prepareChartText(title, style: style, measure: measure, width: content.width),
+               text.block.height < content.height * 0.3 {
+                out += chartTextBlock(text, in: ChartTextRect(x: content.x, y: content.y,
+                    width: content.width, height: text.block.height), anchor: "middle", role: "title")
+                content.y += text.block.height + gap * 2
+                content.height -= text.block.height + gap * 2
+            }
+        }
+        let catStyle = chartTextStyle([], color: "#666666", size: 9 * emuPerPoint)
+        switch extChart.kind {
+        case .waterfall:
+            let subtotals = Set(extChart.subtotalIndices)
+            var running = 0.0
+            var intervals: [(start: Double, end: Double, isSubtotal: Bool, val: Double)] = []
+            var lo = 0.0, hi = 0.0
+            for (idx, v) in values.enumerated() {
+                if subtotals.contains(idx) {
+                    let totalVal = v != 0 ? v : running
+                    running = totalVal
+                    intervals.append((0, totalVal, true, totalVal))
+                    lo = min(lo, 0, totalVal); hi = max(hi, 0, totalVal)
+                } else {
+                    let next = running + v
+                    intervals.append((running, next, false, v))
+                    lo = min(lo, running, next); hi = max(hi, running, next)
+                    running = next
+                }
+            }
+            let range = max(1e-9, hi - lo)
+            let plotH = max(Double(emuPerPoint), content.height - Double(18 * emuPerPoint))
+            let slot = content.width / Double(count)
+            let barW = max(Double(emuPerPoint), slot * 0.68)
+            for (idx, item) in intervals.enumerated() {
+                let bx = content.x + Double(idx) * slot + (slot - barW) / 2
+                let f1 = (item.start - lo) / range, f2 = (item.end - lo) / range
+                let yTop = content.y + plotH * (1 - max(f1, f2))
+                let yBot = content.y + plotH * (1 - min(f1, f2))
+                let fill = item.isSubtotal ? seriesColor(2) : (item.val >= 0 ? seriesColor(0) : seriesColor(1))
+                out += box(coord(bx), coord(yTop), coord(barW), max(12700, coord(yBot - yTop)), fill: fill)
+                if idx + 1 < intervals.count {
+                    let nextBx = content.x + Double(idx + 1) * slot + (slot - barW) / 2
+                    let connY = content.y + plotH * (1 - f2)
+                    out += "<line x1=\"\(coord(bx + barW))\" y1=\"\(coord(connY))\" x2=\"\(coord(nextBx))\" y2=\"\(coord(connY))\" stroke=\"#A6A6A6\" stroke-width=\"6350\" stroke-dasharray=\"19050 12700\"/>"
+                }
+                if idx < categories.count, let text = prepareChartText(categories[idx], style: catStyle, measure: measure, width: slot, lines: 1) {
+                    let rect = ChartTextRect(x: content.x + Double(idx) * slot, y: content.y + plotH + gap, width: slot, height: text.block.height)
+                    out += chartTextBlock(text, in: rect, anchor: "middle", role: "category")
+                }
+            }
+        case .funnel:
+            let maxVal = max(1e-9, values.map(abs).max() ?? 1)
+            let rowH = content.height / Double(count)
+            let barH = max(Double(emuPerPoint), rowH * 0.78)
+            for (idx, v) in values.enumerated() {
+                let frac = max(0.05, min(1.0, abs(v) / maxVal))
+                let barW = content.width * frac
+                let bx = content.x + (content.width - barW) / 2
+                let by = content.y + Double(idx) * rowH + (rowH - barH) / 2
+                out += box(coord(bx), coord(by), coord(barW), coord(barH), fill: seriesColor(idx))
+                if idx < categories.count, let text = prepareChartText(categories[idx], style: chartTextStyle([], color: "#FFFFFF", size: 9 * emuPerPoint), measure: measure, width: barW, lines: 1) {
+                    let rect = ChartTextRect(x: bx, y: by + (barH - text.block.height) / 2, width: barW, height: text.block.height)
+                    out += chartTextBlock(text, in: rect, anchor: "middle", role: "data-label")
+                }
+            }
+        case .treemap:
+            let positives = values.enumerated().map { ($0.offset, max(0.001, abs($0.element))) }
+            let total = max(1e-9, positives.reduce(0.0) { $0 + $1.1 })
+            var remX = content.x, remY = content.y, remW = content.width, remH = content.height
+            var remainingTotal = total
+            for (i, (idx, v)) in positives.enumerated() {
+                let share = v / max(1e-9, remainingTotal)
+                let rectX = remX, rectY = remY
+                let rectW: Double, rectH: Double
+                if i == positives.count - 1 {
+                    rectW = remW; rectH = remH
+                } else if remW >= remH {
+                    rectW = remW * share; rectH = remH
+                    remX += rectW; remW -= rectW
+                } else {
+                    rectW = remW; rectH = remH * share
+                    remY += rectH; remH -= rectH
+                }
+                remainingTotal -= v
+                out += box(coord(rectX), coord(rectY), max(12700, coord(rectW)), max(12700, coord(rectH)),
+                           fill: seriesColor(idx), stroke: " stroke=\"#FFFFFF\" stroke-width=\"12700\"")
+                if idx < categories.count, let text = prepareChartText(categories[idx], style: chartTextStyle([], color: "#FFFFFF", size: 9 * emuPerPoint), measure: measure, width: max(1, rectW - gap * 2), lines: 1) {
+                    let rect = ChartTextRect(x: rectX + gap, y: rectY + gap, width: max(1, rectW - gap * 2), height: text.block.height)
+                    out += chartTextBlock(text, in: rect, anchor: "start", role: "data-label")
+                }
+            }
+        case .sunburst:
+            let radius = max(Double(emuPerPoint), min(content.width, content.height) * 0.45)
+            let cx = content.x + content.width / 2, cy = content.y + content.height / 2
+            let seriesEntry = ChartData.Series(name: firstSeries.name, values: values.map { Optional($0) })
+            let doughnutPlot = XML.Element("c:doughnutChart", children: [
+                .element(XML.Element("c:holeSize", attributes: [("val", "45")]))
+            ])
+            out += pieBody(seriesEntry, kind: "doughnutChart", plot: doughnutPlot, cx: cx, cy: cy, radius: radius,
+                           color: { self.seriesColor($0) }, label: { _, _, _ in })
+        default:
+            let maxVal = max(1e-9, values.map(abs).max() ?? 1)
+            let plotH = max(Double(emuPerPoint), content.height - Double(18 * emuPerPoint))
+            let slot = content.width / Double(count)
+            let barW = max(Double(emuPerPoint), slot * 0.72)
+            for (idx, v) in values.enumerated() {
+                let frac = max(0, min(1, abs(v) / maxVal))
+                let bh = max(12700.0, plotH * frac)
+                let bx = content.x + Double(idx) * slot + (slot - barW) / 2
+                let by = content.y + plotH - bh
+                out += box(coord(bx), coord(by), coord(barW), coord(bh), fill: seriesColor(0),
+                           stroke: " stroke=\"#FFFFFF\" stroke-width=\"6350\"")
+                if idx < categories.count, let text = prepareChartText(categories[idx], style: catStyle, measure: measure, width: slot, lines: 1) {
+                    let rect = ChartTextRect(x: content.x + Double(idx) * slot, y: content.y + plotH + gap, width: slot, height: text.block.height)
+                    out += chartTextBlock(text, in: rect, anchor: "middle", role: "category")
+                }
+            }
+        }
+        return "<g data-rostrum-chart=\"extended\" data-rostrum-chart-kind=\"\(extChart.kind?.rawValue ?? "unknown")\">\(out)</g>"
+    }
+
     private func renderChart(_ gf: XML.Element, ownedBy owner: Part,
                              x: Int, y: Int, w: Int, h: Int) -> String? {
         guard w > 0, h > 0,
@@ -1524,11 +1984,11 @@ struct SVGRenderer {
             let seriesKind = seriesIndex < seriesPlots.count
                 ? (seriesPlots[seriesIndex].name.split(separator: ":").last.map(String.init) ?? kind)
                 : kind
-            if ["lineChart", "scatterChart", "radarChart"].contains(seriesKind),
+            if ["lineChart", "line3DChart", "scatterChart", "radarChart", "stockChart"].contains(seriesKind),
                let fill = colorHex(in: properties?.firstChild(named: "a:ln")?.firstChild(named: "a:solidFill")) { return fill }
             if properties?.firstChild(named: "a:noFill") != nil { return "none" }
             if let fill = colorHex(in: properties?.firstChild(named: "a:solidFill")) { return fill }
-            return seriesColor(point != nil && ["pieChart", "doughnutChart"].contains(kind) ? point! : seriesIndex)
+            return seriesColor(point != nil && ["pieChart", "pie3DChart", "doughnutChart", "ofPieChart"].contains(kind) ? point! : seriesIndex)
         }
         guard !series.isEmpty else { return nil }
         let categories = chart.categories
@@ -1564,7 +2024,7 @@ struct SVGRenderer {
                 content.height -= text.block.height + gap * 2
             } else { chartOmission("the chart title") }
         }
-        let pie = ["pieChart", "doughnutChart"].contains(kind)
+        let pie = ["pieChart", "pie3DChart", "doughnutChart", "ofPieChart"].contains(kind)
         if let legendNode {
             out += chartLegend(pie ? Array(categories.prefix(catCount)) : series.map(\.name),
                 position: legendNode.firstChild(named: "c:legendPos")?[attribute: "val"] ?? "r",
@@ -1583,7 +2043,7 @@ struct SVGRenderer {
         if kind == "radarChart" {
             let plotArea = chartNode?.firstChild(named: "c:plotArea")
             let axis = plotArea?.firstChild(named: "c:valAx")
-            let categoryAxis = plotArea?.firstChild(named: "c:catAx")
+            let categoryAxis = plotArea?.firstChild(named: "c:catAx") ?? plotArea?.firstChild(named: "c:dateAx")
             let scale = ValueScale(series: series, catCount: catCount, grouping: "standard", axis: axis?.firstChild(named: "c:scaling"))
             let categoryStyle = chartTextStyle([chartText, categoryAxis?.firstChild(named: "c:txPr")], color: "#808080")
             let categoriesVisible = !["1", "true"].contains(categoryAxis?.firstChild(named: "c:delete")?[attribute: "val"] ?? "0")
@@ -1707,6 +2167,7 @@ struct SVGRenderer {
             let valAxes = plotArea?.children(named: "c:valAx") ?? []
             let xAxis = valAxes.first { ["b", "t"].contains($0.firstChild(named: "c:axPos")?[attribute: "val"] ?? "") }
                 ?? plotArea?.firstChild(named: "c:catAx")
+                ?? plotArea?.firstChild(named: "c:dateAx")
                 ?? valAxes.first
             let yAxis = valAxes.first { $0 !== xAxis && ["l", "r"].contains($0.firstChild(named: "c:axPos")?[attribute: "val"] ?? "") }
                 ?? valAxes.dropFirst().first { $0 !== xAxis }
@@ -1795,6 +2256,7 @@ struct SVGRenderer {
                 ])
                 for (s, xy) in xyEntries.enumerated() {
                     var points: [(Double, Double)] = []
+                    var overlayPts: [(x: Double, y: Double, val: Double)] = []
                     let seriesMarker = styles[s].firstChild(named: "c:marker") ?? (defaultMarkers ? fallbackMarker : nil)
                     var pointMarkers: [Int: XML.Element] = [:]
                     for point in styles[s].children(named: "c:dPt") {
@@ -1808,6 +2270,7 @@ struct SVGRenderer {
                         let px = area.x + area.width * xScale.fraction(xVal)
                         let py = area.y + area.height * (1 - yScale.fraction(yVal))
                         points.append((px, py))
+                        overlayPts.append((px, py, yVal))
                         if px >= area.x - 0.01 && px <= area.right + 0.01 && py >= area.y - 0.01 && py <= area.bottom + 0.01 {
                             decorations += chartMarker(pointMarkers[index], inherited: seriesMarker,
                                 x: px, y: py, defaultColor: color(s, index))
@@ -1824,20 +2287,25 @@ struct SVGRenderer {
                         let dash = dashAttributes(ln, width: lineWidth)
                         body += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" stroke-width=\"\(lineWidth)\"\(dash) stroke-linejoin=\"round\"/>"
                     }
+                    body += renderSeriesOverlays(styles[s], points: overlayPts, scale: yScale, area: area, horizontal: false, defaultColor: seriesCol)
                 }
             }
             out += "<svg x=\"\(area.x)\" y=\"\(area.y)\" width=\"\(area.width)\" height=\"\(area.height)\" viewBox=\"\(area.x) \(area.y) \(area.width) \(area.height)\" overflow=\"hidden\">\(body)</svg>" + decorations
             return out
         }
+        let supportedCartesianKinds: Set<String> = [
+            "barChart", "bar3DChart", "lineChart", "line3DChart",
+            "areaChart", "area3DChart", "stockChart", "surfaceChart", "surface3DChart"
+        ]
         let allPlotKinds = chart.plotTypes
-        guard !allPlotKinds.isEmpty, allPlotKinds.allSatisfy({ ["barChart", "lineChart", "areaChart"].contains($0) }) else { return nil }
+        guard !allPlotKinds.isEmpty, allPlotKinds.allSatisfy({ supportedCartesianKinds.contains($0) }) else { return nil }
         let plotArea = chartNode?.firstChild(named: "c:plotArea")
         let valAxes = plotArea?.children(named: "c:valAx") ?? []
         let axis = valAxes.first
         let secondaryAxis = chart.isCombo ? valAxes.dropFirst().first : nil
         let secondaryAxisID = secondaryAxis?.firstChild(named: "c:axId")?[attribute: "val"]
-        let categoryAxis = plotArea?.firstChild(named: "c:catAx")
-        let horizontal = !chart.isCombo && kind == "barChart" && plot?.firstChild(named: "c:barDir")?[attribute: "val"] == "bar"
+        let categoryAxis = plotArea?.firstChild(named: "c:catAx") ?? plotArea?.firstChild(named: "c:dateAx")
+        let horizontal = !chart.isCombo && ["barChart", "bar3DChart"].contains(kind) && plot?.firstChild(named: "c:barDir")?[attribute: "val"] == "bar"
 
         struct PlotEntry {
             let element: XML.Element
@@ -1853,7 +2321,7 @@ struct SVGRenderer {
             let axIDs = plotEl.children(named: "c:axId").compactMap { $0[attribute: "val"] }
             let isSec = secondaryAxisID != nil && axIDs.contains(secondaryAxisID!)
             let targetAxis = isSec ? secondaryAxis : axis
-            let grp = plotEl.firstChild(named: "c:grouping")?[attribute: "val"] ?? (pKind == "barChart" ? "clustered" : "standard")
+            let grp = plotEl.firstChild(named: "c:grouping")?[attribute: "val"] ?? (["barChart", "bar3DChart"].contains(pKind) ? "clustered" : "standard")
             let raw = ValueScale(series: indices.map { series[$0] }, catCount: catCount,
                                  grouping: grp, axis: targetAxis?.firstChild(named: "c:scaling"))
             return PlotEntry(element: plotEl, kind: pKind, seriesIndices: indices, usesSecondaryAxis: isSec, rawScale: raw)
@@ -1895,7 +2363,7 @@ struct SVGRenderer {
         let labelHeight = outside.map { $0.text.block.height }.max() ?? 0
         let hasPositive = series.contains { $0.values.prefix(catCount).contains { ($0 ?? 0) >= 0 } }
         let hasNegative = series.contains { $0.values.prefix(catCount).contains { ($0 ?? 0) < 0 } }
-        let hasLinePlot = allPlotKinds.contains("lineChart")
+        let hasLinePlot = allPlotKinds.contains { ["lineChart", "line3DChart", "stockChart"].contains($0) }
         let outsideX = horizontal && labelWidth > 0 ? labelWidth + gap : hasLinePlot && labelWidth > 0 ? labelWidth + gap : 0
         let outsideTop = !horizontal && labelHeight > 0 && hasPositive ? labelHeight + gap * 2 : 0
         let outsideBottom = !horizontal && labelHeight > 0 && (hasNegative || hasLinePlot) ? labelHeight + gap * 2 : 0
@@ -1957,26 +2425,44 @@ struct SVGRenderer {
             let plotScale = entry.rawScale.withDomain(of: axisScale)
             let groupSeries = entry.seriesIndices.map { series[$0] }
             let groupStyles = entry.seriesIndices.map { styles[$0] }
-            if entry.kind == "barChart" {
+            if ["barChart", "bar3DChart"].contains(entry.kind) {
+                var seriesPts: [[(x: Double, y: Double, val: Double)]] = Array(repeating: [], count: groupSeries.count)
                 out += barBody(groupSeries, catCount: catCount, scale: plotScale, horizontal: horizontal,
                     plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height,
                     color: { localS, pt in color(entry.seriesIndices[localS], pt) },
                     label: { localS, index, rect in
                         let globalS = entry.seriesIndices[localS]
-                        return renderBarLabel(labels[globalS][index], value: Self.finite(series[globalS], index) ?? 0,
+                        let val = Self.finite(series[globalS], index) ?? 0
+                        let px = horizontal ? (val >= 0 ? rect.x + rect.width : rect.x) : rect.x + rect.width / 2
+                        let py = horizontal ? rect.y + rect.height / 2 : (val >= 0 ? rect.y : rect.y + rect.height)
+                        seriesPts[localS].append((px, py, val))
+                        return renderBarLabel(labels[globalS][index], value: val,
                             rect: rect, horizontal: horizontal, placements: placements)
                     })
+                for (localS, serEl) in groupStyles.enumerated() {
+                    out += renderSeriesOverlays(serEl, points: seriesPts[localS], scale: plotScale, area: area,
+                                                horizontal: horizontal, defaultColor: color(entry.seriesIndices[localS], nil))
+                }
             } else {
                 var decorations = ""
-                let body = lineBody(groupSeries, catCount: catCount, scale: plotScale, filled: entry.kind == "areaChart",
+                var seriesPts: [[(x: Double, y: Double, val: Double)]] = Array(repeating: [], count: groupSeries.count)
+                var body = lineBody(groupSeries, catCount: catCount, scale: plotScale,
+                    filled: ["areaChart", "area3DChart", "surfaceChart", "surface3DChart"].contains(entry.kind),
                     plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height,
                     styles: groupStyles, color: { localS in color(entry.seriesIndices[localS], nil) },
                     decoration: { localS, index, px, py, marker in
-                        guard py >= area.y - 0.01 && py <= area.bottom + 0.01 else { return }
                         let globalS = entry.seriesIndices[localS]
+                        if let val = Self.finite(series[globalS], index) {
+                            seriesPts[localS].append((px, py, val))
+                        }
+                        guard py >= area.y - 0.01 && py <= area.bottom + 0.01 else { return }
                         decorations += marker
                         decorations += renderPointLabel(labels[globalS][index], x: px, y: py, placements: placements)
                     })
+                for (localS, serEl) in groupStyles.enumerated() {
+                    body += renderSeriesOverlays(serEl, points: seriesPts[localS], scale: plotScale, area: area,
+                                                 horizontal: false, defaultColor: color(entry.seriesIndices[localS], nil))
+                }
                 out += "<svg x=\"\(area.x)\" y=\"\(area.y)\" width=\"\(area.width)\" height=\"\(area.height)\" viewBox=\"\(area.x) \(area.y) \(area.width) \(area.height)\" overflow=\"hidden\">\(body)</svg>" + decorations
             }
         }
@@ -2582,7 +3068,7 @@ struct SVGRenderer {
         let id = defs.nextID("tg")
         let stops = GradientStops.svg(gradient, theme: theme)
         if gradient.firstChild(named: "a:path") != nil {
-            defs += "<radialGradient id=\"\(id)\">\(stops)</radialGradient>"
+            defs += "<radialGradient id=\"\(id)\"\(SVGPaint.radialGradientAttributes(gradient))>\(stops)</radialGradient>"
         } else {
             let degrees = Double(gradient.firstChild(named: "a:lin")?.boundedInt("ang", in: 0...21600000) ?? 0) / 60000
             let radians = degrees * .pi / 180
@@ -2622,8 +3108,11 @@ struct SVGRenderer {
         return copy
     }
 
-    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?, ownedBy owner: Part)
+    private func effectiveFill(_ properties: XML.Element, reference: XML.Element?, ownedBy owner: Part, groupFill: (properties: XML.Element, owner: Part)? = nil)
         -> (properties: XML.Element, owner: Part) {
+        if properties.firstChild(named: "a:grpFill") != nil, let groupFill {
+            return groupFill
+        }
         let fills = ["a:solidFill", "a:gradFill", "a:blipFill", "a:pattFill", "a:grpFill", "a:noFill"]
         guard !properties.childElements.contains(where: { fills.contains($0.name) }),
               let fill = styleEntry(reference, list: "a:fillStyleLst", backgroundList: "a:bgFillStyleLst") else { return (properties, owner) }
@@ -2652,10 +3141,18 @@ struct SVGRenderer {
 
     // MARK: - Paint / helpers
 
-    private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout SVGDefinitions, ownedBy owner: Part? = nil) -> String? {
+    private func paint(for pr: XML.Element, box f: (Int, Int, Int, Int), defs: inout SVGDefinitions, ownedBy owner: Part? = nil, shapeRotation: Double = 0) -> String? {
         if let solid = pr.firstChild(named: "a:solidFill") { return colorHex(in: solid) }
         if let grad = pr.firstChild(named: "a:gradFill") { return gradientRef(grad, box: f, defs: &defs) }
-        if let blip = pr.firstChild(named: "a:blipFill") { return imagePattern(blip, ownedBy: owner ?? slidePart, box: f, defs: &defs) }
+        if let blip = pr.firstChild(named: "a:blipFill") { return imagePattern(blip, ownedBy: owner ?? slidePart, box: f, defs: &defs, shapeRotation: shapeRotation) }
+        if let patt = pr.firstChild(named: "a:pattFill") {
+            let id = defs.nextID("pat")
+            if let svg = SVGPaint.patternSVG(id: id, element: patt, theme: theme) {
+                defs += svg
+                return "url(#\(id))"
+            }
+            return nil
+        }
         if pr.firstChild(named: "a:noFill") != nil { return nil }
         return nil
     }
@@ -2665,7 +3162,7 @@ struct SVGRenderer {
         let isRadial = grad.firstChild(named: "a:path") != nil
         let stopSVG = GradientStops.svg(grad, theme: theme)
         if isRadial {
-            defs += "<radialGradient id=\"\(id)\">\(stopSVG)</radialGradient>"
+            defs += "<radialGradient id=\"\(id)\"\(SVGPaint.radialGradientAttributes(grad))>\(stopSVG)</radialGradient>"
         } else {
             let line = grad.firstChild(named: "a:lin")
             let vector = SVGPaint.gradientVector(line, frame: f)

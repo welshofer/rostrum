@@ -22,7 +22,7 @@ import Testing
         let before = try deck.serializedData()
         let result = try deck.renderSVGReportingProblems(slideAt: 0)
         #expect(result.problems.isEmpty)
-        #expect(result.svg.components(separatedBy: "<polygon ").count - 1 == 10)
+        #expect(result.svg.components(separatedBy: "<polygon ").count - 1 == 55)
         #expect(result.svg.contains("<ellipse "))
         // Diamond vertices: top, right, bottom, left, in the source frame.
         #expect(result.svg.contains("2000100.0,200.0 4000100.0,1000200.0 2000100.0,2000200.0 100.0,1000200.0"))

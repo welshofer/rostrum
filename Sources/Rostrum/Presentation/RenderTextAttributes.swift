@@ -12,6 +12,7 @@ final class RenderTextAttributes {
         let tracking: Double
         let decoration: String
         let baselineShift: Double
+        let smallCaps: Bool
         let usesKerning: Bool
         let usesStandardLigatures: Bool
         let inheritsDisabledStandardLigatures: Bool
@@ -28,7 +29,9 @@ final class RenderTextAttributes {
             return sameFamily && lhs.size == rhs.size && lhs.color.utf8.elementsEqual(rhs.color.utf8)
                 && lhs.bold == rhs.bold && lhs.italic == rhs.italic && lhs.tracking == rhs.tracking
                 && lhs.inheritsDisabledStandardLigatures == rhs.inheritsDisabledStandardLigatures
-                && lhs.usesStandardLigatures == rhs.usesStandardLigatures && lhs.usesKerning == rhs.usesKerning && lhs.decoration == rhs.decoration && lhs.baselineShift == rhs.baselineShift
+                && lhs.usesStandardLigatures == rhs.usesStandardLigatures && lhs.usesKerning == rhs.usesKerning
+                && lhs.decoration == rhs.decoration && lhs.baselineShift == rhs.baselineShift
+                && lhs.smallCaps == rhs.smallCaps
         }
     }
     private var entries: [Key: String] = [:]
@@ -44,7 +47,7 @@ final class RenderTextAttributes {
 
     func attributes(for run: ResolvedTextRun, family: String?, inheritsDisabledStandardLigatures: Bool = false) -> String {
         let key = Key(family: family, size: run.paintedPointSize, color: run.color,
-                      bold: run.bold, italic: run.italic, tracking: run.tracking, decoration: run.decoration, baselineShift: run.baselineShift, usesKerning: run.usesKerning, usesStandardLigatures: run.usesStandardLigatures, inheritsDisabledStandardLigatures: inheritsDisabledStandardLigatures)
+                      bold: run.bold, italic: run.italic, tracking: run.tracking, decoration: run.decoration, baselineShift: run.baselineShift, smallCaps: run.smallCaps, usesKerning: run.usesKerning, usesStandardLigatures: run.usesStandardLigatures, inheritsDisabledStandardLigatures: inheritsDisabledStandardLigatures)
         if let recent, recent.key == key { return recent.value }
         if let index = entries.index(forKey: key) {
             let entry = entries[index]
@@ -57,6 +60,7 @@ final class RenderTextAttributes {
         }
         if run.bold { result += " font-weight=\"bold\"" }
         if run.italic { result += " font-style=\"italic\"" }
+        if run.smallCaps { result += " font-variant=\"small-caps\"" }
         if !run.decoration.isEmpty { result += " text-decoration=\"\(run.decoration.trimmingCharacters(in: .whitespaces))\"" }
         if run.baselineShift != 0 { result += " baseline-shift=\"\(run.baselineShift)%\"" }
         // SVG 1.1 kerning=0 disables font pair adjustments without disabling
