@@ -85,7 +85,7 @@ extension ShapeCollection {
             throw RostrumError.packageInvalid("picture frame must have positive bounded dimensions")
         }
         let id = try Slide.nextShapeID(of: part)
-        let tree = try Slide.spTree(of: part)
+        _ = try mutableContainer()
         let image = package.imagePart(for: data, info: info)
         let rId = part.rels.add(
             type: RelType.image,
@@ -133,7 +133,7 @@ extension ShapeCollection {
         spPr.appendElement(prstGeom)
         pic.appendElement(spPr)
 
-        tree.appendElement(pic)
+        try appendShapeElement(pic)
         part.markDirty()
         return Picture(element: pic, part: part, package: package)
     }

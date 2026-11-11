@@ -229,3 +229,139 @@ public struct Grid: Hashable, Sendable {
         return Rect(x: cx, y: cy, width: w, height: h)
     }
 }
+
+// MARK: - Freeform custom geometry
+
+/// A DrawingML custom-geometry path (`a:custGeom` / `a:pathLst` / `a:path`).
+///
+/// Coordinates are expressed in the path's own `coordinateSize` when supplied
+/// (scaled onto the shape's `frame`), or directly in local EMU relative to the
+/// shape's top-left corner (`0...frame.width`, `0...frame.height`) when `nil`.
+public struct FreeformPath: Hashable, Sendable {
+    public enum Command: Hashable, Sendable {
+        case moveTo(x: EMU, y: EMU)
+        case lineTo(x: EMU, y: EMU)
+        case quadCurveTo(controlX: EMU, controlY: EMU, toX: EMU, toY: EMU)
+        case cubicCurveTo(control1X: EMU, control1Y: EMU, control2X: EMU, control2Y: EMU, toX: EMU, toY: EMU)
+        case arcTo(radiusX: EMU, radiusY: EMU, startAngleDegrees: Double, sweepAngleDegrees: Double)
+        case close
+    }
+
+    public var commands: [Command]
+    public var coordinateSize: (width: EMU, height: EMU)? {
+        get {
+            guard let w = coordinateWidth, let h = coordinateHeight else { return nil }
+            return (w, h)
+        }
+        set {
+            coordinateWidth = newValue?.width
+            coordinateHeight = newValue?.height
+        }
+    }
+
+    private var coordinateWidth: EMU?
+    private var coordinateHeight: EMU?
+
+    public init(commands: [Command] = [], coordinateSize: (width: EMU, height: EMU)? = nil) {
+        self.commands = commands
+        self.coordinateWidth = coordinateSize?.width
+        self.coordinateHeight = coordinateSize?.height
+    }
+
+    /// Build a polyline or closed polygon from local points.
+    public static func polygon(_ points: [(x: EMU, y: EMU)], closed: Bool = true,
+                               coordinateSize: (width: EMU, height: EMU)? = nil) -> FreeformPath {
+        var path = FreeformPath(coordinateSize: coordinateSize)
+        guard let first = points.first else { return path }
+        path.move(to: first)
+        for point in points.dropFirst() {
+            path.addLine(to: point)
+        }
+        if closed {
+            path.closeSubpath()
+        }
+        return path
+    }
+
+    public mutating func move(to point: (x: EMU, y: EMU)) {
+        commands.append(.moveTo(x: point.x, y: point.y))
+    }
+
+    public mutating func addLine(to point: (x: EMU, y: EMU)) {
+        commands.append(.lineTo(x: point.x, y: point.y))
+    }
+
+    public mutating func addQuadCurve(to end: (x: EMU, y: EMU), control: (x: EMU, y: EMU)) {
+        commands.append(.quadCurveTo(controlX: control.x, controlY: control.y, toX: end.x, toY: end.y))
+    }
+
+    public mutating func addCubicCurve(to end: (x: EMU, y: EMU),
+                                       control1: (x: EMU, y: EMU),
+                                       control2: (x: EMU, y: EMU)) {
+        commands.append(.cubicCurveTo(
+            control1X: control1.x, control1Y: control1.y,
+            control2X: control2.x, control2Y: control2.y,
+            toX: end.x, toY: end.y))
+    }
+
+    public mutating func addArc(radiusX: EMU, radiusY: EMU,
+                                startAngleDegrees: Double, sweepAngleDegrees: Double) {
+        commands.append(.arcTo(
+            radiusX: radiusX, radiusY: radiusY,
+            startAngleDegrees: startAngleDegrees, sweepAngleDegrees: sweepAngleDegrees))
+    }
+
+    public mutating func closeSubpath() {
+        commands.append(.close)
+    }
+
+    func makeCustGeomElement() -> XML.Element {
+        let custGeom = XML.Element("a:custGeom")
+        custGeom.appendElement(XML.Element("a:avLst"))
+        custGeom.appendElement(XML.Element("a:gdLst"))
+        custGeom.appendElement(XML.Element("a:ahLst"))
+        custGeom.appendElement(XML.Element("a:cxnLst"))
+        custGeom.appendElement(XML.Element("a:rect", attributes: [
+            ("l", "l"), ("t", "t"), ("r", "r"), ("b", "b"),
+        ]))
+        let pathLst = XML.Element("a:pathLst")
+        var pathAttrs: [(String, String)] = []
+        if let size = coordinateSize, size.width.rawValue > 0, size.height.rawValue > 0 {
+            pathAttrs.append(("w", String(size.width.rawValue)))
+            pathAttrs.append(("h", String(size.height.rawValue)))
+        }
+        let pathEl = XML.Element("a:path", attributes: pathAttrs)
+        func pt(_ x: EMU, _ y: EMU) -> XML.Element {
+            XML.Element("a:pt", attributes: [("x", String(x.rawValue)), ("y", String(y.rawValue))])
+        }
+        for command in commands {
+            switch command {
+            case .moveTo(let x, let y):
+                pathEl.appendElement(XML.Element("a:moveTo", children: [.element(pt(x, y))]))
+            case .lineTo(let x, let y):
+                pathEl.appendElement(XML.Element("a:lnTo", children: [.element(pt(x, y))]))
+            case .quadCurveTo(let cx, let cy, let x, let y):
+                pathEl.appendElement(XML.Element("a:quadBezTo", children: [.element(pt(cx, cy)), .element(pt(x, y))]))
+            case .cubicCurveTo(let c1x, let c1y, let c2x, let c2y, let x, let y):
+                pathEl.appendElement(XML.Element("a:cubicBezTo", children: [
+                    .element(pt(c1x, c1y)), .element(pt(c2x, c2y)), .element(pt(x, y)),
+                ]))
+            case .arcTo(let rx, let ry, let stDeg, let swDeg):
+                let st = stDeg.isFinite ? Int((stDeg * 60_000).rounded()) : 0
+                let sw = swDeg.isFinite ? Swift.max(-21_600_000, Swift.min(21_600_000, Int((swDeg * 60_000).rounded()))) : 0
+                pathEl.appendElement(XML.Element("a:arcTo", attributes: [
+                    ("wR", String(Swift.max(1, rx.rawValue))),
+                    ("hR", String(Swift.max(1, ry.rawValue))),
+                    ("stAng", String(st)),
+                    ("swAng", String(sw)),
+                ]))
+            case .close:
+                pathEl.appendElement(XML.Element("a:close"))
+            }
+        }
+        pathLst.appendElement(pathEl)
+        custGeom.appendElement(pathLst)
+        return custGeom
+    }
+}
+

@@ -39,8 +39,52 @@ public final class Picture: Shape {
     public var imageFormat: String? { imagePart?.uri.ext }
 }
 
+/// Preset connector geometries (`p:cxnSp` / `a:prstGeom@prst`).
+public enum ConnectorGeometry: String, CaseIterable, Hashable, Sendable {
+    case straight = "straightConnector1"
+    case line = "line"
+    case elbow2 = "bentConnector2"
+    case elbow = "bentConnector3"
+    case elbow4 = "bentConnector4"
+    case elbow5 = "bentConnector5"
+    case curved2 = "curvedConnector2"
+    case curved = "curvedConnector3"
+    case curved4 = "curvedConnector4"
+    case curved5 = "curvedConnector5"
+}
+
 /// A connector (`p:cxnSp`) — a line, optionally attached to other shapes.
 public final class Connector: Shape {
+    /// The connector's preset geometry (`straightConnector1`, `bentConnector3`, …).
+    public var connectorGeometry: ConnectorGeometry? {
+        element.firstChild(named: "p:spPr")?.firstChild(named: "a:prstGeom")?[attribute: "prst"]
+            .flatMap(ConnectorGeometry.init(rawValue:))
+    }
+
+    /// The connector's start coordinate in parent space, accounting for `flipH`/`flipV`.
+    public var startPoint: (x: EMU, y: EMU) {
+        let rect = frame
+        let xfrm = ShapeTransform.element(of: element)
+        let flipH = ["1", "true"].contains(xfrm?[attribute: "flipH"] ?? "")
+        let flipV = ["1", "true"].contains(xfrm?[attribute: "flipV"] ?? "")
+        return (
+            x: flipH ? rect.maxX : rect.minX,
+            y: flipV ? rect.maxY : rect.minY
+        )
+    }
+
+    /// The connector's end coordinate in parent space, accounting for `flipH`/`flipV`.
+    public var endPoint: (x: EMU, y: EMU) {
+        let rect = frame
+        let xfrm = ShapeTransform.element(of: element)
+        let flipH = ["1", "true"].contains(xfrm?[attribute: "flipH"] ?? "")
+        let flipV = ["1", "true"].contains(xfrm?[attribute: "flipV"] ?? "")
+        return (
+            x: flipH ? rect.minX : rect.maxX,
+            y: flipV ? rect.minY : rect.maxY
+        )
+    }
+
     /// The shape id and connection-site index this connector starts at
     /// (`a:stCxn`), when it is attached.
     public var startConnection: (shapeID: Int, index: Int)? {
@@ -124,6 +168,13 @@ public final class GroupShape: Shape {
     /// coordinates — map one with `convertToParentSpace(_:)`.
     public var shapes: [Shape] {
         ShapeCollection.children(of: element, part: part, package: package)
+    }
+
+    /// Mutable shape collection scoped to this group's child coordinate space
+    /// (`p:grpSp`), supporting `addShape`, `addTextBox`, `addPicture`,
+    /// `addConnector`, `addFreeform`, and nested `addGroup`.
+    public var contents: ShapeCollection {
+        ShapeCollection(part: part, package: package, containerElement: element)
     }
 
     /// The group's own child coordinate space (`a:chOff`/`a:chExt`).

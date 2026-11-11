@@ -16,7 +16,7 @@ let args = CommandLine.arguments
 let commands = ["inspect", "validate", "extract", "render"]
 guard args.count >= 3, commands.contains(args[1]) else {
     print("usage: pptx-tool <inspect|validate> <file.pptx> [--max-uncompressed BYTES]")
-    print("       pptx-tool extract <file.pptx> <directory> [--max-uncompressed BYTES]")
+    print("       pptx-tool extract <file.pptx> <directory> [--include-poster] [--max-uncompressed BYTES]")
     print("       pptx-tool render <file.pptx> <directory> [--font FONT_PATH ...] [--strict] [--notes]")
     print("  inspect   structured report of the deck's parts + schema check (exit 1 on issues)")
     print("  validate  required-attribute/schema lint (does not certify Office or rendering)")
@@ -59,9 +59,10 @@ if command == "extract" {
         die("extract needs a destination directory: pptx-tool extract \(path) <directory>")
     }
     let destination = URL(fileURLWithPath: args[3], isDirectory: true)
+    let includePoster = args.contains("--include-poster")
     let summary: DeckExport.Summary
     do {
-        summary = try DeckExport.write(deck, to: destination)
+        summary = try DeckExport.write(deck, to: destination, includeVideoPosters: includePoster)
     } catch {
         die("cannot write \(args[3]): \(error)")
     }
@@ -140,6 +141,10 @@ field("notes:", String(partCount(deck, "/ppt/notesSlides/")))
 field("sections:", String(deck.sections.count))
 field("size:", String(format: "%.2fin × %.2fin", size.width.inches, size.height.inches))
 field("parts:", String(deck.package.parts.count))
+let orphans = deck.orphanPartURIs
+if !orphans.isEmpty {
+    field("orphans:", String(orphans.count))
+}
 if deck.sections.count > 0 {
     field("sectionList:", Array(deck.sections).map { "\($0.name)(\($0.slideCount))" }.joined(separator: ", "))
 }

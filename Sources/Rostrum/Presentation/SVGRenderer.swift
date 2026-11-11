@@ -285,39 +285,11 @@ struct SVGRenderer {
             diagnostics.record(.unsupportedGeometry, .approximation,
                 "Preview approximates this bent or curved connector with a straight line.")
         }
-        var attrs = "stroke=\"\(color)\" stroke-width=\"\(width)\" fill=\"none\""
-        if let dash = line?.firstChild(named: "a:prstDash")?[attribute: "val"], dash != "solid" {
-            let pattern: String
-            switch dash {
-            case "dot", "sysDot": pattern = "\(width) \(width * 2)"
-            case "dash", "sysDash": pattern = "\(width * 4) \(width * 3)"
-            default:
-                pattern = "\(width * 4) \(width * 3)"
-                problems.record("Preview approximates an unsupported connector dash pattern.")
-            }
-            attrs += " stroke-dasharray=\"\(pattern)\""
-        }
-        for (element, attribute, start) in [("a:headEnd", "marker-start", true), ("a:tailEnd", "marker-end", false)] {
-            guard let end = line?.firstChild(named: element), let type = end[attribute: "type"], type != "none" else { continue }
-            guard ["triangle", "arrow", "diamond", "oval"].contains(type) else {
-                problems.record("Preview omitted an unsupported connector arrowhead."); continue
-            }
-            let id = defs.nextID("arrow")
-            func size(_ value: String?) -> Int { value == "lg" ? 5 : value == "sm" ? 2 : 3 }
-            let markerWidth = size(end[attribute: "len"]), markerHeight = size(end[attribute: "w"])
-            let shape: String
-            switch type {
-            case "oval": shape = "<ellipse cx=\"5\" cy=\"5\" rx=\"5\" ry=\"5\" fill=\"\(color)\"/>"
-            case "diamond": shape = "<path d=\"M0 5 L5 0 L10 5 L5 10 Z\" fill=\"\(color)\"/>"
-            case "arrow": shape = "<path d=\"M0 0 L10 5 L0 10\" fill=\"none\" stroke=\"\(color)\" stroke-width=\"2\"/>"
-            default: shape = "<path d=\"M0 0 L10 5 L0 10 Z\" fill=\"\(color)\"/>"
-            }
-            // Explicitly reverse the start marker rather than relying on SVG 2
-            // auto-start-reverse, which older viewers may not implement.
-            let marker = start ? "<g transform=\"rotate(180 5 5)\">\(shape)</g>" : shape
-            defs += "<marker id=\"\(id)\" viewBox=\"0 0 10 10\" refX=\"\(start ? 0 : 10)\" refY=\"5\" markerWidth=\"\(markerWidth)\" markerHeight=\"\(markerHeight)\" orient=\"auto\" overflow=\"visible\">\(marker)</marker>"
-            attrs += " \(attribute)=\"url(#\(id))\""
-        }
+        var optionalProblems: SlideRenderProblems? = problems
+        let attrs = "stroke=\"\(color)\" stroke-width=\"\(width)\" fill=\"none\""
+            + dashAttributes(line, width: width, problems: &optionalProblems)
+            + lineEndMarkers(line, color: color, defs: &defs, problems: &problems)
+        if let updated = optionalProblems { problems = updated }
         func adjustment(_ name: String, default fallback: Double = 0.5) -> Double {
             guard let guide = properties.firstChild(named: "a:prstGeom")?.firstChild(named: "a:avLst")?
                 .children(named: "a:gd").first(where: { $0[attribute: "name"] == name }) else {
@@ -417,17 +389,28 @@ struct SVGRenderer {
             if !stroke.isEmpty { out += geometry(prst, f, fill: "none", stroke: stroke) }
         } else {
         if fill != nil || !stroke.isEmpty {
+            let ln = lineProperties.firstChild(named: "a:ln")
+            let strokeColor = ln.flatMap { colorHex(in: $0.firstChild(named: "a:solidFill")) }
+                ?? style?.firstChild(named: "a:lnRef").flatMap { colorHex(in: $0) }
             if let custom = spPr.firstChild(named: "a:custGeom") {
                 if let paths = SVGCustomGeometry.paths(custom, width: Double(f.2), height: Double(f.3)) {
-                    out += SVGCustomGeometry.render(paths, x: f.0, y: f.1, fill: fill ?? "none", stroke: stroke)
+                    let markerAttrs = (!stroke.isEmpty && paths.contains { $0.stroke && !$0.closed })
+                        ? strokeColor.map { lineEndMarkers(ln, color: $0, defs: &defs, problems: &problems) } ?? ""
+                        : ""
+                    out += SVGCustomGeometry.render(paths, x: f.0, y: f.1, fill: fill ?? "none", stroke: stroke, openMarkerAttrs: markerAttrs)
                 } else {
                     diagnostics.record(.unsupportedGeometry, .approximation, "Custom path commands or coordinates are unsupported; using a rectangle.")
                     problems.record("Preview approximates unsupported custom geometry as a rectangle.")
                     out += geometry("rect", f, fill: fill ?? "none", stroke: stroke)
                 }
+            } else if let doubleSVG = doubleShapeSVG(preset: prst, frame: f, fill: fill, lineProperties: lineProperties) {
+                out += doubleSVG
             } else {
+                let markerAttrs = (!stroke.isEmpty && SVGPresetGeometry.openPresets.contains(prst))
+                    ? strokeColor.map { lineEndMarkers(ln, color: $0, defs: &defs, problems: &problems) } ?? ""
+                    : ""
                 out += SVGPresetGeometry.render(prst, adjustments: preset?.firstChild(named: "a:avLst"),
-                                               frame: f, fill: fill ?? "none", stroke: stroke)
+                                               frame: f, fill: fill ?? "none", stroke: stroke + markerAttrs)
             }
         }
         if let txBody = sp.firstChild(named: "p:txBody") {
@@ -2695,6 +2678,44 @@ struct SVGRenderer {
         SVGPaint.resolve(in: container, theme: theme)?.css
     }
 
+    static let supportedArrowheadTypes: Set<String> = ["triangle", "stealth", "arrow", "diamond", "oval"]
+    static let presetDashMultipliers: [String: [Int]] = [
+        "dot": [1, 3],
+        "sysDot": [1, 1],
+        "dash": [4, 3],
+        "sysDash": [3, 1],
+        "lgDash": [8, 3],
+        "dashDot": [4, 3, 1, 3],
+        "lgDashDot": [8, 3, 1, 3],
+        "lgDashDotDot": [8, 3, 1, 3, 1, 3],
+        "sysDashDot": [3, 1, 1, 1],
+        "sysDashDotDot": [3, 1, 1, 1, 1, 1],
+    ]
+
+    static func isSupportedPresetDash(_ name: String?) -> Bool {
+        guard let name else { return true }
+        return name == "solid" || presetDashMultipliers[name] != nil
+    }
+
+    static func customDashValues(_ custDash: XML.Element, width: Int) -> [Double]? {
+        let stops = custDash.children(named: "a:ds")
+        guard !stops.isEmpty, stops.count <= 64,
+              custDash.childElements.allSatisfy({ $0.name == "a:ds" || $0.name == "a:extLst" }) else { return nil }
+        let unit = Double(max(1, width))
+        var values: [Double] = []
+        values.reserveCapacity(stops.count * 2)
+        for stop in stops {
+            guard let d = DrawingColor.percentage(stop[attribute: "d"]),
+                  let sp = DrawingColor.percentage(stop[attribute: "sp"]),
+                  d >= 0, sp >= 0, d > 0 || sp > 0 else { return nil }
+            let dashLen = d * unit, spaceLen = sp * unit
+            guard dashLen.isFinite, spaceLen.isFinite, dashLen <= 1e12, spaceLen <= 1e12 else { return nil }
+            values.append(dashLen)
+            values.append(spaceLen)
+        }
+        return values
+    }
+
     private func strokeAttrs(_ spPr: XML.Element) -> String {
         guard let ln = spPr.firstChild(named: "a:ln"), ln.firstChild(named: "a:noFill") == nil,
               let color = colorHex(in: ln.firstChild(named: "a:solidFill")) else { return "" }
@@ -2702,10 +2723,82 @@ struct SVGRenderer {
         return " stroke=\"\(color)\" stroke-width=\"\(max(0, width))\"" + dashAttributes(ln, width: width)
     }
 
+    private func dashAttributes(_ line: XML.Element?, width: Int, problems: inout SlideRenderProblems?) -> String {
+        if let custDash = line?.firstChild(named: "a:custDash") {
+            if let values = Self.customDashValues(custDash, width: width) {
+                return " stroke-dasharray=\"" + values.map { SVGNumber.decimal($0) }.joined(separator: " ") + "\""
+            }
+            problems?.record("Preview approximates an unsupported custom dash pattern.")
+            return ""
+        }
+        guard let name = line?.firstChild(named: "a:prstDash")?[attribute: "val"], name != "solid" else { return "" }
+        if let pattern = Self.presetDashMultipliers[name] {
+            return " stroke-dasharray=\"" + pattern.map { String($0 * max(1, width)) }.joined(separator: " ") + "\""
+        }
+        problems?.record("Preview approximates an unsupported connector dash pattern.")
+        return " stroke-dasharray=\"\(max(1, width) * 4) \(max(1, width) * 3)\""
+    }
+
     private func dashAttributes(_ line: XML.Element?, width: Int) -> String {
-        let patterns: [String: [Int]] = ["dot": [1, 3], "sysDot": [1, 1], "dash": [4, 3], "sysDash": [3, 1], "lgDash": [8, 3], "dashDot": [4, 3, 1, 3], "lgDashDot": [8, 3, 1, 3], "lgDashDotDot": [8, 3, 1, 3, 1, 3]]
-        guard let name = line?.firstChild(named: "a:prstDash")?[attribute: "val"], let pattern = patterns[name] else { return "" }
-        return " stroke-dasharray=\"" + pattern.map { String($0 * max(1, width)) }.joined(separator: " ") + "\""
+        var ignored: SlideRenderProblems? = nil
+        return dashAttributes(line, width: width, problems: &ignored)
+    }
+
+    private func lineEndMarkers(_ line: XML.Element?, color: String, defs: inout SVGDefinitions,
+                                problems: inout SlideRenderProblems) -> String {
+        var attrs = ""
+        for (element, attribute, start) in [("a:headEnd", "marker-start", true), ("a:tailEnd", "marker-end", false)] {
+            guard let end = line?.firstChild(named: element), let type = end[attribute: "type"], type != "none" else { continue }
+            guard Self.supportedArrowheadTypes.contains(type) else {
+                problems.record("Preview omitted an unsupported line arrowhead."); continue
+            }
+            let id = defs.nextID("arrow")
+            func size(_ value: String?) -> Int { value == "lg" ? 5 : value == "sm" ? 2 : 3 }
+            let markerWidth = size(end[attribute: "len"]), markerHeight = size(end[attribute: "w"])
+            let shape: String
+            switch type {
+            case "oval": shape = "<ellipse cx=\"5\" cy=\"5\" rx=\"5\" ry=\"5\" fill=\"\(color)\"/>"
+            case "diamond": shape = "<path d=\"M0 5 L5 0 L10 5 L5 10 Z\" fill=\"\(color)\"/>"
+            case "arrow": shape = "<path d=\"M0 0 L10 5 L0 10\" fill=\"none\" stroke=\"\(color)\" stroke-width=\"2\"/>"
+            case "stealth": shape = "<path d=\"M0 0 L10 5 L0 10 L3 5 Z\" fill=\"\(color)\"/>"
+            default: shape = "<path d=\"M0 0 L10 5 L0 10 Z\" fill=\"\(color)\"/>"
+            }
+            // Explicitly reverse the start marker rather than relying on SVG 2
+            // auto-start-reverse, which older viewers may not implement.
+            let marker = start ? "<g transform=\"rotate(180 5 5)\">\(shape)</g>" : shape
+            defs += "<marker id=\"\(id)\" viewBox=\"0 0 10 10\" refX=\"\(start ? 0 : 10)\" refY=\"5\" markerWidth=\"\(markerWidth)\" markerHeight=\"\(markerHeight)\" orient=\"auto\" overflow=\"visible\">\(marker)</marker>"
+            attrs += " \(attribute)=\"url(#\(id))\""
+        }
+        return attrs
+    }
+
+    private func doubleShapeSVG(preset: String, frame f: (Int, Int, Int, Int), fill: String?, lineProperties: XML.Element) -> String? {
+        guard let ln = lineProperties.firstChild(named: "a:ln"),
+              TableDoubleBorder.supports(ln),
+              let color = colorHex(in: ln.firstChild(named: "a:solidFill")) else { return nil }
+        let width = ln.coordinate("w") ?? 12700
+        guard width > 0 else { return nil }
+        switch preset {
+        case "line", "straightConnector1":
+            return TableDoubleBorder.svg(color: color, width: width,
+                endpoints: (f.0, f.1, f.0 + max(0, f.2), f.1 + max(0, f.3)))
+        case "rect" where f.2 > width && f.3 > width:
+            let component = Double(width) / 3
+            var svg = ""
+            if let fill {
+                svg += "<rect x=\"\(f.0)\" y=\"\(f.1)\" width=\"\(f.2)\" height=\"\(f.3)\" fill=\"\(fill)\"/>"
+            }
+            for delta in [-component, component] {
+                let rx = SVGNumber.decimal(Double(f.0) + delta)
+                let ry = SVGNumber.decimal(Double(f.1) + delta)
+                let rw = SVGNumber.decimal(Double(f.2) - 2 * delta)
+                let rh = SVGNumber.decimal(Double(f.3) - 2 * delta)
+                svg += "<rect x=\"\(rx)\" y=\"\(ry)\" width=\"\(rw)\" height=\"\(rh)\" fill=\"none\" stroke=\"\(color)\" stroke-width=\"\(SVGNumber.decimal(component))\"/>"
+            }
+            return svg
+        default:
+            return nil
+        }
     }
 
     private func frame(of spPr: XML.Element) -> (Int, Int, Int, Int) {

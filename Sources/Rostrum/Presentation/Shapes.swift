@@ -7,10 +7,26 @@ public final class ShapeCollection: Sequence {
     /// Present when the collection can create package-level resources
     /// (image parts for pictures); nil for detached usage.
     let package: OPCPackage?
+    /// Optional explicit container (`p:grpSp`); `nil` targets the slide's `p:spTree`.
+    let containerElement: XML.Element?
 
-    init(part: Part, package: OPCPackage? = nil) {
+    init(part: Part, package: OPCPackage? = nil, containerElement: XML.Element? = nil) {
         self.part = part
         self.package = package
+        self.containerElement = containerElement
+    }
+
+    var existingContainer: XML.Element? {
+        containerElement ?? Slide.existingSpTree(of: part)
+    }
+
+    func mutableContainer() throws -> XML.Element {
+        if let containerElement { return containerElement }
+        return try Slide.spTree(of: part)
+    }
+
+    func appendShapeElement(_ child: XML.Element) throws {
+        try mutableContainer().insertChild(child, beforeAnyOf: ["p:extLst"])
     }
 
     /// Every shape on the slide, in z-order (document order): autoshapes,
@@ -29,7 +45,7 @@ public final class ShapeCollection: Sequence {
     /// only need the total or a single shape, as those read `p:spTree` in
     /// place and allocate nothing they don't hand back.
     public var all: [Shape] {
-        guard let spTree = Slide.existingSpTree(of: part) else { return [] }
+        guard let spTree = existingContainer else { return [] }
         return Self.children(of: spTree, part: part, package: package)
     }
 
@@ -131,7 +147,7 @@ public final class ShapeCollection: Sequence {
     /// materialised, so asking for the count of a hundred-shape slide costs a
     /// hundred name comparisons rather than a hundred allocations.
     public var count: Int {
-        guard let spTree = Slide.existingSpTree(of: part) else { return 0 }
+        guard let spTree = existingContainer else { return 0 }
         return Self.childCount(of: spTree)
     }
 
@@ -143,7 +159,7 @@ public final class ShapeCollection: Sequence {
     /// Traps on an out-of-range index, as indexing the array `all` returns
     /// always has.
     public subscript(index: Int) -> Shape {
-        guard let spTree = Slide.existingSpTree(of: part),
+        guard let spTree = existingContainer,
               let element = Self.childElement(of: spTree, at: index) else {
             preconditionFailure("shape index \(index) out of range")
         }
@@ -163,7 +179,7 @@ public final class ShapeCollection: Sequence {
         let spPr = sp.firstChild(named: "p:spPr")!
         spPr.appendElement(Fill.none.makeElement())
         spPr.appendElement(Line.makeElement(nil))
-        try Slide.spTree(of: part).appendElement(sp)
+        try appendShapeElement(sp)
         part.markDirty()
         return Shape(element: sp, part: part, package: package)
     }
@@ -178,7 +194,7 @@ public final class ShapeCollection: Sequence {
         let spPr = sp.firstChild(named: "p:spPr")!
         spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
         spPr.appendElement(Line.makeElement(line))
-        try Slide.spTree(of: part).appendElement(sp)
+        try appendShapeElement(sp)
         part.markDirty()
         return Shape(element: sp, part: part, package: package)
     }
@@ -202,7 +218,137 @@ public final class ShapeCollection: Sequence {
         }
         spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
         spPr.appendElement(Line.makeElement(line))
-        try Slide.spTree(of: part).appendElement(sp)
+        try appendShapeElement(sp)
+        part.markDirty()
+        return Shape(element: sp, part: part, package: package)
+    }
+
+    /// Add a connector (`p:cxnSp`) between two points, with optional shape
+    /// connection-site attachments (`a:stCxn` / `a:endCxn`).
+    @discardableResult
+    public func addConnector(
+        _ geometry: ConnectorGeometry = .straight,
+        from start: (x: EMU, y: EMU),
+        to end: (x: EMU, y: EMU),
+        line: Line = Line(color: .black),
+        startConnection: (shapeID: Int, index: Int)? = nil,
+        endConnection: (shapeID: Int, index: Int)? = nil
+    ) throws -> Connector {
+        let id = try Slide.nextShapeID(of: part)
+        let cxnSp = XML.Element("p:cxnSp")
+
+        let nvCxnSpPr = XML.Element("p:nvCxnSpPr")
+        nvCxnSpPr.appendElement(XML.Element("p:cNvPr", attributes: [
+            ("id", String(id)), ("name", "Connector \(id)"),
+        ]))
+        let cNvCxnSpPr = XML.Element("p:cNvCxnSpPr")
+        if let startConnection {
+            cNvCxnSpPr.appendElement(XML.Element("a:stCxn", attributes: [
+                ("id", String(startConnection.shapeID)),
+                ("idx", String(Swift.max(0, startConnection.index))),
+            ]))
+        }
+        if let endConnection {
+            cNvCxnSpPr.appendElement(XML.Element("a:endCxn", attributes: [
+                ("id", String(endConnection.shapeID)),
+                ("idx", String(Swift.max(0, endConnection.index))),
+            ]))
+        }
+        nvCxnSpPr.appendElement(cNvCxnSpPr)
+        nvCxnSpPr.appendElement(XML.Element("p:nvPr"))
+        cxnSp.appendElement(nvCxnSpPr)
+
+        let minX = Swift.min(start.x.rawValue, end.x.rawValue)
+        let minY = Swift.min(start.y.rawValue, end.y.rawValue)
+        let width = Swift.abs(end.x.rawValue - start.x.rawValue)
+        let height = Swift.abs(end.y.rawValue - start.y.rawValue)
+        var xfrmAttrs: [(String, String)] = []
+        if end.x.rawValue < start.x.rawValue { xfrmAttrs.append(("flipH", "1")) }
+        if end.y.rawValue < start.y.rawValue { xfrmAttrs.append(("flipV", "1")) }
+
+        let spPr = XML.Element("p:spPr")
+        let xfrm = XML.Element("a:xfrm", attributes: xfrmAttrs)
+        xfrm.appendElement(XML.Element("a:off", attributes: [
+            ("x", String(minX)), ("y", String(minY)),
+        ]))
+        xfrm.appendElement(XML.Element("a:ext", attributes: [
+            ("cx", String(width)), ("cy", String(height)),
+        ]))
+        spPr.appendElement(xfrm)
+        let prstGeom = XML.Element("a:prstGeom", attributes: [("prst", geometry.rawValue)])
+        prstGeom.appendElement(XML.Element("a:avLst"))
+        spPr.appendElement(prstGeom)
+        spPr.appendElement(Line.makeElement(line))
+        cxnSp.appendElement(spPr)
+
+        try appendShapeElement(cxnSp)
+        part.markDirty()
+        return Connector(element: cxnSp, part: part, package: package)
+    }
+
+    /// Add a group shape (`p:grpSp`). Populate children via `group.contents`.
+    /// When `childSpace` is `nil`, the child coordinate space matches `frame`
+    /// 1:1 so child shapes positioned inside `frame` appear without scaling.
+    @discardableResult
+    public func addGroup(
+        _ frame: Rect,
+        childSpace: Rect? = nil,
+        name: String? = nil
+    ) throws -> GroupShape {
+        let id = try Slide.nextShapeID(of: part)
+        let child = childSpace ?? frame
+        let grpSp = XML.Element("p:grpSp")
+
+        let nvGrpSpPr = XML.Element("p:nvGrpSpPr")
+        nvGrpSpPr.appendElement(XML.Element("p:cNvPr", attributes: [
+            ("id", String(id)), ("name", name ?? "Group \(id)"),
+        ]))
+        nvGrpSpPr.appendElement(XML.Element("p:cNvGrpSpPr"))
+        nvGrpSpPr.appendElement(XML.Element("p:nvPr"))
+        grpSp.appendElement(nvGrpSpPr)
+
+        let grpSpPr = XML.Element("p:grpSpPr")
+        let xfrm = XML.Element("a:xfrm")
+        xfrm.appendElement(XML.Element("a:off", attributes: [
+            ("x", String(frame.x.rawValue)), ("y", String(frame.y.rawValue)),
+        ]))
+        xfrm.appendElement(XML.Element("a:ext", attributes: [
+            ("cx", String(Swift.max(0, frame.width.rawValue))),
+            ("cy", String(Swift.max(0, frame.height.rawValue))),
+        ]))
+        xfrm.appendElement(XML.Element("a:chOff", attributes: [
+            ("x", String(child.x.rawValue)), ("y", String(child.y.rawValue)),
+        ]))
+        xfrm.appendElement(XML.Element("a:chExt", attributes: [
+            ("cx", String(Swift.max(0, child.width.rawValue))),
+            ("cy", String(Swift.max(0, child.height.rawValue))),
+        ]))
+        grpSpPr.appendElement(xfrm)
+        grpSp.appendElement(grpSpPr)
+
+        try appendShapeElement(grpSp)
+        part.markDirty()
+        return GroupShape(element: grpSp, part: part, package: package)
+    }
+
+    /// Add a freeform custom-geometry shape (`p:sp` with `a:custGeom`).
+    @discardableResult
+    public func addFreeform(
+        _ frame: Rect,
+        path: FreeformPath,
+        fill: Fill = .none,
+        line: Line? = Line(color: .black)
+    ) throws -> Shape {
+        guard !path.commands.isEmpty else {
+            throw RostrumError.packageInvalid("freeform path must contain at least one command")
+        }
+        let sp = try makeSp(name: "Freeform", frame: frame, textBox: false)
+        let spPr = sp.firstChild(named: "p:spPr")!
+        spPr.removeChildren(named: "a:prstGeom")
+        spPr.appendElement(path.makeCustGeomElement())
+        spPr.appendElement(try fill.fillElement(embeddingInto: part, package: package))
+        spPr.appendElement(Line.makeElement(line))
+        try appendShapeElement(sp)
         part.markDirty()
         return Shape(element: sp, part: part, package: package)
     }
@@ -388,6 +534,11 @@ public class Shape {
         effectLst.appendElement(shadow)
         spPr.insertChild(effectLst, beforeAnyOf: ["a:sp3d", "a:extLst"])
         part.markDirty()
+    }
+
+    /// True when the shape uses custom geometry (`a:custGeom`), such as a freeform path.
+    public var isCustomGeometry: Bool {
+        element.firstChild(named: "p:spPr")?.firstChild(named: "a:custGeom") != nil
     }
 
     /// The shape's text body. Every Rostrum-created shape has one.

@@ -68,9 +68,6 @@ final class RenderDiagnosticCollector {
     // time; the complete set remains authoritative across location changes.
     private var recentLocation: FidelityLocation?
     private var recentIssues: [RecentIssue] = []
-    private static let supportedColorTransforms: Set<String> = [
-        "a:tint", "a:shade", "a:lumMod", "a:lumOff", "a:satMod", "a:alpha", "a:alphaMod", "a:alphaOff",
-    ]
     private struct EmbeddedFace {
         let data: Data
         let encoded: String
@@ -108,26 +105,32 @@ final class RenderDiagnosticCollector {
             record(code, impact, reason)
             return nil
         }
-        guard let data = fonts.data(for: resourceFace) else {
+        guard fonts.data(for: resourceFace) != nil else {
             return unavailable(.viewerFontDependency, .approximation, "No embeddable registered font resource for \(requested).")
         }
-        if let restriction = EOTLite.fsType(of: data), restriction & 0x0202 != 0 {
-            return unavailable(.fontEmbeddingRestricted, .missingResource, "OS/2 embedding restrictions prevent embedding \(requested) in SVG.")
+        let sfntData: Data
+        do {
+            guard let extracted = try fonts.embeddableSFNTData(for: resourceFace) else {
+                return unavailable(.viewerFontDependency, .approximation, "No embeddable registered font resource for \(requested).")
+            }
+            sfntData = extracted
+        } catch {
+            return unavailable(.unsupportedFontEmbedding, .approximation, "Collection-face extraction failed before embedding \(requested) in SVG.")
         }
-        let signature = Array(data.prefix(4))
-        guard signature != [0x74, 0x74, 0x63, 0x66] else {
-            return unavailable(.unsupportedFontEmbedding, .approximation, "Collection-face extraction is required before embedding \(requested) in SVG.")
+        if let restriction = EOTLite.fsType(of: sfntData), restriction & 0x0202 != 0 {
+            return unavailable(.fontEmbeddingRestricted, .missingResource, "OS/2 embedding restrictions prevent embedding \(requested) in SVG.")
         }
         guard fonts.metrics(for: resourceFace)?.hasOutlines == true else {
             return unavailable(.unsupportedFontEmbedding, .missingResource, "Font \(requested) has metrics but no supported outline tables for SVG.")
         }
-        if let shared = embeddedFaces.first(where: { $0.data == data && $0.bold == resourceFace.bold && $0.italic == resourceFace.italic }) {
+        if let shared = embeddedFaces.first(where: { $0.data == sfntData && $0.bold == resourceFace.bold && $0.italic == resourceFace.italic }) {
             resolvedFaces[face] = shared.family
             return shared.family
         }
         let family = "RostrumEmbeddedFace\(embeddedFaces.count + 1)"
+        let signature = Array(sfntData.prefix(4))
         let format = signature == [0x4F, 0x54, 0x54, 0x4F] ? "opentype" : "truetype"
-        embeddedFaces.append(EmbeddedFace(data: data, encoded: fonts.encodedSource(for: resourceFace) ?? data.base64EncodedString(), bold: resourceFace.bold, italic: resourceFace.italic, family: family, format: format))
+        embeddedFaces.append(EmbeddedFace(data: sfntData, encoded: fonts.encodedSource(for: resourceFace) ?? sfntData.base64EncodedString(), bold: resourceFace.bold, italic: resourceFace.italic, family: family, format: format))
         resolvedFaces[face] = family
         return family
     }
@@ -259,7 +262,7 @@ final class RenderDiagnosticCollector {
                 // It never uses the generic shape rectangle fallback.
                 if currentShape.name == "p:cxnSp" { break }
                 let preset = element[attribute: "prst"] ?? "rect"
-                if !SVGPresetGeometry.supported.contains(preset) && !["line", "straightConnector1"].contains(preset) {
+                if !SVGPresetGeometry.supported.contains(preset) {
                     issue(.unsupportedGeometry, .approximation, "Preset \(preset) is approximated by a rectangle.")
                 } else if element.firstChild(named: "a:avLst")?.children(named: "a:gd").contains(where: { guide in
                     let formula = (guide[attribute: "fmla"] ?? "").split(whereSeparator: \.isWhitespace)
@@ -284,14 +287,21 @@ final class RenderDiagnosticCollector {
                 }
             case "a:pattFill":
                 issue(.unsupportedFill, .omission, "Pattern fill is not rendered in this shape path.")
-            case "a:hslClr":
-                issue(.unsupportedColor, .omission, "HSL color sources are not resolved by the preview.")
-            case "a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr":
-                if element.childElements.contains(where: { !Self.supportedColorTransforms.contains($0.name) }) {
+            case "a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr", "a:hslClr":
+                if element.childElements.contains(where: { $0.name != "a:extLst" && !DrawingColor.supportedTransforms.contains($0.name) }) {
                     issue(.unsupportedColor, .approximation, "A color transform is not applied by the preview.")
                 }
-                if element.name == "a:prstClr", !["black", "white", "red", "green", "blue", "yellow", "gray", "cyan", "magenta", "transparent"].contains(element[attribute: "val"] ?? "") {
+                switch element.name {
+                case "a:prstClr" where !DrawingColor.isSupportedPreset(element[attribute: "val"]):
                     issue(.unsupportedColor, .omission, "This preset color is not resolved by the preview.")
+                case "a:sysClr" where !DrawingColor.isSupportedSystemColor(element):
+                    issue(.unsupportedColor, .omission, "This system color has no cached or known fallback RGB value.")
+                case "a:hslClr" where !DrawingColor.isValidHSL(element):
+                    issue(.unsupportedColor, .omission, "HSL color attributes are missing or outside the supported range.")
+                case "a:scrgbClr" where !DrawingColor.isValidScRGB(element):
+                    issue(.unsupportedColor, .omission, "scRGB color attributes are missing or invalid.")
+                default:
+                    break
                 }
             case "a:blipFill", "p:blipFill":
                 if element[attribute: "rotWithShape"] == "0" || element[attribute: "rotWithShape"] == "false" {
@@ -342,10 +352,7 @@ final class RenderDiagnosticCollector {
             case "a:buBlip": issue(.unsupportedTextProperty, .omission, "Picture bullets are not rendered.")
             case "a:ln":
                 if currentShape.name == "p:cxnSp" { break }
-                if (element[attribute: "cmpd"].map({ $0 != "sng" }) == true
-                    && !(tableStyle && TableDoubleBorder.supports(element)))
-                    || (!tableStyle && element.firstChild(named: "a:prstDash").map { $0[attribute: "val"] != "solid" } == true)
-                    || ["a:custDash", "a:headEnd", "a:tailEnd"].contains(where: { element.firstChild(named: $0) != nil }) {
+                if !Self.isSupportedShapeLine(element, on: currentShape, tableStyle: tableStyle) {
                     issue(.unsupportedBorder, .approximation, "Compound, dashed or arrowed shape strokes are approximated.")
                 }
             case "a:lnL", "a:lnR", "a:lnT", "a:lnB", "a:lnTlToBr", "a:lnBlToTr":
@@ -385,6 +392,60 @@ final class RenderDiagnosticCollector {
                 left += 1; right -= 1
             }
         }
+    }
+
+    private static func isSupportedShapeLine(_ line: XML.Element, on shape: XML.Element, tableStyle: Bool) -> Bool {
+        if tableStyle {
+            let unsupportedCompound = line[attribute: "cmpd"].map { $0 != "sng" } == true && !TableDoubleBorder.supports(line)
+            let unsupportedChildren = ["a:custDash", "a:headEnd", "a:tailEnd"].contains { line.firstChild(named: $0) != nil }
+            return !unsupportedCompound && !unsupportedChildren
+        }
+        let width = line.coordinate("w") ?? 12700
+        if let cmpd = line[attribute: "cmpd"], cmpd != "sng" {
+            guard shape.name == "p:sp", TableDoubleBorder.supports(line),
+                  supportsShapeDoubleLine(shape, lineWidth: width) else { return false }
+        }
+        if let prstDash = line.firstChild(named: "a:prstDash"),
+           !SVGRenderer.isSupportedPresetDash(prstDash[attribute: "val"]) {
+            return false
+        }
+        if let custDash = line.firstChild(named: "a:custDash"),
+           SVGRenderer.customDashValues(custDash, width: width) == nil {
+            return false
+        }
+        for endName in ["a:headEnd", "a:tailEnd"] {
+            guard let end = line.firstChild(named: endName),
+                  let type = end[attribute: "type"], type != "none" else { continue }
+            guard shape.name == "p:sp",
+                  SVGRenderer.supportedArrowheadTypes.contains(type),
+                  supportsShapeArrowheads(shape) else { return false }
+        }
+        return true
+    }
+
+    private static func supportsShapeDoubleLine(_ shape: XML.Element, lineWidth: Int) -> Bool {
+        guard lineWidth > 0,
+              let spPr = shape.firstChild(named: "p:spPr"),
+              spPr.firstChild(named: "a:custGeom") == nil else { return false }
+        let preset = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
+        switch preset {
+        case "line", "straightConnector1":
+            return true
+        case "rect":
+            guard let bounds = ShapeTransform.rect(spPr.firstChild(named: "a:xfrm")) else { return false }
+            return bounds.width.rawValue > lineWidth && bounds.height.rawValue > lineWidth
+        default:
+            return false
+        }
+    }
+
+    private static func supportsShapeArrowheads(_ shape: XML.Element) -> Bool {
+        guard let spPr = shape.firstChild(named: "p:spPr") else { return false }
+        if let custGeom = spPr.firstChild(named: "a:custGeom") {
+            return SVGCustomGeometry.supportsArrowheads(custGeom)
+        }
+        let preset = spPr.firstChild(named: "a:prstGeom")?[attribute: "prst"] ?? "rect"
+        return SVGPresetGeometry.openPresets.contains(preset)
     }
 
     private static func hasTableStyle(_ table: XML.Element, package: OPCPackage) -> Bool {

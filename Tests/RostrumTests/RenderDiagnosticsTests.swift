@@ -157,11 +157,37 @@ import Testing
         let table = try deck.slides[0].shapes.addTable(rows: 1, columns: 1,
             frame: Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1)))
         table.clearBuiltInStyle()
-        try table.cell(0, 0).tcPr.appendElement(XML.parse(Data("<a:pattFill prst=\"cross\"><a:fgClr><a:srgbClr val=\"FF0000\"><a:hueOff val=\"60000\"/></a:srgbClr></a:fgClr><a:bgClr><a:prstClr val=\"orange\"/></a:bgClr></a:pattFill>".utf8)))
+        try table.cell(0, 0).tcPr.appendElement(XML.parse(Data("<a:pattFill prst=\"cross\"><a:fgClr><a:srgbClr val=\"FF0000\"><a:unknownTransform val=\"60000\"/></a:srgbClr></a:fgClr><a:bgClr><a:prstClr val=\"unknownPreset\"/></a:bgClr></a:pattFill>".utf8)))
         let report = try deck.renderSVGReportingProblems(slideAt: 0)
         #expect(report.problems.fidelityIssues.contains { $0.code == .unsupportedFill })
         #expect(report.problems.fidelityIssues.filter { $0.code == .unsupportedColor }.count == 2)
         #expect(throws: StrictRenderingError.self) { try deck.renderSVG(slideAt: 0, strictRendering: true) }
+    }
+
+    @Test func supportedColorModelsAndTransformsEmitNoColorIssues() throws {
+        let deck = try Presentation()
+        let slide = try deck.slides[0]
+        for (index, colorXML) in [
+            "<a:srgbClr val=\"FF0000\"><a:hueOff val=\"60000\"/><a:comp/></a:srgbClr>",
+            "<a:prstClr val=\"orange\"/>",
+            "<a:prstClr val=\"dkBlue\"><a:tint val=\"50000\"/></a:prstClr>",
+            "<a:prstClr val=\"transparent\"/>",
+            "<a:hslClr hue=\"7200000\" sat=\"100000\" lum=\"50000\"/>",
+            "<a:scrgbClr r=\"100000\" g=\"50000\" b=\"0\"/>",
+            "<a:sysClr val=\"windowText\"/>",
+        ].enumerated() {
+            let shape = try slide.shapes.addShape(.rectangle,
+                frame: Rect(x: .inches(Double(index)), y: .zero, width: .inches(1), height: .inches(1)),
+                fill: .none)
+            let spPr = try #require(shape.element.firstChild(named: "p:spPr"))
+            spPr.removeChildren(named: "a:noFill")
+            spPr.appendElement(try XML.parse(Data("<a:solidFill>\(colorXML)</a:solidFill>".utf8)))
+        }
+        slide.part.markDirty()
+        let result = try deck.renderSVGReportingProblems(slideAt: 0, strictRendering: true)
+        #expect(result.problems.isEmpty)
+        #expect(result.svg.contains("fill=\"#ffa500\"") || result.svg.contains("fill=\"#FFA500\""))
+        #expect(result.svg.contains("rgba(0,0,0,0.0)"))
     }
 
     @Test func unresolvedTableStylePropertiesAreReportedAtTheirOwningPart() throws {

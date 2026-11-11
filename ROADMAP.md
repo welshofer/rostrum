@@ -94,7 +94,9 @@ historical phases below retain their original scope and dates.
 - [x] Bullets, numbered lists, hyperlinks (2026-07-18)
 - [x] **Autofit with real font metrics** — shipped 2026-07-22 by the v0.4
   program below (`FontMetrics` + `TextMeasurer` + computed `a:normAutofit`)
-- [ ] Group shapes, connectors, freeform
+- [x] Group shapes, connectors, freeform — `addConnector`, `addGroup` +
+  `GroupShape.contents`, and `addFreeform` (`FreeformPath`: `moveTo`, `lineTo`,
+  `quadCurveTo`, `cubicCurveTo`, `arcTo`, `close`, `polygon`) (2026-11-10)
 
 ## Phase 3 — Parity completion
 
@@ -178,8 +180,10 @@ Ranked by demand evidence from python-pptx's issue tracker:
    (`pptx-tool extract`, and Lectern's File ▸ Export Deck to Folder…).
    python-pptx has no equivalent; getting content *out* of a deck is one of
    the most common reasons people reach for it in the first place.
-   Next: an `--include-poster` for video thumbnails, and reading the
-   embedded chart workbook for the values the chart XML cache omits.
+   Extended 2026-11-09/10: `--include-poster` (`includeVideoPosters`) exports
+   video thumbnail posters, and non-mutating `ChartWorkbookReader` fallback
+   reads embedded `.xlsx` workbooks (including parenthesized Excel range
+   formulas) when chart XML caches are absent.
 1. ~~Deck merge / slide import~~ ✅ **Shipped 2026-07-19**: copy slides with
    images, charts, layouts and rels intact (`slides.importAll(from:)`).
 2. ~~Theme & brand kit editing~~ ✅ **Shipped 2026-07-19**: `Theme` object,
@@ -190,10 +194,12 @@ Ranked by demand evidence from python-pptx's issue tracker:
    ships SmartArt behind an opt-in toggle — production trust is the gap).
 4. ~~Modern threaded comments~~ ✅ **Shipped 2026-07-18**; native sections
    and font embedding followed (2026-07-19).
-5. **Animations & transitions** — the `p:timing` tree, entrance/exit/emphasis
-   presets, slide transitions. (Existing decks' animations survive via
-   pristine parts, but there is **no dedicated round-trip test** — the v0.1
-   P3 bullet claiming one was wrong.)
+5. **Animations & transitions** — typed `SlideTransition` read/write API
+   (`Slide.transition`, 21 OOXML transition effects, speeds, click/timed
+   advance, preserving `p:sndAc` and `p:extLst`) and dedicated `p:transition` /
+   `p:timing` round-trip and slide-duplication tests shipped 2026-11-10.
+   *Still open:* authoring `p:timing` animation trees (entrance/exit/emphasis
+   presets).
 6. **ChartEx** (`cx:`) — waterfall, sunburst, treemap, histogram, funnel.
 7. ~~Reading chart data back out and robust `replaceData`~~ ✅ **Shipped
    2026-07-26** (v0.4 M4): `deck.charts`, and a `replaceData` that validates

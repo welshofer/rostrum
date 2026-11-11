@@ -5,9 +5,9 @@ import Foundation
 /// without parsing the same face again. No operating-system lookup, shared cache
 /// or document embedding occurs. Retention is controlled by the caller.
 ///
-/// For collections, `fontIndex` selects the measured face; `data` retains the
-/// complete collection. Preparation does not make a collection embeddable in SVG
-/// or bypass the source font's embedding restrictions.
+/// For collections, `fontIndex` selects the measured and SVG-embedded face;
+/// `data` retains the complete collection. Preparation never bypasses the
+/// source font's OS/2 embedding restrictions.
 public struct PreparedFont: Sendable {
     public let data: Data
     public let fontIndex: Int

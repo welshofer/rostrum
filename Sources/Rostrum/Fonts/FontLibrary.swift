@@ -12,15 +12,36 @@ public final class FontLibrary {
     /// Distinct styles never overwrite one another.
     private var byFace: [FontFaceKey: FontMetrics] = [:]
     private var sourceData: [FontFaceKey: Data] = [:]
+    private var sourceFontIndex: [FontFaceKey: Int] = [:]
+    private var extractedSources: [FontFaceKey: Data] = [:]
+    private var extractedBytes = 0
     private var encodedSources: [FontFaceKey: String] = [:]
     private var encodedBytes = 0
     private let encodedByteLimit = 4 * 1024 * 1024
+    private let extractedByteLimit = 16 * 1024 * 1024
+
+    /// Standalone `sfnt` bytes suitable for `@font-face` embedding (extracting
+    /// the registered `fontIndex` when the source is a `.ttc` collection).
+    func embeddableSFNTData(for face: FontFaceKey) throws -> Data? {
+        if let cached = extractedSources[face] { return cached }
+        guard let data = sourceData[face] else { return nil }
+        let index = sourceFontIndex[face] ?? 0
+        if Array(data.prefix(4)) != [0x74, 0x74, 0x63, 0x66], index == 0 {
+            return data
+        }
+        let extracted = try FontMetrics.extractStandaloneSFNT(from: data, fontIndex: index)
+        if extracted.count <= extractedByteLimit - extractedBytes {
+            extractedSources[face] = extracted
+            extractedBytes += extracted.count
+        }
+        return extracted
+    }
 
     /// Reuse immutable registered bytes across slides, with bounded retention.
     /// Registration invalidates the cache, including all aliases of a face.
     func encodedSource(for face: FontFaceKey) -> String? {
         if let cached = encodedSources[face] { return cached }
-        guard let data = sourceData[face] else { return nil }
+        guard let data = try? embeddableSFNTData(for: face) else { return nil }
         let encoded = data.base64EncodedString()
         if encoded.utf8.count <= encodedByteLimit - encodedBytes {
             encodedSources[face] = encoded
@@ -82,7 +103,8 @@ public final class FontLibrary {
     @discardableResult
     public func register(_ font: PreparedFont, aliases: [String] = []) throws -> String {
         let metrics = font.metrics
-        return try register(metrics, data: font.data, names: metrics.familyNames + aliases,
+        return try register(metrics, data: font.data, fontIndex: font.fontIndex,
+                            names: metrics.familyNames + aliases,
                             bold: metrics.isBold, italic: metrics.isItalic)
     }
 
@@ -90,19 +112,22 @@ public final class FontLibrary {
     /// embedded-face tags. Metrics and bytes always come from the same snapshot.
     @discardableResult
     public func register(_ font: PreparedFont, face: FontFaceKey, aliases: [String] = []) throws -> String {
-        try register(font.metrics, data: font.data, names: [face.family] + font.metrics.familyNames + aliases,
-                            bold: face.bold, italic: face.italic)
+        try register(font.metrics, data: font.data, fontIndex: font.fontIndex,
+                     names: [face.family] + font.metrics.familyNames + aliases,
+                     bold: face.bold, italic: face.italic)
     }
 
-    private func register(_ metrics: FontMetrics, data: Data, names: [String], bold: Bool, italic: Bool) throws -> String {
+    private func register(_ metrics: FontMetrics, data: Data, fontIndex: Int, names: [String], bold: Bool, italic: Bool) throws -> String {
         guard let primary = names.first else {
             throw RostrumError.fontCorrupt("font has no family name; pass aliases: when registering")
         }
+        extractedSources.removeAll(); extractedBytes = 0
         encodedSources.removeAll(); encodedBytes = 0
         for name in names {
             let key = FontFaceKey(family: name, bold: bold, italic: italic)
             byFace[key] = metrics
             sourceData[key] = data
+            sourceFontIndex[key] = fontIndex
         }
         return primary
     }

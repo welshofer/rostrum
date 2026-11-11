@@ -30,7 +30,10 @@ final class ChartWorkbookReader {
         let end: Address
         var count: Int { max(end.row - start.row, end.column - start.column) + 1 }
         init?(_ formula: String) {
-            guard formula.utf8.count <= 1024, !formula.contains("["), !formula.contains("]"),
+            guard formula.utf8.count <= 1024 else { return nil }
+            let formula = formula.hasPrefix("(") && formula.hasSuffix(")") && formula.count >= 2
+                ? String(formula.dropFirst().dropLast()) : formula
+            guard !formula.contains("["), !formula.contains("]"),
                   let bang = formula.lastIndex(of: "!") else { return nil }
             var sheet = String(formula[..<bang])
             if sheet.hasPrefix("'") && sheet.hasSuffix("'") && sheet.count >= 2 {

@@ -7,6 +7,18 @@ enum SVGCustomGeometry {
         let data: String
         let fill: Bool
         let stroke: Bool
+        let closed: Bool
+    }
+
+    static func supportsArrowheads(_ geometry: XML.Element) -> Bool {
+        guard let list = geometry.firstChild(named: "a:pathLst"), !list.childElements.isEmpty else { return false }
+        let stroked = list.childElements.filter {
+            $0.name == "a:path" && !["0", "false"].contains($0[attribute: "stroke"] ?? "1")
+        }
+        guard !stroked.isEmpty else { return false }
+        return stroked.allSatisfy { path in
+            !path.childElements.isEmpty && !path.childElements.contains { $0.name == "a:close" }
+        }
     }
 
     static func paths(_ geometry: XML.Element, width: Double, height: Double) -> [Path]? {
@@ -71,7 +83,7 @@ enum SVGCustomGeometry {
             let ph = path[attribute: "h"].flatMap(Double.init) ?? height
             guard pw > 0, ph > 0, pw.isFinite, ph.isFinite else { return nil }
             let sx = width / pw, sy = height / ph
-            var parts: [String] = [], hasPoint = false
+            var parts: [String] = [], hasPoint = false, hasClose = false
             var currentX = 0.0, currentY = 0.0, startX = 0.0, startY = 0.0
             for command in path.childElements {
                 commands += 1
@@ -79,6 +91,7 @@ enum SVGCustomGeometry {
                 if command.name == "a:close" {
                     guard hasPoint else { return nil }
                     parts.append("Z")
+                    hasClose = true
                     currentX = startX
                     currentY = startY
                     continue
@@ -156,14 +169,16 @@ enum SVGCustomGeometry {
             }
             guard hasPoint else { return nil }
             result.append(Path(data: parts.joined(separator: " "), fill: path[attribute: "fill"] != "none",
-                stroke: !["0", "false"].contains(path[attribute: "stroke"] ?? "1")))
+                stroke: !["0", "false"].contains(path[attribute: "stroke"] ?? "1"),
+                closed: hasClose))
         }
         return result
     }
 
-    static func render(_ paths: [Path], x: Int, y: Int, fill: String, stroke: String) -> String {
+    static func render(_ paths: [Path], x: Int, y: Int, fill: String, stroke: String, openMarkerAttrs: String = "") -> String {
         "<g transform=\"translate(\(x) \(y))\">" + paths.map {
-            "<path d=\"\($0.data)\" fill=\"\($0.fill ? fill : "none")\"\($0.stroke ? stroke : "")/>"
+            let strokePart = $0.stroke ? (stroke + (!$0.closed ? openMarkerAttrs : "")) : ""
+            return "<path d=\"\($0.data)\" fill=\"\($0.fill ? fill : "none")\"\(strokePart)/>"
         }.joined() + "</g>"
     }
 }
