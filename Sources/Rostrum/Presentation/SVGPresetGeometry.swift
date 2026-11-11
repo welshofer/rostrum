@@ -5,14 +5,29 @@ import Foundation
 /// Outline equations follow ECMA-376 Part 1 presetShapeDefinitions (2016);
 /// upArrow uses the Microsoft Open Specifications clarification of May 2025.
 enum SVGPresetGeometry {
+    static let openPresets: Set<String> = ["line", "straightConnector1", "arc"]
     static let supported: Set<String> = ["rect", "ellipse", "roundRect", "triangle", "rtTriangle", "diamond",
-        "parallelogram", "trapezoid", "chevron", "rightArrow", "leftArrow", "upArrow", "downArrow"]
+        "parallelogram", "trapezoid", "chevron", "rightArrow", "leftArrow", "upArrow", "downArrow",
+        "line", "straightConnector1", "arc"]
 
     private static func adjustment(_ name: String, fallback: Double, limit: Double, in adjustments: XML.Element?) -> Double {
         guard let formula = adjustments?.children(named: "a:gd").first(where: { $0[attribute: "name"] == name })?[attribute: "fmla"] else { return min(fallback, limit) }
         let parts = formula.split(whereSeparator: { $0.isWhitespace })
         guard parts.count == 2, parts[0] == "val", let value = Double(parts[1]), value.isFinite else { return min(fallback, limit) }
         return min(max(0, value), limit)
+    }
+
+    private static func angleAdjustment(_ name: String, fallback: Double, in adjustments: XML.Element?) -> Double {
+        let fullCircle = 21_600_000.0
+        guard let formula = adjustments?.children(named: "a:gd").first(where: { $0[attribute: "name"] == name })?[attribute: "fmla"] else {
+            return fallback
+        }
+        let parts = formula.split(whereSeparator: { $0.isWhitespace })
+        guard parts.count == 2, parts[0] == "val", let value = Double(parts[1]), value.isFinite, abs(value) <= 1e14 else {
+            return fallback
+        }
+        let wrapped = value.truncatingRemainder(dividingBy: fullCircle)
+        return wrapped < 0 ? wrapped + fullCircle : wrapped
     }
 
     /// Preset text rectangles are part of the geometry definition. Placing text
@@ -109,6 +124,47 @@ enum SVGPresetGeometry {
                 default: return (a,b)
                 }
             })
+        case "line", "straightConnector1":
+            return "<line x1=\"\(ix)\" y1=\"\(iy)\" x2=\"\(ix + max(0, iw))\" y2=\"\(iy + max(0, ih))\" fill=\"none\"\(stroke)/>"
+        case "arc":
+            let rx = w / 2, ry = h / 2
+            guard rx > 0, ry > 0 else {
+                return "<line x1=\"\(ix)\" y1=\"\(iy)\" x2=\"\(ix + max(0, iw))\" y2=\"\(iy + max(0, ih))\" fill=\"none\"\(stroke)/>"
+            }
+            let cx = x + rx, cy = y + ry
+            let stAng = angleAdjustment("adj1", fallback: 16_200_000, in: adjustments)
+            let endAng = angleAdjustment("adj2", fallback: 0, in: adjustments)
+            var swAng = endAng - stAng
+            if swAng < 0 { swAng += 21_600_000 }
+            func pointOnEllipse(_ angle: Double) -> (Double, Double) {
+                let rad = angle * .pi / 10_800_000
+                let s = sin(rad), c = cos(rad)
+                let cleanS = abs(s) < 1e-12 ? 0 : s
+                let cleanC = abs(c) < 1e-12 ? 0 : c
+                let phi = atan2(cleanS / ry, cleanC / rx)
+                return (cx + rx * cos(phi), cy + ry * sin(phi))
+            }
+            let start = pointOnEllipse(stAng)
+            var commands = ["M" + SVGNumber.decimal(start.0) + " " + SVGNumber.decimal(start.1)]
+            if swAng > 0 {
+                let steps = max(1, min(4, Int(ceil(swAng / 5_400_000))))
+                let stepSw = swAng / Double(steps)
+                for step in 1...steps {
+                    let pt = pointOnEllipse(stAng + stepSw * Double(step))
+                    commands.append("A" + SVGNumber.decimal(rx) + " " + SVGNumber.decimal(ry)
+                        + " 0 0 1 " + SVGNumber.decimal(pt.0) + " " + SVGNumber.decimal(pt.1))
+                }
+            }
+            let arcPath = commands.joined(separator: " ")
+            var svg = ""
+            if fill != "none" {
+                let sectorPath = arcPath + " L" + SVGNumber.decimal(cx) + " " + SVGNumber.decimal(cy) + " Z"
+                svg += "<path d=\"\(sectorPath)\" fill=\"\(fill)\" stroke=\"none\"/>"
+            }
+            if !stroke.isEmpty || fill == "none" {
+                svg += "<path d=\"\(arcPath)\" fill=\"none\"\(stroke)/>"
+            }
+            return svg
         default: return "<rect x=\"\(ix)\" y=\"\(iy)\" width=\"\(max(0, iw))\" height=\"\(max(0, ih))\" fill=\"\(fill)\"\(stroke)/>"
         }
     }

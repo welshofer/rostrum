@@ -52,6 +52,28 @@ public final class Slide {
         (try? part.dom())?.firstChild(named: "p:transition") != nil
     }
 
+    /// The slide's entry transition (`p:transition`), or `nil` when none is set.
+    ///
+    /// Reading is non-mutating and leaves untouched slide parts byte-identical.
+    /// Writing inserts or updates `p:transition` in `CT_Slide` schema order
+    /// (`beforeAnyOf: ["p:timing", "p:extLst"]`) while preserving any sound
+    /// action (`p:sndAc`), extensions (`p:extLst`), or animation timing (`p:timing`).
+    public var transition: SlideTransition? {
+        get {
+            (try? part.dom())?.firstChild(named: "p:transition").map(SlideTransition.init(element:))
+        }
+        set {
+            guard let root = try? part.dom() else { return }
+            if let newValue {
+                let element = root.getOrAddChild("p:transition", beforeAnyOf: ["p:timing", "p:extLst"])
+                newValue.apply(to: element)
+            } else {
+                root.removeChildren(named: "p:transition")
+            }
+            part.markDirty()
+        }
+    }
+
     /// True when the slide carries an animation or media timing tree (`p:timing`).
     public var hasTiming: Bool {
         (try? part.dom())?.firstChild(named: "p:timing") != nil

@@ -203,6 +203,51 @@ public enum LineDash: String, CaseIterable, Hashable, Sendable {
     case systemDashDot = "sysDashDot", systemDashDotDot = "sysDashDotDot"
 }
 
+/// DrawingML line-end arrowhead shapes (`a:headEnd@type`, `a:tailEnd@type`).
+public enum ArrowheadType: String, CaseIterable, Hashable, Sendable {
+    case none, triangle, stealth, diamond, oval, arrow
+}
+
+/// DrawingML line-end arrowhead width and length presets (`sm`, `med`, `lg`).
+public enum ArrowheadSize: String, CaseIterable, Hashable, Sendable {
+    case small = "sm", medium = "med", large = "lg"
+}
+
+/// A line-end arrowhead (`a:headEnd` or `a:tailEnd`).
+public struct Arrowhead: Hashable, Sendable {
+    public var type: ArrowheadType
+    public var width: ArrowheadSize?
+    public var length: ArrowheadSize?
+
+    public init(_ type: ArrowheadType, width: ArrowheadSize? = nil, length: ArrowheadSize? = nil) {
+        self.type = type
+        self.width = width
+        self.length = length
+    }
+
+    public static let none = Arrowhead(.none)
+    public static let triangle = Arrowhead(.triangle)
+    public static let stealth = Arrowhead(.stealth)
+    public static let diamond = Arrowhead(.diamond)
+    public static let oval = Arrowhead(.oval)
+    public static let arrow = Arrowhead(.arrow)
+
+    func makeElement(named elementName: String) -> XML.Element {
+        var attributes: [(String, String)] = [("type", type.rawValue)]
+        if let width { attributes.append(("w", width.rawValue)) }
+        if let length { attributes.append(("len", length.rawValue)) }
+        return XML.Element(elementName, attributes: attributes)
+    }
+
+    init?(element: XML.Element) {
+        guard let rawType = element[attribute: "type"],
+              let parsedType = ArrowheadType(rawValue: rawType) else { return nil }
+        self.type = parsedType
+        self.width = element[attribute: "w"].flatMap(ArrowheadSize.init(rawValue:))
+        self.length = element[attribute: "len"].flatMap(ArrowheadSize.init(rawValue:))
+    }
+}
+
 /// A shape outline. `nil` on a Rostrum shape means an explicit `a:ln` with
 /// `a:noFill` — design shapes shouldn't inherit theme outlines by surprise.
 public struct Line: Hashable, Sendable {
@@ -212,6 +257,10 @@ public struct Line: Hashable, Sendable {
     public var compound: LineCompound?
     /// Nil leaves the pattern unspecified; existing table borders retain it.
     public var dash: LineDash?
+    /// Optional start-of-path arrowhead (`a:headEnd`).
+    public var headEnd: Arrowhead?
+    /// Optional end-of-path arrowhead (`a:tailEnd`).
+    public var tailEnd: Arrowhead?
 
     public init(color: Color, width: EMU = .points(1)) {
         self.init(color: color, width: width, compound: nil, dash: nil)
@@ -223,6 +272,30 @@ public struct Line: Hashable, Sendable {
         self.width = width
         self.compound = compound
         self.dash = dash
+        self.headEnd = nil
+        self.tailEnd = nil
+    }
+
+    public init(color: Color, width: EMU = .points(1),
+                compound: LineCompound? = nil, dash: LineDash? = nil,
+                headEnd: Arrowhead?, tailEnd: Arrowhead? = nil) {
+        self.color = color
+        self.width = width
+        self.compound = compound
+        self.dash = dash
+        self.headEnd = headEnd
+        self.tailEnd = tailEnd
+    }
+
+    public init(color: Color, width: EMU = .points(1),
+                compound: LineCompound? = nil, dash: LineDash? = nil,
+                tailEnd: Arrowhead) {
+        self.color = color
+        self.width = width
+        self.compound = compound
+        self.dash = dash
+        self.headEnd = nil
+        self.tailEnd = tailEnd
     }
 
     static func makeElement(_ line: Line?) -> XML.Element {
@@ -235,6 +308,12 @@ public struct Line: Hashable, Sendable {
             ln.appendElement(fill)
             if let dash = line.dash {
                 ln.appendElement(XML.Element("a:prstDash", attributes: [("val", dash.rawValue)]))
+            }
+            if let headEnd = line.headEnd {
+                ln.appendElement(headEnd.makeElement(named: "a:headEnd"))
+            }
+            if let tailEnd = line.tailEnd {
+                ln.appendElement(tailEnd.makeElement(named: "a:tailEnd"))
             }
         } else {
             ln.appendElement(XML.Element("a:noFill"))

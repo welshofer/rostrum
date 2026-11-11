@@ -86,12 +86,18 @@ public struct ReadLine: Equatable, Sendable {
     /// True when the outline is explicitly `a:noFill` — a suppressed border,
     /// which is different from no `a:ln` at all.
     public var isNone: Bool
+    /// Start-of-path arrowhead (`a:headEnd`), when authored.
+    public var headEnd: Arrowhead?
+    /// End-of-path arrowhead (`a:tailEnd`), when authored.
+    public var tailEnd: Arrowhead?
 
     init(element: XML.Element) {
         width = element[attribute: "w"].flatMap { Int($0) }.map { EMU($0) }
         dashStyle = element.firstChild(named: "a:prstDash")?[attribute: "val"]
         compoundStyle = element[attribute: "cmpd"]
         isNone = element.firstChild(named: "a:noFill") != nil
+        headEnd = element.firstChild(named: "a:headEnd").flatMap(Arrowhead.init(element:))
+        tailEnd = element.firstChild(named: "a:tailEnd").flatMap(Arrowhead.init(element:))
         let solid = element.firstChild(named: "a:solidFill")
         color = solid?.firstChild(named: "a:srgbClr")?[attribute: "val"]
             .flatMap { Color(validating: $0) }

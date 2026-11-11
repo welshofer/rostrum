@@ -28,13 +28,18 @@ private let pythonWithPptx: String? = {
     private static let script = """
         import sys
         from pptx import Presentation
+        def walk(shapes):
+            for shape in shapes:
+                _ = (shape.left, shape.top, shape.width, shape.height)
+                if shape.has_text_frame:
+                    _ = shape.text_frame.text
+                if hasattr(shape, "shapes"):
+                    walk(shape.shapes)
         p = Presentation(sys.argv[1])
         n = 0
         for slide in p.slides:
             n += 1
-            for shape in slide.shapes:
-                if shape.has_text_frame:
-                    _ = shape.text_frame.text
+            walk(slide.shapes)
         print(n)
         """
 
@@ -83,6 +88,27 @@ private let pythonWithPptx: String? = {
             ]),
             frame: Rect(x: .inches(1), y: .inches(1), width: .inches(6), height: .inches(4)))
         try assertOpens(combo, "combo")
+
+        let diagram = try Presentation()
+        let slide = try diagram.slides[0]
+        slide.transition = SlideTransition(.push(.right), speed: .fast, advanceAfterMilliseconds: 2000)
+        let grp = try slide.shapes.addGroup(
+            Rect(x: .inches(1), y: .inches(1), width: .inches(3), height: .inches(2)))
+        let node = try grp.contents.addShape(
+            .roundedRectangle,
+            frame: Rect(x: .inches(1), y: .inches(1), width: .inches(1.5), height: .inches(1)),
+            fill: .solid(Color("336699")))
+        node.textFrame?.text = "Inside Group"
+        _ = try slide.shapes.addConnector(
+            .elbow,
+            from: (x: .inches(4), y: .inches(2)),
+            to: (x: .inches(6), y: .inches(3)),
+            line: Line(color: Color("224466"), width: .points(2), tailEnd: .stealth))
+        _ = try slide.shapes.addFreeform(
+            Rect(x: .inches(6), y: .inches(2.5), width: .inches(1), height: .inches(1)),
+            path: .polygon([(x: .zero, y: .inches(1)), (x: .inches(0.5), y: .zero), (x: .inches(1), y: .inches(1))]),
+            fill: .solid(Color("CC8822")))
+        try assertOpens(diagram, "diagram")
 
         let merged = try Presentation()
         let source = try Presentation()

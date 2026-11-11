@@ -6,6 +6,49 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Add write-side authoring for connectors (`ShapeCollection.addConnector`,
+  `ConnectorGeometry`, `Connector.startPoint`/`endPoint`, and `Line` /
+  `ReadLine` `headEnd`/`tailEnd` arrowheads), group shapes
+  (`ShapeCollection.addGroup` and container-aware `GroupShape.contents`), and
+  custom geometry freeform paths (`ShapeCollection.addFreeform`, `FreeformPath`,
+  and `Shape.isCustomGeometry`).
+- Add typed slide transitions (`SlideTransition`, `Slide.transition`) covering
+  all 21 OOXML transition effect elements, speeds, and click/timed advance while
+  preserving `p:sndAc`, `p:extLst`, and `p:timing`, with dedicated round-trip
+  and duplication tests.
+- Extend `ChartWorkbookReader` to parse parenthesized Excel range formulas
+  (e.g. `(Sheet1!$A$2:$A$5)`), wire `--include-poster` into `pptx-tool extract`,
+  and report orphan part counts in `pptx-tool inspect`.
+- Complete DrawingML color resolution across all 6 ECMA-376 color models
+  (`a:srgbClr`, `a:scrgbClr`, `a:hslClr`, `a:sysClr` with `lastClr` and
+  `ST_SystemColorVal` fallbacks, `a:schemeClr`, and all ~190 `ST_PresetColorVal`
+  `a:prstClr` presets including `dk*`/`lt*`/`med*` aliases and `transparent`)
+  and all 26 color transforms across shapes, text, gradients, backgrounds, and
+  table styles, reconciled with `--strict` SVG diagnostics.
+- Extract standalone `sfnt` font binaries per `fontIndex` from TrueType
+  Collections (`.ttc`) when embedding `@font-face` sources in SVG previews,
+  preserving `FontLibrary.data(for:)` and honoring `OS/2` `fsType` embedding
+  restrictions.
+- Render `line`, `straightConnector1`, and `arc` presets on `p:sp` without
+  rectangle fallback; support all 10 `a:prstDash` presets plus `a:custDash`,
+  open-path arrowheads (`triangle`, `stealth`, `arrow`, `diamond`, `oval`), and
+  `cmpd="dbl"` double lines on `line`/`straightConnector1`/`rect` in SVG
+  previews and `--strict` diagnostics.
+
+## [1.2.0] — 2026-11-10
+
+- Add radar (`c:radarChart`), filled radar, and combo chart (including secondary
+  value axis) SVG previews; add `Presentation.orphanPartURIs` and
+  `pruneOrphanParts()`; support `m4v`/`ogg`/`flac`/`aiff` media formats and
+  `includeVideoPosters` in `Presentation.outline` and `DeckExport.write`; and
+  replace posters cleanly via `Picture.setMediaPoster` without orphaning prior
+  poster images.
+- Render scatter (`c:scatterChart`), bubble (`c:bubbleChart`), and multi-segment
+  bent connectors (`bentConnector2`/`4`/`5`) in SVG previews; expand custom
+  geometry (`a:arcTo`) and preset geometry coverage; harden ZIP64 archives and
+  slide removal relationship cleanup; and cache encoded DEFLATE entries on
+  clean parts with faster CRC-32 slicing-by-8.
+
 - Native Mac review completes five diagnostic preview pairs while retaining exact
   pixel rejection: repeated inline JPEG-pattern captures can also differ. Shared
   fonts remain disabled. Add explicit rejected-evidence collection, a signed

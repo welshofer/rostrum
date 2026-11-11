@@ -64,6 +64,163 @@ public struct FontMetrics: Sendable {
         try self.init(data: try Data(contentsOf: url), fontIndex: fontIndex)
     }
 
+    /// Extracts a standalone TrueType/OpenType (`sfnt`) font binary for `fontIndex`
+    /// when `data` is a TrueType Collection (`ttcf`), or returns `data` unchanged
+    /// for standalone `sfnt` binaries at `fontIndex == 0`.
+    static func extractStandaloneSFNT(from data: Data, fontIndex: Int) throws -> Data {
+        let reader = SFNTReader(bytes: [UInt8](data))
+        let signature = try reader.u32(0)
+        switch signature {
+        case 0x0001_0000, 0x4F54_544F, 0x7472_7565:
+            guard fontIndex == 0 else {
+                throw RostrumError.fontCorrupt("not a collection; fontIndex must be 0")
+            }
+            return data
+        case 0x7474_6366:
+            break
+        default:
+            throw RostrumError.fontCorrupt("unrecognized sfnt version 0x\(String(signature, radix: 16))")
+        }
+
+        let count = try reader.u32(8)
+        guard (0..<count).contains(fontIndex) else {
+            throw RostrumError.fontCorrupt("collection has \(count) fonts; index \(fontIndex) out of range")
+        }
+        let directoryOffset = try reader.u32(12 + 4 * fontIndex)
+        let sfntVersion = try reader.u32(directoryOffset)
+        guard sfntVersion == 0x0001_0000 || sfntVersion == 0x4F54_544F || sfntVersion == 0x7472_7565 else {
+            throw RostrumError.fontCorrupt("collection entry is not an sfnt font")
+        }
+        let numTables = try reader.u16(directoryOffset + 4)
+        guard numTables > 0, numTables <= 1024 else {
+            throw RostrumError.fontCorrupt("invalid sfnt table count \(numTables)")
+        }
+
+        struct TableEntry {
+            let tagU32: UInt32
+            let offset: Int
+            let length: Int
+        }
+        var entries: [TableEntry] = []
+        entries.reserveCapacity(numTables)
+        var seenTags: Set<UInt32> = []
+        let maxOutputBytes = 64 << 20
+        var totalSize = 12 + 16 * numTables
+
+        for i in 0..<numTables {
+            let record = directoryOffset + 12 + 16 * i
+            let tagU32 = UInt32(try reader.u32(record))
+            guard seenTags.insert(tagU32).inserted else {
+                throw RostrumError.fontCorrupt("duplicate table tag in collection entry")
+            }
+            let offset = try reader.u32(record + 8)
+            let length = try reader.u32(record + 12)
+            guard offset >= 0, length >= 0, offset + length <= reader.count else {
+                throw RostrumError.fontCorrupt("collection table extends past end of file")
+            }
+            let padded = (length + 3) & ~3
+            totalSize += padded
+            guard totalSize <= maxOutputBytes else {
+                throw RostrumError.fontCorrupt("extracted collection font exceeds size budget")
+            }
+            entries.append(TableEntry(tagU32: tagU32, offset: offset, length: length))
+        }
+
+        entries.sort { $0.tagU32 < $1.tagU32 }
+
+        var maxPow2 = 1
+        var entrySelector = 0
+        while maxPow2 * 2 <= numTables {
+            maxPow2 *= 2
+            entrySelector += 1
+        }
+        let searchRange = maxPow2 * 16
+        let rangeShift = numTables * 16 - searchRange
+
+        func appendU16(_ out: inout [UInt8], _ value: Int) {
+            out.append(UInt8((value >> 8) & 0xFF))
+            out.append(UInt8(value & 0xFF))
+        }
+        func appendU32(_ out: inout [UInt8], _ value: UInt32) {
+            out.append(UInt8((value >> 24) & 0xFF))
+            out.append(UInt8((value >> 16) & 0xFF))
+            out.append(UInt8((value >> 8) & 0xFF))
+            out.append(UInt8(value & 0xFF))
+        }
+        func checksum(_ bytes: ArraySlice<UInt8>) -> UInt32 {
+            var sum: UInt32 = 0
+            var idx = bytes.startIndex
+            while idx < bytes.endIndex {
+                let b0 = UInt32(bytes[idx])
+                let b1 = idx + 1 < bytes.endIndex ? UInt32(bytes[idx + 1]) : 0
+                let b2 = idx + 2 < bytes.endIndex ? UInt32(bytes[idx + 2]) : 0
+                let b3 = idx + 3 < bytes.endIndex ? UInt32(bytes[idx + 3]) : 0
+                sum &+= (b0 << 24) | (b1 << 16) | (b2 << 8) | b3
+                idx += 4
+            }
+            return sum
+        }
+
+        var out: [UInt8] = []
+        out.reserveCapacity(totalSize)
+        appendU32(&out, UInt32(sfntVersion))
+        appendU16(&out, numTables)
+        appendU16(&out, searchRange)
+        appendU16(&out, entrySelector)
+        appendU16(&out, rangeShift)
+
+        // Reserve table directory; fill records as we copy padded table payloads.
+        let directoryStart = out.count
+        out.append(contentsOf: repeatElement(0, count: 16 * numTables))
+
+        var headOffsetInOut: Int?
+        for (i, entry) in entries.enumerated() {
+            let tableOutOffset = out.count
+            out.append(contentsOf: reader.bytes[entry.offset..<(entry.offset + entry.length)])
+            let pad = ((entry.length + 3) & ~3) - entry.length
+            if pad > 0 {
+                out.append(contentsOf: repeatElement(0, count: pad))
+            }
+            if entry.tagU32 == 0x6865_6164, entry.length >= 12 { // 'head'
+                headOffsetInOut = tableOutOffset
+                out[tableOutOffset + 8] = 0
+                out[tableOutOffset + 9] = 0
+                out[tableOutOffset + 10] = 0
+                out[tableOutOffset + 11] = 0
+            }
+            let sum = checksum(out[tableOutOffset..<out.count])
+            let rec = directoryStart + 16 * i
+            out[rec] = UInt8((entry.tagU32 >> 24) & 0xFF)
+            out[rec + 1] = UInt8((entry.tagU32 >> 16) & 0xFF)
+            out[rec + 2] = UInt8((entry.tagU32 >> 8) & 0xFF)
+            out[rec + 3] = UInt8(entry.tagU32 & 0xFF)
+            out[rec + 4] = UInt8((sum >> 24) & 0xFF)
+            out[rec + 5] = UInt8((sum >> 16) & 0xFF)
+            out[rec + 6] = UInt8((sum >> 8) & 0xFF)
+            out[rec + 7] = UInt8(sum & 0xFF)
+            let off32 = UInt32(tableOutOffset)
+            out[rec + 8] = UInt8((off32 >> 24) & 0xFF)
+            out[rec + 9] = UInt8((off32 >> 16) & 0xFF)
+            out[rec + 10] = UInt8((off32 >> 8) & 0xFF)
+            out[rec + 11] = UInt8(off32 & 0xFF)
+            let len32 = UInt32(entry.length)
+            out[rec + 12] = UInt8((len32 >> 24) & 0xFF)
+            out[rec + 13] = UInt8((len32 >> 16) & 0xFF)
+            out[rec + 14] = UInt8((len32 >> 8) & 0xFF)
+            out[rec + 15] = UInt8(len32 & 0xFF)
+        }
+
+        if let headPos = headOffsetInOut {
+            let adjustment = 0xB1B0_AFBA &- checksum(out[0..<out.count])
+            out[headPos + 8] = UInt8((adjustment >> 24) & 0xFF)
+            out[headPos + 9] = UInt8((adjustment >> 16) & 0xFF)
+            out[headPos + 10] = UInt8((adjustment >> 8) & 0xFF)
+            out[headPos + 11] = UInt8(adjustment & 0xFF)
+        }
+
+        return Data(out)
+    }
+
     private init(reader: SFNTReader, fontIndex: Int) throws {
         let directoryOffset: Int
         let tag = try reader.u32(0)
