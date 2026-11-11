@@ -286,7 +286,9 @@ final class RenderDiagnosticCollector {
                     issue(.gradientApproximation, .approximation, "Gradient geometry is approximated by the preview.")
                 }
             case "a:pattFill":
-                issue(.unsupportedFill, .omission, "Pattern fill is not rendered in this shape path.")
+                if !SVGPaint.isRenderablePatternFill(element) {
+                    issue(.unsupportedFill, .omission, "Pattern fill is not rendered in this shape path.")
+                }
             case "a:srgbClr", "a:schemeClr", "a:sysClr", "a:scrgbClr", "a:prstClr", "a:hslClr":
                 if element.childElements.contains(where: { $0.name != "a:extLst" && !DrawingColor.supportedTransforms.contains($0.name) }) {
                     issue(.unsupportedColor, .approximation, "A color transform is not applied by the preview.")
@@ -304,7 +306,8 @@ final class RenderDiagnosticCollector {
                     break
                 }
             case "a:blipFill", "p:blipFill":
-                if element[attribute: "rotWithShape"] == "0" || element[attribute: "rotWithShape"] == "false" {
+                if (element[attribute: "rotWithShape"] == "0" || element[attribute: "rotWithShape"] == "false"),
+                   currentShape.name != "p:sp", currentShape.name != "p:pic" {
                     issue(.ignoredTransform, .approximation, "Image paint rotation independent of its shape is not applied.")
                 }
             case "a:srcRect", "a:fillRect":
@@ -316,18 +319,23 @@ final class RenderDiagnosticCollector {
                     issue(.unsupportedImage, .omission, "The image rectangle is empty, inverted or outside the supported percentage encoding.")
                 }
             case "a:blip":
-                guard let rID = SVGEmbeddedImage.reference(in: element),
-                      let resource = images.resolve(rID, owner: owner, package: package) else {
+                guard let resource = SVGEmbeddedImage.resolve(in: element, owner: owner, package: package, resources: images) else {
                     issue(.unavailableImage, .missingResource, "Image bytes could not be resolved from the owning part."); break
                 }
                 if !resource.supported {
                     issue(.unsupportedImage, .omission, "The embedded bytes are not a recognized raster image or supported self-contained SVG.")
                 }
-                if element.childElements.contains(where: { $0.name != "a:extLst" }) { issue(.omittedEffect, .omission, "Image effects are not applied.") }
+                if SVGPaint.hasUnsupportedBlipEffects(element) { issue(.omittedEffect, .omission, "Image effects are not applied.") }
             case "a:graphicData":
                 let uri = element[attribute: "uri"] ?? ""
                 if uri.hasSuffix("/chart") { issue(.chartApproximation, .approximation, "Chart layout is approximated; PowerPoint positioning and unsupported formatting may differ.") }
-                else if !uri.hasSuffix("/table") && uri != GraphicDataURI.diagram { issue(.graphicPlaceholder, .omission, "Graphic content is represented by a labeled placeholder.") }
+                else if uri == ExtendedChart.namespace {
+                    if GraphicFrame(element: currentShape, part: owner, package: package).extendedChart.map({ !$0.series.isEmpty }) == true {
+                        issue(.chartApproximation, .approximation, "Chart layout is approximated; PowerPoint positioning and unsupported formatting may differ.")
+                    } else {
+                        issue(.graphicPlaceholder, .omission, "Graphic content is represented by a labeled placeholder.")
+                    }
+                } else if !uri.hasSuffix("/table") && uri != GraphicDataURI.diagram { issue(.graphicPlaceholder, .omission, "Graphic content is represented by a labeled placeholder.") }
             case "a:tbl":
                 if !Self.hasTableStyle(element, package: package) { issue(.unresolvedTableStyle, .approximation, "The table style has no recognized native or embedded definition; preview uses fallback/direct formatting.") }
             case "a:tcPr":
@@ -335,21 +343,30 @@ final class RenderDiagnosticCollector {
                     issue(.unsupportedTextProperty, .approximation, "This vertical cell text direction is not implemented.")
                 }
             case "a:bodyPr":
-                if let vertical = element[attribute: "vert"], vertical != "horz" { issue(.unsupportedTextProperty, .approximation, "Vertical text layout is not implemented.") }
-                if let columns = element[attribute: "numCol"], columns != "1" { issue(.unsupportedTextProperty, .approximation, "Text columns are not implemented.") }
+                let vertical = element[attribute: "vert"] ?? "horz"
+                let columns = element[attribute: "numCol"] ?? "1"
+                let validColCount = Int(columns).map { (1...16).contains($0) } == true
+                if !["horz", "vert", "vert270"].contains(vertical) || (vertical != "horz" && columns != "1") {
+                    issue(.unsupportedTextProperty, .approximation, "Vertical text layout is not implemented.")
+                }
+                if columns != "1" && (!validColCount || vertical != "horz") {
+                    issue(.unsupportedTextProperty, .approximation, "Text columns are not implemented.")
+                }
                 if let warp = element.firstChild(named: "a:prstTxWarp"), warp[attribute: "prst"] != "textNoShape" { issue(.unsupportedTextProperty, .approximation, "Text warp is not implemented.") }
             case "a:pPr":
                 // Resolved paragraph alignment is diagnosed by RichTextLayout,
                 // including inherited modes and unsupported justification cases.
                 if element[attribute: "rtl"] == "1" { issue(.unsupportedTextProperty, .approximation, "Paragraph RTL layout is not verified.") }
             case "a:rPr", "a:defRPr", "a:endParaRPr":
-                if element[attribute: "cap"] == "small" { issue(.unsupportedTextProperty, .approximation, "Small capitals are not rendered.") }
                 if ["kumimoji", "normalizeH"].contains(where: { element[attribute: $0].map { $0 != "0" && $0 != "none" && $0 != "noStrike" } ?? false }) {
                     issue(.unsupportedTextProperty, .approximation, "Character transforms are not rendered.")
                 }
             case "a:tab":
                 if let alignment = element[attribute: "algn"], !["l", "ctr", "r", "dec"].contains(alignment) { issue(.unsupportedTextProperty, .approximation, "Unknown tab alignment is approximated as a left tab.") }
-            case "a:buBlip": issue(.unsupportedTextProperty, .omission, "Picture bullets are not rendered.")
+            case "a:buBlip":
+                if element.firstChild(named: "a:blip").flatMap({ SVGEmbeddedImage.resolve(in: $0, owner: owner, package: package, resources: images) })?.supported != true {
+                    issue(.unsupportedTextProperty, .omission, "Picture bullets are not rendered.")
+                }
             case "a:ln":
                 if currentShape.name == "p:cxnSp" { break }
                 if !Self.isSupportedShapeLine(element, on: currentShape, tableStyle: tableStyle) {

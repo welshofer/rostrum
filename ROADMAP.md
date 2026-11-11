@@ -188,10 +188,12 @@ Ranked by demand evidence from python-pptx's issue tracker:
    images, charts, layouts and rels intact (`slides.importAll(from:)`).
 2. ~~Theme & brand kit editing~~ ✅ **Shipped 2026-07-19**: `Theme` object,
    palette + fonts, `schemeClr` → RGB resolution through the clrMap chain.
-3. ~~SmartArt~~ ✅ **Shipped 2026-07-18/19**: Basic Block List, process and
-   cycle layouts; `slide.smartArtTexts` extraction. Next: hierarchy layout,
-   multi-level data, PowerPoint-QA across the layout set (Lectern still
-   ships SmartArt behind an opt-in toggle — production trust is the gap).
+3. ~~SmartArt~~ ✅ **Shipped 2026-07-18/19, expanded 2026-11-10**: Basic Block
+   List, process, cycle, hierarchy (`SmartArt.Node` trees, `Slide.smartArtTrees`,
+   `addSmartArt(nodes:frame:colors:includeDrawing:)`), relationship, matrix, and
+   pyramid layouts (`addSmartArt(items:frame:colors:layout:includeDrawing:)`);
+   `slide.smartArtTexts` extraction; and `dsp:drawing` SVG rendering with
+   `dsp:grpSpPr` coordinate transforms and `dsp:cxnSp` connectors.
 4. ~~Modern threaded comments~~ ✅ **Shipped 2026-07-18**; native sections
    and font embedding followed (2026-07-19).
 5. **Animations & transitions** — typed `SlideTransition` read/write API
@@ -200,7 +202,11 @@ Ranked by demand evidence from python-pptx's issue tracker:
    `p:timing` round-trip and slide-duplication tests shipped 2026-11-10.
    *Still open:* authoring `p:timing` animation trees (entrance/exit/emphasis
    presets).
-6. **ChartEx** (`cx:`) — waterfall, sunburst, treemap, histogram, funnel.
+6. ~~ChartEx (`cx:`)~~ ✅ **Shipped 2026-11-10**: `ExtendedChart` /
+   `ExtendedChartKind` (`waterfall`, `funnel`, `treemap`, `sunburst`,
+   `boxWhisker`, `histogram`) read-back (`slide.extendedCharts`,
+   `deck.extendedCharts`), authoring (`shapes.addExtendedChart`), `deck.outline()`
+   CSV table extraction, and SVG preview rendering.
 7. ~~Reading chart data back out and robust `replaceData`~~ ✅ **Shipped
    2026-07-26** (v0.4 M4): `deck.charts`, and a `replaceData` that validates
    the replacement against the chart's own structure and refuses rather than

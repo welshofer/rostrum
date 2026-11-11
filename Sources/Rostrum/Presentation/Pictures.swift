@@ -16,6 +16,20 @@ extension OPCPackage {
         contentTypes.removeOverride(partName: uri)
         return part
     }
+    func svgPart(for data: Data) -> Part {
+        if let existing = matchingMedia(for: data) { return existing }
+        var n = 1
+        while parts[PackURI("/ppt/media/image\(n).svg")] != nil { n += 1 }
+        let uri = PackURI("/ppt/media/image\(n).svg")
+        contentTypes.setDefault(extension: "svg", contentType: ContentType.svg)
+        let part = addPart(uri: uri, contentType: ContentType.svg, blob: data)
+        contentTypes.removeOverride(partName: uri)
+        return part
+    }
+
+    static let fallbackTransparentPNG = Data(
+        base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg=="
+    )!
 }
 
 /// How a picture maps its source pixels onto its frame.
@@ -40,9 +54,44 @@ extension ShapeCollection {
             throw RostrumError.packageInvalid("picture frame must have positive bounded dimensions")
         }
         guard let info = ImageSniffer.sniff(data) else {
-            throw RostrumError.packageInvalid("unrecognized image format (PNG, JPEG and GIF are supported)")
+            throw RostrumError.packageInvalid("unrecognized image format (PNG, JPEG, GIF, TIFF, BMP, and WebP are supported)")
         }
         return try insertPicture(data, info: info, frame: frame, crop: coverCrop(info: info, frame: frame, fit: fit))
+    }
+
+    /// Add a vector SVG picture (`asvg:svgBlip`) with a raster PNG fallback for older Office clients.
+    @discardableResult
+    public func addSVGPicture(_ svgData: Data, fallbackPNG: Data? = nil, frame: Rect) throws -> Picture {
+        guard let package else {
+            throw RostrumError.packageInvalid("this shape collection has no package attached")
+        }
+        guard frame.width.rawValue > 0, frame.height.rawValue > 0,
+              [frame.x.rawValue, frame.y.rawValue, frame.width.rawValue, frame.height.rawValue].allSatisfy(OOXMLBounds.coordinate.contains) else {
+            throw RostrumError.packageInvalid("picture frame must have positive bounded dimensions")
+        }
+        guard SVGEmbeddedImage.size(svgData) != nil else {
+            throw RostrumError.packageInvalid("SVG data is not a valid self-contained vector SVG")
+        }
+        let pngBytes = fallbackPNG ?? OPCPackage.fallbackTransparentPNG
+        guard let pngInfo = ImageSniffer.sniff(pngBytes), pngInfo.format == .png else {
+            throw RostrumError.packageInvalid("SVG picture fallback must be valid PNG data")
+        }
+        let pic = try insertPicture(pngBytes, info: pngInfo, frame: frame)
+        let svgPart = package.svgPart(for: svgData)
+        let svgRelID = part.rels.add(
+            type: RelType.image,
+            target: part.uri.relativeReference(to: svgPart.uri))
+        if let blip = pic.element.firstChild(named: "p:blipFill")?.firstChild(named: "a:blip") {
+            let extLst = blip.getOrAddChild("a:extLst")
+            let ext = XML.Element("a:ext", attributes: [("uri", "{96DAC541-7B7A-43D3-8B79-37D633B846F1}")])
+            ext.appendElement(XML.Element("asvg:svgBlip", attributes: [
+                ("xmlns:asvg", "http://schemas.microsoft.com/office/drawing/2016/SVG/main"),
+                ("r:embed", svgRelID)
+            ]))
+            extLst.appendElement(ext)
+        }
+        part.markDirty()
+        return pic
     }
 
     /// The `a:srcRect` edge insets (fractions 0…1) that make `info` cover
@@ -65,7 +114,7 @@ extension ShapeCollection {
     @discardableResult
     public func addPicture(_ data: Data, x: EMU, y: EMU) throws -> Picture {
         guard let info = ImageSniffer.sniff(data) else {
-            throw RostrumError.packageInvalid("unrecognized image format (PNG, JPEG and GIF are supported)")
+            throw RostrumError.packageInvalid("unrecognized image format (PNG, JPEG, GIF, TIFF, BMP, and WebP are supported)")
         }
         let natural = info.nativeSize
         return try insertPicture(

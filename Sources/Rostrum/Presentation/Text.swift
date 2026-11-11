@@ -28,16 +28,42 @@ public enum VerticalAnchor: String, Sendable {
     case bottom = "b"
 }
 
+/// Vertical text orientation on a shape or table cell (`a:bodyPr@vert`).
+public enum BodyTextDirection: String, Sendable {
+    case horizontal = "horz"
+    case vertical = "vert"
+    case vertical270 = "vert270"
+}
+
+/// Capitalization mode on a text run (`a:rPr@cap`).
+public enum TextCaps: String, Sendable {
+    case none = "none"
+    case small = "small"
+    case all = "all"
+}
+
+/// Strikethrough mode on a text run (`a:rPr@strike`).
+public enum StrikethroughStyle: String, Sendable {
+    case none = "noStrike"
+    case single = "sngStrike"
+    case double = "dblStrike"
+}
+
 /// A shape's text body (`p:txBody`).
 public final class TextFrame {
     let txBody: XML.Element
     let part: Part
     let tableCell: TableCell?
+    let package: OPCPackage?
+    let shapeElement: XML.Element?
 
-    init(txBody: XML.Element, part: Part, tableCell: TableCell? = nil) {
+    init(txBody: XML.Element, part: Part, tableCell: TableCell? = nil,
+         package: OPCPackage? = nil, shapeElement: XML.Element? = nil) {
         self.txBody = txBody
         self.part = part
         self.tableCell = tableCell
+        self.package = package
+        self.shapeElement = shapeElement
     }
 
     private var bodyPr: XML.Element {
@@ -62,10 +88,77 @@ public final class TextFrame {
         part.markDirty()
     }
 
+    /// Whether the shape resizes vertically to fit its text (`a:spAutoFit`).
+    public var shapeAutoFit: Bool {
+        get { bodyPr.firstChild(named: "a:spAutoFit") != nil }
+        set {
+            for name in ["a:noAutofit", "a:normAutofit", "a:spAutoFit"] { bodyPr.removeChildren(named: name) }
+            if newValue {
+                _ = bodyPr.getOrAddChild("a:spAutoFit", beforeAnyOf: ["a:scene3d", "a:sp3d", "a:flatTx", "a:extLst"])
+            }
+            part.markDirty()
+        }
+    }
+
+    /// Enable `a:spAutoFit` and update the owning shape's height (`a:ext/@cy`)
+    /// to fit the laid-out text lines plus top/bottom text insets.
+    public func fitShapeToText(fonts: FontLibrary = FontLibrary()) {
+        shapeAutoFit = true
+        guard let shapeElement,
+              let spPr = shapeElement.firstChild(named: "p:spPr"),
+              let xfrm = spPr.firstChild(named: "a:xfrm"),
+              let ext = xfrm.firstChild(named: "a:ext") else { return }
+        let widthEMU = ext.coordinate("cx") ?? 0
+        guard widthEMU > 0 else { return }
+        let topInset = bodyPr.coordinate("tIns") ?? 45720
+        let bottomInset = bodyPr.coordinate("bIns") ?? 45720
+        let layout = RichTextLayout(
+            textBody: txBody,
+            width: Double(widthEMU) / 12700.0,
+            height: 10000.0,
+            fonts: fonts,
+            theme: nil,
+            maxLines: 256
+        )
+        let contentPoints = max(18.0, layout.contentHeight)
+        let neededEMU = max(12700, Int((contentPoints * 12700.0).rounded()) + max(0, topInset) + max(0, bottomInset))
+        ext[attribute: "cy"] = String(neededEMU)
+        part.markDirty()
+    }
+
     public var verticalAnchor: VerticalAnchor {
         get { bodyPr[attribute: "anchor"].flatMap(VerticalAnchor.init(rawValue:)) ?? .top }
         set {
             bodyPr[attribute: "anchor"] = newValue.rawValue
+            part.markDirty()
+        }
+    }
+
+    /// Vertical text orientation (`a:bodyPr@vert`).
+    public var textDirection: BodyTextDirection {
+        get { bodyPr[attribute: "vert"].flatMap(BodyTextDirection.init(rawValue:)) ?? .horizontal }
+        set {
+            bodyPr[attribute: "vert"] = newValue == .horizontal ? nil : newValue.rawValue
+            part.markDirty()
+        }
+    }
+
+    /// Number of text columns (`a:bodyPr@numCol`, 1...16).
+    public var columnCount: Int {
+        get { max(1, min(16, bodyPr.boundedInt("numCol", in: 1...16) ?? 1)) }
+        set {
+            let clamped = max(1, min(16, newValue))
+            bodyPr[attribute: "numCol"] = clamped == 1 ? nil : String(clamped)
+            part.markDirty()
+        }
+    }
+
+    /// Spacing between text columns (`a:bodyPr@spcCol`).
+    public var columnSpacing: EMU {
+        get { EMU(bodyPr.coordinate("spcCol") ?? 0) }
+        set {
+            let clamped = max(0, min(Int(Int32.max), newValue.rawValue))
+            bodyPr[attribute: "spcCol"] = clamped == 0 ? nil : String(clamped)
             part.markDirty()
         }
     }
@@ -81,7 +174,7 @@ public final class TextFrame {
     }
 
     public var paragraphs: [Paragraph] {
-        txBody.children(named: "a:p").map { Paragraph(p: $0, part: part) }
+        txBody.children(named: "a:p").map { Paragraph(p: $0, part: part, package: package) }
     }
 
     /// Plain-text view: concatenated on read; replaces all content with a
@@ -109,7 +202,7 @@ public final class TextFrame {
         let p = XML.Element("a:p")
         txBody.appendElement(p)
         part.markDirty()
-        return Paragraph(p: p, part: part)
+        return Paragraph(p: p, part: part, package: package)
     }
 
     /// Apply a foreground to both ordinary text and native fields such as the
@@ -140,10 +233,12 @@ public final class TextFrame {
 public final class Paragraph {
     let p: XML.Element
     let part: Part
+    let package: OPCPackage?
 
-    init(p: XML.Element, part: Part) {
+    init(p: XML.Element, part: Part, package: OPCPackage? = nil) {
         self.p = p
         self.part = part
+        self.package = package
     }
 
     /// `a:pPr` must be the first child of `a:p`.
@@ -259,7 +354,7 @@ public final class Paragraph {
     private static let bulletSuccessors = ["a:tabLst", "a:defRPr", "a:extLst"]
 
     private func clearBulletChildren() {
-        for name in ["a:buNone", "a:buAutoNum", "a:buChar", "a:buFont"] {
+        for name in ["a:buNone", "a:buAutoNum", "a:buChar", "a:buBlip", "a:buFont"] {
             pPr.removeChildren(named: name)
         }
     }
@@ -268,9 +363,34 @@ public final class Paragraph {
     public func setBullet(_ char: String = "\u{2022}", font: String = "Arial") {
         clearBulletChildren()
         pPr.insertChild(XML.Element("a:buFont", attributes: [("typeface", font)]),
-                        beforeAnyOf: ["a:buNone", "a:buAutoNum", "a:buChar"] + Self.bulletSuccessors)
+                        beforeAnyOf: ["a:buNone", "a:buAutoNum", "a:buChar", "a:buBlip"] + Self.bulletSuccessors)
         pPr.insertChild(XML.Element("a:buChar", attributes: [("char", char)]),
                         beforeAnyOf: Self.bulletSuccessors)
+        part.markDirty()
+    }
+
+    /// Whether this paragraph uses an embedded picture bullet (`a:buBlip`).
+    public var hasPictureBullet: Bool {
+        p.firstChild(named: "a:pPr")?.firstChild(named: "a:buBlip") != nil
+    }
+
+    /// An image bullet (`a:buBlip/a:blip`), embedding the image into the package.
+    public func setPictureBullet(_ imageData: Data) throws {
+        guard let package else {
+            throw RostrumError.packageInvalid("picture bullet requires an attached package")
+        }
+        guard let info = ImageSniffer.sniff(imageData) else {
+            throw RostrumError.packageInvalid("unrecognized image format for picture bullet")
+        }
+        clearBulletChildren()
+        let image = package.imagePart(for: imageData, info: info)
+        let rId = part.rels.add(
+            type: RelType.image,
+            target: part.uri.relativeReference(to: image.uri))
+        let buBlip = XML.Element("a:buBlip", children: [
+            .element(XML.Element("a:blip", attributes: [("r:embed", rId)]))
+        ])
+        pPr.insertChild(buBlip, beforeAnyOf: Self.bulletSuccessors)
         part.markDirty()
     }
 
@@ -419,6 +539,15 @@ public final class Run {
         }
     }
 
+    /// Capitalization style (`a:rPr@cap`: `.none`, `.small`, `.all`).
+    public var caps: TextCaps? {
+        get { rPr[attribute: "cap"].flatMap(TextCaps.init(rawValue:)) }
+        set {
+            rPr[attribute: "cap"] = (newValue == nil || newValue == TextCaps.none) ? nil : newValue?.rawValue
+            part.markDirty()
+        }
+    }
+
     /// Typeface name (e.g. "Avenir Next"). Sets latin script fonts.
     public var fontName: String? {
         get { rPr.firstChild(named: "a:latin")?[attribute: "typeface"] }
@@ -473,6 +602,15 @@ public final class Run {
         }
     }
 
+    /// Strikethrough style (`a:rPr@strike`: `.none`, `.single`, `.double`).
+    public var strikethroughStyle: StrikethroughStyle {
+        get { rPr[attribute: "strike"].flatMap(StrikethroughStyle.init(rawValue:)) ?? .none }
+        set {
+            rPr[attribute: "strike"] = newValue == .none ? nil : newValue.rawValue
+            part.markDirty()
+        }
+    }
+
     /// Baseline shift as a percent of font size (`a:rPr@baseline`): positive
     /// raises (superscript), negative lowers (subscript), nil is normal.
     public var baselinePercent: Double? {
@@ -497,10 +635,14 @@ public final class Run {
     }
 
     /// The hyperlink target if this run is a link, resolved through the part's
-    /// relationships.
+    /// relationships (or `action` URI when no relationship target is used).
     public var hyperlink: String? {
-        guard let rId = rPr.firstChild(named: "a:hlinkClick")?[attribute: "r:id"] else { return nil }
-        return part.rels.relationship(withId: rId)?.target
+        guard let hlink = rPr.firstChild(named: "a:hlinkClick") else { return nil }
+        if let rId = hlink[attribute: "r:id"], !rId.isEmpty,
+           let target = part.rels.relationship(withId: rId)?.target {
+            return target
+        }
+        return hlink[attribute: "action"]
     }
 
     /// Link this run to another slide in the same deck — PowerPoint's "go to
@@ -512,6 +654,15 @@ public final class Run {
         rPr.removeChildren(named: "a:hlinkClick")
         rPr.insertChild(XML.Element("a:hlinkClick", attributes: [
             ("r:id", rId), ("action", "ppaction://hlinksldjump"),
+        ]), beforeAnyOf: ["a:hlinkMouseOver", "a:rtl", "a:extLst"])
+        part.markDirty()
+    }
+
+    /// Link this run to a built-in slide show navigation action (next/previous/first/last/endShow).
+    public func setActionLink(_ action: SlideAction) {
+        rPr.removeChildren(named: "a:hlinkClick")
+        rPr.insertChild(XML.Element("a:hlinkClick", attributes: [
+            ("r:id", ""), ("action", action.rawValue),
         ]), beforeAnyOf: ["a:hlinkMouseOver", "a:rtl", "a:extLst"])
         part.markDirty()
     }

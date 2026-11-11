@@ -67,12 +67,19 @@ public struct GradientFill: Hashable, Sendable {
     public var angleDegrees: Double
     /// Radial (center → edge) instead of linear. Ignores `angleDegrees`.
     public var isRadial: Bool
+    /// Optional focal center X (0…1) for radial/path gradients (`a:fillToRect`).
+    public var focalCenterX: Double?
+    /// Optional focal center Y (0…1) for radial/path gradients (`a:fillToRect`).
+    public var focalCenterY: Double?
 
-    public init(stops: [GradientStop], angleDegrees: Double = 90, isRadial: Bool = false) {
+    public init(stops: [GradientStop], angleDegrees: Double = 90, isRadial: Bool = false,
+                focalCenterX: Double? = nil, focalCenterY: Double? = nil) {
         precondition(stops.count >= 2, "a gradient needs at least 2 stops")
         self.stops = stops
         self.angleDegrees = angleDegrees
         self.isRadial = isRadial
+        self.focalCenterX = focalCenterX
+        self.focalCenterY = focalCenterY
     }
 
     /// Two-color convenience, top→bottom by default.
@@ -88,12 +95,40 @@ public struct GradientFill: Hashable, Sendable {
         GradientFill(stops: stops, isRadial: true)
     }
 
+    /// A radial gradient with an explicit focal center (`0…1` in X and Y).
+    public static func radial(stops: [GradientStop], focalX: Double, focalY: Double) -> GradientFill {
+        GradientFill(stops: stops, isRadial: true, focalCenterX: focalX, focalCenterY: focalY)
+    }
+
     /// A two-color radial gradient, `from` at the center to `to` at the edge.
     public static func radial(from: Color, to: Color) -> GradientFill {
         GradientFill(stops: [
             GradientStop(position: 0, color: from),
             GradientStop(position: 1, color: to),
         ], isRadial: true)
+    }
+}
+
+/// DrawingML preset pattern fills (`a:pattFill@prst`, ECMA-376 `ST_PresetPatternVal`).
+public enum PatternFillPreset: String, CaseIterable, Hashable, Sendable {
+    case pct5, pct10, pct20, pct25, pct30, pct40, pct50, pct60, pct70, pct75, pct80, pct90
+    case horz, vert, ltHorz, ltVert, dkHorz, dkVert, narHorz, narVert, dashHorz, dashVert, cross
+    case dnDiag, upDiag, ltDnDiag, ltUpDiag, dkDnDiag, dkUpDiag, wdDnDiag, wdUpDiag, dashDnDiag, dashUpDiag, diagCross
+    case smCheck, lgCheck, smGrid, lgGrid, dotGrid, smConfetti, lgConfetti
+    case horzBrick, diagBrick, solidDmnd, openDmnd, dotDmnd
+    case plaid, sphere, weave, divot, shingle, wave, trellis, zigZag
+}
+
+/// A two-color DrawingML pattern fill (`a:pattFill`).
+public struct PatternFill: Hashable, Sendable {
+    public var preset: PatternFillPreset
+    public var foreground: Color
+    public var background: Color
+
+    public init(preset: PatternFillPreset, foreground: Color, background: Color = .white) {
+        self.preset = preset
+        self.foreground = foreground
+        self.background = background
     }
 }
 
@@ -113,6 +148,10 @@ public enum Fill: Hashable, Sendable {
     /// Solid color with opacity 0…1 — overlays, scrims, subtle accents.
     case solidAlpha(Color, Double)
     case gradient(GradientFill)
+    /// A two-color pattern fill (`a:pattFill`).
+    case pattern(PatternFill)
+    /// Inherit fill from the enclosing group (`a:grpFill`).
+    case group
     /// An image fill (`a:blipFill`). The image is embedded (deduplicated) and a
     /// relationship added when the fill is written — so this case must be
     /// realized through `fillElement(embeddingInto:package:)`, never the pure
@@ -128,12 +167,17 @@ public enum Fill: Hashable, Sendable {
         .themeScheme(scheme, transforms)
     }
 
+    /// A two-color pattern fill convenience.
+    public static func pattern(_ preset: PatternFillPreset, foreground: Color, background: Color = .white) -> Fill {
+        .pattern(PatternFill(preset: preset, foreground: foreground, background: background))
+    }
+
     /// An image fill from raw image bytes (PNG/JPEG/GIF).
     public static func image(_ data: Data, fit: ImageFillMode = .stretch) -> Fill {
         .image(data, fit)
     }
 
-    /// The DrawingML fill element (`a:solidFill`/`a:gradFill`/`a:noFill`).
+    /// The DrawingML fill element (`a:solidFill`/`a:gradFill`/`a:pattFill`/`a:grpFill`/`a:noFill`).
     func makeElement() -> XML.Element {
         switch self {
         case .solid(let color):
@@ -163,10 +207,13 @@ public enum Fill: Hashable, Sendable {
             fill.appendElement(stopList)
             if gradient.isRadial {
                 // Radial: a:gsLst then a:path (never a:lin). fillToRect at the
-                // center makes the last stop the outer edge.
+                // focal center makes the last stop the outer edge.
+                let fx = Int((min(1, max(0, gradient.focalCenterX ?? 0.5)) * 100_000).rounded())
+                let fy = Int((min(1, max(0, gradient.focalCenterY ?? 0.5)) * 100_000).rounded())
                 let path = XML.Element("a:path", attributes: [("path", "circle")])
                 path.appendElement(XML.Element("a:fillToRect", attributes: [
-                    ("l", "50000"), ("t", "50000"), ("r", "50000"), ("b", "50000"),
+                    ("l", String(fx)), ("t", String(fy)),
+                    ("r", String(100_000 - fx)), ("b", String(100_000 - fy)),
                 ]))
                 fill.appendElement(path)
             } else {
@@ -176,6 +223,17 @@ public enum Fill: Hashable, Sendable {
                 ]))
             }
             return fill
+        case .pattern(let pattern):
+            let fill = XML.Element("a:pattFill", attributes: [("prst", pattern.preset.rawValue)])
+            let fg = XML.Element("a:fgClr")
+            fg.appendElement(pattern.foreground.srgbElement())
+            let bg = XML.Element("a:bgClr")
+            bg.appendElement(pattern.background.srgbElement())
+            fill.appendElement(fg)
+            fill.appendElement(bg)
+            return fill
+        case .group:
+            return XML.Element("a:grpFill")
         case .image:
             preconditionFailure(
                 "image fills must be written via Fill.fillElement(embeddingInto:package:)")

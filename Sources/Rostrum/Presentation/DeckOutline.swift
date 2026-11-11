@@ -255,6 +255,13 @@ extension SlideOutline {
                                        grid: SlideOutline.grid(of: chart),
                                        filename: unique("chart-\(index + 1).csv")))
         }
+        for extChart in slide.extendedCharts where !extChart.series.isEmpty {
+            let nextIndex = charts.count + 1
+            charts.append(OutlineChart(title: extChart.title,
+                                       kind: extChart.rawLayoutId,
+                                       grid: SlideOutline.grid(of: extChart),
+                                       filename: unique("chart-\(nextIndex).csv")))
+        }
 
         // Append newly supported fill resources after the original media and
         // chart names are allocated, preserving existing export filenames.
@@ -404,6 +411,21 @@ extension SlideOutline {
             return rows
         }
 
+        let categories = chart.categories
+        let series = chart.series
+        var rows = [["Category"] + series.map(\.name)]
+        let depth = max(categories.count, series.map(\.values.count).max() ?? 0)
+        for index in 0..<depth {
+            var row = [index < categories.count ? categories[index] : ""]
+            for entry in series {
+                row.append(index < entry.values.count ? number(entry.values[index]) : "")
+            }
+            rows.append(row)
+        }
+        return rows
+    }
+
+    static func grid(of chart: ExtendedChart) -> [[String]] {
         let categories = chart.categories
         let series = chart.series
         var rows = [["Category"] + series.map(\.name)]

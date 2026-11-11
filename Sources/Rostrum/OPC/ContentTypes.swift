@@ -140,6 +140,9 @@ public enum ContentType {
     public static let jpeg = "image/jpeg"
     public static let gif = "image/gif"
     public static let svg = "image/svg+xml"
+    public static let tiff = "image/tiff"
+    public static let bmp = "image/bmp"
+    public static let webp = "image/webp"
 }
 
 /// Well-known relationship type URIs (python-pptx: `pptx.opc.constants.RELATIONSHIP_TYPE`).

@@ -4,7 +4,7 @@ import Testing
 
 @Suite struct ConnectorPreviewTests {
     @Test func elbowGeometryIsRenderedOnceWithoutRectangleWarning() throws {
-        for (height, preset, guide) in [(0, "bentConnector3", ""), (200000, "bentConnector3", "val 25000"), (200000, "curvedConnector3", "")] {
+        for (height, preset, guide) in [(0, "bentConnector3", ""), (200000, "bentConnector3", "val 25000"), (200000, "curvedConnector9", "")] {
             let deck = try Presentation(), slide = try deck.slides[0]
             let tree = try #require(Slide.existingSpTree(of: slide.part))
             let adjustment = guide.isEmpty ? "" : "<a:gd name=\"adj1\" fmla=\"\(guide)\"/>"
@@ -30,11 +30,15 @@ import Testing
         }
     }
 
-    @Test func multiSegmentBentConnectorsRenderOrthogonalPathsWithoutWarnings() throws {
+    @Test func multiSegmentBentAndCurvedConnectorsRenderPathsWithoutWarnings() throws {
         let cases: [(String, String, String)] = [
             ("bentConnector2", "", "M100 200 H400100 V200200"),
             ("bentConnector4", "<a:gd name=\"adj1\" fmla=\"val 25000\"/><a:gd name=\"adj2\" fmla=\"val 75000\"/>", "M100 200 H100100 V150200 H400100 V200200"),
             ("bentConnector5", "<a:gd name=\"adj1\" fmla=\"val 20000\"/><a:gd name=\"adj2\" fmla=\"val 50000\"/><a:gd name=\"adj3\" fmla=\"val 80000\"/>", "M100 200 H80100 V100200 H320100 V200200 H400100"),
+            ("curvedConnector2", "", "M100 200 C"),
+            ("curvedConnector3", "<a:gd name=\"adj1\" fmla=\"val 25000\"/>", "M100 200 C"),
+            ("curvedConnector4", "<a:gd name=\"adj1\" fmla=\"val 25000\"/><a:gd name=\"adj2\" fmla=\"val 75000\"/>", "M100 200 C"),
+            ("curvedConnector5", "<a:gd name=\"adj1\" fmla=\"val 20000\"/><a:gd name=\"adj2\" fmla=\"val 50000\"/><a:gd name=\"adj3\" fmla=\"val 80000\"/>", "M100 200 C"),
         ]
         for (preset, guides, expectedPath) in cases {
             let deck = try Presentation(), slide = try deck.slides[0]
