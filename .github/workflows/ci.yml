@@ -27,7 +27,7 @@ jobs:
     if: >-
       github.event_name == 'push'
       || github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -150,7 +150,7 @@ jobs:
   published-release-smoke:
     name: Published 1.0 consumer
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       image: swift:6.1
     steps:
