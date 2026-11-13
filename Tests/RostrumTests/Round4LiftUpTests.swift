@@ -9,7 +9,7 @@ import Testing
 
     @Test func presetGeometryCatalogAdjustmentsInsetTextFrameAndCurvedConnectors() throws {
         #expect(SVGPresetGeometry.supported.count >= 75)
-        #expect(!SVGPresetGeometry.supported.contains("star5"))
+        #expect(SVGPresetGeometry.supported.contains("star5"))
         for preset in [
             "star4", "star6", "star7", "star8", "star10", "star12", "star16", "star24", "star32",
             "rightArrow", "leftArrow", "upArrow", "downArrow", "leftRightArrow", "upDownArrow",

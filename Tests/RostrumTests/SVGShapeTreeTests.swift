@@ -90,7 +90,7 @@ import Testing
 
     @Test func approximatedAndOmittedContentIsReportedOnce() throws {
         let deck = try Presentation()
-        try append(group(connector("curvedConnector9") + shape().replacingOccurrences(of: "prst=\"rect\"", with: "prst=\"star5\"")), to: deck.slides[0].part)
+        try append(group(connector("curvedConnector9") + shape().replacingOccurrences(of: "prst=\"rect\"", with: "prst=\"futurePreset\"")), to: deck.slides[0].part)
         try append(connector("bentConnector3"), to: deck.slides[0].part)
         try append("<p:contentPart/>", to: deck.slides[0].part)
         let result = try deck.renderSVGReportingProblems(slideAt: 0)

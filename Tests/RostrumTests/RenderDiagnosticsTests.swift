@@ -131,7 +131,7 @@ import Testing
     @Test func scannerReportsActualOmittedAndApproximateFeaturesWithoutMutation() throws {
         let deck = try Presentation(), part = try deck.slides[0].part
         let shape = try XML.parse(Data("""
-        <p:sp><p:nvSpPr><p:cNvPr id="99"/></p:nvSpPr><p:spPr><a:xfrm rot="60000"/><a:prstGeom prst="star5"/><a:effectLst><a:outerShdw/></a:effectLst><a:blipFill><a:blip r:embed="missing"/></a:blipFill></p:spPr><p:txBody><a:bodyPr vert="vert" numCol="2"/></p:txBody></p:sp>
+        <p:sp><p:nvSpPr><p:cNvPr id="99"/></p:nvSpPr><p:spPr><a:xfrm rot="60000"/><a:prstGeom prst="futurePreset"/><a:effectLst><a:outerShdw/></a:effectLst><a:blipFill><a:blip r:embed="missing"/></a:blipFill></p:spPr><p:txBody><a:bodyPr vert="vert" numCol="2"/></p:txBody></p:sp>
         """.utf8))
         let before = XML.document(shape)
         let collector = RenderDiagnosticCollector()

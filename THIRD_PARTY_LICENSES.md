@@ -49,7 +49,16 @@ IN THE SOFTWARE.
 The `.pptx` format Rostrum reads and writes is specified by
 [ECMA-376](https://ecma-international.org/publications-and-standards/standards/ecma-376/),
 which Ecma International makes available royalty-free. Rostrum implements the
-specification; it includes no text from it.
+specification.
+
+One file is mechanically derived from the standard's electronic inserts:
+`Sources/Rostrum/Schema/GeneratedPresetShapes.swift` holds 81 preset shape
+definitions (adjustment defaults, guide formulas, text rectangle and paths)
+extracted by `Tools/preset-geometry/generate.py` from
+`presetShapeDefinitions.xml` in `OfficeOpenXML-DrawingMLGeometries.zip`,
+ECMA-376 Part 1, 5th edition (2016), © Ecma International. The source file is
+not redistributed; the generator's header records where to obtain it. No other
+text from the standard is included.
 
 ## Native PowerPoint table-style data (PPTX Studio)
 
