@@ -2437,8 +2437,12 @@ struct SVGRenderer {
         let right = rightTick + rightOutside
         let top = max(topTick, outsideTop)
         let bottom = max(bottomTick, categoryHeight) + outsideBottom
-        let area = ChartTextRect(x: content.x + left, y: content.y + top,
+        var area = ChartTextRect(x: content.x + left, y: content.y + top,
             width: content.width - left - right, height: content.height - top - bottom)
+        // An authored inner plot rectangle is exact; the measured one is a guess.
+        if let authored = Self.manualPlotArea(plotArea, frame: ChartTextRect(x: Double(x), y: Double(y), width: Double(w), height: Double(h))) {
+            area = authored
+        }
         guard area.width >= Double(emuPerPoint), area.height >= Double(emuPerPoint) else {
             chartOmission("the plot because its measured labels leave no plotting area")
             return out
@@ -2461,6 +2465,8 @@ struct SVGRenderer {
             if ["barChart", "bar3DChart"].contains(entry.kind) {
                 var seriesPts: [[(x: Double, y: Double, val: Double)]] = Array(repeating: [], count: groupSeries.count)
                 out += barBody(groupSeries, catCount: catCount, scale: plotScale, horizontal: horizontal,
+                    gapWidth: entry.element.firstChild(named: "c:gapWidth")?.boundedInt("val", in: 0...500) ?? 150,
+                    overlap: entry.element.firstChild(named: "c:overlap")?.boundedInt("val", in: -100...100),
                     plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height,
                     color: { localS, pt in color(entry.seriesIndices[localS], pt) },
                     label: { localS, index, rect in
@@ -2625,15 +2631,40 @@ struct SVGRenderer {
         return out
     }
 
+    /// `c:plotArea/c:layout/c:manualLayout` when it pins the inner plot
+    /// rectangle (the axes box) by its edges, as fractions of the chart space.
+    /// Other forms — outer targets, which include tick labels, and offsets
+    /// from an automatic position — still use the measured layout.
+    private static func manualPlotArea(_ plotArea: XML.Element?, frame: ChartTextRect) -> ChartTextRect? {
+        guard let manual = plotArea?.firstChild(named: "c:layout")?.firstChild(named: "c:manualLayout") else { return nil }
+        func value(_ name: String) -> String? { manual.firstChild(named: name)?[attribute: "val"] }
+        guard value("c:layoutTarget") == "inner", value("c:xMode") == "edge", value("c:yMode") == "edge",
+              let left = value("c:x").flatMap(Double.init), let top = value("c:y").flatMap(Double.init),
+              let width = value("c:w").flatMap(Double.init), let height = value("c:h").flatMap(Double.init),
+              (0...1).contains(left), (0...1).contains(top), width > 0, height > 0 else { return nil }
+        // In edge mode the size values are the far edges rather than extents.
+        let right = value("c:wMode") == "edge" ? width : left + width
+        let bottom = value("c:hMode") == "edge" ? height : top + height
+        guard right > left, bottom > top, right <= 1.0001, bottom <= 1.0001 else { return nil }
+        return ChartTextRect(x: frame.x + frame.width * left, y: frame.y + frame.height * top,
+                             width: frame.width * (min(1, right) - left), height: frame.height * (min(1, bottom) - top))
+    }
+
+    /// Bars in one category slot, sized as DrawingML charts define them:
+    /// `gapWidth` is the space between category clusters as a percentage of
+    /// one bar's width, and `overlap` is how far each series slides over the
+    /// previous one (100 for stacked groupings, where bars share one column).
     private func barBody(_ series: [ChartData.Series], catCount: Int, scale: ValueScale,
-                         horizontal: Bool, plotX: Double, plotY: Double,
+                         horizontal: Bool, gapWidth: Int = 150, overlap: Int? = nil,
+                         plotX: Double, plotY: Double,
                          plotW: Double, plotH: Double, color: (Int, Int?) -> String,
                          label: (Int, Int, ChartBarRect) -> String) -> String {
         let along = horizontal ? plotH : plotW
         let slot = along / Double(catCount)
-        let inset = slot * 0.16
-        let bandWidth = Swift.max(1, slot - inset * 2)
-        let barWidth = scale.stacked ? bandWidth : Swift.max(1, bandWidth / Double(series.count))
+        let seriesStep = scale.stacked ? 0 : 1 - Double(overlap ?? 0) / 100
+        let barsAcross = 1 + Double(Swift.max(0, series.count - 1)) * seriesStep
+        let barWidth = Swift.max(1, slot / (barsAcross + Double(gapWidth) / 100))
+        let inset = (slot - barWidth * barsAcross) / 2
         let zero = scale.zeroFraction
         var out = ""
         var labels = ""
@@ -2667,7 +2698,7 @@ struct SVGRenderer {
                 let startFraction = scale.stacked ? scale.fraction(start) : zero
                 let endFraction = scale.fraction(end)
                 let lo = max(0, min(1, Swift.min(startFraction, endFraction))), hi = max(0, min(1, Swift.max(startFraction, endFraction)))
-                let offset = scale.stacked ? 0 : Double(s) * barWidth
+                let offset = Double(s) * barWidth * seriesStep
                 let fill = color(s, index)
                 if horizontal {
                     out += box(coord(plotX + plotW * lo), coord(bandStart + offset),

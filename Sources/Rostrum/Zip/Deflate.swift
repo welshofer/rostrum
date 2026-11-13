@@ -15,7 +15,11 @@ public enum Deflate {
     static let windowSize = 32768
     static let maxChain = 128          // bound the match search for speed
     /// A match at least this long is taken without checking the next position.
-    static let lazyThreshold = 32
+    static let lazyThreshold = 16
+    /// With a match already this long, the lazy check searches a quarter of the chain.
+    static let goodMatch = 8
+    /// A match this long ends the search: a longer one would save almost nothing.
+    static let niceMatch = 128
     /// Tokens per block. Each block gets its own Huffman code, so this bounds
     /// how far statistics from one region are applied to another.
     static let blockTokens = 1 << 16
@@ -49,7 +53,10 @@ public enum Deflate {
         writer.reserve(n / 2 + 16)
 
         // Hash chains over 3-byte prefixes.
-        let hashBits = 15
+        // Small inputs get a smaller table: clearing 32,768 heads costs more
+        // than compressing a relationships part.
+        var hashBits = 9
+        while hashBits < 15 && (1 << hashBits) < n { hashBits += 1 }
         let hashSize = 1 << hashBits
         let hashMask = hashSize - 1
         var head = [Int32](repeating: -1, count: hashSize)
@@ -65,7 +72,7 @@ public enum Deflate {
             head.withUnsafeMutableBufferPointer { head in
                 prev.withUnsafeMutableBufferPointer { prev in
                     @inline(__always) func hash(_ i: Int) -> Int {
-                        (Int(bytes[i]) << 10 ^ Int(bytes[i + 1]) << 5 ^ Int(bytes[i + 2])) & hashMask
+                        ((Int(bytes[i]) << 10 ^ Int(bytes[i + 1]) << 5 ^ Int(bytes[i + 2])) &* 0x9E3B) >> 1 & hashMask
                     }
                     @inline(__always) func insert(_ i: Int) {
                         guard i + 2 < n else { return }
@@ -74,14 +81,14 @@ public enum Deflate {
                         head[h] = Int32(truncatingIfNeeded: i)
                     }
                     /// Longest match at `pos` that beats `floor` bytes.
-                    @inline(__always) func longestMatch(_ pos: Int, floor: Int) -> (length: Int, distance: Int) {
+                    @inline(__always) func longestMatch(_ pos: Int, floor: Int, chain maxSteps: Int) -> (length: Int, distance: Int) {
                         guard pos + 2 < n else { return (0, 0) }
                         var bestLen = floor
                         var bestDist = 0
                         let maxLen = Swift.min(maxMatch, n - pos)
                         guard bestLen < maxLen else { return (0, 0) }
                         var cand = Int(head[hash(pos)])
-                        var chain = maxChain
+                        var chain = maxSteps
                         let minPos = pos - windowSize
                         while cand >= 0 && cand > minPos && chain > 0 {
                             // Quick reject: candidate must beat the current best at bestLen.
@@ -91,7 +98,7 @@ public enum Deflate {
                                 if len > bestLen {
                                     bestLen = len
                                     bestDist = pos - cand
-                                    if len >= maxLen { break }
+                                    if len >= maxLen || len >= niceMatch { break }
                                 }
                             }
                             cand = Int(prev[cand])
@@ -109,13 +116,14 @@ public enum Deflate {
                             tokenValues.removeAll(keepingCapacity: true)
                             tokenDistances.removeAll(keepingCapacity: true)
                         }
-                        let match = pending ?? longestMatch(pos, floor: minMatch - 1)
+                        let match = pending ?? longestMatch(pos, floor: minMatch - 1, chain: maxChain)
                         pending = nil
                         if match.length >= minMatch, match.length < lazyThreshold, pos + 1 < n {
                             // Lazy matching: prefer a strictly longer match that
                             // starts one byte later, paying one literal for it.
                             insert(pos)
-                            let next = longestMatch(pos + 1, floor: match.length)
+                            let next = longestMatch(pos + 1, floor: match.length,
+                                                    chain: match.length >= goodMatch ? maxChain / 4 : maxChain)
                             if next.length > match.length {
                                 tokenValues.append(UInt16(bytes[pos]))
                                 tokenDistances.append(0)
@@ -296,8 +304,14 @@ public enum Deflate {
     static func codeLengths(_ frequency: [Int], limit: Int) -> [UInt8] {
         var lengths = [UInt8](repeating: 0, count: frequency.count)
         // Leaves in ascending (frequency, symbol) order.
-        let leaves = frequency.indices.filter { frequency[$0] != 0 }
-            .sorted { frequency[$0] != frequency[$1] ? frequency[$0] < frequency[$1] : $0 < $1 }
+        // One integer per leaf — frequency above, symbol below — sorts both keys at once.
+        var keys: [UInt64] = []
+        keys.reserveCapacity(frequency.count)
+        for (symbol, count) in frequency.enumerated() where count != 0 {
+            keys.append(UInt64(count) << 16 | UInt64(symbol))
+        }
+        keys.sort()
+        let leaves = keys.map { Int($0 & 0xFFFF) }
         guard leaves.count > 1 else {
             if let only = leaves.first { lengths[only] = 1 }
             return lengths
@@ -306,7 +320,8 @@ public enum Deflate {
         // already in ascending weight order, so the two smallest nodes are
         // always at the queue fronts. Leaves win ties.
         let count = leaves.count
-        var weight = leaves.map { frequency[$0] } + [Int](repeating: 0, count: count - 1)
+        var weight = [Int](repeating: 0, count: 2 * count - 1)
+        for i in 0..<count { weight[i] = Int(keys[i] >> 16) }
         var parent = [Int](repeating: -1, count: 2 * count - 1)
         var leaf = 0, internalNode = count, next = count
         func takeSmallest() -> Int {
