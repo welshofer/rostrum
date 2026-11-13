@@ -6,7 +6,7 @@
   },
   "authored-features.pptx": {
     "producer": "FeaturePipelineFixture.make()",
-    "sha256": "8f92d0ed9e1122c2b9a3596e0d7cc52b17fcd03c4f4e405099c4f9413d05dc13",
+    "sha256": "c15b94a6be75bd7419783069971b9d517b95ed937c68040eab733e034d3279c4",
     "features": [
       "native and custom tables",
       "vertically centered authored table cells",
@@ -50,6 +50,14 @@
       ],
       "unchangedParts": 51,
       "delta": "Only explicit p:txStyles for title/body/other text in the two generated masters; removing that element reproduces each prior part byte for byte. Foreign Office fixture and its native references unchanged."
+    },
+    "compressionRefresh": {
+      "date": "2026-11-13",
+      "producer": "FeaturePipelineFixture.make() invoked twice with byte-identical output",
+      "previousSHA256": "8f92d0ed9e1122c2b9a3596e0d7cc52b17fcd03c4f4e405099c4f9413d05dc13",
+      "changedParts": [],
+      "unchangedParts": 53,
+      "delta": "Archive compression only: the zip writer now emits dynamic-Huffman DEFLATE blocks. All 53 entries keep their names, order and decoded bytes (compared with Python zipfile); the file shrinks from 30,978 to 27,663 bytes. Foreign Office fixture unchanged."
     }
   }
 }

@@ -48,8 +48,12 @@ import Rostrum
         try deck.slides[0].shapes.addShape(.star5Point,
             frame: Rect(x: .inches(1), y: .inches(1), width: .inches(2), height: .inches(2)), fill: .solid(Color("0055AA")))
         // Every ECMA-376 preset has an outline; a name from a newer schema does not.
-        let slidePart = deck.slides[0].part
-        for element in try slidePart.dom().descendants(named: "a:prstGeom") { element[attribute: "prst"] = "futurePreset" }
+        let slidePart = try deck.slides[0].part
+        var pending = [try slidePart.dom()]
+        while let element = pending.popLast() {
+            if element.name == "a:prstGeom" { element[attribute: "prst"] = "futurePreset" }
+            pending += element.childElements
+        }
         slidePart.markDirty()
         let url = try write(deck, named: "Unsupported-preview.pptx")
         defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }

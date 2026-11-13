@@ -36,3 +36,10 @@ for explicit master typography. Only `ppt/slideMasters/slideMaster1.xml` and
 that element reproduces the prior part bytes exactly. The other 51 package
 parts, the foreign Office fixture and its native references are unchanged.
 Two fresh factory invocations produced byte-identical output.
+
+The authored fixture was regenerated on 2026-11-13 through the unchanged factory
+after the zip writer began emitting dynamic-Huffman DEFLATE blocks. No part
+changed: all 53 entries keep their names, order and decoded bytes, checked with
+Python's `zipfile`. Only the compressed representation differs, and the file
+shrinks from 30,978 to 27,663 bytes. Two fresh factory invocations produced
+byte-identical output.
