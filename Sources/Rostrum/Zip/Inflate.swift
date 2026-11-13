@@ -6,8 +6,9 @@ import Foundation
 /// Implementation notes for the implementer:
 /// - Handle all three block types: stored (BTYPE=00), fixed Huffman (01),
 ///   dynamic Huffman (10). BTYPE=11 → throw `RostrumError.deflateCorrupt`.
-/// - Model the canonical-Huffman decode tables the way puff.c does (count/symbol
-///   arrays per code length); no need for anything fancier.
+/// - Canonical-Huffman tables keep puff.c's count/symbol arrays for validation
+///   and for codes longer than `HuffmanTable.fastBits`; shorter codes (nearly
+///   all of them) resolve through one lookup in a bit-reversed prefix table.
 /// - Length/distance extra-bit tables per RFC 1951 §3.2.5; window is the output
 ///   buffer itself (distances may reference up to 32 KiB back; a distance past
 ///   the start of output → throw).
@@ -40,6 +41,12 @@ private struct HuffmanTable {
     /// Leftover code space after construction: 0 means the code is complete,
     /// > 0 means it is incomplete. Oversubscription throws at construction.
     let left: Int
+    /// Direct lookup for codes of at most `fastBits` bits, indexed by the next
+    /// `fastBits` stream bits (LSB-first, i.e. the code bit-reversed). An entry
+    /// is `symbol << 4 | length`; 0 means "longer code or no code — decode
+    /// bit by bit".
+    let fast: [UInt16]
+    static let fastBits = 10
 
     init(lengths: [Int]) throws {
         var count = [Int](repeating: 0, count: 16)
@@ -67,6 +74,30 @@ private struct HuffmanTable {
         self.count = count
         self.symbol = symbol
         self.left = left
+
+        // Assign canonical codes in the same order `decode` walks them and
+        // replicate each short code across every index sharing its prefix.
+        var fast = [UInt16](repeating: 0, count: 1 << Self.fastBits)
+        var code = 0
+        var index = 0
+        for len in 1...Self.fastBits {
+            for _ in 0..<count[len] {
+                var reversed = 0
+                for bit in 0..<len where code & (1 << bit) != 0 {
+                    reversed |= 1 << (len - 1 - bit)
+                }
+                let entry = UInt16(symbol[index] << 4 | len)
+                var slot = reversed
+                while slot < fast.count {
+                    fast[slot] = entry
+                    slot += 1 << len
+                }
+                code += 1
+                index += 1
+            }
+            code <<= 1
+        }
+        self.fast = fast
     }
 
     /// True when the code contains at most one symbol (all lengths 0 or 1),
@@ -80,7 +111,7 @@ private struct InflateDecoder {
     let input: [UInt8]
     let expectedOutputSize: Int?
     var pos = 0
-    var bitBuffer: UInt32 = 0
+    var bitBuffer: UInt64 = 0
     var bitCount = 0
     var output: [UInt8] = []
 
@@ -99,23 +130,50 @@ private struct InflateDecoder {
 
     // MARK: - Bit reading (LSB-first within bytes)
 
-    mutating func bits(_ n: Int) throws -> Int {
-        while bitCount < n {
-            guard pos < input.count else {
-                throw RostrumError.deflateCorrupt("unexpected end of stream while reading bits")
-            }
-            bitBuffer |= UInt32(input[pos]) << bitCount
+    /// Top up the bit buffer to at least 56 bits, or to the end of input.
+    @inline(__always)
+    mutating func refill() {
+        while bitCount <= 56, pos < input.count {
+            bitBuffer |= UInt64(input[pos]) << UInt64(bitCount)
             pos += 1
             bitCount += 8
         }
-        let value = Int(bitBuffer & UInt32((1 << n) - 1))
-        bitBuffer >>= UInt32(n)
+    }
+
+    /// Read `n` (0...16) bits.
+    @inline(__always)
+    mutating func bits(_ n: Int) throws -> Int {
+        if bitCount < n {
+            refill()
+            guard bitCount >= n else {
+                throw RostrumError.deflateCorrupt("unexpected end of stream while reading bits")
+            }
+        }
+        let value = Int(bitBuffer & ((1 << UInt64(n)) - 1))
+        bitBuffer >>= UInt64(n)
         bitCount -= n
         return value
     }
 
-    /// Decode one symbol, reading Huffman code bits MSB-first (puff.c decode()).
+    /// Decode one symbol. Codes of at most `HuffmanTable.fastBits` bits take
+    /// one table lookup; anything else — longer codes, unassigned prefixes and
+    /// the last few bits of the stream — falls back to `decodeSlowly`, which
+    /// also owns every error.
+    @inline(__always)
     mutating func decode(_ table: HuffmanTable) throws -> Int {
+        if bitCount < HuffmanTable.fastBits { refill() }
+        let entry = Int(table.fast[Int(bitBuffer & UInt64((1 << HuffmanTable.fastBits) - 1))])
+        let length = entry & 15
+        if length != 0, length <= bitCount {
+            bitBuffer >>= UInt64(length)
+            bitCount -= length
+            return entry >> 4
+        }
+        return try decodeSlowly(table)
+    }
+
+    /// Decode one symbol, reading Huffman code bits MSB-first (puff.c decode()).
+    mutating func decodeSlowly(_ table: HuffmanTable) throws -> Int {
         var code = 0
         var first = 0
         var index = 0
@@ -185,7 +243,9 @@ private struct InflateDecoder {
     }
 
     mutating func storedBlock() throws {
-        // Discard bits up to the next byte boundary.
+        // Discard bits up to the next byte boundary, and hand back the whole
+        // bytes the bit buffer read ahead: stored data is addressed by `pos`.
+        pos -= bitCount / 8
         bitBuffer = 0
         bitCount = 0
         guard pos + 4 <= input.count else {

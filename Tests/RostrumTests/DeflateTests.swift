@@ -83,4 +83,101 @@ import Testing
         let pres = try reread.mainDocumentPart()
         #expect(!pres.blob.isEmpty)
     }
+
+    // MARK: - Dynamic Huffman blocks
+
+    /// Inflate a raw DEFLATE stream with Python's zlib, an independent decoder.
+    private func zlibInflate(_ data: Data) throws -> Data? {
+        guard FileManager.default.isExecutableFile(atPath: "/usr/bin/python3") else { return nil }
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
+        process.arguments = ["-c", "import sys, zlib; sys.stdout.buffer.write(zlib.decompress(sys.stdin.buffer.read(), -15))"]
+        let input = Pipe(), output = Pipe()
+        process.standardInput = input
+        process.standardOutput = output
+        process.standardError = FileHandle.nullDevice
+        try process.run()
+        // Feed stdin from another thread: a large stream would otherwise fill
+        // the pipe while the child is blocked writing its own output.
+        let writer = Thread {
+            try? input.fileHandleForWriting.write(contentsOf: data)
+            try? input.fileHandleForWriting.close()
+        }
+        writer.start()
+        let result = output.fileHandleForReading.readDataToEndOfFile()
+        process.waitUntilExit()
+        return process.terminationStatus == 0 ? result : Data("zlib rejected the stream".utf8)
+    }
+
+    /// Text whose byte frequencies follow a Fibonacci-like curve: an
+    /// unrestricted Huffman code for it is deeper than DEFLATE's 15-bit limit.
+    private func skewed() -> Data {
+        var out = [UInt8]()
+        var a = 1, b = 1
+        for symbol in 0..<26 {
+            out.append(contentsOf: repeatElement(UInt8(65 + symbol), count: a))
+            (a, b) = (b, a + b)
+        }
+        // Interleave deterministically so LZ77 cannot reduce it to a few runs.
+        var state: UInt64 = 99
+        for i in stride(from: out.count - 1, to: 0, by: -1) {
+            state = state &* 6364136223846793005 &+ 1442695040888963407
+            out.swapAt(i, Int((state >> 33) % UInt64(i + 1)))
+        }
+        return Data(out)
+    }
+
+    private var slideLikeXML: Data {
+        var xml = "<p:sld xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"><p:cSld><p:spTree>"
+        for i in 0..<400 {
+            xml += "<p:sp><p:nvSpPr><p:cNvPr id=\"\(i)\" name=\"Shape \(i)\"/></p:nvSpPr><p:spPr><a:xfrm><a:off x=\"\(i * 914400)\" y=\"\(i * 7)\"/></a:xfrm></p:spPr><p:txBody><a:p><a:r><a:t>Row \(i) of the quarterly figures</a:t></a:r></a:p></p:txBody></p:sp>"
+        }
+        return Data((xml + "</p:spTree></p:cSld></p:sld>").utf8)
+    }
+
+    @Test func independentDecoderAcceptsEveryBlockShape() throws {
+        let cases: [(String, Data)] = [
+            ("empty", Data()),
+            ("one byte", Data("a".utf8)),
+            ("one repeated byte", Data(repeating: 0x42, count: 70000)),
+            ("no matches", Data((0..<256).map { UInt8($0) })),
+            ("xml", slideLikeXML),
+            ("depth-limited code", skewed()),
+            ("incompressible", pseudoRandom(count: 50000, seed: 3)),
+            // More tokens than one block holds, so several blocks are written.
+            ("multi-block", pseudoRandom(count: 150000, seed: 11) + slideLikeXML + pseudoRandom(count: 20000, seed: 5)),
+        ]
+        for (name, original) in cases {
+            let deflated = Deflate.deflate(original)
+            #expect(try Inflate.inflate(deflated, expectedOutputSize: original.count) == original, "own inflate: \(name)")
+            if let restored = try zlibInflate(deflated) {
+                #expect(restored == original, "zlib: \(name)")
+            }
+            #expect(Deflate.deflate(original) == deflated, "determinism: \(name)")
+        }
+    }
+
+    @Test func codeLengthsAreCompleteAndWithinTheLimit() {
+        var frequency = [Int](repeating: 0, count: 286)
+        var a = 1, b = 1
+        for symbol in 0..<40 { frequency[symbol * 7] = a; (a, b) = (b, a + b) }
+        for limit in [7, 15] {
+            let lengths = Deflate.codeLengths(frequency, limit: limit)
+            #expect(lengths.allSatisfy { Int($0) <= limit })
+            #expect(zip(frequency, lengths).allSatisfy { ($0 == 0) == ($1 == 0) })
+            // Kraft equality: the code is complete, never oversubscribed.
+            #expect(lengths.reduce(0) { $0 + ($1 == 0 ? 0 : 1 << (limit - Int($1))) } == 1 << limit)
+        }
+        #expect(Deflate.codeLengths([0, 5, 0], limit: 15) == [0, 1, 0])
+        #expect(Deflate.codeLengths([0, 0], limit: 15) == [0, 0])
+    }
+
+    @Test func markupCompressesWellBelowTheFixedCode() {
+        // The fixed code spends at least 7 bits per token; a code fitted to
+        // markup does much better. Guards against silently losing BTYPE=10.
+        let xml = slideLikeXML
+        let deflated = Deflate.deflate(xml)
+        #expect(deflated.first.map { ($0 >> 1) & 3 } == 2, "expected a dynamic Huffman block")
+        #expect(deflated.count * 10 < xml.count, "expected >10x on repetitive markup, got \(xml.count)->\(deflated.count)")
+    }
 }
