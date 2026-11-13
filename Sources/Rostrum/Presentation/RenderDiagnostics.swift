@@ -163,10 +163,12 @@ final class RenderDiagnosticCollector {
 
     /// The scanner conservatively reports effects before painting. Refine that
     /// same ordered issue only after the renderer has drawn the entire effect.
-    func renderedOuterShadow(at location: FidelityLocation) {
+    func renderedEffects(_ effects: [String], at location: FidelityLocation) {
         guard let index = omittedEffectIndices.removeValue(forKey: location) else { return }
-        let replacement = FidelityIssue(code: .omittedEffect, impact: .approximation, location: location,
-            message: "Shape outer shadow is approximated with an SVG Gaussian blur.")
+        let message = effects == ["outer shadow"]
+            ? "Shape outer shadow is approximated with an SVG Gaussian blur."
+            : "Shape effects (\(effects.joined(separator: ", "))) are approximated with SVG filters."
+        let replacement = FidelityIssue(code: .omittedEffect, impact: .approximation, location: location, message: message)
         seen.remove(issues[index])
         issues[index] = replacement
         seen.insert(replacement)

@@ -498,11 +498,21 @@ struct SVGRenderer {
             }
         }
         if let txBody = sp.firstChild(named: "p:txBody") {
-            if !txBody.textContent.isEmpty, let rect = spPr.firstChild(named: "a:custGeom")?.firstChild(named: "a:rect"),
+            // A custom geometry places its text in its own `a:rect`, which may
+            // be inset from the shape bounds by guide formulas.
+            var customTextFrame: (Int, Int, Int, Int)?
+            if let custom = spPr.firstChild(named: "a:custGeom"), let rect = custom.firstChild(named: "a:rect"),
                ["l", "t", "r", "b"].contains(where: { rect[attribute: $0] != $0 }) {
-                diagnostics.record(.unsupportedGeometry, .approximation, "Custom geometry text rectangle is not resolved; using the shape bounds.")
+                if let resolved = SVGCustomGeometry.resolve(custom, width: Double(f.2), height: Double(f.3))?.textRect,
+                   resolved.right - resolved.left >= 1, resolved.bottom - resolved.top >= 1 {
+                    customTextFrame = (f.0 + Int(resolved.left.rounded()), f.1 + Int(resolved.top.rounded()),
+                                       Int((resolved.right - resolved.left).rounded()), Int((resolved.bottom - resolved.top).rounded()))
+                } else if !txBody.textContent.isEmpty {
+                    diagnostics.record(.unsupportedGeometry, .approximation, "Custom geometry text rectangle is not resolved; using the shape bounds.")
+                }
             }
             let textFrame = ShapeTransform.rect(sp.firstChild(named: "dsp:txXfrm")).map { ($0.x.rawValue, $0.y.rawValue, $0.width.rawValue, $0.height.rawValue) }
+                ?? customTextFrame
                 ?? SVGPresetGeometry.textFrame(prst, adjustments: preset?.firstChild(named: "a:avLst"), frame: f)
             let text = renderText(txBody, box: textFrame,
                                   inheriting: inheritedRunDefaults(for: sp, ownedBy: owner),
@@ -520,30 +530,53 @@ struct SVGRenderer {
         let inheritedEffects = directEffects == nil && spPr.firstChild(named: "a:effectDag") == nil
             ? styleEntry(style?.firstChild(named: "a:effectRef"), list: "a:effectStyleLst") : nil
         let effects = directEffects ?? inheritedEffects?.firstChild(named: "a:effectLst")
-        if let shadow = effects?.firstChild(named: "a:outerShdw") {
-            let ordinary = ["sx", "sy"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "100000" }
-                && ["kx", "ky"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "0" }
-            if ordinary {
-                let transform = spPr.firstChild(named: "a:xfrm")
-                if let painted = SVGShadow.wrap(out, shadow: shadow, frame: f, theme: theme,
-                    rotation: ShapeTransform.rotation(of: sp),
-                    flipH: ["1", "true"].contains(transform?[attribute: "flipH"] ?? ""),
-                    flipV: ["1", "true"].contains(transform?[attribute: "flipV"] ?? ""), defs: &defs) {
+        if let effects {
+            let transform = spPr.firstChild(named: "a:xfrm")
+            let rotation = ShapeTransform.rotation(of: sp)
+            let flipH = ["1", "true"].contains(transform?[attribute: "flipH"] ?? "")
+            let flipV = ["1", "true"].contains(transform?[attribute: "flipV"] ?? "")
+            // Inside out: effects that change the shape's own pixels first,
+            // then the ones painted behind it.
+            var rendered: [String] = []
+            if let edge = effects.firstChild(named: "a:softEdge"),
+               let painted = SVGShadow.softEdge(out, edge: edge, frame: f, defs: &defs) {
+                out = painted
+                rendered.append("soft edge")
+            }
+            if let inner = effects.firstChild(named: "a:innerShdw"),
+               let painted = SVGShadow.innerShadow(out, shadow: inner, frame: f, theme: theme,
+                                                   rotation: rotation, flipH: flipH, flipV: flipV, defs: &defs) {
+                out = painted
+                rendered.append("inner shadow")
+            }
+            if let glow = effects.firstChild(named: "a:glow"),
+               let painted = SVGShadow.glow(out, glow: glow, frame: f, theme: theme, defs: &defs) {
+                out = painted
+                rendered.append("glow")
+            }
+            if let shadow = effects.firstChild(named: "a:outerShdw") {
+                let ordinary = ["sx", "sy"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "100000" }
+                    && ["kx", "ky"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "0" }
+                if !ordinary {
+                    problems.record("Preview omitted a scaled or skewed outer shadow.")
+                } else if let painted = SVGShadow.wrap(out, shadow: shadow, frame: f, theme: theme,
+                                                       rotation: rotation, flipH: flipH, flipV: flipV, defs: &defs) {
                     out = painted
-                    // A mixed list still omits effects. A theme-reference issue
-                    // also covers other active components, including 3D effects.
-                    let otherInheritedEffects = inheritedEffects?.childElements.contains { component in
-                        ["a:effectDag", "a:scene3d", "a:sp3d"].contains(component.name)
-                            && spPr.firstChild(named: component.name) == nil
-                            && RenderDiagnosticCollector.hasEffectContent(component)
-                    } ?? false
-                    if effects?.childElements.count == 1 && !otherInheritedEffects {
-                        let suffix = directEffects == nil ? "/p:style/a:effectRef" : "/p:spPr[1]/a:effectLst[1]"
-                        diagnostics.renderedOuterShadow(at: FidelityLocation(slideIndex: shapeLocation.slideIndex,
-                            partURI: shapeLocation.partURI, shapeID: shapeLocation.shapeID, path: shapeLocation.path + suffix))
-                    }
+                    rendered.append("outer shadow")
                 }
-            } else { problems.record("Preview omitted a scaled or skewed outer shadow.") }
+            }
+            // A partly drawn list still omits effects. A theme-reference issue
+            // also covers other active components, including 3D effects.
+            let otherInheritedEffects = inheritedEffects?.childElements.contains { component in
+                ["a:effectDag", "a:scene3d", "a:sp3d"].contains(component.name)
+                    && spPr.firstChild(named: component.name) == nil
+                    && RenderDiagnosticCollector.hasEffectContent(component)
+            } ?? false
+            if !rendered.isEmpty, rendered.count == effects.childElements.count, !otherInheritedEffects {
+                let suffix = directEffects == nil ? "/p:style/a:effectRef" : "/p:spPr[1]/a:effectLst[1]"
+                diagnostics.renderedEffects(rendered, at: FidelityLocation(slideIndex: shapeLocation.slideIndex,
+                    partURI: shapeLocation.partURI, shapeID: shapeLocation.shapeID, path: shapeLocation.path + suffix))
+            }
         }
         }
         return out

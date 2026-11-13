@@ -53,17 +53,19 @@ import Testing
         #expect(repeatReport.problems.fidelityIssues == report.problems.fidelityIssues)
     }
 
-    @Test(arguments: [false, true], ["scale", "missing-color", "transparent", "glow"])
+    @Test(arguments: [false, true], ["scale", "missing-color", "transparent", "reflection"])
     func unsupportedOrUnrenderedEffectsRemainOmissions(_ theme: Bool, _ variant: String) throws {
         let custom = variant == "scale" ? shadow.replacingOccurrences(of: "blurRad=", with: "sx=\"50000\" blurRad=")
             : variant == "missing-color" ? "<a:outerShdw blurRad=\"40000\"/>"
             : variant == "transparent" ? shadow.replacingOccurrences(of: "38000", with: "0") : shadow
-        let extra = variant == "glow" ? "<a:glow rad=\"10000\"><a:srgbClr val=\"FF0000\"/></a:glow>" : ""
+        // A reflection is not drawn, so a list containing one stays an omission
+        // even though its outer shadow is still painted.
+        let extra = variant == "reflection" ? "<a:reflection blurRad=\"6350\" stA=\"50000\"/>" : ""
         let deck = try make(theme: theme, extra: extra, shadowOverride: custom)
         let report = try deck.renderSVGReportingProblems(slideAt: 0)
         #expect(report.problems.fidelityIssues.contains { $0.code == .omittedEffect && $0.impact == .omission })
         #expect(!report.problems.fidelityIssues.contains { $0.code == .omittedEffect && $0.impact == .approximation })
-        #expect(report.svg.contains("<filter ") == (variant == "glow"))
+        #expect(report.svg.contains("<filter ") == (variant == "reflection"))
     }
 
     @Test func additionalThemeComponentsKeepTheReferenceAnOmission() throws {
