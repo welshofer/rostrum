@@ -1,15 +1,55 @@
 import Foundation
 
-/// Bounded, analytic outlines for common DrawingML presets. This deliberately
-/// handles only literal adjustment guides; unsupported formulas stay diagnosed.
+/// Outlines for DrawingML presets. Common presets are drawn analytically;
+/// every other preset is evaluated from its ECMA-376 definition
+/// (`GeneratedPresetShapes`) by the custom-geometry path evaluator. Only
+/// literal adjustment guides are honored; other formulas stay diagnosed.
 /// Outline equations follow ECMA-376 Part 1 presetShapeDefinitions (2016);
 /// upArrow uses the Microsoft Open Specifications clarification of May 2025.
 enum SVGPresetGeometry {
     static let openPresets: Set<String> = ["line", "straightConnector1", "arc"]
-    // Note: "star5" is intentionally excluded from `supported` so consumer
-    // diagnostic tests that use `.star5Point` as an unsupported-geometry
-    // sentinel continue to observe `.unsupportedGeometry`.
-    static let supported: Set<String> = [
+    /// Every preset the preview draws with its own outline.
+    static let supported: Set<String> = analytic.union(GeneratedPresetShapes.definitions.keys)
+
+    /// Parsed `GeneratedPresetShapes` definitions. Elements are never mutated
+    /// after parsing, so sharing them across renders is safe.
+    private final class DefinitionCache: @unchecked Sendable {
+        private let lock = NSLock()
+        private var parsed: [String: XML.Element] = [:]
+        func element(_ preset: String) -> XML.Element? {
+            lock.lock(); defer { lock.unlock() }
+            if let element = parsed[preset] { return element }
+            guard let body = GeneratedPresetShapes.definitions[preset],
+                  let element = try? XML.parse(Data(("<a:custGeom xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">" + body + "</a:custGeom>").utf8)) else { return nil }
+            parsed[preset] = element
+            return element
+        }
+    }
+    private static let definitions = DefinitionCache()
+
+    /// The custom-geometry form of a preset that has no analytic outline, with
+    /// the shape's literal adjustment values replacing the defaults.
+    static func definition(_ preset: String, adjustments: XML.Element?) -> XML.Element? {
+        guard !analytic.contains(preset), let base = definitions.element(preset) else { return nil }
+        var overrides: [String: String] = [:]
+        for guide in adjustments?.children(named: "a:gd") ?? [] {
+            let parts = (guide[attribute: "fmla"] ?? "").split(whereSeparator: \.isWhitespace)
+            guard let name = guide[attribute: "name"], parts.count == 2, parts[0] == "val",
+                  let value = Double(parts[1]), value.isFinite, abs(value) <= 1e14 else { continue }
+            overrides[name] = "val " + parts[1]
+        }
+        guard !overrides.isEmpty, let defaults = base.firstChild(named: "a:avLst") else { return base }
+        let merged = XML.Element("a:avLst", children: defaults.children(named: "a:gd").map { guide in
+            let name = guide[attribute: "name"] ?? ""
+            return .element(XML.Element("a:gd", attributes: [("name", name), ("fmla", overrides[name] ?? guide[attribute: "fmla"] ?? "val 0")]))
+        })
+        return XML.Element("a:custGeom", children: base.children.map { node in
+            if case .element(let child) = node, child.name == "a:avLst" { return .element(merged) }
+            return node
+        })
+    }
+
+    static let analytic: Set<String> = [
         "rect", "ellipse", "roundRect", "triangle", "rtTriangle", "diamond",
         "parallelogram", "trapezoid", "nonIsoscelesTrapezoid", "chevron", "homePlate",
         "pentagon", "hexagon", "heptagon", "octagon", "decagon", "dodecagon",
@@ -67,6 +107,12 @@ enum SVGPresetGeometry {
     /// Preset text rectangles are part of the geometry definition. Placing text
     /// in the full outer box makes labels disappear against the page at notches.
     static func textFrame(_ preset: String, adjustments: XML.Element?, frame: (Int, Int, Int, Int)) -> (Int, Int, Int, Int) {
+        if let definition = definition(preset, adjustments: adjustments) {
+            guard let rect = SVGCustomGeometry.resolve(definition, width: Double(max(0, frame.2)), height: Double(max(0, frame.3)))?.textRect,
+                  rect.right - rect.left >= 1, rect.bottom - rect.top >= 1 else { return frame }
+            return (frame.0 + Int(rect.left.rounded()), frame.1 + Int(rect.top.rounded()),
+                    Int((rect.right - rect.left).rounded()), Int((rect.bottom - rect.top).rounded()))
+        }
         let (x,y,iw,ih) = frame
         let w = Double(max(0,iw)), h = Double(max(0,ih)), ss = Double(max(0,min(iw,ih)))
         func adj(_ name: String, _ fallback: Double, max limit: Double = 100_000) -> Double {
@@ -189,6 +235,10 @@ enum SVGPresetGeometry {
                        fill: String, stroke: String) -> String {
         let (ix, iy, iw, ih) = frame
         let x = Double(ix), y = Double(iy), w = Double(max(0, iw)), h = Double(max(0, ih))
+        if let definition = definition(preset, adjustments: adjustments),
+           let paths = SVGCustomGeometry.paths(definition, width: w, height: h) {
+            return SVGCustomGeometry.render(paths, x: ix, y: iy, fill: fill, stroke: stroke)
+        }
         let ss = min(w, h)
         let n = SVGNumber.decimal
         func adj(_ name: String, _ fallback: Double, max limit: Double = 100_000) -> Double {

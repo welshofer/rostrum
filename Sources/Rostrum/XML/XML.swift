@@ -324,7 +324,7 @@ public enum XML {
     /// The XML 1.0 `Char` production: tab/LF/CR, then the legal scalar ranges.
     /// Control characters (except tab/LF/CR), surrogates, and the U+FFFE/FFFF
     /// non-characters are excluded — feeding them to the Linux parser can crash it.
-    private static func isXMLChar(_ v: UInt32) -> Bool {
+    static func isXMLChar(_ v: UInt32) -> Bool {
         v == 0x9 || v == 0xA || v == 0xD
             || (v >= 0x20 && v <= 0xD7FF)
             || (v >= 0xE000 && v <= 0xFFFD)
@@ -449,6 +449,16 @@ public enum XML {
     /// Parse a complete XML document, keeping the comments and processing
     /// instructions that sit outside the root element.
     public static func parseDocument(_ data: Data) throws -> Document {
+        // Plain documents — nearly every OOXML part — take the direct parser.
+        // It declines anything it cannot reproduce exactly, including every
+        // malformed document, so XMLParser still decides all of those.
+        if let document = XMLFastParser.parse(data) { return document }
+        return try parseDocumentWithXMLParser(data)
+    }
+
+    /// The `XMLParser` (SAX) path: the reference behavior for every document,
+    /// and the only path for the ones `XMLFastParser` declines.
+    static func parseDocumentWithXMLParser(_ data: Data) throws -> Document {
         // Reject input that XML forbids BEFORE handing it to XMLParser: on Linux,
         // swift-corelibs-foundation's parser can TRAP (SIGILL, not throw) on
         // invalid UTF-8 or characters outside the XML 1.0 Char production. Real

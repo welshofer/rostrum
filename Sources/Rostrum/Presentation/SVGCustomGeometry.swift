@@ -8,6 +8,22 @@ enum SVGCustomGeometry {
         let fill: Bool
         let stroke: Bool
         let closed: Bool
+        /// DrawingML path shading: an overlay opacity, negative for black
+        /// (`darken`, `darkenLess`) and positive for white (`lighten`,
+        /// `lightenLess`). ECMA-376 names the modes without fixing amounts;
+        /// 40% and 20% are this preview's approximation.
+        var shade: Double = 0
+    }
+
+    private static let shades: [String: Double] = [
+        "norm": 0, "none": 0, "darken": -0.4, "darkenLess": -0.2, "lighten": 0.4, "lightenLess": 0.2,
+    ]
+
+    struct Resolved {
+        var paths: [Path]
+        /// The geometry's `a:rect` text rectangle in shape-local units, when
+        /// it has one and every edge resolves.
+        var textRect: (left: Double, top: Double, right: Double, bottom: Double)?
     }
 
     static func supportsArrowheads(_ geometry: XML.Element) -> Bool {
@@ -22,21 +38,30 @@ enum SVGCustomGeometry {
     }
 
     static func paths(_ geometry: XML.Element, width: Double, height: Double) -> [Path]? {
+        resolve(geometry, width: width, height: height)?.paths
+    }
+
+    static func resolve(_ geometry: XML.Element, width: Double, height: Double) -> Resolved? {
         guard width >= 0, height >= 0, width.isFinite, height.isFinite,
               let list = geometry.firstChild(named: "a:pathLst"),
               !list.childElements.isEmpty, list.childElements.count <= 4096 else { return nil }
         var values: [String: Double] = ["w": width, "h": height, "l": 0, "t": 0,
             "r": width, "b": height, "hc": width / 2, "vc": height / 2,
             "ss": min(width, height), "ls": max(width, height), "cd2": 10800000,
-            "cd4": 5400000, "cd8": 2700000, "3cd4": 16200000]
+            "cd4": 5400000, "cd8": 2700000, "3cd4": 16200000,
+            "3cd8": 8100000, "5cd8": 13500000, "7cd8": 18900000]
         for divisor in [2, 3, 4, 5, 6, 8, 10, 12, 16, 32] {
             values["wd\(divisor)"] = width / Double(divisor)
             values["hd\(divisor)"] = height / Double(divisor)
             values["ssd\(divisor)"] = min(width, height) / Double(divisor)
         }
+        // Guides hold intermediate products (the circular-arrow presets square
+        // EMU lengths twice), so they get far more headroom than the 1e14
+        // bound that emitted coordinates and radii must still satisfy.
+        let guideLimit = 1e60
         func value(_ token: String?) -> Double? {
             guard let token, let number = values[token] ?? Double(token),
-                  number.isFinite, abs(number) <= 1e14 else { return nil }
+                  number.isFinite, abs(number) <= guideLimit else { return nil }
             return number
         }
         // Unsupported, unused connection-site guides do not invalidate paths.
@@ -71,12 +96,12 @@ enum SVGCustomGeometry {
                 case ("sat2", 3): result = args[0] * sin(atan2(args[2], args[1]))
                 default: result = nil
                 }
-                values[name] = result.flatMap { $0.isFinite && abs($0) <= 1e14 ? $0 : nil }
+                values[name] = result.flatMap { $0.isFinite && abs($0) <= guideLimit ? $0 : nil }
             }
         }
         var result: [Path] = [], commands = 0
         for path in list.childElements {
-            guard path.name == "a:path", [nil, "norm", "none"].contains(path[attribute: "fill"]) else { return nil }
+            guard path.name == "a:path", let shade = shades[path[attribute: "fill"] ?? "norm"] else { return nil }
             guard path[attribute: "w"] == nil || path[attribute: "w"].flatMap(Double.init) != nil,
                   path[attribute: "h"] == nil || path[attribute: "h"].flatMap(Double.init) != nil else { return nil }
             let pw = path[attribute: "w"].flatMap(Double.init) ?? width
@@ -170,15 +195,31 @@ enum SVGCustomGeometry {
             guard hasPoint else { return nil }
             result.append(Path(data: parts.joined(separator: " "), fill: path[attribute: "fill"] != "none",
                 stroke: !["0", "false"].contains(path[attribute: "stroke"] ?? "1"),
-                closed: hasClose))
+                closed: hasClose, shade: shade))
         }
-        return result
+        var textRect: (left: Double, top: Double, right: Double, bottom: Double)?
+        if let rect = geometry.firstChild(named: "a:rect"),
+           let left = value(rect[attribute: "l"]), let top = value(rect[attribute: "t"]),
+           let right = value(rect[attribute: "r"]), let bottom = value(rect[attribute: "b"]),
+           right >= left, bottom >= top {
+            textRect = (left, top, right, bottom)
+        }
+        return Resolved(paths: result, textRect: textRect)
     }
 
     static func render(_ paths: [Path], x: Int, y: Int, fill: String, stroke: String, openMarkerAttrs: String = "") -> String {
         "<g transform=\"translate(\(x) \(y))\">" + paths.map {
             let strokePart = $0.stroke ? (stroke + (!$0.closed ? openMarkerAttrs : "")) : ""
-            return "<path d=\"\($0.data)\" fill=\"\($0.fill ? fill : "none")\"\(strokePart)/>"
+            // Shading is painted over the shape's own fill, so it follows
+            // gradients and images instead of replacing them.
+            let overlay = $0.fill && $0.shade != 0 && fill != "none"
+                ? "<path d=\"\($0.data)\" fill=\"\($0.shade < 0 ? "#000000" : "#FFFFFF")\" fill-opacity=\"\(abs($0.shade) > 0.3 ? "0.4" : "0.2")\"/>"
+                : ""
+            if !overlay.isEmpty && !strokePart.isEmpty {
+                return "<path d=\"\($0.data)\" fill=\"\(fill)\"/>" + overlay
+                    + "<path d=\"\($0.data)\" fill=\"none\"\(strokePart)/>"
+            }
+            return "<path d=\"\($0.data)\" fill=\"\($0.fill ? fill : "none")\"\(strokePart)/>" + overlay
         }.joined() + "</g>"
     }
 }

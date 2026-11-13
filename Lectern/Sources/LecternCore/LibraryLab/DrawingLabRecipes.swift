@@ -5,9 +5,9 @@ import Rostrum
 /// XML is read only for properties without a typed read-back API.
 enum DrawingLabRecipes {
     static let catalog: [LibraryLabRecipe] = [
-        .init(.shapes, title: "178 shape presets", summary: "A labeled gallery with editable frames, rotation and rounded corners.",
-              operations: ["ShapeGeometry.allCases", "ShapeCollection.addShape", "ShapeCollection.addRoundedRectangle", "Shape.frame", "Shape.rotation", "Shape.name"],
-              limitations: ["The document stores every preset; SVG approximates unsupported geometries and shape rotations. Group/connector creation and flip setters are not public APIs."],
+        .init(.shapes, title: "178 shape presets", summary: "A labeled gallery with editable frames, rotation, rounded corners and previewed glow, soft-edge and inner-shadow effects.",
+              operations: ["ShapeGeometry.allCases", "ShapeCollection.addShape", "ShapeCollection.addRoundedRectangle", "Shape.frame", "Shape.rotation", "Shape.name", "Part.dom", "Presentation.renderSVGReportingProblems"],
+              limitations: ["Every preset previews with its own ECMA-376 outline at default or literal adjustments; path shading amounts are approximate and PowerPoint remains the rendering authority. Glow, soft edge and inner shadow have no typed setters: the specimens are authored through public XML and previewed as approximate SVG filters. Reflections and 3D effects are not drawn."],
               inputs: [.text, .accent, .sampleSize, .alternative], alternativeLabel: "Rotate presets 15 degrees"),
         .init(.fillsAndLines, title: "Fills, outlines and shadows", summary: "Solid, alpha, theme, linear/radial gradient and image fills; every dash and compound stroke.",
               operations: ["Slide.setBackground", "Slide.background", "Slide.effectiveBackground", "Slide.effectiveBackgroundColor", "Shape.setFill", "Shape.setLine", "Shape.enableSoftShadow", "Fill.themeColor", "GradientFill.radial", "LineDash.allCases", "LineCompound.allCases", "Presentation.outline", "DeckExport.write"],
@@ -86,10 +86,49 @@ enum DrawingLabRecipes {
         let rounded = try slide.shapes.addRoundedRectangle(LibraryLabSupport.frame(0.5, 6.6, 3.5, 0.45), cornerRadius: .inches(0.2), fill: .solid(Color(o.accentHex)))
         rounded.name = "Explicit corner radius"
         rounded.textFrame?.text = "Explicit corner radius"
+
+        // Effects without typed setters, authored through the public DOM.
+        let effectsPage = try page(deck, "Previewed shape effects")
+        let effects: [(String, String)] = [
+            ("Glow", "<a:glow rad=\"101600\"><a:srgbClr val=\"\(o.accentHex)\"><a:alpha val=\"60000\"/></a:srgbClr></a:glow>"),
+            ("Soft edge", "<a:softEdge rad=\"63500\"/>"),
+            ("Inner shadow", "<a:innerShdw blurRad=\"63500\" dist=\"50800\" dir=\"13500000\"><a:srgbClr val=\"000000\"><a:alpha val=\"50000\"/></a:srgbClr></a:innerShdw>"),
+        ]
+        for (index, effect) in effects.enumerated() {
+            let shape = try effectsPage.shapes.addShape(.roundedRectangle,
+                frame: LibraryLabSupport.frame(0.8 + Double(index) * 4.1, 2.2, 3.2, 1.8), fill: .solid(Color(o.accentHex)))
+            shape.name = "Effect: \(effect.0)"
+            shape.textFrame?.text = effect.0
+        }
+        for properties in nodes(try effectsPage.part.dom(), "p:sp").compactMap({ shape -> XML.Element? in
+            let name = nodes(shape, "p:cNvPr").first?[attribute: "name"] ?? ""
+            return name.hasPrefix("Effect: ") ? shape.firstChild(named: "p:spPr") : nil
+        }) {
+            guard let owner = nodes(try effectsPage.part.dom(), "p:sp").first(where: { $0.firstChild(named: "p:spPr") === properties }),
+                  let name = nodes(owner, "p:cNvPr").first?[attribute: "name"],
+                  let effect = effects.first(where: { "Effect: \($0.0)" == name }) else { continue }
+            properties.children.removeAll { if case .element(let child) = $0 { return child.name == "a:effectLst" } else { return false } }
+            properties.appendElement(try XML.parse(Data("<a:effectLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">\(effect.1)</a:effectLst>".utf8)))
+        }
+        effectsPage.part.markDirty()
+
         return LibraryLabDraft(deck: deck, before: before, verify: { reopened in
             let actual = try reopened.slides.flatMap { nodes(try $0.part.dom(), "a:prstGeom") }.compactMap { $0[attribute: "prst"] }
             let all = reopened.slides.flatMap { $0.shapes.all }.filter { $0.name.hasPrefix("Preset: ") }
+            let beforePreviews = try reopened.serializedData()
+            var geometryFindings = 0, omittedEffects = 0, approximatedEffects = 0, filters = 0
+            for index in 0..<reopened.slideCount {
+                let preview = try reopened.renderSVGReportingProblems(slideAt: index)
+                geometryFindings += preview.problems.fidelityIssues.filter { $0.code == .unsupportedGeometry }.count
+                omittedEffects += preview.problems.fidelityIssues.filter { $0.code == .omittedEffect && $0.impact == .omission }.count
+                approximatedEffects += preview.problems.fidelityIssues.filter { $0.code == .omittedEffect && $0.impact == .approximation }.count
+                filters += preview.svg.components(separatedBy: "<filter ").count - 1
+            }
+            let savedEffects = try reopened.slides.flatMap { nodes(try $0.part.dom(), "a:effectLst") }.flatMap(\.childElements).map(\.name)
             return [
+                .init("Every preset previews with its own outline", geometryFindings == 0, "Rendered every reopened slide; no preset fell back to a rectangle or reported unsupported geometry."),
+                .init("Glow, soft edge and inner shadow persist and preview as filters", savedEffects.sorted() == ["a:glow", "a:innerShdw", "a:softEdge"] && filters == 3 && approximatedEffects == 3 && omittedEffects == 0, "Each saved effect list holds one effect, draws one SVG filter and is reported as an approximation rather than an omission."),
+                .init("Previews do not mutate the document", try reopened.serializedData() == beforePreviews, "Serialized bytes are unchanged after rendering every slide."),
                 .init("All 178 preset geometries persist", Set(presets.map(\.rawValue)).isSubset(of: Set(actual)) && presets.count == 178, "Compared actual a:prstGeom tokens with the complete public preset catalog."),
                 .init("Edited frames and rotation persist", all.count == 178 && all.allSatisfy { $0.frame.width == .inches(1.6) && $0.rotation == (o.alternative ? 15 : 0) }, "Every preset has the edited width and selected rotation."),
                 .init("Explicit rounded corner persists", try reopened.slides.contains { nodes(try $0.part.dom(), "a:gd").contains { $0[attribute: "name"] == "adj" && $0[attribute: "fmla"] == "val 44444" } }, "Radius 0.2 inches / short side 0.45 inches.")

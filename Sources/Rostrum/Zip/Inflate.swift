@@ -6,8 +6,9 @@ import Foundation
 /// Implementation notes for the implementer:
 /// - Handle all three block types: stored (BTYPE=00), fixed Huffman (01),
 ///   dynamic Huffman (10). BTYPE=11 → throw `RostrumError.deflateCorrupt`.
-/// - Model the canonical-Huffman decode tables the way puff.c does (count/symbol
-///   arrays per code length); no need for anything fancier.
+/// - Canonical-Huffman tables keep puff.c's count/symbol arrays for validation
+///   and for codes longer than `HuffmanTable.fastBits`; shorter codes (nearly
+///   all of them) resolve through one lookup in a bit-reversed prefix table.
 /// - Length/distance extra-bit tables per RFC 1951 §3.2.5; window is the output
 ///   buffer itself (distances may reference up to 32 KiB back; a distance past
 ///   the start of output → throw).
@@ -40,6 +41,12 @@ private struct HuffmanTable {
     /// Leftover code space after construction: 0 means the code is complete,
     /// > 0 means it is incomplete. Oversubscription throws at construction.
     let left: Int
+    /// Direct lookup for codes of at most `fastBits` bits, indexed by the next
+    /// `fastBits` stream bits (LSB-first, i.e. the code bit-reversed). An entry
+    /// is `symbol << 4 | length`; 0 means "longer code or no code — decode
+    /// bit by bit".
+    let fast: [UInt16]
+    static let fastBits = 10
 
     init(lengths: [Int]) throws {
         var count = [Int](repeating: 0, count: 16)
@@ -67,6 +74,30 @@ private struct HuffmanTable {
         self.count = count
         self.symbol = symbol
         self.left = left
+
+        // Assign canonical codes in the same order `decode` walks them and
+        // replicate each short code across every index sharing its prefix.
+        var fast = [UInt16](repeating: 0, count: 1 << Self.fastBits)
+        var code = 0
+        var index = 0
+        for len in 1...Self.fastBits {
+            for _ in 0..<count[len] {
+                var reversed = 0
+                for bit in 0..<len where code & (1 << bit) != 0 {
+                    reversed |= 1 << (len - 1 - bit)
+                }
+                let entry = UInt16(symbol[index] << 4 | len)
+                var slot = reversed
+                while slot < fast.count {
+                    fast[slot] = entry
+                    slot += 1 << len
+                }
+                code += 1
+                index += 1
+            }
+            code <<= 1
+        }
+        self.fast = fast
     }
 
     /// True when the code contains at most one symbol (all lengths 0 or 1),
@@ -80,42 +111,73 @@ private struct InflateDecoder {
     let input: [UInt8]
     let expectedOutputSize: Int?
     var pos = 0
-    var bitBuffer: UInt32 = 0
+    var bitBuffer: UInt64 = 0
     var bitCount = 0
-    var output: [UInt8] = []
+    /// The output, a manually grown buffer: `run()` hands it to `Data`
+    /// without a copy, and literals are stored without `Array.append`'s
+    /// uniqueness and capacity checks. Owned by `run()`, which frees it on error.
+    var output: UnsafeMutablePointer<UInt8>
+    var outputCount = 0
+    var outputCapacity: Int
 
     init(input: [UInt8], expectedOutputSize: Int?) {
         self.input = input
         self.expectedOutputSize = expectedOutputSize
-        if let size = expectedOutputSize, size > 0 {
-            // The declared size comes straight from the archive being read —
-            // attacker-controlled for untrusted files — so cap the up-front
-            // reservation: a few-hundred-byte crafted zip must not force a
-            // multi-gigabyte allocation. Larger honest outputs grow amortized,
-            // and `reserveOutput` still rejects overruns of the declared size.
-            output.reserveCapacity(Swift.min(size, 1 << 20))
-        }
+        // The declared size comes straight from the archive being read —
+        // attacker-controlled for untrusted files — so cap the up-front
+        // reservation: a few-hundred-byte crafted zip must not force a
+        // multi-gigabyte allocation. Larger honest outputs grow amortized,
+        // and `reserveOutput` still rejects overruns of the declared size.
+        outputCapacity = Swift.max(64, Swift.min(expectedOutputSize ?? 0, 1 << 20))
+        output = UnsafeMutablePointer<UInt8>.allocate(capacity: outputCapacity)
     }
 
     // MARK: - Bit reading (LSB-first within bytes)
 
-    mutating func bits(_ n: Int) throws -> Int {
-        while bitCount < n {
-            guard pos < input.count else {
-                throw RostrumError.deflateCorrupt("unexpected end of stream while reading bits")
-            }
-            bitBuffer |= UInt32(input[pos]) << bitCount
+    /// Top up the bit buffer to at least 56 bits, or to the end of input.
+    @inline(__always)
+    mutating func refill() {
+        while bitCount <= 56, pos < input.count {
+            bitBuffer |= UInt64(input[pos]) << UInt64(bitCount)
             pos += 1
             bitCount += 8
         }
-        let value = Int(bitBuffer & UInt32((1 << n) - 1))
-        bitBuffer >>= UInt32(n)
+    }
+
+    /// Read `n` (0...16) bits.
+    @inline(__always)
+    mutating func bits(_ n: Int) throws -> Int {
+        if bitCount < n {
+            refill()
+            guard bitCount >= n else {
+                throw RostrumError.deflateCorrupt("unexpected end of stream while reading bits")
+            }
+        }
+        let value = Int(bitBuffer & ((1 << UInt64(n)) - 1))
+        bitBuffer >>= UInt64(n)
         bitCount -= n
         return value
     }
 
-    /// Decode one symbol, reading Huffman code bits MSB-first (puff.c decode()).
+    /// Decode one symbol. Codes of at most `HuffmanTable.fastBits` bits take
+    /// one table lookup; anything else — longer codes, unassigned prefixes and
+    /// the last few bits of the stream — falls back to `decodeSlowly`, which
+    /// also owns every error.
+    @inline(__always)
     mutating func decode(_ table: HuffmanTable) throws -> Int {
+        if bitCount < HuffmanTable.fastBits { refill() }
+        let entry = Int(table.fast[Int(bitBuffer & UInt64((1 << HuffmanTable.fastBits) - 1))])
+        let length = entry & 15
+        if length != 0, length <= bitCount {
+            bitBuffer >>= UInt64(length)
+            bitCount -= length
+            return entry >> 4
+        }
+        return try decodeSlowly(table)
+    }
+
+    /// Decode one symbol, reading Huffman code bits MSB-first (puff.c decode()).
+    mutating func decodeSlowly(_ table: HuffmanTable) throws -> Int {
         var code = 0
         var first = 0
         var index = 0
@@ -151,20 +213,42 @@ private struct InflateDecoder {
     /// the provenance.
     mutating func reserveOutput(_ count: Int) throws {
         if let expected = expectedOutputSize {
-            if output.count + count > expected {
+            if outputCount + count > expected {
                 throw RostrumError.deflateCorrupt(
                     "output exceeds expected size \(expected)")
             }
-        } else if output.count + count > Inflate.defaultOutputCeiling {
+        } else if outputCount + count > Inflate.defaultOutputCeiling {
             throw RostrumError.deflateCorrupt(
                 "output exceeds \(Inflate.defaultOutputCeiling) bytes with no declared size; "
                     + "pass expectedOutputSize to raise the ceiling")
+        }
+        let needed = outputCount + count
+        if needed > outputCapacity {
+            // Never reserve past what the stream may legally produce.
+            let ceiling = expectedOutputSize ?? Inflate.defaultOutputCeiling
+            let capacity = Swift.max(needed, Swift.min(outputCapacity * 2, Swift.max(ceiling, needed)))
+            let grown = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity)
+            grown.update(from: output, count: outputCount)
+            output.deallocate()
+            output = grown
+            outputCapacity = capacity
         }
     }
 
     // MARK: - Blocks
 
     mutating func run() throws -> Data {
+        do {
+            try decodeBlocks()
+        } catch {
+            output.deallocate()
+            throw error
+        }
+        let buffer = output
+        return Data(bytesNoCopy: buffer, count: outputCount, deallocator: .custom { _, _ in buffer.deallocate() })
+    }
+
+    private mutating func decodeBlocks() throws {
         var isFinal = false
         repeat {
             isFinal = try bits(1) == 1
@@ -181,11 +265,12 @@ private struct InflateDecoder {
                 throw RostrumError.deflateCorrupt("invalid block type 3 (BTYPE=11)")
             }
         } while !isFinal
-        return Data(output)
     }
 
     mutating func storedBlock() throws {
-        // Discard bits up to the next byte boundary.
+        // Discard bits up to the next byte boundary, and hand back the whole
+        // bytes the bit buffer read ahead: stored data is addressed by `pos`.
+        pos -= bitCount / 8
         bitBuffer = 0
         bitCount = 0
         guard pos + 4 <= input.count else {
@@ -201,7 +286,10 @@ private struct InflateDecoder {
             throw RostrumError.deflateCorrupt("truncated stored block data")
         }
         try reserveOutput(len)
-        output.append(contentsOf: input[pos..<pos + len])
+        input.withUnsafeBufferPointer { input in
+            if len > 0 { (output + outputCount).update(from: input.baseAddress! + pos, count: len) }
+        }
+        outputCount += len
         pos += len
     }
 
@@ -306,8 +394,9 @@ private struct InflateDecoder {
         while true {
             let sym = try decode(literals)
             if sym < 256 {
-                try reserveOutput(1)
-                output.append(UInt8(sym))
+                if outputCount == outputCapacity || expectedOutputSize != nil { try reserveOutput(1) }
+                output[outputCount] = UInt8(sym)
+                outputCount += 1
             } else if sym == 256 {
                 return
             } else {
@@ -322,29 +411,22 @@ private struct InflateDecoder {
                     throw RostrumError.deflateCorrupt("invalid distance symbol \(distSym)")
                 }
                 let distance = Self.distanceBase[distSym] + (try bits(Self.distanceExtra[distSym]))
-                guard distance <= output.count else {
+                guard distance <= outputCount else {
                     throw RostrumError.deflateCorrupt(
-                        "distance \(distance) reaches before the start of output (\(output.count) bytes so far)")
+                        "distance \(distance) reaches before the start of output (\(outputCount) bytes so far)")
                 }
                 try reserveOutput(length)
-                // The hot loop of the whole decoder. Growing first and copying
-                // through a raw pointer avoids a bounds/uniqueness check per
-                // byte; a non-overlapping match (the common case) collapses to
-                // one memcpy. An overlapping match MUST copy sequentially —
-                // byte i reads a byte this same match wrote — so it keeps the
-                // loop, just without per-byte `append` overhead.
-                let start = output.count
-                let srcStart = start - distance
-                output.append(contentsOf: repeatElement(0, count: length))
-                output.withUnsafeMutableBufferPointer { buffer in
-                    let base = buffer.baseAddress!
-                    if distance >= length {
-                        UnsafeMutableRawPointer(base + start)
-                            .copyMemory(from: base + srcStart, byteCount: length)
-                    } else {
-                        for i in 0..<length { base[start + i] = base[srcStart + i] }
-                    }
+                // A non-overlapping match (the common case) collapses to one
+                // memcpy. An overlapping match MUST copy sequentially — byte i
+                // reads a byte this same match wrote.
+                let destination = output + outputCount
+                let source = destination - distance
+                if distance >= length {
+                    destination.update(from: source, count: length)
+                } else {
+                    for i in 0..<length { destination[i] = source[i] }
                 }
+                outputCount += length
             }
         }
     }

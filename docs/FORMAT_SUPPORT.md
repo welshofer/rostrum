@@ -14,7 +14,7 @@ This matrix describes current `main`, including post-1.0 enhancements. See the
 | Masters, layouts, themes | Import, preserve and author; template-aware composition; preview resolves shape fill/line/font style references and paragraph run defaults | Broader real-template corpus; full effects, color-transform and text/rendering equivalence is not certified |
 | Groups | Read children and transforms; preview nested coordinate spaces, rotation and flips; honor hidden shapes and groups | Creation/ungroup APIs; native visual baselines for all transform/text combinations |
 | Connectors | Read connections; preview straight lines, flips, direct/theme-reference colors, basic dashes and arrowheads | Attached-connector authoring/routing; bent and curved previews currently use straight lines with warnings |
-| Shape geometry | Preset geometry authoring; common preset previews and bounded custom lines/quadratic/cubic curves with guide coordinates, per-path fill/stroke and scale-independent strokes | Unsupported presets/path commands retain diagnosed fallback; custom arcs, shaded path fills, custom text rectangles and a general editable freeform API remain |
+| Shape geometry | Preset geometry authoring; an outline for every ECMA-376 preset (analytic for common shapes, evaluated from the standard's definitions for the rest) with literal adjustments and preset text rectangles; bounded custom lines, arcs and quadratic/cubic curves with guide coordinates, resolved text rectangles, per-path fill/stroke/shading and scale-independent strokes | Non-literal adjustment formulas use defaults; path shading amounts are approximate; unknown preset names retain a diagnosed rectangle; native visual baselines for the generated outlines |
 | Text | Shared fit/render layout, inherited body/list styles, all-caps, anchored exact spacing, empty-paragraph handling, measured registered faces and explicit preview fallback; bounded kerning/ligatures and script support | Full complex-script, bidi and PowerPoint typography parity; small capitals, text warps and columns |
 | Charts | Native classic chart APIs, chart-cache extraction and guarded replacement; embedded-workbook read fallback; editable workbooks | Date/number-format display, named or external workbook references, broader date-category editing, stock and ChartEx |
 | Tables | Native cells, formatting and merges; embedded/custom regions and all 74 built-in table styles; shared measured layout | Broader native rendering baselines |
@@ -75,7 +75,8 @@ shade, hue, saturation, HSL luminance, RGB channel, complement, inverse, graysca
 gamma and alpha transforms in XML order, including style reference and placeholder
 transforms. Ordinary outer shadows resolve direct or theme effects, color, opacity,
 blur and offset; an explicit empty effect list suppresses theme effects. Scaled or
-skewed shadows are diagnosed. Text inherits presentation, master and matched
+skewed shadows are diagnosed. Shape glow, soft edges and inner shadows are drawn as
+approximate SVG filters; reflections, preset shadows and 3D remain diagnosed omissions. Text inherits presentation, master and matched
 placeholder run defaults per paragraph level, with local overrides merged by property.
 Missing font resources are reported. Hosts can register exact faces or opt into
 `FontLibrary.previewFallbackFamily` for matching fallback measurement and drawing;
@@ -101,6 +102,8 @@ line width/dashes, legend presence/position, linear value-axis bounds, major gri
 and bounded numeric formats with quoted/escaped units. Chart previews use registered
 font advances and line metrics to reserve space for titles, axes, legends and
 bar/line/pie data labels. Long names wrap; crowded omissions are diagnosed.
+Bar widths follow `c:gapWidth` and `c:overlap`, and an edge-mode inner
+`c:manualLayout` pins the plot rectangle; other manual layouts stay measured.
 Explicit line markers and pie percentage labels are supported. Manual layout,
 native collision parity and advanced number formats remain approximate. See
 [chart preview support](CHART-PREVIEW-FIDELITY.md) and

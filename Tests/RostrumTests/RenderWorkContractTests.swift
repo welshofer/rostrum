@@ -11,7 +11,7 @@ import Testing
         let shape = try XML.parse(Data("""
         <p:sp><p:nvSpPr><p:cNvPr id="42"/></p:nvSpPr>
           <a:effectLst><a:glow/></a:effectLst>
-          <unknown><a:prstGeom prst="star5"/><a:blip/>
+          <unknown><a:prstGeom prst="futurePreset"/><a:blip/>
             <a:prstGeom prst="ellipse"><a:avLst><a:gd/></a:avLst></a:prstGeom>
             <unknown><a:pattFill/></unknown>
           </unknown>

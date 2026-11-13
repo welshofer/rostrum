@@ -244,7 +244,12 @@ credential stores instead of changing production Keychain entries.
 
 - Default new deck is 16:9 built from inspectable XML constants (theirs: 4:3
   bundled binary `default.pptx`).
-- Pure-Swift fixed-Huffman/LZ77 DEFLATE on write when it saves space;
-  already-compressed media can remain STORED. Both paths are deterministic.
+- Pure-Swift LZ77 DEFLATE on write when it saves space, with lazy matching
+  and per-block fixed or dynamic Huffman codes; already-compressed media can
+  remain STORED. Both paths are deterministic.
+- Plain XML parts are parsed by a direct byte-level parser (`XMLFastParser`).
+  Anything it does not reproduce exactly — comments, processing instructions,
+  CDATA, unusual declarations, every malformed document — goes to the
+  `XMLParser` bridge, which remains the reference for behavior and errors.
 - Unreachable parts survive save (see orphan preservation).
 - `Presentation.package` is public — the OPC escape hatch is a feature.

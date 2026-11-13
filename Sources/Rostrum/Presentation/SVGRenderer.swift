@@ -498,11 +498,21 @@ struct SVGRenderer {
             }
         }
         if let txBody = sp.firstChild(named: "p:txBody") {
-            if !txBody.textContent.isEmpty, let rect = spPr.firstChild(named: "a:custGeom")?.firstChild(named: "a:rect"),
+            // A custom geometry places its text in its own `a:rect`, which may
+            // be inset from the shape bounds by guide formulas.
+            var customTextFrame: (Int, Int, Int, Int)?
+            if let custom = spPr.firstChild(named: "a:custGeom"), let rect = custom.firstChild(named: "a:rect"),
                ["l", "t", "r", "b"].contains(where: { rect[attribute: $0] != $0 }) {
-                diagnostics.record(.unsupportedGeometry, .approximation, "Custom geometry text rectangle is not resolved; using the shape bounds.")
+                if let resolved = SVGCustomGeometry.resolve(custom, width: Double(f.2), height: Double(f.3))?.textRect,
+                   resolved.right - resolved.left >= 1, resolved.bottom - resolved.top >= 1 {
+                    customTextFrame = (f.0 + Int(resolved.left.rounded()), f.1 + Int(resolved.top.rounded()),
+                                       Int((resolved.right - resolved.left).rounded()), Int((resolved.bottom - resolved.top).rounded()))
+                } else if !txBody.textContent.isEmpty {
+                    diagnostics.record(.unsupportedGeometry, .approximation, "Custom geometry text rectangle is not resolved; using the shape bounds.")
+                }
             }
             let textFrame = ShapeTransform.rect(sp.firstChild(named: "dsp:txXfrm")).map { ($0.x.rawValue, $0.y.rawValue, $0.width.rawValue, $0.height.rawValue) }
+                ?? customTextFrame
                 ?? SVGPresetGeometry.textFrame(prst, adjustments: preset?.firstChild(named: "a:avLst"), frame: f)
             let text = renderText(txBody, box: textFrame,
                                   inheriting: inheritedRunDefaults(for: sp, ownedBy: owner),
@@ -520,30 +530,53 @@ struct SVGRenderer {
         let inheritedEffects = directEffects == nil && spPr.firstChild(named: "a:effectDag") == nil
             ? styleEntry(style?.firstChild(named: "a:effectRef"), list: "a:effectStyleLst") : nil
         let effects = directEffects ?? inheritedEffects?.firstChild(named: "a:effectLst")
-        if let shadow = effects?.firstChild(named: "a:outerShdw") {
-            let ordinary = ["sx", "sy"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "100000" }
-                && ["kx", "ky"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "0" }
-            if ordinary {
-                let transform = spPr.firstChild(named: "a:xfrm")
-                if let painted = SVGShadow.wrap(out, shadow: shadow, frame: f, theme: theme,
-                    rotation: ShapeTransform.rotation(of: sp),
-                    flipH: ["1", "true"].contains(transform?[attribute: "flipH"] ?? ""),
-                    flipV: ["1", "true"].contains(transform?[attribute: "flipV"] ?? ""), defs: &defs) {
+        if let effects {
+            let transform = spPr.firstChild(named: "a:xfrm")
+            let rotation = ShapeTransform.rotation(of: sp)
+            let flipH = ["1", "true"].contains(transform?[attribute: "flipH"] ?? "")
+            let flipV = ["1", "true"].contains(transform?[attribute: "flipV"] ?? "")
+            // Inside out: effects that change the shape's own pixels first,
+            // then the ones painted behind it.
+            var rendered: [String] = []
+            if let edge = effects.firstChild(named: "a:softEdge"),
+               let painted = SVGShadow.softEdge(out, edge: edge, frame: f, defs: &defs) {
+                out = painted
+                rendered.append("soft edge")
+            }
+            if let inner = effects.firstChild(named: "a:innerShdw"),
+               let painted = SVGShadow.innerShadow(out, shadow: inner, frame: f, theme: theme,
+                                                   rotation: rotation, flipH: flipH, flipV: flipV, defs: &defs) {
+                out = painted
+                rendered.append("inner shadow")
+            }
+            if let glow = effects.firstChild(named: "a:glow"),
+               let painted = SVGShadow.glow(out, glow: glow, frame: f, theme: theme, defs: &defs) {
+                out = painted
+                rendered.append("glow")
+            }
+            if let shadow = effects.firstChild(named: "a:outerShdw") {
+                let ordinary = ["sx", "sy"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "100000" }
+                    && ["kx", "ky"].allSatisfy { shadow[attribute: $0] == nil || shadow[attribute: $0] == "0" }
+                if !ordinary {
+                    problems.record("Preview omitted a scaled or skewed outer shadow.")
+                } else if let painted = SVGShadow.wrap(out, shadow: shadow, frame: f, theme: theme,
+                                                       rotation: rotation, flipH: flipH, flipV: flipV, defs: &defs) {
                     out = painted
-                    // A mixed list still omits effects. A theme-reference issue
-                    // also covers other active components, including 3D effects.
-                    let otherInheritedEffects = inheritedEffects?.childElements.contains { component in
-                        ["a:effectDag", "a:scene3d", "a:sp3d"].contains(component.name)
-                            && spPr.firstChild(named: component.name) == nil
-                            && RenderDiagnosticCollector.hasEffectContent(component)
-                    } ?? false
-                    if effects?.childElements.count == 1 && !otherInheritedEffects {
-                        let suffix = directEffects == nil ? "/p:style/a:effectRef" : "/p:spPr[1]/a:effectLst[1]"
-                        diagnostics.renderedOuterShadow(at: FidelityLocation(slideIndex: shapeLocation.slideIndex,
-                            partURI: shapeLocation.partURI, shapeID: shapeLocation.shapeID, path: shapeLocation.path + suffix))
-                    }
+                    rendered.append("outer shadow")
                 }
-            } else { problems.record("Preview omitted a scaled or skewed outer shadow.") }
+            }
+            // A partly drawn list still omits effects. A theme-reference issue
+            // also covers other active components, including 3D effects.
+            let otherInheritedEffects = inheritedEffects?.childElements.contains { component in
+                ["a:effectDag", "a:scene3d", "a:sp3d"].contains(component.name)
+                    && spPr.firstChild(named: component.name) == nil
+                    && RenderDiagnosticCollector.hasEffectContent(component)
+            } ?? false
+            if !rendered.isEmpty, rendered.count == effects.childElements.count, !otherInheritedEffects {
+                let suffix = directEffects == nil ? "/p:style/a:effectRef" : "/p:spPr[1]/a:effectLst[1]"
+                diagnostics.renderedEffects(rendered, at: FidelityLocation(slideIndex: shapeLocation.slideIndex,
+                    partURI: shapeLocation.partURI, shapeID: shapeLocation.shapeID, path: shapeLocation.path + suffix))
+            }
         }
         }
         return out
@@ -2404,8 +2437,12 @@ struct SVGRenderer {
         let right = rightTick + rightOutside
         let top = max(topTick, outsideTop)
         let bottom = max(bottomTick, categoryHeight) + outsideBottom
-        let area = ChartTextRect(x: content.x + left, y: content.y + top,
+        var area = ChartTextRect(x: content.x + left, y: content.y + top,
             width: content.width - left - right, height: content.height - top - bottom)
+        // An authored inner plot rectangle is exact; the measured one is a guess.
+        if let authored = Self.manualPlotArea(plotArea, frame: ChartTextRect(x: Double(x), y: Double(y), width: Double(w), height: Double(h))) {
+            area = authored
+        }
         guard area.width >= Double(emuPerPoint), area.height >= Double(emuPerPoint) else {
             chartOmission("the plot because its measured labels leave no plotting area")
             return out
@@ -2428,6 +2465,8 @@ struct SVGRenderer {
             if ["barChart", "bar3DChart"].contains(entry.kind) {
                 var seriesPts: [[(x: Double, y: Double, val: Double)]] = Array(repeating: [], count: groupSeries.count)
                 out += barBody(groupSeries, catCount: catCount, scale: plotScale, horizontal: horizontal,
+                    gapWidth: entry.element.firstChild(named: "c:gapWidth")?.boundedInt("val", in: 0...500) ?? 150,
+                    overlap: entry.element.firstChild(named: "c:overlap")?.boundedInt("val", in: -100...100),
                     plotX: area.x, plotY: area.y, plotW: area.width, plotH: area.height,
                     color: { localS, pt in color(entry.seriesIndices[localS], pt) },
                     label: { localS, index, rect in
@@ -2592,15 +2631,40 @@ struct SVGRenderer {
         return out
     }
 
+    /// `c:plotArea/c:layout/c:manualLayout` when it pins the inner plot
+    /// rectangle (the axes box) by its edges, as fractions of the chart space.
+    /// Other forms — outer targets, which include tick labels, and offsets
+    /// from an automatic position — still use the measured layout.
+    private static func manualPlotArea(_ plotArea: XML.Element?, frame: ChartTextRect) -> ChartTextRect? {
+        guard let manual = plotArea?.firstChild(named: "c:layout")?.firstChild(named: "c:manualLayout") else { return nil }
+        func value(_ name: String) -> String? { manual.firstChild(named: name)?[attribute: "val"] }
+        guard value("c:layoutTarget") == "inner", value("c:xMode") == "edge", value("c:yMode") == "edge",
+              let left = value("c:x").flatMap(Double.init), let top = value("c:y").flatMap(Double.init),
+              let width = value("c:w").flatMap(Double.init), let height = value("c:h").flatMap(Double.init),
+              (0...1).contains(left), (0...1).contains(top), width > 0, height > 0 else { return nil }
+        // In edge mode the size values are the far edges rather than extents.
+        let right = value("c:wMode") == "edge" ? width : left + width
+        let bottom = value("c:hMode") == "edge" ? height : top + height
+        guard right > left, bottom > top, right <= 1.0001, bottom <= 1.0001 else { return nil }
+        return ChartTextRect(x: frame.x + frame.width * left, y: frame.y + frame.height * top,
+                             width: frame.width * (min(1, right) - left), height: frame.height * (min(1, bottom) - top))
+    }
+
+    /// Bars in one category slot, sized as DrawingML charts define them:
+    /// `gapWidth` is the space between category clusters as a percentage of
+    /// one bar's width, and `overlap` is how far each series slides over the
+    /// previous one (100 for stacked groupings, where bars share one column).
     private func barBody(_ series: [ChartData.Series], catCount: Int, scale: ValueScale,
-                         horizontal: Bool, plotX: Double, plotY: Double,
+                         horizontal: Bool, gapWidth: Int = 150, overlap: Int? = nil,
+                         plotX: Double, plotY: Double,
                          plotW: Double, plotH: Double, color: (Int, Int?) -> String,
                          label: (Int, Int, ChartBarRect) -> String) -> String {
         let along = horizontal ? plotH : plotW
         let slot = along / Double(catCount)
-        let inset = slot * 0.16
-        let bandWidth = Swift.max(1, slot - inset * 2)
-        let barWidth = scale.stacked ? bandWidth : Swift.max(1, bandWidth / Double(series.count))
+        let seriesStep = scale.stacked ? 0 : 1 - Double(overlap ?? 0) / 100
+        let barsAcross = 1 + Double(Swift.max(0, series.count - 1)) * seriesStep
+        let barWidth = Swift.max(1, slot / (barsAcross + Double(gapWidth) / 100))
+        let inset = (slot - barWidth * barsAcross) / 2
         let zero = scale.zeroFraction
         var out = ""
         var labels = ""
@@ -2634,7 +2698,7 @@ struct SVGRenderer {
                 let startFraction = scale.stacked ? scale.fraction(start) : zero
                 let endFraction = scale.fraction(end)
                 let lo = max(0, min(1, Swift.min(startFraction, endFraction))), hi = max(0, min(1, Swift.max(startFraction, endFraction)))
-                let offset = scale.stacked ? 0 : Double(s) * barWidth
+                let offset = Double(s) * barWidth * seriesStep
                 let fill = color(s, index)
                 if horizontal {
                     out += box(coord(plotX + plotW * lo), coord(bandStart + offset),

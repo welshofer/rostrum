@@ -180,7 +180,8 @@ public final class OPCPackage {
             throw RostrumError.packageInvalid("missing [Content_Types].xml — not an OPC package")
         }
         let package = OPCPackage()
-        package.contentTypes = try ContentTypesMap.parse(zip.data(forEntry: PackURI.contentTypes.memberName))
+        package.contentTypes = try ContentTypesMap.parse(
+            package.adoptingStream(PackURI.contentTypes.memberName, from: zip))
 
         // First pass: create every non-rels part with its content type.
         for name in zip.entryNames {
@@ -255,7 +256,7 @@ public final class OPCPackage {
         // `adopt`, not `setItems`: the parsed collection carries the bytes it
         // came from, and an untouched `.rels` part must re-emit them verbatim.
         if zip.contains(PackURI.packageRels.memberName) {
-            let parsed = try Relationships.parse(zip.data(forEntry: PackURI.packageRels.memberName))
+            let parsed = try Relationships.parse(package.adoptingStream(PackURI.packageRels.memberName, from: zip))
             package.rels.adopt(parsed)
         }
         var consumed: Set<String> = [PackURI.packageRels.memberName]
@@ -263,7 +264,7 @@ public final class OPCPackage {
             let relsName = uri.relsURI.memberName
             guard zip.contains(relsName) else { continue }
             consumed.insert(relsName)
-            let parsed = try Relationships.parse(zip.data(forEntry: relsName))
+            let parsed = try Relationships.parse(package.adoptingStream(relsName, from: zip))
             part.rels.adopt(parsed)
         }
 
@@ -454,6 +455,53 @@ public final class OPCPackage {
         if let old = compressionCache.removeValue(forKey: uri) { compressionCacheBytes -= old.cost }
     }
 
+    /// Encoded relationship and content-type streams, keyed by entry name and
+    /// valid only while the serialized bytes are unchanged. A deck has one
+    /// `.rels` per slide, and without this every save deflated all of them
+    /// again even when nothing had been edited.
+    private var streamCache: [String: (source: Data, payload: ZipWriter.Payload)] = [:]
+    private var streamCacheBytes = 0
+    private let streamCacheLimit = 4 * 1024 * 1024
+
+    /// Decode a relationship or content-type stream while opening, and keep
+    /// its encoded form: an untouched stream serializes to the same bytes, so
+    /// the first save can reuse the producer's encoding exactly as an
+    /// untouched part reuses its `initialPayload`.
+    private func adoptingStream(_ name: String, from zip: ZipReader) throws -> Data {
+        let loaded = try zip.entryPayload(forEntry: name)
+        let decoded = loaded.decoded
+        if UInt64(loaded.entry.uncompressedSize) <= 0xFFFF_FFFF,
+           loaded.raw.count <= max(decoded.count + 64, 64),
+           decoded.count + loaded.raw.count <= streamCacheLimit - streamCacheBytes {
+            streamCache[name] = (decoded, ZipWriter.Payload(
+                data: loaded.raw, method: loaded.entry.method,
+                size: UInt32(loaded.entry.uncompressedSize), crc: loaded.entry.crc32))
+            streamCacheBytes += decoded.count + loaded.raw.count
+        }
+        return decoded
+    }
+
+    private func addStream(_ zip: inout ZipWriter, name: String, data: Data) {
+        // Names and sizes the writer would refuse keep its own diagnostics.
+        guard name.utf8.count <= 0xFFFF, UInt64(data.count) <= 0xFFFF_FFFF else {
+            return zip.addFile(name: name, data: data)
+        }
+        zip.addFile(name: name, payload: preparedStream(name: name, data: data))
+    }
+
+    private func preparedStream(name: String, data: Data) -> ZipWriter.Payload {
+        if let cached = streamCache[name], cached.source == data { return cached.payload }
+        if let old = streamCache.removeValue(forKey: name) { streamCacheBytes -= old.source.count + old.payload.data.count }
+        let payload = ZipWriter.prepare(data: data, compress: true)
+        let cost = data.count + payload.data.count
+        if cost <= streamCacheLimit {
+            if streamCacheBytes + cost > streamCacheLimit { streamCache.removeAll(); streamCacheBytes = 0 }
+            streamCache[name] = (data, payload)
+            streamCacheBytes += cost
+        }
+        return payload
+    }
+
     private func prepared(_ part: Part, compress: Bool) -> ZipWriter.Payload {
         watchPart(part)
         if !part.isDirty, part.blobRevision == 0, let initial = part.initialPayload {
@@ -477,9 +525,9 @@ public final class OPCPackage {
             part.flushIfDirty()
         }
         var zip = ZipWriter()
-        zip.addFile(name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
+        addStream(&zip, name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
         if rels.isWritten {
-            zip.addFile(name: PackURI.packageRels.memberName, data: rels.serialized())
+            addStream(&zip, name: PackURI.packageRels.memberName, data: rels.serialized())
         }
         // Every name this method will derive from a live part. A carried entry
         // is dropped when it collides with one, because two zip members under
@@ -557,7 +605,7 @@ public final class OPCPackage {
             // decides which carried entries would collide, which is why it is
             // one definition rather than a condition repeated at four sites.
             if part.rels.isWritten {
-                zip.addFile(name: uri.relsURI.memberName, data: part.rels.serialized())
+                addStream(&zip, name: uri.relsURI.memberName, data: part.rels.serialized())
             }
         }
         return zip

@@ -6,6 +6,25 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Open decks faster: `Inflate` decodes through a prefix lookup table with a
+  64-bit bit buffer, and plain XML parts take a direct byte-level parser
+  (`XMLFastParser`) that declines anything the `XMLParser` bridge would treat
+  differently. Differential tests compare both parsers over the fixture corpus
+  and deterministic mutations. See the [measurements](docs/PERFORMANCE.md).
+- Write smaller archives: `Deflate` adds lazy matching and per-block dynamic
+  Huffman codes, staying a pure function of its input. **Saved bytes change**
+  for every deck Rostrum compresses; decoded parts do not. Encoded `.rels` and
+  content-type streams are reused across saves and carried from the opened
+  archive, so an unchanged resave no longer deflates them again.
+- Preview every DrawingML preset with its own outline. The 81 presets without
+  an analytic outline are evaluated from generated ECMA-376 definitions
+  (`Tools/preset-geometry`), with literal adjustments, preset text rectangles
+  and darken/lighten path shading. Custom-geometry text uses the geometry's
+  resolved `a:rect`.
+- Draw shape `a:glow`, `a:softEdge` and `a:innerShdw` as SVG filters, reported
+  as approximations; effect lists containing an undrawn effect stay omissions.
+- Size chart bars from `c:gapWidth` and `c:overlap` instead of a fixed inset,
+  and honor an edge-mode inner `c:manualLayout` for the plot rectangle.
 - Expand `SVGPresetGeometry` to 75+ ECMA-376 preset shape outlines with inset
   `textFrame` bounds, add `Shape.adjustments` / `adjustment(_:)` /
   `setAdjustment(_:value:)`, and render `curvedConnector2`/`3`/`4`/`5` cubic
