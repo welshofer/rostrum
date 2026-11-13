@@ -2,6 +2,55 @@
 
 ## Latest reconciled measurements
 
+The 2026-11-13 open/save work replaces three inner loops and leaves rendering
+algorithms alone: table-driven inflate, a direct parser for plain XML parts, and
+a DEFLATE encoder with lazy matching and dynamic Huffman blocks, plus reuse of
+encoded relationship streams across saves. Nine alternating fresh-process pairs
+per scenario on one Linux x86-64 host (4 cores, Swift 6.1.2, Release) compare
+`b445456` with the candidate. Values are median process CPU milliseconds; every
+sample is in the [raw record](benchmarks/2026-11-13-open-save-codecs.json).
+
+| Input | Phase | Baseline | Candidate | Change |
+| --- | --- | ---: | ---: | ---: |
+| FromKeynote.pptx | open | 417.63 | 165.01 | -60.5% |
+| FromGoogleSlides.pptx | open | 37.50 | 21.85 | -41.7% |
+| MovieAndComments.pptx | open | 69.76 | 68.24 | -2.2% |
+| SimplePowerPoint.pptx | open | 3.65 | 2.03 | -44.3% |
+| slides-1000 | reopen | 75.54 | 43.86 | -41.9% |
+| slides-1000 | traversal | 79.18 | 21.38 | -73.0% |
+| table-200x50 | first-slide | 241.06 | 68.08 | -71.8% |
+| slides-1000 | initial-save | 94.79 | 149.67 | +57.9% |
+| slides-1000 | unchanged-save | 42.47 | 25.76 | -39.3% |
+| table-200x50 | initial-save | 122.75 | 93.36 | -23.9% |
+| FromKeynote.pptx | unchanged-save | 14.38 | 15.32 | +6.5% |
+| FromGoogleSlides.pptx | initial-save | 2.59 | 3.81 | +47.0% |
+| FromGoogleSlides.pptx | warm-unchanged-save | 2.99 | 3.97 | +32.7% |
+| table-200x50 | render | 597.67 | 599.19 | +0.3% |
+
+| Saved output | Baseline bytes | Candidate bytes | Change |
+| --- | ---: | ---: | ---: |
+| FromGoogleSlides.pptx | 2,665,145 | 2,664,319 | -0.0% |
+| FromKeynote.pptx | 20,972,997 | 20,972,284 | -0.0% |
+| MovieAndComments.pptx | 15,913,827 | 15,913,323 | -0.0% |
+| SimplePowerPoint.pptx | 34,006 | 33,562 | -1.3% |
+| images-unique | 62,576 | 60,203 | -3.8% |
+| slides-100 | 125,590 | 113,528 | -9.6% |
+| slides-1000 | 1,179,214 | 1,066,388 | -9.6% |
+| table-200x50 | 74,990 | 53,603 | -28.5% |
+
+Opening is 40–60% cheaper where parts are deflated or XML-heavy, and unchanged
+on the deck whose media is mostly stored. Parsing 4.3 MB of slide XML falls from
+232 ms to 49 ms. The costs are real and retained above: a first save of many small
+XML parts spends about 58% more CPU compressing them for a 10% smaller file,
+small real decks show the same effect at millisecond scale, and several
+few-millisecond phases moved in both directions between runs. Saved bytes
+differ from the baseline by design; all eight outputs keep identical entry names
+and decoded bytes, checked with Python's `zipfile`, so the benchmark driver's
+byte-identical pairing guard was replaced by that comparison for this record.
+Render time for the 10,000-cell table is unchanged, and no rendering speedup is
+claimed. These are Linux measurements; no native Mac, memory or app-level result
+is established, and peak RSS was not compared.
+
 The [2026-10-22 native Mac collection](NATIVE-PERFORMANCE-FIDELITY-20261022.md)
 completes five alternating diagnostic pairs and 14 native regressions on one
 Release build. Three shared runs fail exact pixels in JPEG regions; repeated

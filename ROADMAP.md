@@ -49,7 +49,8 @@ historical phases below retain their original scope and dates.
 - [x] Zero-dependency SwiftPM package (macOS/iOS/Linux)
 - [x] Zip writer (STORED, deterministic, CRC-32) — validated by `unzip -t`
 - [x] Pure-Swift inflate (RFC 1951) + zip reader (STORED + DEFLATE)
-- [x] XML DOM: prefix-preserving parse (XMLParser bridge) + deterministic serializer
+- [x] XML DOM: prefix-preserving parse (XMLParser bridge; plain parts take a
+  direct parser checked against it since 2026-11-13) + deterministic serializer
 - [x] OPC layer: PackURI, content types, relationships, package read/write
 - [x] Minimal 16:9 deck from XML constants; `Presentation` new/open/save
 - [x] Oracle: python-pptx opens Rostrum output
@@ -104,7 +105,8 @@ historical phases below retain their original scope and dates.
   extracted chart templates, with titles, data labels, axis control and
   embedded Edit-Data xlsx workbooks written by our own zip engine
 - [x] Speaker notes: notesMaster/notesSlide, `slide.setNotes` (2026-07-18)
-- [x] Write-side DEFLATE (fixed-Huffman + LZ77, deterministic) — file-size
+- [x] Write-side DEFLATE (fixed-Huffman + LZ77, deterministic; lazy matching
+  and per-block dynamic Huffman codes added 2026-11-13) — file-size
   parity (2026-07-19)
 - [x] Linux CI (Swift 6.0/6.1 containers, oracle tools installed)
 - [x] Radar (`.radar`, `.radarFilled`) and bubble (`addBubbleChart`) —

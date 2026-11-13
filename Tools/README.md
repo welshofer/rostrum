@@ -64,3 +64,20 @@ via Accessibility, auto-dismisses it, and prints OK / REPAIR / STUCK. This is
 the only oracle that catches what PowerPoint's strictest validation catches;
 python-pptx and LibreOffice both tolerated the shared-theme bug this tool
 found.
+
+## Preset shape definitions
+
+`Sources/Rostrum/Schema/GeneratedPresetShapes.swift` holds the ECMA-376 preset
+shape definitions for the presets `SVGPresetGeometry` does not draw
+analytically. Regenerate it from `presetShapeDefinitions.xml` (inside
+`OfficeOpenXML-DrawingMLGeometries.zip` in the ECMA-376 Part 1, 5th edition
+download; the source file is not checked in):
+
+```sh
+python3 Tools/preset-geometry/generate.py /path/to/presetShapeDefinitions.xml
+```
+
+The generator keeps adjustment defaults, guides, the text rectangle and paths,
+drops adjust handles and connection sites, and trims a stray operand the
+published circular-arrow formulas carry. `GeneratedPresetShapeTests` requires
+every definition to resolve at several aspect ratios.

@@ -233,7 +233,7 @@ file persistence and end-to-end verification.
 | Area | Highlights |
 |---|---|
 | **Slides** | add, remove, **move, duplicate**, layouts & placeholder inheritance |
-| **Shapes** | 178 preset geometries for authoring; bounded custom line/curve previews, transforms, rotation and hidden-shape handling |
+| **Shapes** | 178 preset geometries for authoring, each previewed with its own outline; bounded custom line/curve previews, transforms, rotation and hidden-shape handling |
 | **Fills & lines** | solid, alpha, multi-stop gradients, outlines, soft shadows |
 | **Text** | paragraphs, runs, fonts, sizes, colours, alignment, spacing, tracking, **bullets, numbered lists, hyperlinks** |
 | **Pictures** | PNG/JPEG/GIF sniffing, content dedup, crop read/edit, isolated replacement, stretch/tile mapping, picture rotation/reflection and geometry clipping |
