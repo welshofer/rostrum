@@ -113,19 +113,23 @@ private struct InflateDecoder {
     var pos = 0
     var bitBuffer: UInt64 = 0
     var bitCount = 0
-    var output: [UInt8] = []
+    /// The output, a manually grown buffer: `run()` hands it to `Data`
+    /// without a copy, and literals are stored without `Array.append`'s
+    /// uniqueness and capacity checks. Owned by `run()`, which frees it on error.
+    var output: UnsafeMutablePointer<UInt8>
+    var outputCount = 0
+    var outputCapacity: Int
 
     init(input: [UInt8], expectedOutputSize: Int?) {
         self.input = input
         self.expectedOutputSize = expectedOutputSize
-        if let size = expectedOutputSize, size > 0 {
-            // The declared size comes straight from the archive being read —
-            // attacker-controlled for untrusted files — so cap the up-front
-            // reservation: a few-hundred-byte crafted zip must not force a
-            // multi-gigabyte allocation. Larger honest outputs grow amortized,
-            // and `reserveOutput` still rejects overruns of the declared size.
-            output.reserveCapacity(Swift.min(size, 1 << 20))
-        }
+        // The declared size comes straight from the archive being read —
+        // attacker-controlled for untrusted files — so cap the up-front
+        // reservation: a few-hundred-byte crafted zip must not force a
+        // multi-gigabyte allocation. Larger honest outputs grow amortized,
+        // and `reserveOutput` still rejects overruns of the declared size.
+        outputCapacity = Swift.max(64, Swift.min(expectedOutputSize ?? 0, 1 << 20))
+        output = UnsafeMutablePointer<UInt8>.allocate(capacity: outputCapacity)
     }
 
     // MARK: - Bit reading (LSB-first within bytes)
@@ -209,20 +213,42 @@ private struct InflateDecoder {
     /// the provenance.
     mutating func reserveOutput(_ count: Int) throws {
         if let expected = expectedOutputSize {
-            if output.count + count > expected {
+            if outputCount + count > expected {
                 throw RostrumError.deflateCorrupt(
                     "output exceeds expected size \(expected)")
             }
-        } else if output.count + count > Inflate.defaultOutputCeiling {
+        } else if outputCount + count > Inflate.defaultOutputCeiling {
             throw RostrumError.deflateCorrupt(
                 "output exceeds \(Inflate.defaultOutputCeiling) bytes with no declared size; "
                     + "pass expectedOutputSize to raise the ceiling")
+        }
+        let needed = outputCount + count
+        if needed > outputCapacity {
+            // Never reserve past what the stream may legally produce.
+            let ceiling = expectedOutputSize ?? Inflate.defaultOutputCeiling
+            let capacity = Swift.max(needed, Swift.min(outputCapacity * 2, Swift.max(ceiling, needed)))
+            let grown = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity)
+            grown.update(from: output, count: outputCount)
+            output.deallocate()
+            output = grown
+            outputCapacity = capacity
         }
     }
 
     // MARK: - Blocks
 
     mutating func run() throws -> Data {
+        do {
+            try decodeBlocks()
+        } catch {
+            output.deallocate()
+            throw error
+        }
+        let buffer = output
+        return Data(bytesNoCopy: buffer, count: outputCount, deallocator: .custom { _, _ in buffer.deallocate() })
+    }
+
+    private mutating func decodeBlocks() throws {
         var isFinal = false
         repeat {
             isFinal = try bits(1) == 1
@@ -239,7 +265,6 @@ private struct InflateDecoder {
                 throw RostrumError.deflateCorrupt("invalid block type 3 (BTYPE=11)")
             }
         } while !isFinal
-        return Data(output)
     }
 
     mutating func storedBlock() throws {
@@ -261,7 +286,10 @@ private struct InflateDecoder {
             throw RostrumError.deflateCorrupt("truncated stored block data")
         }
         try reserveOutput(len)
-        output.append(contentsOf: input[pos..<pos + len])
+        input.withUnsafeBufferPointer { input in
+            if len > 0 { (output + outputCount).update(from: input.baseAddress! + pos, count: len) }
+        }
+        outputCount += len
         pos += len
     }
 
@@ -366,8 +394,9 @@ private struct InflateDecoder {
         while true {
             let sym = try decode(literals)
             if sym < 256 {
-                try reserveOutput(1)
-                output.append(UInt8(sym))
+                if outputCount == outputCapacity || expectedOutputSize != nil { try reserveOutput(1) }
+                output[outputCount] = UInt8(sym)
+                outputCount += 1
             } else if sym == 256 {
                 return
             } else {
@@ -382,29 +411,22 @@ private struct InflateDecoder {
                     throw RostrumError.deflateCorrupt("invalid distance symbol \(distSym)")
                 }
                 let distance = Self.distanceBase[distSym] + (try bits(Self.distanceExtra[distSym]))
-                guard distance <= output.count else {
+                guard distance <= outputCount else {
                     throw RostrumError.deflateCorrupt(
-                        "distance \(distance) reaches before the start of output (\(output.count) bytes so far)")
+                        "distance \(distance) reaches before the start of output (\(outputCount) bytes so far)")
                 }
                 try reserveOutput(length)
-                // The hot loop of the whole decoder. Growing first and copying
-                // through a raw pointer avoids a bounds/uniqueness check per
-                // byte; a non-overlapping match (the common case) collapses to
-                // one memcpy. An overlapping match MUST copy sequentially —
-                // byte i reads a byte this same match wrote — so it keeps the
-                // loop, just without per-byte `append` overhead.
-                let start = output.count
-                let srcStart = start - distance
-                output.append(contentsOf: repeatElement(0, count: length))
-                output.withUnsafeMutableBufferPointer { buffer in
-                    let base = buffer.baseAddress!
-                    if distance >= length {
-                        UnsafeMutableRawPointer(base + start)
-                            .copyMemory(from: base + srcStart, byteCount: length)
-                    } else {
-                        for i in 0..<length { base[start + i] = base[srcStart + i] }
-                    }
+                // A non-overlapping match (the common case) collapses to one
+                // memcpy. An overlapping match MUST copy sequentially — byte i
+                // reads a byte this same match wrote.
+                let destination = output + outputCount
+                let source = destination - distance
+                if distance >= length {
+                    destination.update(from: source, count: length)
+                } else {
+                    for i in 0..<length { destination[i] = source[i] }
                 }
+                outputCount += length
             }
         }
     }
