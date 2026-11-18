@@ -170,7 +170,8 @@ import Rostrum
     }
 
     @Test func unusablePathsAreRejectedBeforeSaving() throws {
-        for path in ["M 0 0 L", "L 0 0", "M 0 0 A 2 2 0 8 0 4 4", "M 1e999 0"] {
+        for path in ["M 0 0 L", "L 0 0", "M 0 0 A 2 2 0 8 0 4 4", "M 1e999 0",
+                     "M,0 0", "M 0,,0", "M 0 0,", "M 0 0,L 1 1", "M 0 0 A 2 2 0 0.0 1 4 4"] {
             let object = KeyxCanvasObject(kind: "shape", properties: KeyxNode(type: "shape", fields: [
                 "path": .object(["bezier": .object(["path": .string(path)])])
             ]))
@@ -181,6 +182,8 @@ import Rostrum
         }
         #expect(KeyxPathValidation.isUsable("M 0 0 L 10 0 10 20 Z"))
         #expect(KeyxPathValidation.isUsable("m -.5 +.5 c 1 2 3 4 5 6 z"))
+        #expect(KeyxPathValidation.isUsable("M 0 0 A 10 10 0 0110 20"))
+        #expect(KeyxPathValidation.isUsable("M0,0 L10,20,30,40"))
     }
 
     @Test func sparseTableIndicesResumeAfterThePreviousExplicitIndex() throws {
