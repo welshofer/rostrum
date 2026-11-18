@@ -6,6 +6,15 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
+- Add the zero-external-dependency `KeynoteInterchange` Swift product: bounded
+  `.keyx` reading, preservation-oriented JSON/resource editing, tri-state
+  inheritance, semantic integrity checks, deterministic writing and direct
+  `LecternIR` authoring of text, vectors, images, notes, tables and charts.
+  Lectern adds format selection, interchange templates, inspection/export,
+  direct approximate previews, library filtering and format-aware recovery.
+  An offline Library Lab recipe exercises the saved/reopened app path.
+  [Support boundaries and acceptance](docs/KEYNOTE-INTERCHANGE.md) distinguish
+  preservation, authoring, previews and native Keynote behavior.
 - Open decks faster: `Inflate` decodes through a prefix lookup table with a
   64-bit bit buffer, and plain XML parts take a direct byte-level parser
   (`XMLFastParser`) that declines anything the `XMLParser` bridge would treat

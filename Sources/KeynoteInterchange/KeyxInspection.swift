@@ -50,10 +50,16 @@ public struct KeyxSlideSummary: Sendable {
 public extension KeyxDocument {
     var slideSize: (width: Double, height: Double) {
         get throws {
-            let size = try resolvedProperty("slide_size", on: presentation).value
-            guard let size else { return (1024, 768) }
-            let node = try resolvedNode(KeyxNode(value: size))
-            guard let width = node["width"]?.double, let height = node["height"]?.double,
+            let size: KeyxValue
+            switch try resolvedProperty("slide_size", on: presentation) {
+            case .inherited: return (1024, 768)
+            case .cleared: throw KeyxError.invalid("Slide size cannot be null")
+            case .value(let value): size = value
+            }
+            let node = try KeyxNode(value: size)
+            let width = try resolvedProperty("width", on: node).value?.double
+            let height = try resolvedProperty("height", on: node).value?.double
+            guard let width, let height,
                   width > 0, height > 0, width <= 50_000_000, height <= 50_000_000 else {
                 throw KeyxError.invalid("Invalid slide size")
             }

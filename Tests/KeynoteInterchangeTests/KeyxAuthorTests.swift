@@ -100,6 +100,25 @@ import Rostrum
         }
     }
 
+    @Test func generatedLayoutsAreReusableWithoutStarterWordsOrUnusedPlaceholders() throws {
+        let first = try KeyxAuthor.render(DeckIR(meta: Meta(title: "Source"), slides: [
+            IRSlide(id: "source", layout: "title", title: "Starter title", body: Body(subtitle: "Starter words"))
+        ])).document
+        let chart = IRChart(kind: "bar", categories: ["One"], series: [IRSeries(name: "Values", values: [3])])
+        let result = try KeyxAuthor.render(DeckIR(meta: Meta(title: "New"), slides: [
+            IRSlide(id: "new", layout: "chart", title: "New chart", body: Body(chart: chart))
+        ]), template: first)
+        let reopened = try KeyxDocument(data: result.document.data())
+        #expect(reopened.presentation["theme"] == first.presentation["theme"])
+        #expect(reopened.presets == first.presets)
+        #expect(try reopened.inspectSlide(at: 0).texts == ["New chart"])
+        #expect(try reopened.inspectSlide(at: 0).charts[0].values == [[3]])
+        #expect(try reopened.slides[0].contents.contains {
+            $0.node["placeholder_info"]?["defined"]?["kind"]?.string == "body"
+                && $0.node["placeholder_info"]?["defined"]?["is_visible"]?.bool == false
+        })
+    }
+
     @Test func unsupportedPreviewContentRemainsSaved() throws {
         var doc = try KeyxDocument(presentation: KeyxNode(type: "presentation", fields: [
             "slides": .array([KeyxSlide(identifier: "one").node.value])
@@ -131,5 +150,22 @@ import Rostrum
         #expect(svg.contains("translate(125.0 215.0)"))
         #expect(!svg.contains("<script>"))
         #expect(svg.contains("&lt;script&gt;"))
+    }
+
+    @Test func estimatedPreviewAdvancesDoNotInsertGapsBetweenWords() throws {
+        let canvas = KeyxCanvasObject(kind: "textbox", properties: KeyxNode(type: "textbox", fields: [
+            "geometry": KeyxGeometry(x: 0, y: 0, width: 800, height: 100).node.value,
+            "text": KeyxText(runs: [
+                KeyxTextRun("Words stay "),
+                KeyxTextRun("together", style: KeyxNode(type: "character-properties", fields: ["bold": .bool(true)]))
+            ]).node.value
+        ]))
+        let document = try KeyxDocument(presentation: KeyxNode(type: "presentation", fields: [
+            "slides": .array([KeyxSlide(identifier: "words", contents: [KeyxSlideObject(canvas: canvas)]).node.value])
+        ]))
+        let preview = try KeyxPreviewRenderer.render(document, slideAt: 0)
+        #expect(preview.svg.components(separatedBy: "<text ").count == 2)
+        #expect(preview.svg.contains("font-weight=\"700\""))
+        #expect(preview.warnings.contains { $0.contains("estimated advances") })
     }
 }

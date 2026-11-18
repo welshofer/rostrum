@@ -65,7 +65,8 @@ public enum DeckLibrary {
     /// you would find out is a `rejected-draft.json` in Documents or a deck
     /// that migrated but never appeared.
     public static func isDeck(_ url: URL) -> Bool {
-        guard url.pathExtension.lowercased() == "pptx" else { return false }
+        guard let format = DeckFormat(url: url),
+              url.pathExtension.lowercased() == format.fileExtension else { return false }
         // PowerPoint drops an owner file named `~$deck.pptx` beside a deck it
         // has open. It carries the .pptx extension and is not hidden, so
         // nothing else excludes it — and a real Decks folder had one, which

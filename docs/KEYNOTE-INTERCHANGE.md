@@ -112,6 +112,11 @@ No general PPTX/interchange conversion API is claimed.
 
 ## References and provenance
 
+The initial acceptance used the 242-schema archive with SHA-256
+`8d72b25e155597dbab95b18b208e193146f31de5009e005b13c6a449ffdea6d3`.
+The generated mixed-content example passes that archive's Draft 2020-12 checks.
+Native Keynote acceptance is recorded separately, never inferred from this result.
+
 - [Format documentation](https://developer.apple.com/documentation/keynoteinterchangeformat)
 - [Authoring requirements](https://developer.apple.com/documentation/keynoteinterchangeformat/understanding-authoring-requirements-for-keynote-interchange-format)
 - [Authoritative schema download](https://developer.apple.com/download/files/keynote-interchange-format-json-schema.zip)

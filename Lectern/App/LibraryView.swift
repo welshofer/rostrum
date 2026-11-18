@@ -215,6 +215,7 @@ struct DeckGridView: View {
     let columnCount: Int
     @State private var renaming: DeckFile?
     @State private var draftName = ""
+    @State private var formatFilter: DeckFormat?
 
     private var columns: [GridItem] {
         Array(repeating: GridItem(.flexible(), spacing: 22, alignment: .top),
@@ -222,7 +223,8 @@ struct DeckGridView: View {
     }
 
     private var decks: [DeckFile] {
-        let base = section == .recent ? Array(app.library.prefix(12)) : app.library
+        let matching = app.library.filter { formatFilter == nil || $0.format == formatFilter }
+        let base = section == .recent ? Array(matching.prefix(12)) : matching
         let trimmed = query.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return base }
         let needles = trimmed.lowercased().split(separator: " ").map(String.init)
@@ -236,6 +238,12 @@ struct DeckGridView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 26) {
                 header
+                Picker("File format", selection: $formatFilter) {
+                    Text("All formats").tag(DeckFormat?.none)
+                    ForEach(DeckFormat.allCases) { format in Text(format.label).tag(Optional(format)) }
+                }
+                .pickerStyle(.menu)
+                .frame(maxWidth: 330, alignment: .leading)
                 if decks.isEmpty {
                     empty
                 } else if layout == .list {
@@ -302,7 +310,11 @@ struct DeckGridView: View {
     }
 
     @ViewBuilder private var empty: some View {
-        if !query.isEmpty {
+        if formatFilter != nil && decks.isEmpty {
+            ContentUnavailableView("No matching decks", systemImage: "doc",
+                                   description: Text("Choose All formats or create a deck in this format."))
+                .frame(maxWidth: .infinity, minHeight: 320)
+        } else if !query.isEmpty {
             ContentUnavailableView.search(text: query)
                 .frame(maxWidth: .infinity, minHeight: 320)
         } else if app.isTestSession || app.keyStorageUnavailable {
@@ -327,7 +339,7 @@ struct DeckGridView: View {
             ContentUnavailableView {
                 Label("Welcome to Lectern", systemImage: "sparkles")
             } description: {
-                Text("Describe a deck and Lectern writes the .pptx. "
+                Text("Describe a deck and Lectern writes PowerPoint or Keynote Interchange. "
                      + "That needs an API key — or open a deck you already have, "
                      + "which needs nothing.")
             } actions: {
@@ -489,7 +501,7 @@ struct DeckCardView: View {
         Button("Inspect") { app.inspect(deckAt: deck.url) }
         Button("Rename…") { onRename() }
         #if os(macOS)
-        Button("Open in PowerPoint") { NSWorkspace.shared.open(deck.url) }
+        Button("Open in \(deck.format.applicationName)") { NSWorkspace.shared.open(deck.url) }
         Button("Reveal in Finder") {
             NSWorkspace.shared.activateFileViewerSelecting([deck.url])
         }

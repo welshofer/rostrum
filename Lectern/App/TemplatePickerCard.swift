@@ -7,12 +7,12 @@ struct TemplatePickerCard: View {
     @State private var isChoosing = false
     @State private var pickerProblem: String?
 
-    private static let contentTypes = ["potx", "pptx"].compactMap {
+    private static let contentTypes = DeckFormat.templateExtensions.compactMap {
         UTType(filenameExtension: $0)
     }
 
     var body: some View {
-        Card(title: "POWERPOINT TEMPLATE (OPTIONAL)", systemImage: "doc.badge.gearshape") {
+        Card(title: "PRESENTATION TEMPLATE (OPTIONAL)", systemImage: "doc.badge.gearshape") {
             VStack(alignment: .leading, spacing: 12) {
                 if let template = model.selected {
                     VStack(alignment: .leading, spacing: 4) {
@@ -23,10 +23,12 @@ struct TemplatePickerCard: View {
                     }
                     Text("Uses this template’s colors, fonts, and slide size. Its \(template.slideCount) existing slides are replaced with new content. Your original file stays unchanged.")
                         .font(.callout).foregroundStyle(.secondary)
-                    Text("Lectern arranges new content using the first slide master. Placeholder positions and template backgrounds may differ in the generated deck.")
+                    Text(template.format == .keynoteInterchange
+                         ? "Uses native interchange placeholders. Layouts and resources stay local; inspect the saved copy in Keynote."
+                         : "Lectern arranges new content using the first slide master. Placeholder positions and template backgrounds may differ in the generated deck.")
                         .font(.caption).foregroundStyle(.secondary)
                 } else {
-                    Text("Choose a .potx template or use a .pptx deck as a template. Without one, the selected style below sets the design.")
+                    Text("Choose a .potx or .pptx PowerPoint template, or a user-owned .keyx interchange template. Without one, the selected style below sets the design.")
                         .font(.callout).foregroundStyle(.secondary)
                 }
                 if model.isLoading {

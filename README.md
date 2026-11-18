@@ -19,18 +19,24 @@ Rostrum adds capabilities outside python-pptx's current scope: slide
 creation and text extraction, **deck merge**, **theme / brand-kit editing**,
 and lossless byte-identical round-trips of the parts you don't touch.
 
-## Libraries with one document model
+## Libraries and document formats
 
 | Product | Use it for |
 | --- | --- |
 | **`Rostrum`** | Read and save PowerPoint packages; edit slides, tables, images, notes, comments and sections; register fonts; fit rich text; render SVG previews with diagnostics. |
 | **`LecternIR`** | Share the versioned generation contract between consumers; encode semantic slide content and optional native table structure. |
 | **`RostrumLayout`** | Select native template layouts, measure and fill inherited placeholders, compose editable structured content, finish authored slides and paginate without dropping content. Depends on `Rostrum`. |
+| **`KeynoteInterchange`** | Read, edit and write native `.keyx` ZIP/JSON documents, preserving unknown fields and resources; author shared `DeckIR` directly and produce approximate interchange previews. Separate from the PowerPoint model. |
 
-All three products ship in the same Swift package. The portable libraries use
+All four products ship in the same Swift package. The portable libraries use
 Foundation and have no external package dependencies. The companion
 [Lectern app](Lectern/README.md) demonstrates the libraries on macOS and iOS;
-its **36 offline Library Lab demos** save PowerPoint decks you can inspect.
+its **offline Library Lab demos** save real PowerPoint and Keynote Interchange
+decks you can inspect.
+
+See [Keynote Interchange](docs/KEYNOTE-INTERCHANGE.md) for the `.keyx` API,
+preservation contract, authoring subset and native acceptance limits. Native
+`.key`/IWA and automatic PPTX conversion are not part of that product.
 
 Start with [Getting started](docs/GETTING-STARTED.md) for installation, file I/O,
 tables, templates and preview diagnostics. See [Layout engine](docs/LAYOUT-ENGINE.md)

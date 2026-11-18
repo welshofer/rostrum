@@ -1,12 +1,13 @@
 import Foundation
 import Testing
 import Rostrum
+import KeynoteInterchange
 @testable import LecternCore
 
 @Suite("Library Lab file pipeline", .serialized)
 struct LibraryLabTests {
     @Test func catalogIsCompleteAndUnambiguous() {
-        let recipes = [ImportedFidelityRecipe.catalog] + DrawingLabRecipes.catalog + DocumentLabRecipes.catalog + PlatformLabRecipes.catalog
+        let recipes = [ImportedFidelityRecipe.catalog, KeynoteLabRecipe.catalog] + DrawingLabRecipes.catalog + DocumentLabRecipes.catalog + PlatformLabRecipes.catalog
         #expect(recipes.count == LibraryDemoID.allCases.count)
         #expect(Set(recipes.map(\.id)).count == recipes.count)
         #expect(LibraryLab.catalog.map(\.id) == LibraryDemoID.allCases)
@@ -37,8 +38,12 @@ struct LibraryLabTests {
         #expect(report["operations"] as? [String] == LibraryLab.catalog.first { $0.id == id }?.operations)
         #expect((report["checks"] as? [[String: Any]])?.count == result.checks.count)
         #expect((report["findings"] as? [[String: Any]])?.count == result.findings.count)
-        let reopened = try Presentation(contentsOf: result.afterURL)
-        #expect(reopened.slides.count == result.slideCount)
+        if id == .keynoteInterchange {
+            #expect(try KeyxDocument(contentsOf: result.afterURL).slides.count == result.slideCount)
+        } else {
+            let reopened = try Presentation(contentsOf: result.afterURL)
+            #expect(reopened.slides.count == result.slideCount)
+        }
         let svgs = try FileManager.default.contentsOfDirectory(at: result.directory.appendingPathComponent("previews"), includingPropertiesForKeys: nil)
         #expect(svgs.filter { $0.lastPathComponent.hasPrefix("slide-") }.count == result.slideCount)
         if let before = result.beforeURL { #expect(try Data(contentsOf: before) != Data(contentsOf: result.afterURL)) }

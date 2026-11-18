@@ -18,7 +18,7 @@ struct LibraryLabView: View {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Library Lab").font(.largeTitle.bold())
-                    Text("Run Rostrum’s features, inspect the results, and open the actual PowerPoint files. All demos work offline. Completed decks are saved to your library.")
+                    Text("Run Rostrum’s features, inspect the results, and open the actual presentation files. All demos work offline. Completed decks are saved to your library.")
                         .foregroundStyle(.secondary)
                 }
                 Picker("Demonstration", selection: $model.selection) {
@@ -157,10 +157,10 @@ struct LibraryLabView: View {
     private var savedResults: some View {
         VStack(alignment: .leading, spacing: 10) {
             let slides = savedRecipes.reduce(0) { $0 + (model.results[$1.id]?.slideCount ?? 0) }
-            Label("\(savedRecipes.count) PowerPoint files saved · \(slides) slides", systemImage: "folder.fill")
+            Label("\(savedRecipes.count) presentation files saved · \(slides) slides", systemImage: "folder.fill")
                 .font(.headline)
                 .accessibilityIdentifier("libraryLab.savedSummary")
-            Text("Each demo has its own PowerPoint file. Earlier runs are kept too.")
+            Text("Each demo has its own presentation file. Earlier runs are kept too.")
                 .font(.callout).foregroundStyle(.secondary)
             #if os(macOS)
             Button("Reveal All in Finder", systemImage: "folder") {

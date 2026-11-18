@@ -27,7 +27,29 @@ public indirect enum KeyxValue: Sendable, Equatable {
         return number
     }
     public var integer: Int? {
-        guard let number = double else { return nil }; return Int(exactly: number)
+        guard case .number(let spelling) = self else { return nil }
+        if let integer = Int(spelling) { return integer }
+        let parts = spelling.lowercased().split(separator: "e", omittingEmptySubsequences: false)
+        guard (1...2).contains(parts.count) else { return nil }
+        let exponent = parts.count == 2 ? Int(parts[1]) : 0
+        guard let exponent else { return nil }
+        let negative = parts[0].hasPrefix("-")
+        let significand = negative ? parts[0].dropFirst() : parts[0][...]
+        let decimal = significand.split(separator: ".", omittingEmptySubsequences: false)
+        guard (1...2).contains(decimal.count), decimal.allSatisfy({ !$0.isEmpty && $0.utf8.allSatisfy { (48...57).contains($0) } }) else { return nil }
+        var digits = String(decimal.joined().drop(while: { $0 == "0" }))
+        if digits.isEmpty { return 0 }
+        let fractionCount = decimal.count == 2 ? decimal[1].count : 0
+        let (shift, overflow) = exponent.subtractingReportingOverflow(fractionCount)
+        guard !overflow else { return nil }
+        if shift < 0 {
+            guard shift >= -digits.count, digits.suffix(-shift).allSatisfy({ $0 == "0" }) else { return nil }
+            digits.removeLast(-shift)
+        } else {
+            guard shift <= 19 - digits.count else { return nil }
+            digits += String(repeating: "0", count: shift)
+        }
+        return Int((negative ? "-" : "") + digits)
     }
     public var bool: Bool? {
         guard case .bool(let value) = self else { return nil }; return value

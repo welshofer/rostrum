@@ -1,10 +1,12 @@
 import Foundation
 import Rostrum
+import KeynoteInterchange
 
 /// A validated, immutable snapshot of a PowerPoint template. The selected file
 /// can move, change or lose its security scope after this value is created.
 /// Template bytes stay in the local renderer and never enter an AI request.
 public struct DeckTemplate: Sendable {
+    public let format: DeckFormat
     public let name: String
     public let slideCount: Int
     public let layoutCount: Int
@@ -13,6 +15,7 @@ public struct DeckTemplate: Sendable {
     public let warnings: [String]
 
     private let data: Data
+    var snapshotData: Data { data }
     static let maximumFileBytes = 100 * 1024 * 1024
     private static let limits = ZipReader.Limits(totalUncompressedBytes: 512 * 1024 * 1024)
 
@@ -27,19 +30,44 @@ public struct DeckTemplate: Sendable {
         let handle = try FileHandle(forReadingFrom: url)
         defer { try? handle.close() }
         let bytes = try handle.read(upToCount: maximumFileBytes + 1) ?? Data()
-        return try DeckTemplate(data: bytes, name: url.lastPathComponent)
+        return try DeckTemplate(data: bytes, name: url.lastPathComponent, format: DeckFormat(url: url) ?? .powerPoint)
     }
 
-    public init(data: Data, name: String) throws {
-        do { self = try Self(validating: data, name: name) }
+    public init(data: Data, name: String, format: DeckFormat = .powerPoint) throws {
+        do { self = try Self(validating: data, name: name, format: format) }
         catch is CancellationError { throw CancellationError() }
         catch let error as DeckTemplateError { throw error }
-        catch { throw DeckTemplateError.invalid("Couldn’t read this PowerPoint file: \(String(describing: error))") }
+        catch { throw DeckTemplateError.invalid("Couldn’t read this \(format.applicationName) template: \(String(describing: error))") }
     }
 
-    private init(validating data: Data, name: String) throws {
+    private init(validating data: Data, name: String, format: DeckFormat) throws {
         guard data.count <= Self.maximumFileBytes else { throw DeckTemplateError.tooLarge }
         try Task.checkCancellation()
+        if format == .keynoteInterchange {
+            let document = try KeyxDocument(data: data)
+            let issues = document.validate()
+            let errors = issues.filter { $0.severity == .error }
+            guard errors.isEmpty else { throw KeyxError.validation(errors) }
+            let layouts = document.presentation["theme"]?["slide_layouts"]?.array ?? []
+            guard !layouts.isEmpty else {
+                throw DeckTemplateError.invalid("Use an interchange template that contains its own slide layouts, not an external Apple theme.")
+            }
+            let hasSlots = layouts.contains { layout in
+                let kinds = Set((layout["contents"]?.array ?? []).compactMap { $0["placeholder_info"]?["defined"]?["kind"]?.string })
+                return kinds.contains("title") && (kinds.contains("body") || kinds.contains("object"))
+            }
+            guard hasSlots else {
+                throw DeckTemplateError.invalid("An interchange authoring template needs a layout with title and body/object placeholders.")
+            }
+            let size = try document.slideSize
+            self.format = format; self.name = name; self.data = data
+            slideCount = try document.slides.count; layoutCount = layouts.count
+            widthInches = size.width / 72; heightInches = size.height / 72
+            warnings = issues.filter { $0.severity == .warning }.map(\.description) + [
+                "The interchange template's size, layouts, presets and resources are retained. Starter slides are replaced; unused resources remain in the output."
+            ]
+            return
+        }
         let deck = try Presentation(data: data, limits: Self.limits)
         guard deck.documentKind != .slideShow else {
             throw DeckTemplateError.invalid("Choose a .potx template or a .pptx presentation.")
@@ -82,6 +110,7 @@ public struct DeckTemplate: Sendable {
                 + issues.prefix(3).map(\.description).joined(separator: "; "))
         }
         self.name = name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "PowerPoint template" : name
+        self.format = .powerPoint
         self.slideCount = deck.slides.count
         self.layoutCount = deck.allLayouts.count
         self.widthInches = Double(size.width.rawValue) / 914_400
@@ -100,16 +129,23 @@ public struct DeckTemplate: Sendable {
     }
 
     public func nativeTemplate() throws -> PowerPointTemplate {
+        guard format == .powerPoint else { throw DeckTemplateError.invalid("This is an interchange template, not a PowerPoint template.") }
         let deck = try makePresentation()
         deck.documentKind = .template
         return try PowerPointTemplate(data: deck.serializedData(), name: name)
     }
 
     func makePresentation() throws -> Presentation {
+        guard format == .powerPoint else { throw DeckTemplateError.invalid("A Keynote Interchange template cannot be opened as PresentationML.") }
         let deck = try Presentation(data: data, limits: Self.limits)
         try Self.prepare(deck)
         _ = deck.registerEmbeddedFonts()
         return deck
+    }
+
+    public func interchangeDocument() throws -> KeyxDocument {
+        guard format == .keynoteInterchange else { throw DeckTemplateError.invalid("Choose a .keyx template for interchange output.") }
+        return try KeyxDocument(data: data)
     }
 
     private static func prepare(_ deck: Presentation) throws {

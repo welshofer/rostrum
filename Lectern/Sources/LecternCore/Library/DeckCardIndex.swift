@@ -125,6 +125,9 @@ public actor DeckCardIndex {
     /// Opening the whole package to learn one number is what made a grid of
     /// real decks take three minutes.
     static func build(from url: URL) -> DeckCard? {
+        if DeckFormat(url: url) == .keynoteInterchange {
+            return try? DeckCard(slideCount: KeyxBackend.slideCount(at: url))
+        }
         // `.mappedIfSafe` so a 96 MB deck costs address space, not resident
         // memory — the zip reader only touches the directory and one entry.
         guard let data = try? Data(contentsOf: url, options: .mappedIfSafe), !data.isEmpty,

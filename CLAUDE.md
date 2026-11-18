@@ -16,6 +16,9 @@ THIRD_PARTY_LICENSES.md) — keep that notice intact.
 - `Sources/RostrumLayout` owns template-aware composition and text fitting; it
   depends on Rostrum and accepts a platform measurement adapter. Keep document
   I/O and native master/layout/theme authoring in Rostrum.
+- `Sources/KeynoteInterchange` owns `.keyx` ZIP/JSON documents and direct
+  LecternIR authoring. Preserve unknown JSON/resource bytes and distinguish
+  absent from null; do not route same-format editing or previews through PPTX.
 - `Lectern/Sources/LecternCore` depends on local Rostrum and may use Apple
   frameworks behind availability/import guards. Keep its headless Linux path.
 - `Lectern/App` is the macOS/iOS SwiftUI app; Xcode builds it separately from

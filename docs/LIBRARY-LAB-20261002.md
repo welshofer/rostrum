@@ -55,6 +55,7 @@ visible in Lectern and in its JSON report.
 
 | Demo | Behavior exercised | Recipe source |
 |---|---|---|
+| Keynote Interchange | Direct native `.keyx` authoring; unknown JSON numbers/nulls and binary entry preservation; rich note edit; editable table/chart data and exact image bytes; deterministic save/reopen; direct approximate previews and production inspector/export paths. Apple schema and native Keynote acceptance are separate gates. | [Interchange](../Lectern/Sources/LecternCore/LibraryLab/KeynoteLabRecipe.swift) |
 | Slide lifecycle | Add, duplicate, move, remove; independent copy edits; footer, date, slide numbers and source | [Document](../Lectern/Sources/LecternCore/LibraryLab/DocumentLabRecipes.swift) |
 | Layouts and placeholders | Layout lookup, cloned placeholders, layout-bound builders, effective inherited frames and declared master order independent of relationship order | [Platform document](../Lectern/Sources/LecternCore/LibraryLab/PlatformDocumentRecipes.swift) |
 | Imported artwork and text | Saved/reopened custom curves, SVG-only image extension, cached SmartArt, all-caps runs and spaced lists; checks rendering is read-only | [Imported fidelity](../Lectern/Sources/LecternCore/LibraryLab/ImportedFidelityRecipe.swift) |

@@ -8,6 +8,7 @@ public enum LibraryDemoID: String, CaseIterable, Codable, Sendable, Identifiable
     case tableStructure, tableStyles, tableAppearance, tableDefaults, tableJoinProfiles, partialTableStyles, tableTransitions, charts, chartEditing, chartCacheRepair, smartArt
     case notes, comments, sections, slideImport, theme, templates, design
     case mediaAndAttachments, package, extractionAndRendering, generatedLayouts
+    case keynoteInterchange
     public var id: String { rawValue }
 }
 

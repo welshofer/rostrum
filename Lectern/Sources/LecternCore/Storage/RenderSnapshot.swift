@@ -11,12 +11,44 @@ public struct RenderSnapshot: Codable, Sendable {
     public var masterID: String?
     public var notesEnabled: Bool
     public var useSmartArt: Bool
+    public var outputFormat: DeckFormat
+    public var keynoteTemplateData: Data?
+    public var keynoteTemplateName: String?
 
     public init(deck: DeckIR, images: [String: Data] = [:], design: String? = nil,
-                template: PowerPointTemplate? = nil, notesEnabled: Bool = true, useSmartArt: Bool = false) {
+                template: PowerPointTemplate? = nil, notesEnabled: Bool = true, useSmartArt: Bool = false,
+                outputFormat: DeckFormat = .powerPoint, keynoteTemplate: DeckTemplate? = nil) {
         self.deck = deck; self.images = images; self.design = design
         templateData = template?.data; templateName = template?.name; masterID = template?.selectedMasterID
         self.notesEnabled = notesEnabled; self.useSmartArt = useSmartArt
+        self.outputFormat = outputFormat
+        keynoteTemplateData = keynoteTemplate?.snapshotData
+        keynoteTemplateName = keynoteTemplate?.name
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case deck, images, design, templateData, templateName, masterID, notesEnabled, useSmartArt
+        case outputFormat, keynoteTemplateData, keynoteTemplateName
+    }
+
+    public init(from decoder: Decoder) throws {
+        let fields = try decoder.container(keyedBy: CodingKeys.self)
+        deck = try fields.decode(DeckIR.self, forKey: .deck)
+        images = try fields.decode([String: Data].self, forKey: .images)
+        design = try fields.decodeIfPresent(String.self, forKey: .design)
+        templateData = try fields.decodeIfPresent(Data.self, forKey: .templateData)
+        templateName = try fields.decodeIfPresent(String.self, forKey: .templateName)
+        masterID = try fields.decodeIfPresent(String.self, forKey: .masterID)
+        notesEnabled = try fields.decode(Bool.self, forKey: .notesEnabled)
+        useSmartArt = try fields.decode(Bool.self, forKey: .useSmartArt)
+        outputFormat = try fields.decodeIfPresent(DeckFormat.self, forKey: .outputFormat) ?? .powerPoint
+        keynoteTemplateData = try fields.decodeIfPresent(Data.self, forKey: .keynoteTemplateData)
+        keynoteTemplateName = try fields.decodeIfPresent(String.self, forKey: .keynoteTemplateName)
+    }
+
+    public func interchangeTemplate() throws -> DeckTemplate? {
+        try keynoteTemplateData.map { try DeckTemplate(data: $0, name: keynoteTemplateName ?? "Saved interchange template",
+                                                       format: .keynoteInterchange) }
     }
 
     public func template() throws -> PowerPointTemplate? {

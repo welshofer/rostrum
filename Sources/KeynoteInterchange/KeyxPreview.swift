@@ -77,7 +77,7 @@ public enum KeyxPreviewRenderer {
                     let g = try KeyxGeometry(node: resolver.resolved(KeyxNode(value: geometry)))
                     if g.angle != 0 || g.flipped {
                         warn("Group rotations/flips are approximated; child coordinates remain slide-absolute.")
-                        return "<g transform=\"translate(\(g.centerX) \(g.centerY)) rotate(\(-g.angle)) scale(\(g.flipped ? -1 : 1) 1) translate(\(-g.centerX) \(-g.centerY))\">\(result)</g>"
+                        return "<g transform=\"translate(\(g.centerX) \(g.centerY)) rotate(\(-g.previewAngle)) scale(\(g.flipped ? -1 : 1) 1) translate(\(-g.centerX) \(-g.centerY))\">\(result)</g>"
                     }
                 }
                 return result
@@ -124,7 +124,7 @@ public enum KeyxPreviewRenderer {
                 body = "<rect width=\"\(w)\" height=\"\(h)\" fill=\"#F2F2F2\" stroke=\"#9A6700\" stroke-dasharray=\"6 4\"/><text x=\"8\" y=\"24\" font-size=\"16\">\(escape(kind)) preview unavailable</text>"
             }
             let opacity = node["opacity"]?.double ?? 1
-            return "<g opacity=\"\(opacity)\" transform=\"translate(\(geometry.centerX) \(geometry.centerY)) rotate(\(-geometry.angle)) scale(\(geometry.flipped ? -1 : 1) 1) translate(\(-w / 2) \(-h / 2))\">\(body)</g>"
+            return "<g opacity=\"\(opacity)\" transform=\"translate(\(geometry.centerX) \(geometry.centerY)) rotate(\(-geometry.previewAngle)) scale(\(geometry.flipped ? -1 : 1) 1) translate(\(-w / 2) \(-h / 2))\">\(body)</g>"
         }
 
         mutating func paint(_ value: KeyxValue?, fallback: String) throws -> String {
@@ -188,7 +188,16 @@ public enum KeyxPreviewRenderer {
             let left = padding?["left"]?.double ?? 4
             let top = padding?["top"]?.double ?? 4
             let right = padding?["right"]?.double ?? 4
-            var x = left, y = top, lineHeight = 0.0, output = ""
+            var x = left, y = top, lineHeight = 0.0, lineSize = 0.0
+            var spans = "", output = ""
+            func finishLine() {
+                let size = lineSize > 0 ? lineSize : 18
+                if !spans.isEmpty {
+                    output += "<text xml:space=\"preserve\" x=\"\(left)\" y=\"\(y + size)\">\(spans)</text>"
+                }
+                y += max(lineHeight, size * 1.3)
+                x = left; lineHeight = 0; lineSize = 0; spans = ""
+            }
             func advance(_ string: String, style: KeyxNode, font: String, size: Double, bold: Bool, italic: Bool) -> Double {
                 if let width = fonts?.previewAdvance?(string, font, size, bold, italic), width.isFinite { return max(0, width) }
                 if let metrics = fonts?.metrics(for: font, bold: bold, italic: italic) {
@@ -197,7 +206,7 @@ public enum KeyxPreviewRenderer {
                 return Double(string.count) * size * 0.6
             }
             for (p, segments) in paragraphs.enumerated() {
-                if p > 0 { x = left; y += max(lineHeight, 24); lineHeight = 0 }
+                if p > 0 { finishLine() }
                 for (string, style) in segments {
                     let font = style["font_name"]?.string ?? "Arial"
                     let size = min(1000, max(1, style["font_size"]?.double ?? 18))
@@ -218,15 +227,17 @@ public enum KeyxPreviewRenderer {
                         let hardBreak = token.hasSuffix("\n") || token.hasSuffix("\r")
                         let painted = token.trimmingCharacters(in: .newlines)
                         let length = advance(painted, style: style, font: font, size: size, bold: bold, italic: italic)
-                        if x > left, x + length > width - right { x = left; y += max(lineHeight, size * 1.3); lineHeight = 0 }
+                        if x > left, x + length > width - right { finishLine() }
                         lineHeight = max(lineHeight, size * 1.3)
+                        lineSize = max(lineSize, size)
                         if y + lineHeight > height || length > width - left - right { warn("Text extends beyond its preview frame; all source text remains in the document.") }
-                        output += "<text xml:space=\"preserve\" x=\"\(x)\" y=\"\(y + size)\" fill=\"\(color)\" font-family=\"\(escape(font))\" font-size=\"\(size)\" font-weight=\"\(bold ? 700 : 400)\" font-style=\"\(italic ? "italic" : "normal")\">\(escape(painted))</text>"
+                        spans += "<tspan fill=\"\(color)\" font-family=\"\(escape(font))\" font-size=\"\(size)\" font-weight=\"\(bold ? 700 : 400)\" font-style=\"\(italic ? "italic" : "normal")\">\(escape(painted))</tspan>"
                         x += length
-                        if hardBreak { x = left; y += lineHeight; lineHeight = 0 }
+                        if hardBreak { finishLine() }
                     }
                 }
             }
+            if !spans.isEmpty { finishLine() }
             clipIndex += 1
             return "<defs><clipPath id=\"keyx-text-\(clipIndex)\"><rect width=\"\(width)\" height=\"\(height)\"/></clipPath></defs><g clip-path=\"url(#keyx-text-\(clipIndex))\">\(output)</g>"
         }

@@ -10,21 +10,29 @@ enum TemplateRendering {
     static var measurer: TextHeightMeasurer? {
         #if canImport(CoreText)
         return { request in
-            var font = CTFontCreateWithName(request.font as CFString, request.size, nil)
-            if request.bold, let bold = CTFontCreateCopyWithSymbolicTraits(font, request.size, nil, .boldTrait, .boldTrait) { font = bold }
-            let text = NSAttributedString(string: request.text, attributes: [
-                NSAttributedString.Key(kCTFontAttributeName as String): font,
-                NSAttributedString.Key(kCTKernAttributeName as String): request.tracking
-            ])
-            let framesetter = CTFramesetterCreateWithAttributedString(text)
-            let size = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRange(location: 0, length: 0), nil,
-                CGSize(width: max(1, request.width), height: 1_000_000), nil)
-            return ceil(size.height)
+            measuredTextHeight(text: request.text, font: request.font, size: request.size,
+                               bold: request.bold, tracking: request.tracking, width: request.width)
         }
         #else
         return nil
         #endif
     }
+
+    #if canImport(CoreText)
+    static func measuredTextHeight(text: String, font name: String, size pointSize: Double,
+                                   bold: Bool, tracking: Double, width: Double) -> Double {
+        var font = CTFontCreateWithName(name as CFString, pointSize, nil)
+        if bold, let boldFont = CTFontCreateCopyWithSymbolicTraits(font, pointSize, nil, .boldTrait, .boldTrait) { font = boldFont }
+        let text = NSAttributedString(string: text, attributes: [
+            NSAttributedString.Key(kCTFontAttributeName as String): font,
+            NSAttributedString.Key(kCTKernAttributeName as String): tracking
+        ])
+        let framesetter = CTFramesetterCreateWithAttributedString(text)
+        let size = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRange(location: 0, length: 0), nil,
+            CGSize(width: max(1, width), height: 1_000_000), nil)
+        return ceil(size.height)
+    }
+    #endif
 
     /// Reflow crowded panels and chart captions into supplied template layouts.
     /// Fit decisions use the same plans as final composition, without allocating

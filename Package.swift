@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "Rostrum", targets: ["Rostrum"]),
         .library(name: "RostrumLayout", targets: ["RostrumLayout"]),
         // The lectern.deck/1 Deck IR alone (Foundation only): one definition for
-        // every renderer — LecternCore (.pptx) and DeckMonkey (.key).
+        // every renderer — LecternCore (.pptx/.keyx) and DeckMonkey (.key).
         .library(name: "LecternIR", targets: ["LecternIR"]),
         .library(name: "KeynoteInterchange", targets: ["KeynoteInterchange"]),
     ],

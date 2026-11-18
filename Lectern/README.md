@@ -1,14 +1,15 @@
 # Lectern
 
 The demo application for **Rostrum** takes a prompt, optional PDF grounding,
-intent parameters, and either a bundled `design.md` style or a PowerPoint
-template, then produces an editable `.pptx`. Parsing, layout, rendering and file
+intent parameters, and either a bundled `design.md` style or a user-owned
+template, then produces editable PowerPoint `.pptx` or Keynote Interchange `.keyx`.
+Parsing, layout, rendering and file
 creation run on-device. Configured text and optional image providers receive
 the generation requests; API keys are stored in the system Keychain.
 
 ## Pull and rebuild
 
-Lectern and both libraries live in this repository. LecternCore uses the local
+Lectern and the library products live in this repository. LecternCore uses the local
 `../` package, so rebuilding after pulling `main` adopts the library updates
 without changing a separate dependency version. From a clean checkout:
 
@@ -71,7 +72,7 @@ Rostrum is a **local path dependency** (`../`).
 
 ## Library Lab
 
-Choose **Library Lab** in the sidebar to exercise the library offline. Its 34
+Choose **Library Lab** in the sidebar to exercise the library offline. Its
 configurable demonstrations cover drawing, text/fonts, paragraph justification, standard tab stops, tables, charts, SmartArt,
 notes, comments, sections, imports, layouts/themes/templates, design builders,
 media, packages and extraction. **Run All** saves and reopens every example,
@@ -81,11 +82,11 @@ No provider key is required. File checks and preview limitations are reported
 separately; passing a demo is not a claim of perfect PowerPoint rendering.
 
 Every completed **Run Demo** or **Run All** result is automatically saved as a
-new PowerPoint deck in your library, including results with reported findings
+new presentation in your library, including results with reported findings
 or failed checks. Filenames include the demo title, timestamp and a unique ID;
 rerunning a demo preserves earlier decks. The saved-results summary lists every
 demo deck and its slide count. On macOS, **Reveal in Finder** selects the saved
-PowerPoint file and **Reveal All in Finder** selects the whole batch; no share
+presentation file and **Reveal All in Finder** selects the whole batch; no share
 extension is needed. **Inspect Result** opens the saved copy. Inspecting a result
 or leaving the Lab does not cancel the remaining demos; use **Cancel** to stop.
 If saving fails, **Retry Save** writes the existing result directly to the library
@@ -133,9 +134,33 @@ bounds and independent PowerPoint/WebKit comparisons are documented in the
 
 See the [coverage and verification record](../docs/LIBRARY-LAB-20261002.md).
 
+## Choose Keynote Interchange
+
+In **New Deck**, choose **Keynote Interchange (.keyx)** under **Output**. The
+local backend authors the interchange document directly from the shared DeckIR;
+it does not create PPTX, invoke native `.key` conversion, or upload documents to
+Apple. Text, notes, images, vector objects, numeric charts and tables remain
+editable. More elaborate layout approximations are reported on the result.
+
+Inspect `.keyx` files through the same file picker, filter the library by format,
+rename/share them without changing extensions, and export text, images and chart
+data. Library covers and slide previews use the direct interchange adapter with
+explicit limitations. **Library Lab > Keynote Interchange** runs the complete
+offline saved-file path.
+
+User-owned `.keyx` templates must contain self-contained title/body layouts.
+Their canvas, presets, layouts, resources and unknown fields are retained; starter
+slides are replaced. Recovery remembers the output format. If external Keynote
+editing regenerates slide identifiers, selected-slide recovery refuses to guess:
+choose the explicit whole-deck rebuild, which keeps later edits in the original.
+
+The format is beta and has no representation for several native `.key` features.
+See [the API and support boundaries](../docs/KEYNOTE-INTERCHANGE.md). A schema pass
+or an approximate preview does not establish native Keynote visual fidelity.
+
 ## Choose a PowerPoint template
 
-In **New Deck**, choose **Use PowerPoint template…** and select a `.potx` or `.pptx`.
+In **New Deck**, choose **Choose PowerPoint template…** and select a `.potx` or `.pptx`.
 Lectern validates a local snapshot and shows its filename and available masters. The snapshot is kept for the current app session; the source file stays
 unchanged. Replace or remove the choice at any time before generation. A failed
 replacement keeps the previous selection, and generation waits for import to finish.

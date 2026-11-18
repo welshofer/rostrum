@@ -16,6 +16,7 @@ struct RecoveryView: View {
     @State private var task: Task<Void, Never>?
     @State private var scratch: URL?
     @State private var rebuildDeck = false
+    @State private var outputFormat: DeckFormat = .powerPoint
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -39,8 +40,12 @@ struct RecoveryView: View {
                 Text("Alternative 1").tag(1)
                 Text("Alternative 2").tag(2)
             }.disabled(busy).onChange(of: variant) { candidate = nil }
-            Text("Some templates have only one compatible layout. Preview is approximate; check the saved deck in PowerPoint.")
+            Text("Some templates have only one compatible layout. Preview is approximate; check the saved deck in \(outputFormat.applicationName).")
                 .font(.caption).foregroundStyle(.secondary)
+            if outputFormat == .keynoteInterchange {
+                Text("Keynote can regenerate slide identifiers. If the original group cannot be identified safely, use a whole-deck rebuild; external edits remain in the original.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
             if busy { ProgressView("Composing saved content…") }
             if let candidate {
                 Text("\(candidate.slideCount) slides in the revised copy").font(.headline)
@@ -71,6 +76,7 @@ struct RecoveryView: View {
             do {
                 let saved = try await Task.detached { try RenderSnapshot.load(snapshotURL) }.value
                 slides = saved.deck.slides; selected = slides.first?.id ?? ""
+                outputFormat = saved.outputFormat
                 let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
                 try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true,
                     attributes: [.posixPermissions: 0o700])
@@ -110,7 +116,8 @@ struct RecoveryView: View {
             let directory = AppState.decksDirectory()
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             let stem = candidate.url.deletingPathExtension().lastPathComponent
-            let destination = directory.appendingPathComponent(stem + "-" + UUID().uuidString.prefix(8) + ".pptx")
+            let destination = directory.appendingPathComponent(stem + "-" + UUID().uuidString.prefix(8))
+                .appendingPathExtension(candidate.url.pathExtension)
             try await Task.detached { try FileManager.default.copyItem(at: candidate.url, to: destination) }.value
             if Task.isCancelled {
                 try? FileManager.default.removeItem(at: destination)

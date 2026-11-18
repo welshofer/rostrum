@@ -40,6 +40,9 @@ import Rostrum
         #expect(try slide.note.value?.plainText == "After")
         #expect(slide.node["vendor"]?["huge"] == .number("9007199254740993123456789"))
         #expect(slide.node["vendor"]?["precise"] == .number("1.23000000000000000000000001e+7"))
+        #expect(KeyxValue.number("9007199254740993.0").integer == 9_007_199_254_740_993)
+        #expect(KeyxValue.number("100e-2").integer == 1)
+        #expect(KeyxValue.number("100e-3").integer == nil)
     }
 
     @Test func inheritanceNullAndStylesheetReferencesAreDistinct() throws {
@@ -162,5 +165,43 @@ import Rostrum
         let geometry = KeyxGeometry(x: 10, y: 20, width: 100, height: 40, angle: 90)
         #expect(abs(geometry.centerX - 30) < 0.00001)
         #expect(abs(geometry.centerY - 70) < 0.00001)
+        let largeRotation = KeyxGeometry(x: 0, y: 0, width: 100, height: 40, angle: .greatestFiniteMagnitude)
+        #expect(largeRotation.rotatedWidth.isFinite && largeRotation.rotatedHeight.isFinite)
+    }
+
+    @Test func unusablePathsAreRejectedBeforeSaving() throws {
+        for path in ["M 0 0 L", "L 0 0", "M 0 0 A 2 2 0 8 0 4 4", "M 1e999 0"] {
+            let object = KeyxCanvasObject(kind: "shape", properties: KeyxNode(type: "shape", fields: [
+                "path": .object(["bezier": .object(["path": .string(path)])])
+            ]))
+            let document = try KeyxDocument(presentation: KeyxNode(type: "presentation", fields: [
+                "slides": .array([KeyxSlide(identifier: "path", contents: [KeyxSlideObject(canvas: object)]).node.value])
+            ]))
+            #expect(throws: KeyxError.self) { try document.data() }
+        }
+        #expect(KeyxPathValidation.isUsable("M 0 0 L 10 0 10 20 Z"))
+        #expect(KeyxPathValidation.isUsable("m -.5 +.5 c 1 2 3 4 5 6 z"))
+    }
+
+    @Test func sparseTableIndicesResumeAfterThePreviousExplicitIndex() throws {
+        let table = KeyxNode(type: "table", fields: [
+            "number_of_columns": .integer(4), "number_of_rows": .integer(4),
+            "content": .array([
+                .object(["row_index": .integer(2), "cells": .array([
+                    .object(["column_index": .integer(2), "value": .string("C3")]),
+                    .object(["value": .string("D3")])
+                ])]),
+                .object(["cells": .array([.object(["value": .string("A4")])])])
+            ])
+        ])
+        let document = try KeyxDocument(presentation: KeyxNode(type: "presentation", fields: [
+            "slides": .array([KeyxSlide(identifier: "sparse", contents: [
+                KeyxSlideObject(canvas: .init(kind: "table", properties: table))
+            ]).node.value])
+        ]))
+        let reopened = try KeyxDocument(data: document.data())
+        let grid = try #require(reopened.inspectSlide(at: 0).tables.first)
+        #expect(grid[2] == ["", "", "C3", "D3"])
+        #expect(grid[3] == ["A4", "", "", ""])
     }
 }

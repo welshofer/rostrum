@@ -97,7 +97,9 @@ public extension KeyxDocument {
                 do { _ = try KeyxGeometry(node: node) } catch let failure { error(path, String(describing: failure)) }
             case "size":
                 if let width = node["width"]?.double, let height = node["height"]?.double,
-                   width >= 0, height >= 0, width <= 50_000_000, height <= 50_000_000 {} else { error(path, "Invalid size") }
+                   width >= 0, height >= 0, width <= 50_000_000, height <= 50_000_000 {
+                    if path == "main.json/slide_size", width == 0 || height == 0 { error(path, "Slide dimensions must be positive") }
+                } else { error(path, "Invalid size") }
             case "text":
                 let count = ["string", "paragraphs", "text_runs"].filter { node[$0] != nil }.count
                 if count != 1 { error(path, "Text must have exactly one form") }
@@ -132,12 +134,14 @@ public extension KeyxDocument {
                 var rowIndices: Set<Int> = []
                 var nextRow = 0
                 for row in node["content"]?.array ?? [] {
+                    if row["row_index"] != nil, row["row_index"]?.integer == nil { error(path, "Invalid table row index"); continue }
                     let r = row["row_index"]?.integer ?? nextRow
                     if r < 0 || r >= rows || !rowIndices.insert(r).inserted { error(path, "Invalid or duplicate table row index") }
                     nextRow = r >= 0 && r < rows ? r + 1 : rows
                     var columnIndices: Set<Int> = []
                     var nextColumn = 0
                     for cell in row["cells"]?.array ?? [] {
+                        if cell["column_index"] != nil, cell["column_index"]?.integer == nil { error(path, "Invalid table column index"); continue }
                         let c = cell["column_index"]?.integer ?? nextColumn
                         if c < 0 || c >= columns || !columnIndices.insert(c).inserted { error(path, "Invalid or duplicate table column index") }
                         nextColumn = c >= 0 && c < columns ? c + 1 : columns
@@ -147,6 +151,10 @@ public extension KeyxDocument {
             case "table.row", "table.column-header":
                 if let kind = node["kind"]?.string, !["body", "grand_total", "group_subtotal"].contains(kind) {
                     error(path, "Invalid table structural kind: \(kind); header rows are declared by number_of_header_rows")
+                }
+            case "path.bezier-path":
+                if let pathData = node["path"]?.string, KeyxPathValidation.isUsable(pathData) {} else {
+                    error(path, "Vector path is not a usable finite SVG path")
                 }
             case "color.rgba":
                 for key in ["red", "green", "blue", "alpha"] {
@@ -176,9 +184,11 @@ public extension KeyxDocument {
                     if type == "slide" || type == "slide-layout" { expected = "slide-object" }
                     else if type == "paragraph" { expected = "paragraph.constituent" }
                 }
+                if type == "shape", key == "path" { expected = "path" }
+                if type == "path", key == "bezier" { expected = "path.bezier-path" }
                 if child == .null {
                     if type.map({ knownTypes.contains($0) }) == true,
-                       ["slides", "object", "resource", "note", "geometry", "position", "size", "text",
+                       ["slides", "slide_size", "object", "resource", "note", "geometry", "position", "size", "text",
                         "identifier", "layout", "contents", "children", "name", "version", "preset_identifier"].contains(key) {
                         error(path + "/" + key, "Null is not permitted for this property")
                     }

@@ -78,6 +78,10 @@ public actor DeckRenderer {
                            variant: Int, into directory: URL) throws -> DeckResult {
         try Task.checkCancellation()
         var saved = try RenderSnapshot.load(snapshotURL)
+        if saved.outputFormat == .keynoteInterchange {
+            return try KeyxBackend.retrySlide(saved: saved, snapshotURL: snapshotURL, sourceURL: sourceURL,
+                                             slideID: slideID, variant: variant, into: directory)
+        }
         guard var input = saved.deck.slides.first(where: { $0.id == slideID }) else {
             throw RenderError.renderFailed(underlying: "This slide is not in the saved content.")
         }
@@ -253,7 +257,11 @@ public actor DeckRenderer {
     public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
                        template: DeckTemplate, into directory: URL,
                        warnings: [String] = [], images: [String: Data] = [:], useSmartArt: Bool = false) throws -> DeckResult {
-        try render(deck, designURL: designURL, notesEnabled: notesEnabled, into: directory,
+        if template.format == .keynoteInterchange {
+            return try KeyxBackend.render(deck, designURL: nil, notesEnabled: notesEnabled,
+                into: directory, warnings: warnings, images: images, template: template)
+        }
+        return try render(deck, designURL: designURL, notesEnabled: notesEnabled, into: directory,
                    warnings: warnings + template.warnings, images: images, useSmartArt: useSmartArt,
                    template: template.nativeTemplate())
     }
@@ -263,7 +271,17 @@ public actor DeckRenderer {
     public func render(_ deck: DeckIR, designURL: URL?, notesEnabled: Bool,
                        into directory: URL, warnings: [String] = [],
                        images: [String: Data] = [:], useSmartArt: Bool = false,
-                       template: PowerPointTemplate? = nil, layoutVariants: [String: Int] = [:]) throws -> DeckResult {
+                       template: PowerPointTemplate? = nil, layoutVariants: [String: Int] = [:],
+                       outputFormat: DeckFormat = .powerPoint, keynoteTemplate: DeckTemplate? = nil) throws -> DeckResult {
+        if outputFormat == .keynoteInterchange {
+            guard template == nil else {
+                throw RenderError.renderFailed(underlying: "A PowerPoint template cannot be applied to Keynote Interchange without an explicit conversion.")
+            }
+            return try KeyxBackend.render(deck, designURL: designURL, notesEnabled: notesEnabled,
+                into: directory, warnings: warnings + (useSmartArt ? ["Keynote Interchange uses editable text and shapes, not PowerPoint SmartArt."] : []),
+                images: images, template: keynoteTemplate)
+        }
+        guard keynoteTemplate == nil else { throw RenderError.renderFailed(underlying: "An interchange template requires .keyx output.") }
         do {
             // Rendering is now the slowest phase — font registration, package
             // deflate, the schema lint, N SVG renders — so Cancel has to reach

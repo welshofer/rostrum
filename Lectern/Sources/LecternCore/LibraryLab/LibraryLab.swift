@@ -45,7 +45,7 @@ public enum LibraryLabError: Error, LocalizedError {
 
 public enum LibraryLab {
     public static let catalog: [LibraryLabRecipe] = {
-        let recipes = [ImportedFidelityRecipe.catalog] + DrawingLabRecipes.catalog + DocumentLabRecipes.catalog + PlatformLabRecipes.catalog
+        let recipes = [ImportedFidelityRecipe.catalog, KeynoteLabRecipe.catalog] + DrawingLabRecipes.catalog + DocumentLabRecipes.catalog + PlatformLabRecipes.catalog
         return LibraryDemoID.allCases.compactMap { id in recipes.first { $0.id == id } }
     }()
 
@@ -56,6 +56,7 @@ public enum LibraryLab {
         // Hidden controls from another recipe must neither affect this example
         // nor prevent it running. Reports record only the effective inputs.
         let options = effectiveOptions(options, for: id)
+        if id == .keynoteInterchange { return try KeynoteLabRecipe.run(options: options, in: parent) }
         return try perform(id, options: options, in: parent) { try make(id, options: options) }
     }
 
@@ -189,6 +190,8 @@ public enum LibraryLab {
 
     private static func make(_ id: LibraryDemoID, options: LibraryLabOptions) throws -> LibraryLabDraft {
         switch id {
+        case .keynoteInterchange:
+            throw LibraryLabError.invalidOptions("Keynote Interchange uses its own native document recipe.")
         case .importedFidelity: try ImportedFidelityRecipe.make(options)
         case .shapes, .fillsAndLines, .text, .pictures, .tableStructure, .tableStyles, .tableAppearance:
             try DrawingLabRecipes.make(id, options: options)
@@ -220,7 +223,7 @@ public enum LibraryLab {
     }
 }
 
-private struct LibraryLabReport: Codable {
+struct LibraryLabReport: Codable {
     let recipe: LibraryDemoID
     let title: String
     let options: LibraryLabOptions

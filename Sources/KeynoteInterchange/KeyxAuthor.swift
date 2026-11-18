@@ -78,7 +78,8 @@ public enum KeyxAuthor {
             try Task.checkCancellation()
             guard !input.id.isEmpty else { throw KeyxError.invalid("A slide ID is empty") }
             if case .unknown(let name) = input.kind { throw KeyxError.unsupported("Unsupported authoring layout: \(name)") }
-            let layout = try chooseLayout(input, layouts: layouts, selected: options.templateLayout)
+            let layout = try chooseLayout(input, layouts: layouts, selected: options.templateLayout,
+                                          requiresPlaceholders: template != nil)
             let layoutNode = try KeyxNode(value: layout)
             guard let layoutID = layout["identifier"]?.string ?? layout["name"]?.string else {
                 throw KeyxError.invalid("Template layout has no identifier or name")
@@ -155,7 +156,8 @@ public enum KeyxAuthor {
             if input.kind == .diagram || input.kind == .timeline || input.kind == .quadrant {
                 warnings.append("Slide \(index + 1): \(input.layout) content is retained as editable text and vector framing, not a native diagram object.")
             }
-            if [.twoColumn, .comparison, .cards, .threeColumn, .numberedSteps, .metrics].contains(input.kind) {
+            if [.twoColumn, .comparison, .cards, .threeColumn, .numberedSteps, .metrics,
+                .bands, .statement, .callout, .bigNumber, .quote].contains(input.kind) {
                 warnings.append("Slide \(index + 1): \(input.layout) uses measured reading-order text rather than the PowerPoint layout.")
             }
             if pages.isEmpty { pages = [[]] }
@@ -179,6 +181,20 @@ public enum KeyxAuthor {
                     contents.append(try textObject(title, frame: titleFrame, style: titleStyle, base: titleSlot, identifier: "\(id)-title"))
                 }
                 contents += content
+                let used = Set(contents.compactMap { $0.node["placeholder_info"]?["defined"]?["kind"]?.string })
+                for kind in ["title", "body", "object"] where !used.contains(kind) {
+                    if var hidden = placeholders[kind], var info = hidden.node["placeholder_info"]?.object,
+                       var defined = info["defined"]?.object {
+                        defined["is_visible"] = .bool(false)
+                        info["defined"] = .object(defined)
+                        hidden.node["placeholder_info"] = .object(info)
+                        hidden.node["source_kind"] = .string("placeholder")
+                        var canvas = try hidden.canvas
+                        try canvas.editProperties { $0["identifier"] = .string("\(id)-hidden-\(kind)") }
+                        hidden.setCanvas(canvas)
+                        contents.append(hidden)
+                    }
+                }
                 slide.setContents(contents)
                 if page == 0, options.notesEnabled, let notes = input.notes { slide.setNote(.value(KeyxText(notes))) }
                 output.append(slide)
@@ -196,35 +212,69 @@ public enum KeyxAuthor {
     }
 
     private static func newDocument(_ options: KeyxAuthoringOptions) throws -> KeyxDocument {
+        let scale = options.height / 540
+        let margin = 48 * scale
         let background = KeyxNode(type: "slide-background", fields: ["standard": try KeyxNode.fill(hex: options.background).value])
+        func placeholder(_ kind: String, frame: KeyxGeometry, preset: String) -> KeyxValue {
+            KeyxNode(type: "slide-object", fields: [
+                "source_kind": .string("placeholder"),
+                "placeholder_info": KeyxNode(type: "slide-object.placeholder-info", fields: [
+                    "defined": KeyxNode(type: "slide-object.placeholder-info.placeholder-definition", fields: [
+                        "kind": .string(kind), "is_visible": .bool(true)
+                    ]).value
+                ]).value,
+                "object": KeyxCanvasObject(kind: "textbox", properties: KeyxNode(type: "textbox", fields: [
+                    "identifier": .string("lectern-layout-" + kind), "geometry": frame.node.value,
+                    "text": KeyxText("").node.value, "stroke": .string("empty"),
+                    "paragraph_properties": KeyxNode(type: "paragraph-properties", fields: [
+                        "character_properties": KeyxNode(type: "character-properties", fields: ["preset_identifier": .string(preset)]).value
+                    ]).value
+                ])).node.value
+            ]).value
+        }
         let layout = KeyxNode(type: "slide-layout", fields: [
             "identifier": .string("lectern-layout"), "name": .string("Lectern"),
-            "version": .string("1.1"), "background": background.value, "contents": .array([])
+            "version": .string("1.1"), "background": background.value, "contents": .array([
+                placeholder("title", frame: KeyxGeometry(x: margin, y: 30 * scale, width: options.width - 2 * margin, height: 85 * scale),
+                            preset: "lectern-heading"),
+                placeholder("body", frame: KeyxGeometry(x: margin, y: 135 * scale, width: options.width - 2 * margin, height: options.height - 185 * scale),
+                            preset: "lectern-body")
+            ])
         ])
         let presentation = KeyxNode(type: "presentation", fields: [
             "slide_size": KeyxNode(type: "size", fields: ["width": .decimal(options.width), "height": .decimal(options.height)]).value,
             "theme": KeyxNode(type: "keynote-theme", fields: ["name": .string("Lectern"), "slide_layouts": .array([layout.value])]).value,
             "slides": .array([KeyxSlide(identifier: "temporary").node.value])
         ])
-        let presets = [KeyxNode([
-            "identifier": .string("lectern-body"),
-            "display_name": .string("Lectern body"),
-            "properties": KeyxNode(type: "character-properties", fields: [
-                "font_name": .string(options.bodyFont), "font_size": .decimal(22 * options.height / 540),
-                "character_fill": try KeyxNode.fill(hex: options.foreground).value
-            ]).value
-        ])]
+        let presets = try [(name: "body", font: options.bodyFont, size: 22.0, bold: false),
+                           (name: "heading", font: options.headingFont, size: 36.0, bold: true)].map { role in
+            KeyxNode([
+                "identifier": .string("lectern-" + role.name),
+                "display_name": .string("Lectern " + role.name),
+                "properties": KeyxNode(type: "character-properties", fields: [
+                    "font_name": .string(role.font), "font_size": .decimal(role.size * scale), "bold": .bool(role.bold),
+                    "character_fill": try KeyxNode.fill(hex: options.foreground).value
+                ]).value
+            ])
+        }
         return try KeyxDocument(presentation: presentation, presets: presets)
     }
 
-    private static func chooseLayout(_ slide: IRSlide, layouts: [KeyxValue], selected: String?) throws -> KeyxValue {
+    private static func chooseLayout(_ slide: IRSlide, layouts: [KeyxValue], selected: String?,
+                                     requiresPlaceholders: Bool) throws -> KeyxValue {
         if let selected {
             guard let layout = layouts.first(where: { $0["identifier"]?.string == selected || $0["name"]?.string == selected }) else {
                 throw KeyxError.invalid("The selected interchange layout no longer exists")
             }
             return layout
         }
-        return layouts.first(where: { $0["name"]?.string?.caseInsensitiveCompare(slide.layout) == .orderedSame }) ?? layouts[0]
+        let candidates = layouts.filter { layout in
+            guard requiresPlaceholders else { return true }
+            let kinds = Set((layout["contents"]?.array ?? []).compactMap { $0["placeholder_info"]?["defined"]?["kind"]?.string })
+            return kinds.contains("title") && (kinds.contains("body") || kinds.contains("object"))
+        }
+        guard let first = candidates.first else { throw KeyxError.unsupported("No template layout has usable title and body/object placeholders") }
+        return candidates.first(where: { $0["name"]?.string?.caseInsensitiveCompare(slide.layout) == .orderedSame }) ?? first
     }
 
     private static func placeholderSlots(_ layout: KeyxNode, resolver: KeyxStyleResolver) throws -> [String: KeyxSlideObject] {

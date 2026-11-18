@@ -9,7 +9,7 @@ struct PreviewDiagnosticsView: View {
         DisclosureGroup("\(diagnostics.count) slide(s) with preview limitations") {
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("These previews have known differences or missing content. Check affected slides in PowerPoint before presenting.")
+                    Text("These previews have known differences or missing content. Check affected slides in the native presentation app before presenting.")
                         .foregroundStyle(.secondary)
                     ForEach(diagnostics) { slide in
                         VStack(alignment: .leading, spacing: 4) {

@@ -5,7 +5,7 @@ import LecternCore
 /// a deck-wide caveat does not read as a problem on every slide.
 struct PreviewFindingsView: View {
     let groups: [PreviewFindingGroup]
-    var limitationNote = "These affect Lectern’s preview. The original PowerPoint content is preserved."
+    var limitationNote = "These affect Lectern’s preview. The original document content is preserved."
 
     var body: some View {
         let limitations = groups.filter { !$0.isVerificationNote }
@@ -15,7 +15,7 @@ struct PreviewFindingsView: View {
         }
         if !verification.isEmpty {
             list(verification, title: "Fidelity verification notes",
-                 explanation: "These rendering cases have not been verified against PowerPoint. They do not by themselves indicate missing or damaged content.")
+                 explanation: "These rendering cases have not been verified against the native presentation app. They do not by themselves indicate missing or damaged content.")
         }
     }
 

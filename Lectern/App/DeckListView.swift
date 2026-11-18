@@ -160,7 +160,7 @@ struct DeckListView: View {
         Button("Inspect") { app.inspect(deckAt: deck.url) }
         Button("Rename…") { onRename(deck) }
         #if os(macOS)
-        Button("Open in PowerPoint") { NSWorkspace.shared.open(deck.url) }
+        Button("Open in \(deck.format.applicationName)") { NSWorkspace.shared.open(deck.url) }
         Button("Reveal in Finder") {
             NSWorkspace.shared.activateFileViewerSelecting([deck.url])
         }

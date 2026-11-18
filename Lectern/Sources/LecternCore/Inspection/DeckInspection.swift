@@ -163,6 +163,10 @@ public enum DeckInspector {
                                limits: ZipReader.Limits =
                                    .init(totalUncompressedBytes: DeckInspector.defaultReadLimit),
                                onEvent: (Event) -> Void = { _ in }) throws -> DeckInspection {
+        if DeckFormat(url: url) == .keynoteInterchange {
+            return try KeyxBackend.inspect(at: url, renderPreviews: renderPreviews,
+                maximumUncompressedBytes: limits.totalUncompressedBytes, onEvent: onEvent)
+        }
         try Task.checkCancellation()
         onEvent(.opening)
         let data = try PipelineTrace.measure("inspect.read") { try Data(contentsOf: url) }

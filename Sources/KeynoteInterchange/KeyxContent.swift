@@ -148,6 +148,9 @@ public struct KeyxGeometry: Sendable, Equatable {
               node["angle"] == nil || node["angle"]?.double != nil else {
             throw KeyxError.invalid("Invalid or unbounded geometry")
         }
+        for flag in ["flip_horizontally", "width_valid", "height_valid"] {
+            if node[flag] != nil, node[flag]?.bool == nil { throw KeyxError.invalid("Invalid geometry flag: \(flag)") }
+        }
         self.node = node
     }
     public var x: Double { node["position"]?["x"]?.double ?? 0 }
@@ -155,13 +158,14 @@ public struct KeyxGeometry: Sendable, Equatable {
     public var width: Double { node["size"]?["width"]?.double ?? 0 }
     public var height: Double { node["size"]?["height"]?.double ?? 0 }
     public var angle: Double { node["angle"]?.double ?? 0 }
+    var previewAngle: Double { angle.truncatingRemainder(dividingBy: 360) }
     public var flipped: Bool { node["flip_horizontally"]?.bool ?? false }
     public var rotatedWidth: Double {
-        let radians = angle * .pi / 180
+        let radians = previewAngle * .pi / 180
         return abs(width * cos(radians)) + abs(height * sin(radians))
     }
     public var rotatedHeight: Double {
-        let radians = angle * .pi / 180
+        let radians = previewAngle * .pi / 180
         return abs(width * sin(radians)) + abs(height * cos(radians))
     }
     public var centerX: Double { x + rotatedWidth / 2 }

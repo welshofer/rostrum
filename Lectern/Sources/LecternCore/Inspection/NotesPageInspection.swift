@@ -19,6 +19,9 @@ extension DeckInspector {
         deckAt url: URL, slideNumber: Int,
         limits: ZipReader.Limits = .init(totalUncompressedBytes: DeckInspector.defaultReadLimit)
     ) throws -> NotesPageInspection {
+        if DeckFormat(url: url) == .keynoteInterchange {
+            throw DeckInspectionError.cannotOpen("Interchange carries presenter-note text, not a separate rendered notes page. Read the notes in the slide outline.")
+        }
         try Task.checkCancellation()
         let data = try Data(contentsOf: url)
         guard !data.isEmpty else { throw DeckInspectionError.emptyFile }

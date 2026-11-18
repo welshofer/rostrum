@@ -14,19 +14,28 @@ public actor DeckGenerator {
     private let imageStyle: String?
     private let quality: Bool
     private let useSmartArt: Bool
+    private let outputFormat: DeckFormat
+    private let keynoteTemplate: DeckTemplate?
 
     public init(provider: LLMProvider, imageProvider: (any ImageProvider)? = nil,
-                imageStyle: String? = nil, quality: Bool = true, useSmartArt: Bool = false) {
+                imageStyle: String? = nil, quality: Bool = true, useSmartArt: Bool = false,
+                outputFormat: DeckFormat = .powerPoint, keynoteTemplate: DeckTemplate? = nil) {
         self.provider = provider
         self.imageProvider = imageProvider
         self.imageStyle = imageStyle
         self.quality = quality
         self.useSmartArt = useSmartArt
+        self.outputFormat = outputFormat; self.keynoteTemplate = keynoteTemplate
     }
 
     public func generate(_ request: DeckRequest, designURL: URL?, template: DeckTemplate,
                          into directory: URL, emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
-        try await generate(request, designURL: designURL, into: directory,
+        if template.format == .keynoteInterchange {
+            return try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle,
+                quality: quality, useSmartArt: useSmartArt, outputFormat: .keynoteInterchange, keynoteTemplate: template)
+                .generate(request, designURL: nil, into: directory, emit: emit)
+        }
+        return try await generate(request, designURL: designURL, into: directory,
                            template: template.nativeTemplate(), emit: emit)
     }
 
@@ -35,9 +44,16 @@ public actor DeckGenerator {
     public func generate(_ request: DeckRequest, designURL: URL?, into directory: URL,
                          diagnostics: URL? = nil, template: PowerPointTemplate? = nil,
                          emit: @Sendable @escaping (GenerationEvent) -> Void) async throws -> DeckResult {
+        guard !(outputFormat == .keynoteInterchange && template != nil),
+              !(outputFormat == .powerPoint && keynoteTemplate != nil) else {
+            throw LecternError.renderFailed(message: "Template and output formats must match; automatic document conversion is not performed.")
+        }
         var request = request
         if template != nil {
             request.templateConstraints = "Use concise titles and short paragraphs: this deck will fill the placeholders of a supplied PowerPoint template. Preserve all requested facts. Prefer title, bullets, twoColumn, chart, table and closing layouts. Template artwork and formatting are fixed; do not rely on a generated background image or invent template branding."
+        }
+        if keynoteTemplate != nil {
+            request.templateConstraints = "Use concise titles and readable paragraphs for a supplied Keynote Interchange template. Preserve all requested facts. Template artwork, layouts and fonts are fixed. Prefer title, bullets, table, chart and closing layouts; do not invent template branding."
         }
         let first = try await provider.draft(request, repairing: nil, emit: emit)
         emit(.validating)
@@ -324,8 +340,9 @@ public actor DeckGenerator {
         let (images, imageWarnings) = await illustrate(shaped.deck, template: template, emit: emit)   // no-op without an image provider
         emit(.rendering)
         let snapshot = RenderSnapshot(deck: shaped.deck, images: images,
-            design: try (template == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) },
-            template: template, notesEnabled: request.notes, useSmartArt: useSmartArt)
+            design: try (template == nil && keynoteTemplate == nil ? designURL : nil).map { try String(contentsOf: $0, encoding: .utf8) },
+            template: template, notesEnabled: request.notes, useSmartArt: useSmartArt,
+            outputFormat: outputFormat, keynoteTemplate: keynoteTemplate)
         let recoveryURL = diagnostics.flatMap { try? snapshot.save(in: $0) }
         if let recoveryURL { emit(.recoveryAvailable(recoveryURL)) }
         var deckResult: DeckResult
@@ -333,7 +350,7 @@ public actor DeckGenerator {
             deckResult = try await renderer.render(
                 shaped.deck, designURL: designURL, notesEnabled: request.notes,
                 into: directory, warnings: shaped.warnings + imageWarnings, images: images,
-                useSmartArt: useSmartArt, template: template)
+                useSmartArt: useSmartArt, template: template, outputFormat: outputFormat, keynoteTemplate: keynoteTemplate)
         } catch let RenderError.renderFailed(underlying) {
             var message = underlying
             // Keep the final normalized deck, including accepted QA edits, so

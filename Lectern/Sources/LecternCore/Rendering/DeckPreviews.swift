@@ -45,6 +45,13 @@ public struct SlidePreviewDiagnostics: Sendable, Equatable, Identifiable {
         otherWarnings = problems.unsupportedContent
     }
 
+    init(slideNumber: Int, interchangeWarnings: [String], failure: String? = nil) {
+        self.slideNumber = slideNumber
+        layoutUnresolved = false; masterUnresolved = false; issues = []
+        self.failure = failure
+        otherWarnings = interchangeWarnings
+    }
+
     /// Compact, stable display text. The complete findings above retain each
     /// source location; repeated messages at many shapes need only one row.
     public var messages: [String] {

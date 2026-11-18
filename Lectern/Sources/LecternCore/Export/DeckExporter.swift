@@ -43,6 +43,7 @@ public enum DeckExporter {
     /// wrote and leaves everything else in the folder alone, so running it
     /// twice is a refresh rather than a mess.
     public static func export(deckAt deck: URL, into parent: URL) throws -> Outcome {
+        if DeckFormat(url: deck) == .keynoteInterchange { return try KeyxBackend.export(at: deck, into: parent) }
         try Task.checkCancellation()
         let presentation = try Presentation(contentsOf: deck,
             limits: .init(totalUncompressedBytes: DeckInspector.defaultReadLimit))

@@ -45,6 +45,8 @@ final class AppState {
     var goal = "inform"
     var slideCount = 12
     var includeNotes = true
+    private(set) var outputFormat: DeckFormat = .powerPoint
+    private(set) var selectedKeynoteTemplate: DeckTemplate?
     let templateSelection = TemplateSelectionModel()
     private var templateImportRevision = UUID()
 
@@ -336,6 +338,7 @@ final class AppState {
         static let provider = "providerID", model = "model", favorites = "favoriteStyles"
         static let recents = "recentStyles", imageProvider = "imageProviderID"
         static let useSmartArt = "useSmartArt"
+        static let outputFormat = "outputFormat"
         static let effort = "reasoningEffort", imageModel = "imageModel", imageQuality = "imageQuality"
     }
 
@@ -374,6 +377,7 @@ final class AppState {
         favorites = Set(d.stringArray(forKey: Keys.favorites) ?? [])
         recents = d.stringArray(forKey: Keys.recents) ?? []
         useSmartArt = d.bool(forKey: Keys.useSmartArt)
+        outputFormat = DeckFormat(rawValue: d.string(forKey: Keys.outputFormat) ?? "") ?? .powerPoint
         refreshKeyAvailability()
     }
 
@@ -640,7 +644,13 @@ final class AppState {
         }
     }
 
-    // MARK: - PowerPoint templates
+    // MARK: - Document format and templates
+
+    func setOutputFormat(_ format: DeckFormat) {
+        guard phase != .generating else { return }
+        outputFormat = format
+        preferences.set(format.rawValue, forKey: Keys.outputFormat)
+    }
 
     func attachTemplate(_ url: URL) async {
         let revision = UUID()
@@ -652,9 +662,15 @@ final class AppState {
         if let error = templateSelection.problem { templateError = error; return }
         guard let selected = templateSelection.selected else { return }
         do {
+            if selected.format == .keynoteInterchange {
+                selectedKeynoteTemplate = selected
+                setOutputFormat(.keynoteInterchange)
+                return
+            }
             let native = try await Task.detached { try selected.nativeTemplate() }.value
             guard templateImportRevision == revision else { return }
             selectedTemplate = native
+            setOutputFormat(.powerPoint)
         } catch {
             guard templateImportRevision == revision else { return }
             templateError = String(describing: error)
@@ -664,7 +680,9 @@ final class AppState {
     func clearTemplate() {
         templateImportRevision = UUID()
         templateSelection.clear()
-        selectedTemplate = nil; templateError = nil; templateLoading = false
+        if outputFormat == .keynoteInterchange { selectedKeynoteTemplate = nil }
+        else { selectedTemplate = nil }
+        templateError = nil; templateLoading = false
     }
 
     // MARK: - PDF grounding
@@ -719,14 +737,16 @@ final class AppState {
                                   slideCount: slideCount, notes: includeNotes,
                                   groundingText: grounding?.text,
                                   styleSlug: selectedStyleSlug ?? "default")
-        let template = selectedTemplate
-        let designURL = template == nil ? selectedStyle?.designURL : nil
+        let format = outputFormat
+        let template = format == .powerPoint ? selectedTemplate : nil
+        let keynoteTemplate = format == .keynoteInterchange ? selectedKeynoteTemplate : nil
+        let designURL = template == nil && keynoteTemplate == nil ? selectedStyle?.designURL : nil
         let directory = libraryDirectory
         let diagnostics = injectedDiagnosticsDirectory ?? Self.diagnosticsDirectory()
         let keyRead = Result { try credentials.read(providerID.rawValue) }
         let id = providerID, chosenModel = model
         let chosenEffort = reasoningEffort
-        let style = template == nil ? selectedStyle : nil
+        let style = template == nil && keynoteTemplate == nil ? selectedStyle : nil
         let smartArt = useSmartArt
         let imageID = imageProviderID
         let chosenImageModel = imageModel, chosenImageQuality = imageQuality
@@ -777,7 +797,8 @@ final class AppState {
                             + Self.describe(error)
                     }
                 }
-                var result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle, useSmartArt: smartArt)
+                var result = try await DeckGenerator(provider: provider, imageProvider: imageProvider, imageStyle: imageStyle,
+                    useSmartArt: smartArt, outputFormat: format, keynoteTemplate: keynoteTemplate)
                     .generate(request, designURL: designURL, into: directory,
                               diagnostics: diagnostics, template: template) { [weak self] event in
                         Task { @MainActor in self?.apply(event, run: run) }
@@ -1057,7 +1078,7 @@ final class AppState {
         case .repairing: stage = "Repairing"
         case .auditing: stage = "Polishing (QA pass)"
         case .illustrating(let c, let t): stage = "Generating images"; drafted = c; total = t; progressNoun = "images"
-        case .rendering: stage = "Rendering .pptx"
+        case .rendering: stage = "Rendering .\(outputFormat.fileExtension)"
         case .recoveryAvailable(let url): recoveryURL = url; preferences.set(url.path, forKey: "renderRecoverySnapshot")
         case .finished(let result): stage = "Done"; recoverySourceURL = result.url; preferences.set(result.url.path, forKey: "renderRecoverySource")
         }

@@ -71,6 +71,8 @@ public extension KeyxDocument {
     func styleResolver() throws -> KeyxStyleResolver { try KeyxStyleResolver(document: self) }
     func resolvedNode(_ node: KeyxNode) throws -> KeyxNode { try styleResolver().resolved(node) }
     func resolvedProperty(_ key: String, on node: KeyxNode) throws -> KeyxProperty<KeyxValue> {
-        try styleResolver().property(key, on: node)
+        let local = node.property(key)
+        if case .inherited = local { return try styleResolver().property(key, on: node) }
+        return local
     }
 }

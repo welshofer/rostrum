@@ -12,6 +12,7 @@ not a download of the newest Library Lab results.
 | Goal | Guide |
 | --- | --- |
 | Install, create a deck, save and reopen it | [Getting started](GETTING-STARTED.md) |
+| Read, edit, author and preview Keynote Interchange `.keyx` | [Keynote Interchange](KEYNOTE-INTERCHANGE.md) |
 | Plan tables, fit text, fill a template or paginate | [Layout engine](LAYOUT-ENGINE.md) |
 | Generate cards, columns, numbered steps and structured tables | [Generated layouts](GENERATED-LAYOUTS.md) |
 | Edit slides, charts, images, notes, comments and sections | [Cookbook](COOKBOOK.md) |

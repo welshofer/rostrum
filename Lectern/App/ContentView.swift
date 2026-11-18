@@ -46,11 +46,9 @@ struct ContentView: View {
     #endif
 
     /// The extensions the inspector can actually open.
-    static let deckExtensions = ["pptx", "potx", "ppsx"]
+    static let deckExtensions = DeckFormat.inspectionExtensions
 
-    /// The decks this app will open. A `.pptx` and nothing else — the
-    /// inspector reads PresentationML, and offering the user a file it cannot
-    /// open is a worse experience than not offering it.
+    /// Only formats with a real local document backend are offered.
     static let deckTypes: [UTType] = deckExtensions.compactMap {
         UTType(filenameExtension: $0)
     }
@@ -342,7 +340,7 @@ private enum ComposeImportKind {
     var contentTypes: [UTType] {
         switch self {
         case .pdf: [.pdf]
-        case .template: [UTType(filenameExtension: "potx") ?? .data]
+        case .template: DeckFormat.templateExtensions.compactMap { UTType(filenameExtension: $0) }
         }
     }
 }
@@ -450,8 +448,25 @@ struct ComposeView: View {
                     }
                 }
 
+                Card(title: "OUTPUT", systemImage: "doc") {
+                    Picker("File format", selection: Binding(get: { app.outputFormat }, set: app.setOutputFormat)) {
+                        ForEach(DeckFormat.allCases) { format in Text(format.label).tag(format) }
+                    }
+                    if app.outputFormat == .keynoteInterchange {
+                        Text("Native editable interchange, not a .key file. Uses local Swift authoring. Preview is approximate; transitions, builds and comments are outside this beta format.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+
                 Card(title: "DESIGN", systemImage: "paintpalette") {
-                    if let template = app.selectedTemplate {
+                    if app.outputFormat == .keynoteInterchange, let template = app.selectedKeynoteTemplate {
+                        Label(template.name, systemImage: "doc.richtext").font(.headline)
+                        Text("Keynote interchange template · \(template.layoutCount) layouts")
+                            .font(.caption).foregroundStyle(.secondary)
+                        Text("Retains user-owned layouts, presets and artwork. Existing slides are replaced; unused template resources remain.")
+                            .font(.caption).foregroundStyle(.secondary)
+                        Button("Use a theme instead") { app.clearTemplate(); showStyles = true }
+                    } else if app.outputFormat == .powerPoint, let template = app.selectedTemplate {
                         Label(template.name, systemImage: "doc.richtext").font(.headline)
                         Text("PowerPoint template · \(template.masters.reduce(0) { $0 + $1.layoutNames.count }) layouts")
                             .font(.caption).foregroundStyle(.secondary)
@@ -468,7 +483,7 @@ struct ComposeView: View {
                         StyleButton(style: app.selectedStyle) { showStyles = true }
                     }
                     Button { importKind = .template; importing = true } label: {
-                        Label(app.selectedTemplate == nil ? "Use PowerPoint template…" : "Choose another template…", systemImage: "folder")
+                        Label("Choose \(app.outputFormat.applicationName) template…", systemImage: "folder")
                     }
                     .disabled(app.templateLoading)
                     if app.templateLoading { ProgressView("Reading template…") }
@@ -775,7 +790,7 @@ struct ResultView: View {
             if !result.previewWarnings.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     PreviewFindingsView(groups: result.previewFindingGroups,
-                                        limitationNote: "These affect the preview, not the saved PowerPoint content.")
+                                        limitationNote: "These affect the preview, not the saved document content.")
                 }
                 .frame(maxWidth: 420)
             }

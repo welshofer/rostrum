@@ -1,5 +1,6 @@
 import SwiftUI
 import QuickLookThumbnailing
+import LecternCore
 #if os(macOS)
 import AppKit
 #else
@@ -165,6 +166,8 @@ struct DeckThumbnail: View {
 
     @Environment(\.displayScale) private var displayScale
     @State private var loaded: Image?
+    @State private var interchangeCover: SlidePreviewRecord?
+    @State private var interchangeProblem: String?
 
     private var key: String {
         DeckThumbnailStore.key(url: url, version: version, width: width)
@@ -179,7 +182,18 @@ struct DeckThumbnail: View {
 
     var body: some View {
         ZStack {
-            if let image {
+            if DeckFormat(url: url) == .keynoteInterchange, let cover = interchangeCover {
+                SlideTile(content: cover.content)
+                    .aspectRatio(cover.geometry.aspectRatio, contentMode: .fit)
+                    .accessibilityLabel("Approximate Keynote Interchange preview: \(cover.title)")
+            } else if let problem = interchangeProblem {
+                DeckPlacard(title: fallbackTitle, muted: true)
+                    .overlay(alignment: .bottomLeading) {
+                        Label("Preview unavailable", systemImage: "exclamationmark.triangle")
+                            .font(.caption).padding(8)
+                    }
+                    .help(problem)
+            } else if let image {
                 image.resizable().aspectRatio(contentMode: .fill)
             } else {
                 DeckPlacard(title: fallbackTitle, muted: true)
@@ -190,6 +204,20 @@ struct DeckThumbnail: View {
         // corners and over the card beside it.
         .clipped()
         .task(id: key) {
+            if DeckFormat(url: url) == .keynoteInterchange {
+                do {
+                    let cover = try await Task.detached(priority: .utility) {
+                        try DeckInspector.previewInterchangeSlide(deckAt: url)
+                    }.value
+                    guard !Task.isCancelled else { return }
+                    interchangeCover = cover; interchangeProblem = nil
+                } catch is CancellationError { }
+                catch {
+                    guard !Task.isCancelled else { return }
+                    interchangeCover = nil; interchangeProblem = String(describing: error)
+                }
+                return
+            }
             // Already had it: no request, no decode, and nothing to animate.
             guard DeckThumbnailStore.shared.cached(key) == nil else { return }
             let image = await DeckThumbnailStore.shared.thumbnail(

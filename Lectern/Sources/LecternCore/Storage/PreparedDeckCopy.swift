@@ -37,7 +37,8 @@ public extension DeckStorage {
         }
         if label.isEmpty { label = "Library Demo" }
         let suffix = timestamp(now) + "-" + identifier.uuidString
-        let destination = directory.appendingPathComponent(label + "-" + suffix).appendingPathExtension("pptx")
+        guard let format = DeckFormat(url: source) else { throw CocoaError(.fileReadUnsupportedScheme) }
+        let destination = directory.appendingPathComponent(label + "-" + suffix).appendingPathExtension(format.fileExtension)
         let staged = directory.appendingPathComponent(".library-demo-" + UUID().uuidString + ".pending")
         do {
             try manager.copyItem(at: source, to: staged)
