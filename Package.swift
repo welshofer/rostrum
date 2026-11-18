@@ -13,13 +13,20 @@ let package = Package(
         // The lectern.deck/1 Deck IR alone (Foundation only): one definition for
         // every renderer — LecternCore (.pptx) and DeckMonkey (.key).
         .library(name: "LecternIR", targets: ["LecternIR"]),
+        .library(name: "KeynoteInterchange", targets: ["KeynoteInterchange"]),
     ],
     targets: [
         .target(name: "Rostrum"),
         .target(name: "RostrumLayout", dependencies: ["Rostrum"]),
         .target(name: "LecternIR"),
+        .target(name: "KeynoteInterchange", dependencies: ["Rostrum", "RostrumLayout", "LecternIR"]),
+        .testTarget(name: "KeynoteInterchangeTests", dependencies: ["KeynoteInterchange", "Rostrum"]),
         .testTarget(name: "LecternIRTests", dependencies: ["LecternIR"]),
         .testTarget(name: "RostrumLayoutTests", dependencies: ["RostrumLayout", "Rostrum"]),
+        .executableTarget(
+            name: "KeyxExample",
+            dependencies: ["KeynoteInterchange", "LecternIR"],
+            path: "Examples/KeyxExample"),
         .executableTarget(
             name: "ClimateDeck",
             dependencies: ["Rostrum"],
