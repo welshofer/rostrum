@@ -322,10 +322,21 @@ sequenceDiagram
     P->>Part: first mutation → parse to DOM
     Part->>DOM: edit through schema tables
     U->>P: save(to: out.pptx)
-    P->>Zip: pristine parts → original bytes, verbatim
-    P->>Zip: dirty parts → deterministic re-serialize
+    P->>Zip: pristine parts → original compressed payload, verbatim
+    P->>Zip: dirty parts → deterministic re-serialize + deflate
     Note over Zip: fixed timestamps, sorted parts:<br/>same input → byte-identical output
 ```
+
+Opening an archive inflates and CRC-verifies every entry up front while retaining
+its original compressed bitstream alongside the decoded bytes. On save, untouched
+parts, `.rels` streams, `[Content_Types].xml` and carried entries copy their
+original compressed payloads straight through without re-running `Deflate`;
+Rostrum's encoder runs only on new or mutated entries (or foreign streams whose
+compressed payload bloated past their uncompressed size). Outer ZIP headers —
+fixed DOS epoch timestamps, sorted member order, and omitted streaming data
+descriptors or extra fields — are normalized by `ZipWriter`, so untouched entry
+payloads stay byte-identical while repeated Rostrum saves form a byte-identical
+archive fixed point.
 
 ## Examples
 

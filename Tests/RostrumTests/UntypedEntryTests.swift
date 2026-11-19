@@ -80,4 +80,62 @@ import Testing
                 "the Default for \"xml\" covers this — it is a part, not a stray")
         #expect(!package.untypedEntries.contains { $0.name == "ppt/extra.xml" })
     }
+
+    @Test func carriedEntriesCopyForeignCompressedPayloadsWithoutReencoding() throws {
+        func foreignStoredDeflate(_ bytes: Data) -> ZipWriter.Payload {
+            let len = UInt16(bytes.count)
+            let nlen = ~len
+            var raw = Data([
+                0x01,
+                UInt8(len & 0xFF), UInt8(len >> 8),
+                UInt8(nlen & 0xFF), UInt8(nlen >> 8),
+            ])
+            raw.append(bytes)
+            return ZipWriter.Payload(
+                data: raw, method: 8, size: UInt32(bytes.count), crc: CRC32.checksum(bytes))
+        }
+
+        let seed = try ZipReader(data: MinimalTemplate.makePackage().serialize())
+        var writer = ZipWriter()
+        for name in seed.entryNames {
+            writer.addFile(name: name, data: try seed.data(forEntry: name))
+        }
+
+        let trashPayload = foreignStoredDeflate(Data(repeating: 0xAB, count: 200))
+        let orphanRelsPayload = foreignStoredDeflate(Data("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"/>".utf8))
+        let dirPayload = foreignStoredDeflate(Data())
+
+        // Also include a hostile bloated directory placeholder (> +64 B of empty stored DEFLATE headers)
+        // to ensure the anti-bloat guard still declines it rather than copying bloat through.
+        var bloatedRaw = Data()
+        for _ in 0..<20 {
+            bloatedRaw.append(contentsOf: [0x00, 0x00, 0x00, 0xFF, 0xFF])
+        }
+        bloatedRaw.append(contentsOf: [0x01, 0x00, 0x00, 0xFF, 0xFF])
+        let bloatedDirPayload = ZipWriter.Payload(data: bloatedRaw, method: 8, size: 0, crc: 0)
+
+        writer.addFile(name: "[trash]/0000.dat", payload: trashPayload)
+        writer.addFile(name: "ppt/slides/_rels/slide99.xml.rels", payload: orphanRelsPayload)
+        writer.addFile(name: "ppt/customDir/", payload: dirPayload)
+        writer.addFile(name: "ppt/bloatedDir/", payload: bloatedDirPayload)
+
+        let package = try OPCPackage.read(data: try writer.finalize())
+        let resaved = try ZipReader(data: package.serialize())
+
+        let trashAfter = try resaved.entryPayload(forEntry: "[trash]/0000.dat")
+        #expect(trashAfter.entry.method == 8)
+        #expect(trashAfter.raw == trashPayload.data)
+
+        let orphanAfter = try resaved.entryPayload(forEntry: "ppt/slides/_rels/slide99.xml.rels")
+        #expect(orphanAfter.entry.method == 8)
+        #expect(orphanAfter.raw == orphanRelsPayload.data)
+
+        let dirAfter = try resaved.entryPayload(forEntry: "ppt/customDir/")
+        #expect(dirAfter.entry.method == 8)
+        #expect(dirAfter.raw == dirPayload.data)
+
+        let bloatedAfter = try resaved.entryPayload(forEntry: "ppt/bloatedDir/")
+        #expect(bloatedAfter.decoded.isEmpty)
+        #expect(bloatedAfter.raw.isEmpty, "bloated placeholder should be normalized rather than copied")
+    }
 }

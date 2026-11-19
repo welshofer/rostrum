@@ -30,6 +30,9 @@ public final class Relationships {
     /// the original bytes.
     private var pristine: Data?
     private var pristineItems: [Relationship]?
+    /// Original compressed archive payload when opened from a file; valid only
+    /// while `items` still matches `pristineItems`.
+    var initialPayload: ZipWriter.Payload?
 
     static let namespace = "http://schemas.openxmlformats.org/package/2006/relationships"
 
@@ -45,6 +48,7 @@ public final class Relationships {
         items = parsed.items
         pristine = parsed.pristine
         pristineItems = parsed.pristineItems
+        initialPayload = parsed.initialPayload
     }
 
     public var isEmpty: Bool { items.isEmpty }
@@ -132,6 +136,11 @@ public final class Relationships {
     public func serialized() -> Data {
         if let pristine, let pristineItems, items == pristineItems { return pristine }
         return rebuilt()
+    }
+
+    var pristinePayload: ZipWriter.Payload? {
+        guard pristine != nil, let pristineItems, items == pristineItems else { return nil }
+        return initialPayload
     }
 
     private func rebuilt() -> Data {

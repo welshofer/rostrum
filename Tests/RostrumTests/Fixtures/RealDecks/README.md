@@ -5,10 +5,11 @@ Google Slides, *not* by Rostrum. `RealDeckCorpusTests` enrolls every deck in
 here automatically and holds it to the release-gate invariants:
 
 1. open → save with no edits keeps **every zip entry's decompressed bytes**
-   identical, `.rels` parts and `[Content_Types].xml` included, and invents
-   no new entries — the entry's *encoding* (compression method, data
-   descriptors, order) is deliberately outside the gate; see the test's own
-   doc comment for why and for what that currently costs,
+   identical, `.rels` parts and `[Content_Types].xml` included, invents no new
+   entries, and copies **every non-bloated entry's raw compressed payload and
+   compression method** through untouched without re-running `Deflate` — while
+   outer ZIP container metadata (entry order, DOS timestamps, data descriptors,
+   local extra fields) is normalized by `ZipWriter`,
 2. resaving the resave is a fixed point (determinism on foreign input),
 3. the whole shape tree — groups recursed into — enumerates without trapping.
 

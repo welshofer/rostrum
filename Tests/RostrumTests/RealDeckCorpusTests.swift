@@ -96,26 +96,24 @@ private let realDecks: [URL] = {
     // MARK: - Invariant 1: byte-identical round trip
 
     /// Compares at the zip-entry level, not through `package.parts`, so nothing
-    /// the reader chooses not to model can silently escape the gate. Every
-    /// entry's **decompressed bytes** must come back identical after an open →
-    /// save with no edits, including `.rels` parts and `[Content_Types].xml`.
+    /// the reader chooses not to model can silently escape the gate. After an
+    /// open → save with no edits:
     ///
-    /// Decompressed, not stored: `data(forEntry:)` inflates. The *encoding* of
-    /// an entry is outside this gate — compression method, DEFLATE level, the
-    /// data-descriptor bit, extra fields, entry order. That is not hypothetical
-    /// slack. Rostrum picks STORE or DEFLATE from the file extension alone
-    /// (`OPCPackage.storedExtensions`), so it re-emits ten entries in this
-    /// corpus STORED that Keynote and Google Slides had DEFLATEd, and Google
-    /// Slides' data descriptors on all 86 of its entries are not reproduced
-    /// either. Those files are byte-different from what their authors wrote and
-    /// this test passes them, correctly: they carry identical payloads under
-    /// identical names, which is the promise Rostrum makes. Preserving an
-    /// untouched entry's original encoding is a real improvement, tracked in
-    /// ROADMAP — it is simply not what this asserts.
+    /// 1. Every entry's **decompressed bytes** must come back identical,
+    ///    including `.rels` parts, `[Content_Types].xml`, and carried entries.
+    /// 2. Every non-bloated entry's **raw compressed payload and compression
+    ///    method** (`entryPayload(forEntry:).raw` and `entry.method`) must also
+    ///    come back byte-identical — proving untouched entries skip `Deflate`
+    ///    and copy the authoring tool's compressed bitstream straight through.
+    ///    The sole exclusion is `compressedSize > max(uncompressedSize + 64, 64)`,
+    ///    which declines foreign streams that bloated an incompressible file
+    ///    (`ppt/media/image1.jpeg` in `FromKeynote.pptx` is 656 bytes larger
+    ///    DEFLATEd than STORED, and Rostrum stores it uncompressed instead).
     ///
-    /// Entry *order* is deliberately not asserted either. Rostrum sorts part
-    /// order for determinism, which is a different promise from preserving
-    /// whatever order the authoring application happened to emit.
+    /// Outer ZIP container metadata — entry order, DOS timestamps, Google
+    /// Slides' streaming data descriptors (bit 3), and Keynote's 20-byte local
+    /// extra fields — is normalized by `ZipWriter` so resaving is a deterministic
+    /// fixed point (`foreignDeckResaveIsAFixedPoint`).
     @Test(arguments: realDecks)
     func untouchedForeignDeckSurvivesByteIdentically(_ url: URL) throws {
         let deck = url.lastPathComponent
@@ -138,18 +136,22 @@ private let realDecks: [URL] = {
         // Collected rather than asserted per entry: a deck with 1300 parts that
         // regresses wholesale should report one legible failure, not 1300.
         var changed: [String] = []
-        let beforeEntries = Dictionary(uniqueKeysWithValues: before.allEntries.map { ($0.name, $0) })
-        let afterEntries = Dictionary(uniqueKeysWithValues: after.allEntries.map { ($0.name, $0) })
         var methodChanged: [String] = []
+        var rawPayloadChanged: [String] = []
         for name in before.entryNames where afterNames.contains(name) {
-            let old = try before.data(forEntry: name)
-            let new = try after.data(forEntry: name)
-            if old != new { changed.append(name) }
-            if !name.hasSuffix(".rels"), !name.hasSuffix("/"), name != PackURI.contentTypes.memberName,
-               let oldEntry = beforeEntries[name], let newEntry = afterEntries[name],
-               oldEntry.compressedSize <= max(oldEntry.uncompressedSize + 64, 64),
-               oldEntry.method != newEntry.method {
-                methodChanged.append("\(name) (\(oldEntry.method) → \(newEntry.method))")
+            let oldLoaded = try before.entryPayload(forEntry: name)
+            let newLoaded = try after.entryPayload(forEntry: name)
+            if oldLoaded.decoded != newLoaded.decoded { changed.append(name) }
+            let oldEntry = oldLoaded.entry
+            let newEntry = newLoaded.entry
+            if oldEntry.compressedSize <= max(oldEntry.uncompressedSize + 64, 64) {
+                if oldEntry.method != newEntry.method {
+                    methodChanged.append("\(name) (\(oldEntry.method) → \(newEntry.method))")
+                }
+                if oldLoaded.raw != newLoaded.raw {
+                    rawPayloadChanged.append(
+                        "\(name) (\(oldLoaded.raw.count) B → \(newLoaded.raw.count) B)")
+                }
             }
         }
         let sample = changed.prefix(10).joined(separator: ", ")
@@ -162,7 +164,11 @@ private let realDecks: [URL] = {
             """)
         #expect(
             methodChanged.isEmpty,
-            "\(deck): untouched part entries changed compression method on resave: \(methodChanged)"
+            "\(deck): untouched entries changed compression method on resave: \(methodChanged)"
+        )
+        #expect(
+            rawPayloadChanged.isEmpty,
+            "\(deck): untouched entries were re-encoded instead of copying raw compressed bytes: \(rawPayloadChanged)"
         )
     }
 
