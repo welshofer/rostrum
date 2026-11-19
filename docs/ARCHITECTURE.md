@@ -119,20 +119,29 @@ part dirty, its DOM is serialized on save; untouched sibling parts still retain
 their original payloads. Relationships and content types follow their own dirty
 state so editing one slide does not require rewriting every package entry.
 
-Payload preservation and archive identity are different contracts. Opening and
-saving an unchanged foreign file preserves decoded member payloads; the original
-producer's ZIP timestamps, member order and compression choices may differ from
-Rostrum's deterministic writer. Repeated equivalent Rostrum saves use fixed
-timestamps, stable ordering and deterministic compression.
+Payload preservation and archive identity are different contracts. Opening an
+archive eagerly inflates and CRC-verifies every entry while retaining its
+original compressed bitstream alongside the decoded bytes (unless a stream
+exceeds the 32-bit ZIP size field or bloats its uncompressed payload by more
+than 64 bytes). Saving an unchanged foreign file preserves every member's
+decoded payload and copies those retained compressed bitstreams through without
+re-running `Deflate`; Rostrum's encoder runs only on new or mutated entries (or
+bloated foreign streams). Outer ZIP headers — fixed DOS epoch timestamps,
+sorted member order, UTF-8 name flags, and omitted streaming data descriptors
+or local extra fields — follow Rostrum's deterministic `ZipWriter`, so repeated
+equivalent Rostrum saves produce byte-identical archives (`save1 == save2`).
 
 ## Load-bearing mechanisms
 
-**Pristine-until-mutated.** Every `Part` holds its original blob and a dirty
-flag. Facades parse the blob into a DOM lazily; the first actual mutation
-flips authority to the DOM. Save re-emits pristine bytes for clean
-parts and serializes the DOM for dirty ones. DOM-writing facades call `markDirty()`; relationship changes and content-type
-changes maintain their corresponding dirty state. Tests check that these
-representations remain coherent after edits, saves and reopens.
+**Pristine-until-mutated.** Every `Part` holds its original blob, its initial
+compressed archive payload, and a dirty flag. Facades parse the blob into a DOM
+lazily; the first actual mutation flips authority to the DOM and discards the
+initial compressed payload. Save copies the original compressed payload for
+clean parts and serializes + compresses the DOM for dirty ones. DOM-writing
+facades call `markDirty()`; relationship changes and content-type changes
+maintain their corresponding pristine state and initial compressed payloads.
+Tests check that these representations remain coherent after edits, saves and
+reopens.
 
 **Generated schema stratum.** python-pptx's `xmlchemy` synthesizes accessors
 at class-creation time (`RequiredAttribute`, `ZeroOrOne("p:sldSz",
@@ -165,8 +174,9 @@ part.
 are preserved on save (a stricter posture than python-pptx, which
 re-packages only reachable parts). What a read could *not* keep is reported:
 `deck.readWarnings` names any carried entry that failed to decode and was
-dropped, rather than letting it vanish silently. A general orphan-audit API
-and an opt-in `prune()` are intended but **not yet implemented**.
+dropped, rather than letting it vanish silently. `deck.orphanPartURIs` audits
+unreachable parts and opt-in `deck.prune()` removes them along with carried
+orphan `.rels` streams and untyped entries.
 
 **Slide access.** `deck.slides[index]` and `slide(at:)` use zero-based positions
 and throw if the position or relationship is invalid. Positions change after

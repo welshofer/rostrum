@@ -89,6 +89,14 @@ public final class OPCPackage {
     public let rels: Relationships
     public internal(set) var contentTypes: ContentTypesMap
 
+    /// Non-part archive member carried across open → save, preserving both its
+    /// decoded bytes and its original compressed payload (when non-bloated).
+    struct CarriedEntry {
+        let name: String
+        let data: Data
+        let initialPayload: ZipWriter.Payload?
+    }
+
     /// Zip entries whose name ends in "/": directory placeholders, which some
     /// writers emit and which are not parts. Kept verbatim so an untouched deck
     /// still round-trips every entry — dropping them silently made a foreign
@@ -97,12 +105,12 @@ public final class OPCPackage {
     ///
     /// Stored in the order they arrived; `serialize()` sorts them on the way
     /// out, which is where determinism actually has to hold.
-    private(set) var directoryEntries: [(name: String, data: Data)] = []
+    private(set) var directoryEntries: [CarriedEntry] = []
 
     /// `.rels` entries no part claims — an orphan, or a rels stream at a name
     /// `PackURI.relsURI` does not derive. Same reason as `directoryEntries`:
     /// read, not modelled, and previously not written back.
-    private(set) var orphanRelationshipStreams: [(name: String, data: Data)] = []
+    private(set) var orphanRelationshipStreams: [CarriedEntry] = []
 
     /// Entries with no declared content type.
     ///
@@ -118,7 +126,7 @@ public final class OPCPackage {
     /// orphan `.rels` stream, and for the same reason. They cannot become
     /// `Part`s — a `Part` without a content type has no legal serialization —
     /// and dropping them would break the round trip.
-    private(set) var untypedEntries: [(name: String, data: Data)] = []
+    private(set) var untypedEntries: [CarriedEntry] = []
 
     /// Diagnostics from `read`: carried entries (directory placeholders,
     /// orphan `.rels` streams) that could not be decoded and were dropped.
@@ -167,6 +175,32 @@ public final class OPCPackage {
 
     // MARK: - Reading
 
+    /// Retain a verified archive entry's raw compressed bitstream when it fits
+    /// standard 32-bit ZIP fields and has not bloated past its uncompressed
+    /// size (+64 B allowance for empty/tiny DEFLATE headers).
+    static func initialPayload(
+        from loaded: (decoded: Data, raw: Data, entry: ZipReader.Entry)
+    ) -> ZipWriter.Payload? {
+        guard UInt64(loaded.entry.uncompressedSize) <= 0xFFFF_FFFF,
+              UInt64(loaded.raw.count) <= 0xFFFF_FFFF,
+              loaded.raw.count <= max(loaded.decoded.count + 64, 64) else {
+            return nil
+        }
+        return ZipWriter.Payload(
+            data: loaded.raw,
+            method: loaded.entry.method,
+            size: UInt32(loaded.entry.uncompressedSize),
+            crc: loaded.entry.crc32
+        )
+    }
+
+    private static func parseRelationships(_ name: String, from zip: ZipReader) throws -> Relationships {
+        let loaded = try zip.entryPayload(forEntry: name)
+        let parsed = try Relationships.parse(loaded.decoded)
+        parsed.initialPayload = initialPayload(from: loaded)
+        return parsed
+    }
+
     /// Open a package.
     ///
     /// - Parameter limits: ceilings applied to the archive before anything is
@@ -180,8 +214,10 @@ public final class OPCPackage {
             throw RostrumError.packageInvalid("missing [Content_Types].xml — not an OPC package")
         }
         let package = OPCPackage()
-        package.contentTypes = try ContentTypesMap.parse(
-            package.adoptingStream(PackURI.contentTypes.memberName, from: zip))
+        let contentTypesLoaded = try zip.entryPayload(forEntry: PackURI.contentTypes.memberName)
+        var contentTypes = try ContentTypesMap.parse(contentTypesLoaded.decoded)
+        contentTypes.initialPayload = Self.initialPayload(from: contentTypesLoaded)
+        package.contentTypes = contentTypes
 
         // First pass: create every non-rels part with its content type.
         for name in zip.entryNames {
@@ -201,7 +237,10 @@ public final class OPCPackage {
                 // round trip, so the drop lands in `readWarnings` rather than
                 // happening silently.
                 do {
-                    package.directoryEntries.append((name, try zip.data(forEntry: name)))
+                    let loaded = try zip.entryPayload(forEntry: name)
+                    package.directoryEntries.append(CarriedEntry(
+                        name: name, data: loaded.decoded,
+                        initialPayload: Self.initialPayload(from: loaded)))
                 } catch {
                     package.readWarnings.append(
                         "directory placeholder \"\(name)\" could not be decoded and will not "
@@ -227,27 +266,20 @@ public final class OPCPackage {
             let uri = PackURI("/" + name)
             let loaded = try zip.entryPayload(forEntry: name)
             let blob = loaded.decoded
+            let initialPayload = Self.initialPayload(from: loaded)
             guard let ct = package.contentTypes.declaredContentType(for: uri) else {
                 // Not a part — nothing can reference it, because a relationship
                 // target without a content type could not be loaded either.
                 // Carried verbatim so the resave stays a fixed point.
-                package.untypedEntries.append((name, blob))
+                package.untypedEntries.append(CarriedEntry(
+                    name: name, data: blob, initialPayload: initialPayload))
                 package.readWarnings.append(
                     "part \"\(name)\" has no declared content type and is carried "
                         + "through unmodelled")
                 continue
             }
             let part = Part(uri: uri, contentType: ct, blob: blob)
-            if UInt64(loaded.entry.uncompressedSize) <= 0xFFFF_FFFF,
-               UInt64(loaded.raw.count) <= 0xFFFF_FFFF,
-               loaded.raw.count <= max(blob.count + 64, 64) {
-                part.initialPayload = ZipWriter.Payload(
-                    data: loaded.raw,
-                    method: loaded.entry.method,
-                    size: UInt32(loaded.entry.uncompressedSize),
-                    crc: loaded.entry.crc32
-                )
-            }
+            part.initialPayload = initialPayload
             package.parts[uri] = part
         }
 
@@ -256,16 +288,14 @@ public final class OPCPackage {
         // `adopt`, not `setItems`: the parsed collection carries the bytes it
         // came from, and an untouched `.rels` part must re-emit them verbatim.
         if zip.contains(PackURI.packageRels.memberName) {
-            let parsed = try Relationships.parse(package.adoptingStream(PackURI.packageRels.memberName, from: zip))
-            package.rels.adopt(parsed)
+            package.rels.adopt(try Self.parseRelationships(PackURI.packageRels.memberName, from: zip))
         }
         var consumed: Set<String> = [PackURI.packageRels.memberName]
         for (uri, part) in package.parts {
             let relsName = uri.relsURI.memberName
             guard zip.contains(relsName) else { continue }
             consumed.insert(relsName)
-            let parsed = try Relationships.parse(package.adoptingStream(relsName, from: zip))
-            part.rels.adopt(parsed)
+            part.rels.adopt(try Self.parseRelationships(relsName, from: zip))
         }
 
         // The twin of the directory-placeholder skip, and it was missed the
@@ -280,7 +310,10 @@ public final class OPCPackage {
         // giving two zip members with one name.
         for name in zip.entryNames where name.hasSuffix(".rels") && !consumed.contains(name) {
             do {
-                package.orphanRelationshipStreams.append((name, try zip.data(forEntry: name)))
+                let loaded = try zip.entryPayload(forEntry: name)
+                package.orphanRelationshipStreams.append(CarriedEntry(
+                    name: name, data: loaded.decoded,
+                    initialPayload: Self.initialPayload(from: loaded)))
             } catch {
                 package.readWarnings.append(
                     "orphan relationship stream \"\(name)\" could not be decoded and will not "
@@ -455,38 +488,37 @@ public final class OPCPackage {
         if let old = compressionCache.removeValue(forKey: uri) { compressionCacheBytes -= old.cost }
     }
 
-    /// Encoded relationship and content-type streams, keyed by entry name and
-    /// valid only while the serialized bytes are unchanged. A deck has one
-    /// `.rels` per slide, and without this every save deflated all of them
-    /// again even when nothing had been edited.
+    /// Rebuilt relationship and content-type streams, keyed by entry name and
+    /// valid only while the serialized bytes are unchanged, so repeated saves
+    /// of newly built or edited streams do not re-deflate them. Streams that
+    /// still match what was opened from a file reuse their `pristinePayload`
+    /// directly and cannot be evicted from this cache.
     private var streamCache: [String: (source: Data, payload: ZipWriter.Payload)] = [:]
     private var streamCacheBytes = 0
     private let streamCacheLimit = 4 * 1024 * 1024
 
-    /// Decode a relationship or content-type stream while opening, and keep
-    /// its encoded form: an untouched stream serializes to the same bytes, so
-    /// the first save can reuse the producer's encoding exactly as an
-    /// untouched part reuses its `initialPayload`.
-    private func adoptingStream(_ name: String, from zip: ZipReader) throws -> Data {
-        let loaded = try zip.entryPayload(forEntry: name)
-        let decoded = loaded.decoded
-        if UInt64(loaded.entry.uncompressedSize) <= 0xFFFF_FFFF,
-           loaded.raw.count <= max(decoded.count + 64, 64),
-           decoded.count + loaded.raw.count <= streamCacheLimit - streamCacheBytes {
-            streamCache[name] = (decoded, ZipWriter.Payload(
-                data: loaded.raw, method: loaded.entry.method,
-                size: UInt32(loaded.entry.uncompressedSize), crc: loaded.entry.crc32))
-            streamCacheBytes += decoded.count + loaded.raw.count
-        }
-        return decoded
-    }
-
-    private func addStream(_ zip: inout ZipWriter, name: String, data: Data) {
+    private func addStream(
+        _ zip: inout ZipWriter, name: String, data: Data, initial: ZipWriter.Payload?
+    ) {
         // Names and sizes the writer would refuse keep its own diagnostics.
         guard name.utf8.count <= 0xFFFF, UInt64(data.count) <= 0xFFFF_FFFF else {
             return zip.addFile(name: name, data: data)
         }
+        if let initial {
+            if let old = streamCache.removeValue(forKey: name) {
+                streamCacheBytes -= old.source.count + old.payload.data.count
+            }
+            return zip.addFile(name: name, payload: initial)
+        }
         zip.addFile(name: name, payload: preparedStream(name: name, data: data))
+    }
+
+    private func addCarried(_ zip: inout ZipWriter, _ entry: CarriedEntry) {
+        guard entry.name.utf8.count <= 0xFFFF, UInt64(entry.data.count) <= 0xFFFF_FFFF,
+              let initial = entry.initialPayload else {
+            return zip.addFile(name: entry.name, data: entry.data)
+        }
+        zip.addFile(name: entry.name, payload: initial)
     }
 
     private func preparedStream(name: String, data: Data) -> ZipWriter.Payload {
@@ -525,9 +557,11 @@ public final class OPCPackage {
             part.flushIfDirty()
         }
         var zip = ZipWriter()
-        addStream(&zip, name: PackURI.contentTypes.memberName, data: contentTypes.serialized())
+        addStream(&zip, name: PackURI.contentTypes.memberName,
+                  data: contentTypes.serialized(), initial: contentTypes.pristinePayload)
         if rels.isWritten {
-            addStream(&zip, name: PackURI.packageRels.memberName, data: rels.serialized())
+            addStream(&zip, name: PackURI.packageRels.memberName,
+                      data: rels.serialized(), initial: rels.pristinePayload)
         }
         // Every name this method will derive from a live part. A carried entry
         // is dropped when it collides with one, because two zip members under
@@ -560,19 +594,18 @@ public final class OPCPackage {
         // order, so output is deterministic and resaving is a fixed point.
         for entry in orphanRelationshipStreams.sorted(by: { $0.name < $1.name })
         where !derived.contains(entry.name) {
-            zip.addFile(name: entry.name, data: entry.data)
+            addCarried(&zip, entry)
         }
         for entry in untypedEntries.sorted(by: { $0.name < $1.name })
         where !derived.contains(entry.name) {
-            zip.addFile(name: entry.name, data: entry.data)
+            addCarried(&zip, entry)
         }
         for entry in directoryEntries.sorted(by: { $0.name < $1.name })
         where !derived.contains(entry.name) {
-            // Compress like any other entry. A placeholder is normally empty,
-            // where compression is a no-op either way; the no-compress flag
-            // only mattered for a hostile non-empty one, and there it made
-            // Rostrum write out the full expansion of what it had inflated.
-            zip.addFile(name: entry.name, data: entry.data)
+            // Preserve the original compressed payload when non-bloated; fall
+            // back to normal compression for bloated non-empty placeholders so
+            // Rostrum never writes out the full expansion of a hostile stream.
+            addCarried(&zip, entry)
         }
         for (uri, part) in parts.sorted(by: { $0.key.value < $1.key.value }) {
             // Refuse to write a name `read` would not give back. `PackURI`'s
@@ -605,7 +638,8 @@ public final class OPCPackage {
             // decides which carried entries would collide, which is why it is
             // one definition rather than a condition repeated at four sites.
             if part.rels.isWritten {
-                addStream(&zip, name: uri.relsURI.memberName, data: part.rels.serialized())
+                addStream(&zip, name: uri.relsURI.memberName,
+                          data: part.rels.serialized(), initial: part.rels.pristinePayload)
             }
         }
         return zip

@@ -225,4 +225,98 @@ import Testing
                     "\(name) changed when only a slide body was edited")
         }
     }
+
+    /// Wrap `uncompressed` (< 65535 bytes) in a single final RFC 1951 BTYPE=00
+    /// stored DEFLATE block. Valid method-8 input (`+5` bytes, well within the
+    /// `+64` anti-bloat guard) that `ZipWriter.prepare` / `Deflate.deflate`
+    /// never emits — if these exact compressed bytes survive a save, `Deflate`
+    /// did not run on that entry.
+    private func foreignStoredDeflatePayload(_ uncompressed: Data) -> ZipWriter.Payload {
+        precondition(uncompressed.count <= 0xFFFF)
+        let len = UInt16(uncompressed.count)
+        let nlen = ~len
+        var raw = Data([
+            0x01,
+            UInt8(len & 0xFF), UInt8(len >> 8),
+            UInt8(nlen & 0xFF), UInt8(nlen >> 8),
+        ])
+        raw.append(uncompressed)
+        return ZipWriter.Payload(
+            data: raw,
+            method: 8,
+            size: UInt32(uncompressed.count),
+            crc: CRC32.checksum(uncompressed)
+        )
+    }
+
+    @Test func untouchedEntriesCopyForeignDeflateBitstreamWithoutReencodingEvenAcrossCacheEviction() throws {
+        let built = try Presentation()
+        try built.bulletSlide("Slide One", ["alpha"])
+        try built.bulletSlide("Slide Two", ["beta"])
+        let seed = try ZipReader(data: built.serializedData())
+
+        // Re-wrap every entry in a foreign BTYPE=00 stored DEFLATE block that
+        // Rostrum's encoder would never produce.
+        var foreignWriter = ZipWriter()
+        var expectedRawByName: [String: Data] = [:]
+        for name in seed.entryNames {
+            let decoded = try seed.data(forEntry: name)
+            let payload = foreignStoredDeflatePayload(decoded)
+            expectedRawByName[name] = payload.data
+            foreignWriter.addFile(name: name, payload: payload)
+        }
+        let foreignArchive = try foreignWriter.finalize()
+
+        let deck = try Presentation(data: foreignArchive)
+
+        // 1. Mutate slide2's body only, plus perform net-zero edits on
+        //    contentTypes and package rels (which must still restore their
+        //    original compressed payloads), and flood streamCache past 4 MiB on
+        //    slide2's .rels so any cache-backed pristine stream would be evicted.
+        try deck.slides[1].shapes.addTextBox(
+            Rect(x: .inches(1), y: .inches(1), width: .inches(2), height: .inches(1))
+        ).textFrame?.text = "mutated slide two"
+
+        deck.package.contentTypes.setOverride(
+            partName: PackURI("/ppt/slides/slide99.xml"), contentType: ContentType.slide)
+        deck.package.contentTypes.removeOverride(partName: PackURI("/ppt/slides/slide99.xml"))
+
+        let tempRel = deck.package.rels.add(type: RelType.hyperlink, target: "https://example.com", isExternal: true)
+        deck.package.rels.remove(rId: tempRel)
+
+        let slide2Part = try deck.package.part(at: PackURI("/ppt/slides/slide2.xml"))
+        var tempSlide2Rels: [String] = []
+        let padding = String(repeating: "x", count: 32_768)
+        for i in 0..<140 {
+            // > 4.5 MiB of serialized .rels XML on slide2, forcing streamCache eviction.
+            tempSlide2Rels.append(slide2Part.rels.add(
+                type: RelType.hyperlink,
+                target: "https://example.com/\(i)/\(padding)",
+                isExternal: true
+            ))
+        }
+        _ = try deck.serializedData()  // populates and overflows the 4 MiB streamCache
+
+        // Revert slide2's temporary relationships back to its parsed state too.
+        for rId in tempSlide2Rels {
+            slide2Part.rels.remove(rId: rId)
+        }
+
+        let resaved = try ZipReader(data: deck.serializedData())
+        for name in seed.entryNames {
+            let loaded = try resaved.entryPayload(forEntry: name)
+            if name == "ppt/slides/slide2.xml" {
+                // Edited part ran through Rostrum's Deflate and shrunk below its uncompressed size.
+                #expect(loaded.raw != expectedRawByName[name])
+                #expect(loaded.raw.count < loaded.decoded.count)
+            } else {
+                // Every untouched part, .rels stream (including reverted slide2.xml.rels
+                // and package _rels/.rels), and [Content_Types].xml copied the foreign
+                // compressed bitstream byte-for-byte without running Deflate.
+                #expect(loaded.entry.method == 8, "\(name) changed compression method")
+                #expect(loaded.raw == expectedRawByName[name],
+                        "\(name) did not copy its foreign compressed payload verbatim")
+            }
+        }
+    }
 }

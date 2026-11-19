@@ -13,9 +13,10 @@ the conformance documentation separately describes rendering limitations.
   and deterministic mutations. See the [measurements](docs/PERFORMANCE.md).
 - Write smaller archives: `Deflate` adds lazy matching and per-block dynamic
   Huffman codes, staying a pure function of its input. **Saved bytes change**
-  for every deck Rostrum compresses; decoded parts do not. Encoded `.rels` and
-  content-type streams are reused across saves and carried from the opened
-  archive, so an unchanged resave no longer deflates them again.
+  for every deck Rostrum compresses; decoded parts do not. Untouched parts,
+  `.rels` streams, `[Content_Types].xml` and carried entries retain their
+  opened compressed payloads directly and copy them through on save without
+  re-deflating; repeated saves of rebuilt streams also reuse cached compression.
 - Preview every DrawingML preset with its own outline. The 81 presets without
   an analytic outline are evaluated from generated ECMA-376 definitions
   (`Tools/preset-geometry`), with literal adjustments, preset text rectangles

@@ -20,6 +20,9 @@ public struct ContentTypesMap {
     private var pristine: Data?
     private var pristineDefaults: [String: String]?
     private var pristineOverrides: [PackURI: String]?
+    /// Original compressed archive payload when opened from a file; valid only
+    /// while `defaults` and `overrides` still match what was parsed.
+    var initialPayload: ZipWriter.Payload?
 
     static let namespace = "http://schemas.openxmlformats.org/package/2006/content-types"
 
@@ -99,6 +102,13 @@ public struct ContentTypesMap {
             return pristine
         }
         return rebuilt()
+    }
+
+    var pristinePayload: ZipWriter.Payload? {
+        guard pristine != nil, defaults == pristineDefaults, overrides == pristineOverrides else {
+            return nil
+        }
+        return initialPayload
     }
 
     private func rebuilt() -> Data {
