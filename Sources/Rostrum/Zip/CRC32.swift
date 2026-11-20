@@ -30,11 +30,18 @@ public enum CRC32 {
     /// Feed `data` into a running checksum. Start with `CRC32.initialValue`,
     /// finish with `CRC32.finalize(_:)`.
     public static func update(_ crc: UInt32, with data: Data) -> UInt32 {
-        var running = crc
         data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
-            for byte in buffer {
-                running = table[Int((running ^ UInt32(byte)) & 0xFF)] ^ (running >> 8)
-            }
+            guard let base = buffer.baseAddress?.assumingMemoryBound(to: UInt8.self),
+                  buffer.count > 0 else { return crc }
+            return update(crc, bytes: base, count: buffer.count)
+        }
+    }
+
+    @inline(__always)
+    static func update(_ crc: UInt32, bytes: UnsafePointer<UInt8>, count: Int) -> UInt32 {
+        var running = crc
+        for i in 0..<count {
+            running = table[Int((running ^ UInt32(bytes[i])) & 0xFF)] ^ (running >> 8)
         }
         return running
     }

@@ -51,7 +51,7 @@ extension Slides {
                     while reserved.contains(PackURI("\(prefix)\(n).xml")) { n += 1 }
                     let uri = PackURI("\(prefix)\(n).xml")
                     reserved.insert(uri)
-                    let clone = Part(uri: uri, contentType: original.contentType, blob: original.blob)
+                    let clone = Part(uri: uri, contentType: original.contentType, blob: try original.decodedData())
                     // Parse even notes/legacy comments during staging, without
                     // rebuilding their XML: preserve pristine unknown markup.
                     _ = try clone.dom()

@@ -32,7 +32,7 @@ public final class Picture: Shape {
 
     /// The image bytes exactly as stored in the package — the read-back half
     /// of `addPicture`.
-    public var imageData: Data? { imagePart?.blob }
+    public var imageData: Data? { try? imagePart?.decodedData() }
 
     /// The image's file extension in the package (`png`, `jpeg`, `gif`, …),
     /// which is how OPC records its format.
@@ -56,7 +56,7 @@ public final class Picture: Shape {
     }
 
     /// The vector SVG bytes stored in the package (`asvg:svgBlip`), when present.
-    public var svgData: Data? { svgPart?.blob }
+    public var svgData: Data? { try? svgPart?.decodedData() }
 
     /// Picture opacity (`a:alphaModFix@amt`), expressed in `0.0...1.0`, or `nil` when unmodified.
     public var opacity: Double? {

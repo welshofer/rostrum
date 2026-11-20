@@ -282,7 +282,7 @@ public extension Picture {
     }
 
     /// The clip's bytes, when this picture carries media.
-    var mediaData: Data? { mediaPart?.blob }
+    var mediaData: Data? { try? mediaPart?.decodedData() }
 
     /// True when this picture is an audio clip rather than video or a still.
     var isAudio: Bool {

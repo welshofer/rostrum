@@ -24,8 +24,8 @@ struct NotesImportGeometry {
     init(source: Part, destination: Part) throws {
         source.flushIfDirty()
         destination.flushIfDirty()
-        let sourceDocument = try XML.parseDocument(source.blob)
-        let destinationDocument = try XML.parseDocument(destination.blob)
+        let sourceDocument = try XML.parseDocument(try source.decodedData())
+        let destinationDocument = try XML.parseDocument(try destination.decodedData())
         let sourceShapes = try Self.placeholders(in: sourceDocument.root, rootName: "notesMaster")
         let destinationShapes = try Self.placeholders(in: destinationDocument.root, rootName: "notesMaster")
         guard Set(sourceShapes.keys) == Set(destinationShapes.keys) else { throw Self.unsupported() }

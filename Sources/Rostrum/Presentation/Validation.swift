@@ -15,8 +15,9 @@ extension Presentation {
     /// not a full XSD validation, and it does not mutate the document.
     public func validate() throws -> [ValidationIssue] {
         var issues: [ValidationIssue] = []
-        for (uri, part) in package.parts.sorted(by: { $0.key.value < $1.key.value }) where uri.ext == "xml" {
-            guard let dom = try? part.dom() else { continue }
+        for (uri, part) in package.parts.sorted(by: { $0.key.value < $1.key.value }) {
+            _ = try part.decodedData()
+            guard uri.ext == "xml", let dom = try? part.dom() else { continue }
             var stack: [XML.Element] = [dom]
             while let el = stack.popLast() {
                 if let required = OOXMLSchema.requiredAttributes[el.name],

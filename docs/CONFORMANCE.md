@@ -168,11 +168,14 @@ Those are different pieces of evidence, and the release gate remains open.
 ## Performance measurement
 
 `OPCArchive` offers bounded read-only package inspection. `.strict` checks every
-payload at open; `.onAccess` checks payload CRC/decoded size on first read while
-still enforcing archive structure and aggregate/per-entry budgets at open.
-The per-entry limit bounds both compressed input and declared decoded output.
-`presentation()` materializes a separate complete editable document. Existing
-`Presentation` initializers remain eager and retain their validation timing.
+payload at open via streaming `Inflate.verify`; `.onAccess` checks payload
+CRC/decoded size on first read while still enforcing archive structure and
+aggregate/per-entry budgets at open. The per-entry limit bounds both compressed
+input and declared decoded output. `presentation(validation:)` and
+`Presentation(data:validation:)` default to `.strict` (validating every entry at
+open without materializing untouched uncompressed `Part` buffers) and also
+accept `.onAccess` (skipping codecs on untouched parts and surfacing deferred
+decode errors via `Part.decodedData()`).
 
 ```sh
 ROSTRUM_BENCH_FONT=/path/to/font.ttf python3 Tools/rostrum-bench/run.py --output /tmp/rostrum-bench.json

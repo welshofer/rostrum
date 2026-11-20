@@ -171,7 +171,8 @@ extension Presentation {
                       rel.type == RelType.font, !rel.isExternal else { continue }
                 let uri = PackURI.resolve(target: rel.target, relativeTo: presentationPart.uri.baseURI)
                 guard let part = try? package.part(at: uri),
-                      let sfnt = EOTLite.unwrap(part.blob),
+                      let fontBytes = try? part.decodedData(),
+                      let sfnt = EOTLite.unwrap(fontBytes),
                       (try? fonts.register(sfnt, face: FontFaceKey(
                         family: typeface, bold: bold, italic: italic))) != nil else { continue }
                 if !registered.contains(typeface) { registered.append(typeface) }

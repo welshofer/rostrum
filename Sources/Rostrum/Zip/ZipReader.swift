@@ -59,11 +59,12 @@ public struct ZipReader {
     /// - It bounds **decoded output**, not **peak memory**, and the gap is not
     ///   small. DEFLATE expands by at most 1032:1 against this decoder (one bit
     ///   per symbol, 258 bytes per match), so an archive passing the structural
-    ///   check can still decode to ~1032x its own size — and `OPCPackage.read`
-    ///   retains every decoded part for the package's lifetime, so the peak
-    ///   tracks the SUM of all parts, not the largest one. Within a single
-    ///   entry the decoder briefly holds its growing buffer, the buffer it is
-    ///   growing out of, and the `Data` copy of the result.
+    ///   check can still decode to ~1032x its own size. While `OPCPackage.read`
+    ///   verifies clean DEFLATE parts through a fixed sliding window without
+    ///   materializing them at open, callers that materialize every part's
+    ///   `blob` or `dom()` still retain the sum of those decoded parts. Within
+    ///   a single materialized entry the decoder briefly holds its output
+    ///   buffer and the `Data` copy of the result.
     ///
     /// And it bounds *declared* size, which is the conservative direction: an
     /// archive that declares far more than it would really produce is refused.
@@ -451,9 +452,9 @@ public struct ZipReader {
         try entryPayload(forEntry: name).decoded
     }
 
-    /// Decode and CRC-verify one entry, returning both the uncompressed bytes
-    /// and the raw archive payload metadata.
-    func entryPayload(forEntry name: String) throws -> (decoded: Data, raw: Data, entry: Entry) {
+    /// Extract an entry's raw compressed payload slice after validating its
+    /// local header and non-encrypted flag, without running `Inflate` or `CRC32`.
+    func rawEntryPayload(forEntry name: String) throws -> (raw: Data, entry: Entry) {
         guard let index = indexByName[name] else {
             throw RostrumError.partMissing(name)
         }
@@ -480,7 +481,48 @@ public struct ZipReader {
             throw RostrumError.zipCorrupt("entry data out of range for \"\(name)\"")
         }
         let raw = Data(archive[dataStart..<dataStart + entry.compressedSize])
+        return (raw: raw, entry: entry)
+    }
 
+    /// Validate an entry's stream, uncompressed length, and CRC-32 without
+    /// allocating or retaining an uncompressed buffer for DEFLATE entries.
+    func verifiedRawPayload(forEntry name: String) throws -> (raw: Data, entry: Entry) {
+        let (raw, entry) = try rawEntryPayload(forEntry: name)
+        switch entry.method {
+        case 0:
+            guard entry.compressedSize == entry.uncompressedSize else {
+                throw RostrumError.zipCorrupt(
+                    "stored entry \"\(name)\" has mismatched sizes (\(entry.compressedSize) vs \(entry.uncompressedSize))")
+            }
+            guard CRC32.checksum(raw) == entry.crc32 else {
+                throw RostrumError.zipCorrupt("CRC-32 mismatch for entry \"\(name)\"")
+            }
+        case 8:
+            let verified: (size: Int, crc32: UInt32)
+            do {
+                verified = try Inflate.verify(raw, expectedOutputSize: entry.uncompressedSize)
+            } catch let error as RostrumError {
+                if case .deflateCorrupt(let message) = error {
+                    throw RostrumError.zipCorrupt("entry \"\(name)\": corrupt DEFLATE stream: \(message)")
+                }
+                throw error
+            }
+            guard verified.size == entry.uncompressedSize else {
+                throw RostrumError.zipCorrupt(
+                    "entry \"\(name)\" decoded to \(verified.size) bytes, expected \(entry.uncompressedSize)")
+            }
+            guard verified.crc32 == entry.crc32 else {
+                throw RostrumError.zipCorrupt("CRC-32 mismatch for entry \"\(name)\"")
+            }
+        default:
+            throw RostrumError.zipUnsupported("compression method \(entry.method) for \"\(name)\"")
+        }
+        return (raw: raw, entry: entry)
+    }
+
+    /// Decode and CRC-verify a previously extracted `(raw, entry)` pair.
+    static func decodePayload(raw: Data, entry: Entry) throws -> Data {
+        let name = entry.name
         let decoded: Data
         switch entry.method {
         case 0:
@@ -509,6 +551,14 @@ public struct ZipReader {
         guard CRC32.checksum(decoded) == entry.crc32 else {
             throw RostrumError.zipCorrupt("CRC-32 mismatch for entry \"\(name)\"")
         }
+        return decoded
+    }
+
+    /// Decode and CRC-verify one entry, returning both the uncompressed bytes
+    /// and the raw archive payload metadata.
+    func entryPayload(forEntry name: String) throws -> (decoded: Data, raw: Data, entry: Entry) {
+        let (raw, entry) = try rawEntryPayload(forEntry: name)
+        let decoded = try Self.decodePayload(raw: raw, entry: entry)
         return (decoded: decoded, raw: raw, entry: entry)
     }
 

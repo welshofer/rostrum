@@ -148,7 +148,7 @@ final class AnnotationDependencies {
             let a = try source.part(at: sourceURI)
             guard let b = lookup(destURI) else { return nil }
             a.flushIfDirty(); b.flushIfDirty()
-            guard a.contentType == b.contentType, a.blob == b.blob, a.rels.items.count == b.rels.items.count else { return nil }
+            guard a.contentType == b.contentType, try a.decodedData() == b.decodedData(), a.rels.items.count == b.rels.items.count else { return nil }
             var rightByID: [String: Relationship] = [:]
             for rel in b.rels.items {
                 try consumeComparisonWork()

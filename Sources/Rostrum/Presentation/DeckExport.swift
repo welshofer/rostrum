@@ -89,7 +89,7 @@ public enum DeckExport {
                     warnings.append("slide \(slide.number): \(asset.partName) is referenced but not in the package")
                     continue
                 }
-                try part.blob.write(to: folder.appendingPathComponent(asset.filename), options: .atomic)
+                try part.decodedData().write(to: folder.appendingPathComponent(asset.filename), options: .atomic)
                 assetsWritten += 1
             }
 

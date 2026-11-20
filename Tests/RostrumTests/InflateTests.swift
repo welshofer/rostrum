@@ -299,4 +299,58 @@ import Testing
         let decoded = try Inflate.inflate(compressed, expectedOutputSize: original.count)
         #expect(decoded == original)
     }
+
+    // MARK: - Streaming Inflate.verify
+
+    @Test func verifyMatchesInflateAndCRC32AcrossMultiWindowStreams() throws {
+        let chunk40K = pseudorandomData(count: 40_000, seed: 42)
+        var crossWindow = Data()
+        crossWindow.append(chunk40K)
+        crossWindow.append(Data(repeating: 0x2E, count: 30_000))
+        crossWindow.append(chunk40K)
+        crossWindow.append(Data(repeating: 0x7A, count: 40_000))
+        crossWindow.append(chunk40K) // > 190 KB: multiple 64 KiB window flushes + 30 KB distances
+
+        var rleAcrossFlush = Data(repeating: 0x41, count: 70_000) // RLE distance=1 across 65,536 flush
+        for _ in 0..<12_000 {
+            rleAcrossFlush.append(contentsOf: [1, 2, 3, 4, 5, 6, 7]) // distance=7 < length across second flush
+        }
+
+        let cases: [(label: String, compressed: Data, expected: Data)] = [
+            ("empty", try rawDeflate(Data()), Data()),
+            ("short-ascii", try rawDeflate(Data("streaming verify".utf8)), Data("streaming verify".utf8)),
+            ("fixed-huffman", try rawDeflate(Data(repeating: 0x5A, count: 90_000), strategy: "Z_FIXED"),
+             Data(repeating: 0x5A, count: 90_000)),
+            ("stored-multiblock", try rawDeflate(pseudorandomData(count: 150_000, seed: 7), level: 0),
+             pseudorandomData(count: 150_000, seed: 7)),
+            ("pseudorandom-level9", try rawDeflate(pseudorandomData(count: 140_000, seed: 99), level: 9),
+             pseudorandomData(count: 140_000, seed: 99)),
+            ("cross-window-dynamic", try rawDeflate(crossWindow, level: 9), crossWindow),
+            ("rle-across-flush", try rawDeflate(rleAcrossFlush, level: 9), rleAcrossFlush),
+        ]
+
+        for item in cases {
+            let verified = try Inflate.verify(item.compressed, expectedOutputSize: item.expected.count)
+            #expect(verified.size == item.expected.count, "\(item.label): size")
+            #expect(verified.crc32 == CRC32.checksum(item.expected), "\(item.label): crc32")
+        }
+    }
+
+    @Test func verifyRejectsCorruptAndOversizedStreams() throws {
+        expectDeflateCorrupt("verify empty") { _ = try Inflate.verify(Data()) }
+        expectDeflateCorrupt("verify BTYPE=11") { _ = try Inflate.verify(Data([0x07])) }
+        expectDeflateCorrupt("verify LEN/NLEN mismatch") {
+            _ = try Inflate.verify(Data([0x01, 0x05, 0x00, 0x00, 0x00]))
+        }
+        expectDeflateCorrupt("verify distance before start") {
+            _ = try Inflate.verify(Data([0x03, 0x02]))
+        }
+        let valid = try rawDeflate(Data("exceeds ceiling".utf8))
+        expectDeflateCorrupt("verify exceeds expectedOutputSize") {
+            _ = try Inflate.verify(valid, expectedOutputSize: 4)
+        }
+        expectDeflateCorrupt("verify truncated") {
+            _ = try Inflate.verify(valid.prefix(valid.count - 1))
+        }
+    }
 }

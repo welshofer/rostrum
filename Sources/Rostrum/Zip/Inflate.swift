@@ -27,15 +27,32 @@ public enum Inflate {
 
     /// Decode a raw DEFLATE stream.
     public static func inflate(_ input: Data, expectedOutputSize: Int? = nil) throws -> Data {
-        var decoder = InflateDecoder(input: [UInt8](input), expectedOutputSize: expectedOutputSize)
-        return try decoder.run()
+        try input.withUnsafeBytes { rawBuffer in
+            let bytes = rawBuffer.bindMemory(to: UInt8.self)
+            var decoder = InflateDecoder(input: bytes, expectedOutputSize: expectedOutputSize)
+            return try decoder.run()
+        }
+    }
+
+    /// Validate a raw DEFLATE stream and compute its decoded byte count and
+    /// CRC-32 using a fixed ~64 KiB sliding window — without allocating or
+    /// retaining the full uncompressed output buffer.
+    public static func verify(
+        _ input: Data,
+        expectedOutputSize: Int? = nil
+    ) throws -> (size: Int, crc32: UInt32) {
+        try input.withUnsafeBytes { rawBuffer in
+            let bytes = rawBuffer.bindMemory(to: UInt8.self)
+            var verifier = InflateVerifier(input: bytes, expectedOutputSize: expectedOutputSize)
+            return try verifier.run()
+        }
     }
 }
 
 /// Canonical Huffman decode table, modeled after puff.c: `count[len]` is the
 /// number of codes of each bit length (1...15), `symbol` lists the symbols in
 /// canonical order (sorted by code length, then by symbol value).
-private struct HuffmanTable {
+private struct HuffmanTable: Sendable {
     let count: [Int]
     let symbol: [Int]
     /// Leftover code space after construction: 0 means the code is complete,
@@ -107,32 +124,43 @@ private struct HuffmanTable {
     }
 }
 
-private struct InflateDecoder {
-    let input: [UInt8]
-    let expectedOutputSize: Int?
+/// Shared bit reader, block-header parser, and RFC 1951 tables used by both
+/// `InflateDecoder` and `InflateVerifier` so validation rules never drift.
+private struct BitStream {
+    let input: UnsafeBufferPointer<UInt8>
     var pos = 0
     var bitBuffer: UInt64 = 0
     var bitCount = 0
-    /// The output, a manually grown buffer: `run()` hands it to `Data`
-    /// without a copy, and literals are stored without `Array.append`'s
-    /// uniqueness and capacity checks. Owned by `run()`, which frees it on error.
-    var output: UnsafeMutablePointer<UInt8>
-    var outputCount = 0
-    var outputCapacity: Int
 
-    init(input: [UInt8], expectedOutputSize: Int?) {
-        self.input = input
-        self.expectedOutputSize = expectedOutputSize
-        // The declared size comes straight from the archive being read —
-        // attacker-controlled for untrusted files — so cap the up-front
-        // reservation: a few-hundred-byte crafted zip must not force a
-        // multi-gigabyte allocation. Larger honest outputs grow amortized,
-        // and `reserveOutput` still rejects overruns of the declared size.
-        outputCapacity = Swift.max(64, Swift.min(expectedOutputSize ?? 0, 1 << 20))
-        output = UnsafeMutablePointer<UInt8>.allocate(capacity: outputCapacity)
-    }
+    // MARK: - Length/distance tables (RFC 1951 §3.2.5)
 
-    // MARK: - Bit reading (LSB-first within bytes)
+    static let lengthBase = [
+        3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
+        35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258,
+    ]
+    static let lengthExtra = [
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
+        3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0,
+    ]
+    static let distanceBase = [
+        1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
+        257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577,
+    ]
+    static let distanceExtra = [
+        0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
+        7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13,
+    ]
+
+    /// Fixed literal/length and distance tables (RFC 1951 §3.2.6), built once.
+    static let fixedTables: (HuffmanTable, HuffmanTable) = {
+        var litLengths = [Int](repeating: 8, count: 288)
+        for i in 144...255 { litLengths[i] = 9 }
+        for i in 256...279 { litLengths[i] = 7 }
+        // These are well-formed by construction; failure is impossible.
+        let literals = try! HuffmanTable(lengths: litLengths)
+        let distances = try! HuffmanTable(lengths: [Int](repeating: 5, count: 30))
+        return (literals, distances)
+    }()
 
     /// Top up the bit buffer to at least 56 bits, or to the end of input.
     @inline(__always)
@@ -195,79 +223,9 @@ private struct InflateDecoder {
         throw RostrumError.deflateCorrupt("invalid Huffman code (ran out of codes)")
     }
 
-    // MARK: - Output
-
-    /// Reject a write that WOULD pass the declared size, before making it.
-    ///
-    /// Checking after the append leaves the decoder holding up to 65535 bytes
-    /// (a stored block) or 258 bytes (a match copy) it has already been told it
-    /// may not produce. The overshoot is small and one entry at a time, but the
-    /// read budget's contract says an entry cannot produce more than it
-    /// declared, and a bound that is only observed after the fact does not say
-    /// that.
-    ///
-    /// `count` is bounded, not trusted: on the stored-block path it IS a file
-    /// field, but a 16-bit one (`len` <= 65535), and on the match path it is a
-    /// table lookup <= 258. `output.count` is bounded by what has already been
-    /// appended. So the sum cannot overflow — but the reason is the widths, not
-    /// the provenance.
-    mutating func reserveOutput(_ count: Int) throws {
-        if let expected = expectedOutputSize {
-            if outputCount + count > expected {
-                throw RostrumError.deflateCorrupt(
-                    "output exceeds expected size \(expected)")
-            }
-        } else if outputCount + count > Inflate.defaultOutputCeiling {
-            throw RostrumError.deflateCorrupt(
-                "output exceeds \(Inflate.defaultOutputCeiling) bytes with no declared size; "
-                    + "pass expectedOutputSize to raise the ceiling")
-        }
-        let needed = outputCount + count
-        if needed > outputCapacity {
-            // Never reserve past what the stream may legally produce.
-            let ceiling = expectedOutputSize ?? Inflate.defaultOutputCeiling
-            let capacity = Swift.max(needed, Swift.min(outputCapacity * 2, Swift.max(ceiling, needed)))
-            let grown = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity)
-            grown.update(from: output, count: outputCount)
-            output.deallocate()
-            output = grown
-            outputCapacity = capacity
-        }
-    }
-
-    // MARK: - Blocks
-
-    mutating func run() throws -> Data {
-        do {
-            try decodeBlocks()
-        } catch {
-            output.deallocate()
-            throw error
-        }
-        let buffer = output
-        return Data(bytesNoCopy: buffer, count: outputCount, deallocator: .custom { _, _ in buffer.deallocate() })
-    }
-
-    private mutating func decodeBlocks() throws {
-        var isFinal = false
-        repeat {
-            isFinal = try bits(1) == 1
-            let blockType = try bits(2)
-            switch blockType {
-            case 0:
-                try storedBlock()
-            case 1:
-                try codes(literals: Self.fixedTables.0, distances: Self.fixedTables.1)
-            case 2:
-                let (literals, distances) = try dynamicTables()
-                try codes(literals: literals, distances: distances)
-            default:
-                throw RostrumError.deflateCorrupt("invalid block type 3 (BTYPE=11)")
-            }
-        } while !isFinal
-    }
-
-    mutating func storedBlock() throws {
+    /// Parse a stored block header, returning the payload's `(offset, length)`
+    /// in `input` and advancing `pos` past the stored bytes.
+    mutating func storedBlockSpan() throws -> (offset: Int, length: Int) {
         // Discard bits up to the next byte boundary, and hand back the whole
         // bytes the bit buffer read ahead: stored data is addressed by `pos`.
         pos -= bitCount / 8
@@ -285,12 +243,9 @@ private struct InflateDecoder {
         guard pos + len <= input.count else {
             throw RostrumError.deflateCorrupt("truncated stored block data")
         }
-        try reserveOutput(len)
-        input.withUnsafeBufferPointer { input in
-            if len > 0 { (output + outputCount).update(from: input.baseAddress! + pos, count: len) }
-        }
-        outputCount += len
+        let start = pos
         pos += len
+        return (start, len)
     }
 
     /// Read the dynamic-block header and build its two Huffman tables (RFC 1951 §3.2.7).
@@ -358,43 +313,100 @@ private struct InflateDecoder {
         }
         return (literals, distances)
     }
+}
 
-    // MARK: - Length/distance tables (RFC 1951 §3.2.5)
+private struct InflateDecoder {
+    var stream: BitStream
+    let expectedOutputSize: Int?
+    let ceiling: Int
+    /// The output, a manually grown buffer: `run()` hands it to `Data`
+    /// without a copy, and literals are stored without `Array.append`'s
+    /// uniqueness and capacity checks. Owned by `run()`, which frees it on error.
+    var output: UnsafeMutablePointer<UInt8>
+    var outputCount = 0
+    var outputCapacity: Int
+    var fastLiteralLimit: Int
 
-    static let lengthBase = [
-        3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
-        35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258,
-    ]
-    static let lengthExtra = [
-        0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
-        3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0,
-    ]
-    static let distanceBase = [
-        1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
-        257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577,
-    ]
-    static let distanceExtra = [
-        0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
-        7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13,
-    ]
+    init(input: UnsafeBufferPointer<UInt8>, expectedOutputSize: Int?) {
+        self.stream = BitStream(input: input)
+        self.expectedOutputSize = expectedOutputSize
+        self.ceiling = Swift.max(0, expectedOutputSize ?? Inflate.defaultOutputCeiling)
+        // The declared size comes straight from the archive being read —
+        // attacker-controlled for untrusted files — so cap the up-front
+        // reservation: a few-hundred-byte crafted zip must not force a
+        // multi-gigabyte allocation. Larger honest outputs grow amortized,
+        // and `reserveOutput` still rejects overruns of the declared size.
+        outputCapacity = Swift.max(64, Swift.min(expectedOutputSize ?? 0, 1 << 20))
+        fastLiteralLimit = Swift.min(outputCapacity, ceiling)
+        output = UnsafeMutablePointer<UInt8>.allocate(capacity: outputCapacity)
+    }
 
-    /// Fixed literal/length and distance tables (RFC 1951 §3.2.6), built once.
-    static let fixedTables: (HuffmanTable, HuffmanTable) = {
-        var litLengths = [Int](repeating: 8, count: 288)
-        for i in 144...255 { litLengths[i] = 9 }
-        for i in 256...279 { litLengths[i] = 7 }
-        // These are well-formed by construction; failure is impossible.
-        let literals = try! HuffmanTable(lengths: litLengths)
-        let distances = try! HuffmanTable(lengths: [Int](repeating: 5, count: 30))
-        return (literals, distances)
-    }()
+    /// Reject a write that WOULD pass the declared size, before making it.
+    mutating func reserveOutput(_ count: Int) throws {
+        if let expected = expectedOutputSize {
+            if outputCount + count > expected {
+                throw RostrumError.deflateCorrupt(
+                    "output exceeds expected size \(expected)")
+            }
+        } else if outputCount + count > Inflate.defaultOutputCeiling {
+            throw RostrumError.deflateCorrupt(
+                "output exceeds \(Inflate.defaultOutputCeiling) bytes with no declared size; "
+                    + "pass expectedOutputSize to raise the ceiling")
+        }
+        let needed = outputCount + count
+        if needed > outputCapacity {
+            // Never reserve past what the stream may legally produce.
+            let capacity = Swift.max(needed, Swift.min(outputCapacity * 2, Swift.max(ceiling, needed)))
+            let grown = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity)
+            grown.update(from: output, count: outputCount)
+            output.deallocate()
+            output = grown
+            outputCapacity = capacity
+            fastLiteralLimit = Swift.min(outputCapacity, ceiling)
+        }
+    }
+
+    mutating func run() throws -> Data {
+        do {
+            try decodeBlocks()
+        } catch {
+            output.deallocate()
+            throw error
+        }
+        let buffer = output
+        return Data(bytesNoCopy: buffer, count: outputCount, deallocator: .custom { _, _ in buffer.deallocate() })
+    }
+
+    private mutating func decodeBlocks() throws {
+        var isFinal = false
+        repeat {
+            isFinal = try stream.bits(1) == 1
+            let blockType = try stream.bits(2)
+            switch blockType {
+            case 0:
+                let (offset, len) = try stream.storedBlockSpan()
+                try reserveOutput(len)
+                if len > 0, let base = stream.input.baseAddress {
+                    (output + outputCount).update(from: base + offset, count: len)
+                }
+                outputCount += len
+            case 1:
+                try codes(literals: BitStream.fixedTables.0, distances: BitStream.fixedTables.1)
+            case 2:
+                let (literals, distances) = try stream.dynamicTables()
+                try codes(literals: literals, distances: distances)
+            default:
+                throw RostrumError.deflateCorrupt("invalid block type 3 (BTYPE=11)")
+            }
+        } while !isFinal
+    }
 
     /// Decode literals and length/distance pairs until end-of-block (symbol 256).
     mutating func codes(literals: HuffmanTable, distances: HuffmanTable) throws {
         while true {
-            let sym = try decode(literals)
+            let sym = try stream.decode(literals)
             if sym < 256 {
-                if outputCount == outputCapacity || expectedOutputSize != nil { try reserveOutput(1) }
+                if outputCount == fastLiteralLimit { try reserveOutput(1) }
                 output[outputCount] = UInt8(sym)
                 outputCount += 1
             } else if sym == 256 {
@@ -404,13 +416,13 @@ private struct InflateDecoder {
                     throw RostrumError.deflateCorrupt("invalid literal/length symbol \(sym)")
                 }
                 let lenIndex = sym - 257
-                let length = Self.lengthBase[lenIndex] + (try bits(Self.lengthExtra[lenIndex]))
+                let length = BitStream.lengthBase[lenIndex] + (try stream.bits(BitStream.lengthExtra[lenIndex]))
 
-                let distSym = try decode(distances)
+                let distSym = try stream.decode(distances)
                 guard distSym <= 29 else {
                     throw RostrumError.deflateCorrupt("invalid distance symbol \(distSym)")
                 }
-                let distance = Self.distanceBase[distSym] + (try bits(Self.distanceExtra[distSym]))
+                let distance = BitStream.distanceBase[distSym] + (try stream.bits(BitStream.distanceExtra[distSym]))
                 guard distance <= outputCount else {
                     throw RostrumError.deflateCorrupt(
                         "distance \(distance) reaches before the start of output (\(outputCount) bytes so far)")
@@ -427,6 +439,155 @@ private struct InflateDecoder {
                     for i in 0..<length { destination[i] = source[i] }
                 }
                 outputCount += length
+            }
+        }
+    }
+}
+
+/// Sliding-window DEFLATE validator + CRC-32 calculator.
+///
+/// Holds a fixed `65536 + 258` byte linear window: flushing at `windowFill >= 65536`
+/// guarantees `flushCount = windowFill - 32768 >= 32768`, so the 32 KiB history
+/// copy `window[flushCount..<windowFill] -> window[0..<32768]` is strictly
+/// non-overlapping, and every legal back-reference (`distance <= 32768`) lies
+/// contiguously behind `window + windowFill` with no modulo indexing.
+private struct InflateVerifier {
+    static let historySize = 32_768
+    static let flushThreshold = 65_536
+    static let windowCapacity = flushThreshold + 258
+
+    var stream: BitStream
+    let expectedOutputSize: Int?
+    let window: UnsafeMutablePointer<UInt8>
+    var windowFill = 0
+    var totalEmitted = 0
+    var crc: UInt32 = CRC32.initialValue
+
+    init(input: UnsafeBufferPointer<UInt8>, expectedOutputSize: Int?) {
+        self.stream = BitStream(input: input)
+        self.expectedOutputSize = expectedOutputSize
+        self.window = UnsafeMutablePointer<UInt8>.allocate(capacity: Self.windowCapacity)
+    }
+
+    @inline(__always)
+    mutating func checkAllowance(_ count: Int) throws {
+        if let expected = expectedOutputSize {
+            if totalEmitted + count > expected {
+                throw RostrumError.deflateCorrupt(
+                    "output exceeds expected size \(expected)")
+            }
+        } else if totalEmitted + count > Inflate.defaultOutputCeiling {
+            throw RostrumError.deflateCorrupt(
+                "output exceeds \(Inflate.defaultOutputCeiling) bytes with no declared size; "
+                    + "pass expectedOutputSize to raise the ceiling")
+        }
+    }
+
+    @inline(__always)
+    mutating func flushAtThreshold() {
+        // Precondition: `windowFill >= flushThreshold` (65536), so
+        // `flushCount >= 32768` and `[0..<32768]` is disjoint from
+        // `[flushCount..<flushCount + 32768]`.
+        let flushCount = windowFill - Self.historySize
+        crc = CRC32.update(crc, bytes: window, count: flushCount)
+        window.update(from: window + flushCount, count: Self.historySize)
+        windowFill = Self.historySize
+    }
+
+    mutating func run() throws -> (size: Int, crc32: UInt32) {
+        defer { window.deallocate() }
+        var isFinal = false
+        repeat {
+            isFinal = try stream.bits(1) == 1
+            let blockType = try stream.bits(2)
+            switch blockType {
+            case 0:
+                let (offset, len) = try stream.storedBlockSpan()
+                try checkAllowance(len)
+                if len > 0, let base = stream.input.baseAddress {
+                    let src = base + offset
+                    if windowFill + len <= Self.flushThreshold {
+                        (window + windowFill).update(from: src, count: len)
+                        windowFill += len
+                    } else if len >= Self.historySize {
+                        if windowFill > 0 {
+                            crc = CRC32.update(crc, bytes: window, count: windowFill)
+                        }
+                        let directCRC = len - Self.historySize
+                        if directCRC > 0 {
+                            crc = CRC32.update(crc, bytes: src, count: directCRC)
+                        }
+                        window.update(from: src + directCRC, count: Self.historySize)
+                        windowFill = Self.historySize
+                    } else {
+                        // `0 < len < 32768` and `windowFill + len > 65536`:
+                        // `keep = 32768 - len < 32768`, and
+                        // `flushCount = windowFill - keep = (windowFill + len) - 32768 > 32768 > keep`,
+                        // so `[0..<keep]` and `[flushCount..<flushCount + keep]` are disjoint.
+                        let keep = Self.historySize - len
+                        let flushCount = windowFill - keep
+                        crc = CRC32.update(crc, bytes: window, count: flushCount)
+                        window.update(from: window + flushCount, count: keep)
+                        (window + keep).update(from: src, count: len)
+                        windowFill = Self.historySize
+                    }
+                }
+                totalEmitted += len
+            case 1:
+                try codes(literals: BitStream.fixedTables.0, distances: BitStream.fixedTables.1)
+            case 2:
+                let (literals, distances) = try stream.dynamicTables()
+                try codes(literals: literals, distances: distances)
+            default:
+                throw RostrumError.deflateCorrupt("invalid block type 3 (BTYPE=11)")
+            }
+        } while !isFinal
+
+        if windowFill > 0 {
+            crc = CRC32.update(crc, bytes: window, count: windowFill)
+        }
+        return (size: totalEmitted, crc32: CRC32.finalize(crc))
+    }
+
+    mutating func codes(literals: HuffmanTable, distances: HuffmanTable) throws {
+        let ceiling = expectedOutputSize ?? Inflate.defaultOutputCeiling
+        while true {
+            let sym = try stream.decode(literals)
+            if sym < 256 {
+                if totalEmitted >= ceiling { try checkAllowance(1) }
+                if windowFill >= Self.flushThreshold { flushAtThreshold() }
+                window[windowFill] = UInt8(sym)
+                windowFill += 1
+                totalEmitted += 1
+            } else if sym == 256 {
+                return
+            } else {
+                guard sym <= 285 else {
+                    throw RostrumError.deflateCorrupt("invalid literal/length symbol \(sym)")
+                }
+                let lenIndex = sym - 257
+                let length = BitStream.lengthBase[lenIndex] + (try stream.bits(BitStream.lengthExtra[lenIndex]))
+
+                let distSym = try stream.decode(distances)
+                guard distSym <= 29 else {
+                    throw RostrumError.deflateCorrupt("invalid distance symbol \(distSym)")
+                }
+                let distance = BitStream.distanceBase[distSym] + (try stream.bits(BitStream.distanceExtra[distSym]))
+                guard distance <= totalEmitted else {
+                    throw RostrumError.deflateCorrupt(
+                        "distance \(distance) reaches before the start of output (\(totalEmitted) bytes so far)")
+                }
+                try checkAllowance(length)
+                if windowFill >= Self.flushThreshold { flushAtThreshold() }
+                let destination = window + windowFill
+                let source = destination - distance
+                if distance >= length {
+                    destination.update(from: source, count: length)
+                } else {
+                    for i in 0..<length { destination[i] = source[i] }
+                }
+                windowFill += length
+                totalEmitted += length
             }
         }
     }

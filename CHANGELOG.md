@@ -7,16 +7,21 @@ the conformance documentation separately describes rendering limitations.
 ## [Unreleased]
 
 - Open decks faster: `Inflate` decodes through a prefix lookup table with a
-  64-bit bit buffer, and plain XML parts take a direct byte-level parser
-  (`XMLFastParser`) that declines anything the `XMLParser` bridge would treat
-  differently. Differential tests compare both parsers over the fixture corpus
-  and deterministic mutations. See the [measurements](docs/PERFORMANCE.md).
+  64-bit bit buffer, `Inflate.verify` validates DEFLATE streams and CRCs at
+  open through a fixed ~64 KiB sliding window without allocating uncompressed
+  buffers for untouched parts, opt-in `Presentation(data:validation: .onAccess)`
+  + `Part.decodedData()` skips codecs on untouched parts altogether, and plain
+  XML parts take a direct byte-level parser (`XMLFastParser`) that declines
+  anything the `XMLParser` bridge would treat differently. Differential tests
+  compare both parsers over the fixture corpus and deterministic mutations. See
+  the [measurements](docs/PERFORMANCE.md).
 - Write smaller archives: `Deflate` adds lazy matching and per-block dynamic
   Huffman codes, staying a pure function of its input. **Saved bytes change**
   for every deck Rostrum compresses; decoded parts do not. Untouched parts,
   `.rels` streams, `[Content_Types].xml` and carried entries retain their
-  opened compressed payloads directly and copy them through on save without
-  re-deflating; repeated saves of rebuilt streams also reuse cached compression.
+  opened compressed payloads directly (including RFC 1951 stored-block media
+  framing) and copy them through on save without inflating or re-deflating;
+  repeated saves of rebuilt streams also reuse cached compression.
 - Preview every DrawingML preset with its own outline. The 81 presets without
   an analytic outline are evaluated from generated ECMA-376 definitions
   (`Tools/preset-geometry`), with literal adjustments, preset text rectangles

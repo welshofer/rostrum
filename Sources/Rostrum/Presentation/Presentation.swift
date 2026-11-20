@@ -85,13 +85,24 @@ public final class Presentation {
     /// a template could not survive a round trip: opening and saving it with no
     /// edits returned a presentation. See `documentKind`.
     ///
-    /// - Parameter limits: ceilings applied to the archive before anything is
-    ///   decompressed — see `ZipReader.Limits`. Defaults to `.default`
-    ///   (4 GiB of declared uncompressed bytes), far past any real deck while
-    ///   keeping untrusted input bounded out of the box; pass `.unlimited`
-    ///   for files you already trust.
-    public init(data: Data, limits: ZipReader.Limits = .default) throws {
-        package = try OPCPackage.read(data: data, limits: limits)
+    /// - Parameters:
+    ///   - validation: `.strict` (the default) verifies every entry's stream,
+    ///     size, and CRC-32 up front in a 64 KiB sliding window without
+    ///     materializing uncompressed buffers for untouched DEFLATE parts;
+    ///     `.onAccess` skips `Inflate` and `CRC32` altogether on untouched
+    ///     parts, validating them when first read so untouched entries pass
+    ///     through open → edit → save without touching the codec.
+    ///   - limits: ceilings applied to the archive before anything is
+    ///     decompressed — see `ZipReader.Limits`. Defaults to `.default`
+    ///     (4 GiB of declared uncompressed bytes), far past any real deck while
+    ///     keeping untrusted input bounded out of the box; pass `.unlimited`
+    ///     for files you already trust.
+    public init(
+        data: Data,
+        validation: OPCArchive.Validation = .strict,
+        limits: ZipReader.Limits = .default
+    ) throws {
+        package = try OPCPackage.read(data: data, validation: validation, limits: limits)
         let main = try package.mainDocumentPart()
         guard DocumentKind(mainContentType: main.contentType) != nil else {
             throw RostrumError.notAPresentation(
@@ -100,8 +111,12 @@ public final class Presentation {
         presentationPart = main
     }
 
-    public convenience init(contentsOf url: URL, limits: ZipReader.Limits = .default) throws {
-        try self.init(data: Data(contentsOf: url), limits: limits)
+    public convenience init(
+        contentsOf url: URL,
+        validation: OPCArchive.Validation = .strict,
+        limits: ZipReader.Limits = .default
+    ) throws {
+        try self.init(data: Data(contentsOf: url), validation: validation, limits: limits)
     }
 
     /// Warnings recorded while opening the file: carried zip entries

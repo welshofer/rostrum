@@ -2,6 +2,52 @@
 
 ## Latest reconciled measurements
 
+The 2026-11-19 archive read/passthrough follow-up replaces eager uncompressed
+`Part` allocation during `.strict` open with streaming `Inflate.verify` (a
+fixed ~64 KiB sliding window), indexes `/ppt/media/*` deduplication from
+central-directory `(size, crc)`, preserves RFC 1951 stored-block media framing
+(`u + u/512 + 64`), and adds opt-in `Presentation(data:validation: .onAccess)`.
+Seven alternating fresh-process pairs (after one warmup pair) on one Linux
+x86-64 host (2 vCPUs, Swift 6.1.2, Release) compare `fc69498` with the
+candidate; every exact-output scenario sample is in the
+[raw record](benchmarks/2026-11-19-streaming-verify-on-access.json).
+
+| Input | Phase | Baseline CPU (ms) | Candidate CPU (ms) | CPU change | Baseline peak RSS | Candidate peak RSS |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| FromKeynote.pptx | open | 154.76 | 124.52 | -19.5% | 200.52 MiB | 160.08 MiB |
+| FromKeynote.pptx | reopen | 126.84 | 111.54 | -12.1% | 200.52 MiB | 160.08 MiB |
+| FromGoogleSlides.pptx | open | 19.93 | 17.84 | -10.5% | 47.71 MiB | 44.77 MiB |
+| FromGoogleSlides.pptx | reopen | 17.46 | 15.51 | -11.1% | 47.71 MiB | 44.77 MiB |
+| MovieAndComments.pptx | open | 68.69 | 68.73 | +0.1% | 126.30 MiB | 126.33 MiB |
+| SimplePowerPoint.pptx | open | 2.02 | 1.96 | -2.9% | 44.77 MiB | 44.77 MiB |
+| slides-1000 | reopen | 42.86 | 40.08 | -6.5% | 59.96 MiB | 59.67 MiB |
+| slides-1000 | unchanged-save | 27.12 | 26.32 | -3.0% | 59.96 MiB | 59.67 MiB |
+| table-200x50 | reopen | 15.06 | 11.92 | -20.8% | 175.88 MiB | 175.95 MiB |
+| images-unique | reopen | 4.46 | 4.25 | -4.7% | 44.77 MiB | 44.77 MiB |
+| images-unique | unchanged-save | 3.28 | 3.10 | -5.5% | 44.77 MiB | 44.77 MiB |
+| table-200x50 | render | 605.33 | 608.24 | +0.5% | 175.88 MiB | 175.95 MiB |
+
+| Real-deck open + 1-slide edit + save | `.strict` open CPU (ms) | `.onAccess` open CPU (ms) | Open change |
+| --- | ---: | ---: | ---: |
+| FromKeynote.pptx | 110.11 | 22.31 | -79.7% |
+| FromGoogleSlides.pptx | 15.91 | 3.93 | -75.3% |
+| MovieAndComments.pptx | 55.92 | 14.25 | -74.5% |
+| SimplePowerPoint.pptx | 1.67 | 1.02 | -39.2% |
+
+All seven non-Keynote paired scenarios produce byte-identical saved `.pptx`
+hashes (`outputSHA256`). `FromKeynote.pptx` now preserves Keynote's `8,023,368` B
+DEFLATE stream on `ppt/media/image1.jpeg` (`+656 B` of RFC 1951 stored-block
+headers) instead of rewriting it `STORED`, changing its saved size from
+`20,972,284` B to `20,972,940` B while keeping all 84 decoded entries identical
+(verified with Python's `zipfile`) and preserving 84/84 raw compressed payloads.
+Streaming `.strict` verification cuts `FromKeynote.pptx` peak RSS by 40.44 MiB
+(-20.2%) and open CPU by 19.5%; `MovieAndComments.pptx` (whose 15.8 MB `.mp4` is
+already `STORED` and still CRC-checked in `.strict` mode) is unchanged in
+`.strict` mode and 74.5% faster to open under `.onAccess`. Few-millisecond
+render controls (`1–2 ms` on single-slide decks) fluctuated +4.8% to +14.4%
+across pairs while `table-200x50` render stayed flat (+0.5%); no rendering
+speedup or native Mac measurement is claimed.
+
 The 2026-11-13 open/save work replaces three inner loops and leaves rendering
 algorithms alone: table-driven inflate, a direct parser for plain XML parts, and
 a DEFLATE encoder with lazy matching and dynamic Huffman blocks, plus reuse of

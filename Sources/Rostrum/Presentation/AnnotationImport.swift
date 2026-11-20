@@ -23,11 +23,11 @@ final class AnnotationAuthorImport {
             guard !rel.isExternal else { throw RostrumError.packageInvalid("authors must be internal") }
             let existing = try dest.part(at: PackURI.resolve(target: rel.target, relativeTo: presentation.uri.baseURI))
             existing.flushIfDirty()
-            authors = Part(uri: existing.uri, contentType: existing.contentType, blob: existing.blob)
+            authors = Part(uri: existing.uri, contentType: existing.contentType, blob: try existing.decodedData())
             authors.rels.setItems(existing.rels.items)
             isNew = false
         } else {
-            authors = Part(uri: allocate(PackURI("/ppt/authors.xml")), contentType: ModernComments.authorsContentType, blob: sourceAuthors.blob)
+            authors = Part(uri: allocate(PackURI("/ppt/authors.xml")), contentType: ModernComments.authorsContentType, blob: try sourceAuthors.decodedData())
             let root = try authors.dom()
             let recordIDs = Set(Self.authorElements(root).map(ObjectIdentifier.init))
             root.children.removeAll { node in

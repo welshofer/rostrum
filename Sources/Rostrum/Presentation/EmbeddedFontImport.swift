@@ -272,7 +272,7 @@ final class EmbeddedFontImport {
             let key = a.uri.value + "\u{1}" + b.uri.value
             guard visited.insert(key).inserted else { return true }
             a.flushIfDirty(); b.flushIfDirty()
-            guard a.contentType == b.contentType, a.blob == b.blob, a.rels.items.count == b.rels.items.count else { return false }
+            guard a.contentType == b.contentType, try a.decodedData() == b.decodedData(), a.rels.items.count == b.rels.items.count else { return false }
             for rel in a.rels.items {
                 guard let other = b.rels.relationship(withId: rel.rId), try relationship(rel, a, other, b) else { return false }
             }

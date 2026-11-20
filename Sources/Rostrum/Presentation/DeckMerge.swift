@@ -78,7 +78,7 @@ final class SlideCopier {
         // different duplicate each run and break byte-identical output when the
         // destination already holds two same-content images.
         if authorGraphDepth == 0, sourceURI.value.hasPrefix("/ppt/media/"), sourcePart.rels.items.isEmpty,
-           let existing = dest.matchingMedia(for: sourcePart.blob), existing.rels.items.isEmpty {
+           let existing = try dest.matchingMedia(for: sourcePart), existing.rels.items.isEmpty {
             map[sourceURI] = existing.uri
             return existing.uri
         }
@@ -86,7 +86,7 @@ final class SlideCopier {
         let destURI = freshName(like: sourceURI)
         map[sourceURI] = destURI   // record before recursing (master↔layout cycles)
 
-        let destPart = Part(uri: destURI, contentType: sourcePart.contentType, blob: sourcePart.blob)
+        let destPart = try sourcePart.cloned(uri: destURI)
         stagedParts[destURI] = destPart
 
         // A copied master carries the source's sldLayoutId ids verbatim, which
@@ -321,9 +321,7 @@ final class SlideCopier {
     /// target has been validated. Installing the staged parts cannot throw.
     func commit() {
         for part in stagedParts.values.sorted(by: { $0.uri.value < $1.uri.value }) {
-            part.flushIfDirty()
-            let installed = dest.addPart(uri: part.uri, contentType: part.contentType, blob: part.blob)
-            installed.rels.setItems(part.rels.items)
+            dest.installStagedPart(part)
             registerContentType(part.uri, part.contentType)
         }
         tableStyleImport?.commit()
@@ -381,7 +379,7 @@ final class SlideCopier {
         }
         let uri = freshName(like: sourceMaster.uri)
         map[sourceMaster.uri] = uri  // cycle guard before copying dependencies
-        let master = Part(uri: uri, contentType: sourceMaster.contentType, blob: sourceMaster.blob)
+        let master = try sourceMaster.cloned(uri: uri)
         _ = try master.dom()
         stagedParts[uri] = master
         for rel in sourceMaster.rels.items {
@@ -409,7 +407,7 @@ final class SlideCopier {
         sourcePart.flushIfDirty()
         destinationPart.flushIfDirty()
         guard sourcePart.contentType == destinationPart.contentType,
-              (!comparePayload || sourcePart.blob == destinationPart.blob),
+              try (!comparePayload || sourcePart.decodedData() == destinationPart.decodedData()),
               sourcePart.rels.items.count == destinationPart.rels.items.count else { return false }
         for rel in sourcePart.rels.items {
             guard let other = destinationPart.rels.relationship(withId: rel.rId),
