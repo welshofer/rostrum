@@ -147,8 +147,15 @@ final class RenderImageResources {
         }
         let identity = ObjectIdentifier(part)
         let resource: Resource
-        if let existing = media[identity] { resource = existing }
-        else { resource = Resource(part.blob); media[identity] = resource }
+        if let existing = media[identity] {
+            resource = existing
+        } else if let bytes = try? part.decodedData() {
+            resource = Resource(bytes)
+            media[identity] = resource
+        } else {
+            references[key] = .missing
+            return nil
+        }
         references[key] = .found(resource)
         return resource
     }

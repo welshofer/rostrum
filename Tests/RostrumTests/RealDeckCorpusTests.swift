@@ -101,14 +101,15 @@ private let realDecks: [URL] = {
     ///
     /// 1. Every entry's **decompressed bytes** must come back identical,
     ///    including `.rels` parts, `[Content_Types].xml`, and carried entries.
-    /// 2. Every non-bloated entry's **raw compressed payload and compression
-    ///    method** (`entryPayload(forEntry:).raw` and `entry.method`) must also
-    ///    come back byte-identical — proving untouched entries skip `Deflate`
-    ///    and copy the authoring tool's compressed bitstream straight through.
-    ///    The sole exclusion is `compressedSize > max(uncompressedSize + 64, 64)`,
-    ///    which declines foreign streams that bloated an incompressible file
-    ///    (`ppt/media/image1.jpeg` in `FromKeynote.pptx` is 656 bytes larger
-    ///    DEFLATEd than STORED, and Rostrum stores it uncompressed instead).
+    /// 2. Every entry's **raw compressed payload and compression method**
+    ///    (`entryPayload(forEntry:).raw` and `entry.method`) must also come back
+    ///    byte-identical with zero exemptions — proving untouched entries skip
+    ///    `Deflate` and copy the authoring tool's compressed bitstream straight
+    ///    through, including Keynote's multi-megabyte RFC 1951 stored-block
+    ///    DEFLATE media streams.
+    /// 3. Opening with `validation: .onAccess` (which skips `Inflate` and
+    ///    `CRC32` on untouched parts) emits the exact same archive bytes as
+    ///    default `.strict` validation.
     ///
     /// Outer ZIP container metadata — entry order, DOS timestamps, Google
     /// Slides' streaming data descriptors (bit 3), and Keynote's 20-byte local
@@ -118,7 +119,10 @@ private let realDecks: [URL] = {
     func untouchedForeignDeckSurvivesByteIdentically(_ url: URL) throws {
         let deck = url.lastPathComponent
         let original = try Data(contentsOf: url)
-        let resaved = try Presentation(data: original).serializedData()
+        let strictDeck = try Presentation(data: original)
+        let resaved = try strictDeck.serializedData()
+        let onAccessResaved = try Presentation(data: original, validation: .onAccess).serializedData()
+        #expect(onAccessResaved == resaved, "\(deck): .onAccess resave differed from .strict resave")
 
         let before = try ZipReader(data: original)
         let after = try ZipReader(data: resaved)
@@ -144,14 +148,12 @@ private let realDecks: [URL] = {
             if oldLoaded.decoded != newLoaded.decoded { changed.append(name) }
             let oldEntry = oldLoaded.entry
             let newEntry = newLoaded.entry
-            if oldEntry.compressedSize <= max(oldEntry.uncompressedSize + 64, 64) {
-                if oldEntry.method != newEntry.method {
-                    methodChanged.append("\(name) (\(oldEntry.method) → \(newEntry.method))")
-                }
-                if oldLoaded.raw != newLoaded.raw {
-                    rawPayloadChanged.append(
-                        "\(name) (\(oldLoaded.raw.count) B → \(newLoaded.raw.count) B)")
-                }
+            if oldEntry.method != newEntry.method {
+                methodChanged.append("\(name) (\(oldEntry.method) → \(newEntry.method))")
+            }
+            if oldLoaded.raw != newLoaded.raw {
+                rawPayloadChanged.append(
+                    "\(name) (\(oldLoaded.raw.count) B → \(newLoaded.raw.count) B)")
             }
         }
         let sample = changed.prefix(10).joined(separator: ", ")

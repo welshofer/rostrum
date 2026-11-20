@@ -222,10 +222,13 @@ Ranked by demand evidence from python-pptx's issue tracker:
 - Rendering: slide → image/PDF without LibreOffice (SwiftUI/CoreGraphics
   renderer on Darwin; cross-platform raster backend later). The v0.4 metrics
   engine is the foundation: faithful text is most of a faithful slide.
-- Bounded partial loading: `OPCArchive` now provides read-only lazy access
-  with explicit validation/cache policy. Fully editable lazy Presentation parts
-  remain separate work because the existing nonthrowing `Part.blob` contract
-  cannot conceal deferred decode failures.
+- Bounded partial loading: `OPCArchive` provides read-only lazy access with
+  explicit LRU cache bounds; default `.strict` `Presentation` open validates
+  DEFLATE streams via a fixed sliding window without allocating uncompressed
+  part buffers, and opt-in `Presentation(data:validation: .onAccess)` +
+  `Part.decodedData()` skips codecs on untouched parts while keeping deferred
+  decode failures explicit. Streamed archive reading from disk without mapping
+  the outer `.pptx` buffer remains separate work.
 - OMML math, connector routing to attachment sites, placeholders in groups
 
 ## Program: v0.1 release — hardening & design layer ✅ (2026-07-18 → 19)

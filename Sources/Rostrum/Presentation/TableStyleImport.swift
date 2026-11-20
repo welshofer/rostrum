@@ -94,7 +94,7 @@ final class TableStyleImport {
             guard !rel.isExternal else { throw RostrumError.packageInvalid("table styles must be internal") }
             let existing = try presentation.related(by: RelType.tableStyles, in: destination)
             existing.flushIfDirty()
-            styles = Part(uri: existing.uri, contentType: existing.contentType, blob: existing.blob)
+            styles = Part(uri: existing.uri, contentType: existing.contentType, blob: try existing.decodedData())
             styles.rels.setItems(existing.rels.items)
             isNew = false
         } else {
@@ -190,7 +190,7 @@ final class TableStyleImport {
             let key = left.uri.value + "\u{1}" + right.uri.value
             guard visited.insert(key).inserted else { return true }
             left.flushIfDirty(); right.flushIfDirty()
-            guard left.contentType == right.contentType, left.blob == right.blob, left.rels.items.count == right.rels.items.count else { return false }
+            guard left.contentType == right.contentType, try left.decodedData() == right.decodedData(), left.rels.items.count == right.rels.items.count else { return false }
             for rel in left.rels.items {
                 guard let other = right.rels.relationship(withId: rel.rId), try relationship(rel, left: left, other, right: right) else { return false }
             }

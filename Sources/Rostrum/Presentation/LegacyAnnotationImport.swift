@@ -24,14 +24,14 @@ final class LegacyAnnotationAuthorImport {
         if presentation.rels.first(ofType: LegacyComments.authorsRelType) != nil {
             let existing = try LegacyComments.authorPart(in: dest)
             existing.flushIfDirty()
-            authors = Part(uri: existing.uri, contentType: existing.contentType, blob: existing.blob)
+            authors = Part(uri: existing.uri, contentType: existing.contentType, blob: try existing.decodedData())
             authors.rels.setItems(existing.rels.items)
             isNew = false
         } else {
             var n = 1
             var uri = PackURI("/ppt/commentAuthors.xml")
             while dest.parts[uri] != nil { uri = PackURI("/ppt/commentAuthors\(n).xml"); n += 1 }
-            authors = Part(uri: allocate?(uri) ?? uri, contentType: LegacyComments.authorsContentType, blob: sourceAuthors.blob)
+            authors = Part(uri: allocate?(uri) ?? uri, contentType: LegacyComments.authorsContentType, blob: try sourceAuthors.decodedData())
             let root = try authors.dom()
             let recordIDs = Set(LegacyComments.elements(root, named: "cmAuthor").map(ObjectIdentifier.init))
             root.children.removeAll { node in

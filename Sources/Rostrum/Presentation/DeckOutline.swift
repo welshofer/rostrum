@@ -271,7 +271,7 @@ extension SlideOutline {
         for image in inventory.images where seenParts.insert(image.part.uri.value).inserted {
             assets.append(OutlineAsset(kind: .image,
                 filename: unique(Self.sanitized(image.part.uri.filename, fallback: "image.bin")),
-                partName: image.part.uri.value, byteCount: image.part.blob.count, altText: image.altText))
+                partName: image.part.uri.value, byteCount: image.part.uncompressedByteCount, altText: image.altText))
         }
 
         let diagrams = slide.smartArtTexts.filter { !$0.isEmpty }
@@ -340,7 +340,7 @@ extension SlideOutline {
         return OutlineAsset(kind: kind,
                             filename: unique(sanitized(part.uri.filename, fallback: "\(kind.rawValue).bin")),
                             partName: partName,
-                            byteCount: part.blob.count,
+                            byteCount: part.uncompressedByteCount,
                             altText: picture.altText.flatMap { $0.isEmpty ? nil : $0 })
     }
 
@@ -349,7 +349,8 @@ extension SlideOutline {
                                          name unique: (String) -> String) -> OutlineAsset? {
         guard picture.isMedia, !picture.isAudio,
               let image = picture.imagePart,
-              image.blob != ShapeCollection.transparentPixelPNG,
+              image.uncompressedByteCount != ShapeCollection.transparentPixelPNG.count
+                  || (try? image.decodedData()) != ShapeCollection.transparentPixelPNG,
               let id = picture.imageRelationshipID,
               let relationship = picture.part.rels.relationship(withId: id),
               !relationship.isExternal, relationship.type == RelType.image,
@@ -361,7 +362,7 @@ extension SlideOutline {
         return OutlineAsset(kind: .image,
                             filename: unique(sanitized(image.uri.filename, fallback: "poster.bin")),
                             partName: partName,
-                            byteCount: image.blob.count,
+                            byteCount: image.uncompressedByteCount,
                             altText: picture.altText.flatMap { $0.isEmpty ? nil : $0 })
     }
 

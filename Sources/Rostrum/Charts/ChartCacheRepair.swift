@@ -95,7 +95,10 @@ public extension Chart {
               workbook.contentType == ContentType.xlsx else {
             throw CacheRepairProblem.invalidWorkbook("missing or ambiguous internal XLSX relationship")
         }
-        let reader = try CacheRepairWorkbook(data: workbook.blob)
+        let workbookBytes: Data
+        do { workbookBytes = try workbook.decodedData() }
+        catch { throw CacheRepairProblem.invalidWorkbook("workbook part could not be decoded: \(error)") }
+        let reader = try CacheRepairWorkbook(data: workbookBytes)
         var pending: [(CacheRepairNode, XML.Element)] = []
         var report: [RebuiltCache] = []
         for (reference, formula, numeric) in missing {

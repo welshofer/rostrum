@@ -134,10 +134,11 @@ public final class Chart {
         guard let reference = wrapper.firstChild(named: "c:strRef") ?? wrapper.firstChild(named: "c:numRef"),
               let formula = reference.firstChild(named: "c:f")?.textContent,
               ChartWorkbookReader.Range(formula) != nil,
-              let workbook = workbookPart else { return nil }
-        if workbookSnapshot != workbook.blob {
-            workbookSnapshot = workbook.blob
-            workbookReader = try? ChartWorkbookReader(data: workbook.blob)
+              let workbook = workbookPart,
+              let workbookBytes = try? workbook.decodedData() else { return nil }
+        if workbookSnapshot != workbookBytes {
+            workbookSnapshot = workbookBytes
+            workbookReader = try? ChartWorkbookReader(data: workbookBytes)
         }
         return workbookReader?.cells(for: formula)
     }

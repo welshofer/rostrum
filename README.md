@@ -316,10 +316,10 @@ sequenceDiagram
     participant Zip as Zip writer
 
     U->>P: Presentation(contentsOf: deck.pptx)
-    P->>Part: load every part as raw bytes
-    Note over Part: untouched parts keep<br/>their original bytes
+    P->>Part: retain raw compressed payload (streaming verify or .onAccess)
+    Note over Part: untouched parts stay unmaterialized<br/>& keep original compressed bytes
     U->>P: slides[2].title = "New title"
-    P->>Part: first mutation → parse to DOM
+    P->>Part: first mutation → inflate & parse to DOM
     Part->>DOM: edit through schema tables
     U->>P: save(to: out.pptx)
     P->>Zip: pristine parts → original compressed payload, verbatim
@@ -327,16 +327,21 @@ sequenceDiagram
     Note over Zip: fixed timestamps, sorted parts:<br/>same input → byte-identical output
 ```
 
-Opening an archive inflates and CRC-verifies every entry up front while retaining
-its original compressed bitstream alongside the decoded bytes. On save, untouched
-parts, `.rels` streams, `[Content_Types].xml` and carried entries copy their
-original compressed payloads straight through without re-running `Deflate`;
-Rostrum's encoder runs only on new or mutated entries (or foreign streams whose
-compressed payload bloated past their uncompressed size). Outer ZIP headers —
-fixed DOS epoch timestamps, sorted member order, and omitted streaming data
-descriptors or extra fields — are normalized by `ZipWriter`, so untouched entry
-payloads stay byte-identical while repeated Rostrum saves form a byte-identical
-archive fixed point.
+By default (`validation: .strict`), opening an archive validates every entry's
+DEFLATE bitstream, uncompressed size, and CRC-32 through a fixed-size sliding
+window without allocating uncompressed buffers for untouched parts, while
+retaining each entry's original compressed payload. Opt-in
+`Presentation(data:validation: .onAccess)` skips `Inflate` and `CRC32` on
+untouched parts altogether, decoding and verifying only the streams your code
+actually reads (`Part.decodedData()`). On save, untouched parts, `.rels`
+streams, `[Content_Types].xml` and carried entries copy their original
+compressed payloads straight through without re-running `Deflate`
+(accommodating standard RFC 1951 stored-block framing while rejecting
+empty-block padding); Rostrum's encoder runs only on new or mutated entries.
+Outer ZIP headers — fixed DOS epoch timestamps, sorted member order, and omitted
+streaming data descriptors or extra fields — are normalized by `ZipWriter`, so
+untouched entry payloads stay byte-identical while repeated Rostrum saves form a
+byte-identical archive fixed point.
 
 ## Examples
 

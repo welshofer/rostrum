@@ -57,7 +57,7 @@ public final class OPCArchive {
             !$0.hasSuffix("/") && !$0.hasSuffix(".rels") && $0 != PackURI.contentTypes.memberName
         }.map { PackURI("/" + $0) }.sorted { $0.value < $1.value }
         if validation == .strict {
-            for name in reader.entryNames { _ = try read(name) }
+            for name in reader.entryNames { _ = try reader.verifiedRawPayload(forEntry: name) }
         }
     }
 
@@ -79,9 +79,12 @@ public final class OPCArchive {
     }
     public func xml(forPart uri: PackURI) throws -> XML.Element { try XML.parse(data(forPart: uri)) }
 
-    /// Materialize an independent editable presentation with the original eager
-    /// validation and error timing. All package entries remain present.
-    public func presentation() throws -> Presentation { try Presentation(data: source, limits: limits) }
+    /// Materialize an independent editable presentation. Defaults to `.strict`
+    /// to preserve eager validation and error timing; pass `.onAccess` to skip
+    /// inflating untouched parts until read.
+    public func presentation(validation: Validation = .strict) throws -> Presentation {
+        try Presentation(data: source, validation: validation, limits: limits)
+    }
 
     public var mainPartURI: PackURI? {
         guard let rel = relationships.first(ofType: RelType.officeDocument) else { return nil }

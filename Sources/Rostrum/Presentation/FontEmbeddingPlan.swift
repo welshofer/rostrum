@@ -73,7 +73,8 @@ struct FontEmbeddingPlan {
                 }
                 let uri = PackURI.resolve(target: rel.target, relativeTo: presentation.uri.baseURI)
                 guard let part = try? package.part(at: uri) else { throw RostrumError.packageInvalid("embedded font part is missing: \(uri)") }
-                guard part.contentType == "application/x-fontdata", EOTLite.unwrap(part.blob) == data else {
+                let existingBytes = try part.decodedData()
+                guard part.contentType == "application/x-fontdata", EOTLite.unwrap(existingBytes) == data else {
                     throw RostrumError.packageInvalid("embedded font conflicts with requested face: \(typeface) \(variant.tag)")
                 }
             } else {

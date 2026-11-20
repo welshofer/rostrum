@@ -170,11 +170,14 @@ public final class Slides: Sequence {
             .maintainSectionMembership(order: order, insertedAt: index + 1,
                                       insertedIDs: [slideID], duplicateOf: try source.slideID())
 
-        let copy = package.addPart(uri: uri, contentType: ContentType.slide, blob: source.part.blob)
-        copy.rels.setItems(annotations.relationships)
-        for annotation in annotations.parts {
+        let stagedCopy = try source.part.cloned(uri: uri)
+        stagedCopy.rels.setItems(annotations.relationships)
+        let annotationPayloads = try annotations.parts.map { ($0, try $0.decodedData()) }
+
+        let copy = package.installStagedPart(stagedCopy)
+        for (annotation, bytes) in annotationPayloads {
             let installed = package.addPart(
-                uri: annotation.uri, contentType: annotation.contentType, blob: annotation.blob)
+                uri: annotation.uri, contentType: annotation.contentType, blob: bytes)
             installed.rels.setItems(annotation.rels.items)
         }
         annotations.legacyAuthors?.commit()
