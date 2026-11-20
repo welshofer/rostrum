@@ -151,7 +151,7 @@ public struct ZipReader {
     ///   SIZES/OFFSETS. A zip64 entry COUNT reads normally.
     ///   All of them fire before anything is inflated.
     public init(data: Data, limits: Limits = .default) throws {
-        let bytes = Data(data)
+        let bytes = data.startIndex == 0 ? data : Data(data)
         let size = bytes.count
         guard size >= 22 else {
             throw RostrumError.zipCorrupt("file too small to contain an end-of-central-directory record (\(size) bytes)")
@@ -480,7 +480,7 @@ public struct ZipReader {
         guard dataStart + entry.compressedSize <= archive.count else {
             throw RostrumError.zipCorrupt("entry data out of range for \"\(name)\"")
         }
-        let raw = Data(archive[dataStart..<dataStart + entry.compressedSize])
+        let raw = archive[dataStart..<dataStart + entry.compressedSize]
         return (raw: raw, entry: entry)
     }
 
@@ -530,7 +530,7 @@ public struct ZipReader {
                 throw RostrumError.zipCorrupt(
                     "stored entry \"\(name)\" has mismatched sizes (\(entry.compressedSize) vs \(entry.uncompressedSize))")
             }
-            decoded = raw
+            decoded = raw.startIndex == 0 ? raw : Data(raw)
         case 8:
             do {
                 decoded = try Inflate.inflate(raw, expectedOutputSize: entry.uncompressedSize)
@@ -548,7 +548,8 @@ public struct ZipReader {
             throw RostrumError.zipCorrupt(
                 "entry \"\(name)\" decoded to \(decoded.count) bytes, expected \(entry.uncompressedSize)")
         }
-        guard CRC32.checksum(decoded) == entry.crc32 else {
+        let actualCRC = entry.method == 0 ? CRC32.checksum(raw) : CRC32.checksum(decoded)
+        guard actualCRC == entry.crc32 else {
             throw RostrumError.zipCorrupt("CRC-32 mismatch for entry \"\(name)\"")
         }
         return decoded

@@ -3,12 +3,13 @@ import Foundation
 /// Pure-Swift raw DEFLATE (RFC 1951) encoder — the counterpart to `Inflate`.
 ///
 /// LZ77 with hash chains and one-step lazy matching, emitted as blocks that
-/// each use whichever of the fixed or a block-specific dynamic Huffman code is
-/// smaller. Every choice (hash order, tie-breaks in code construction, block
-/// boundaries) is a pure function of the input, so output is **deterministic**
-/// across machines and OS versions — which the zip writer's byte-identical
-/// guarantee depends on, and a platform compressor does not promise. Output is
-/// decodable by `Inflate`, `unzip`, and every conforming DEFLATE reader.
+/// each use whichever of a stored (`BTYPE=00`), fixed (`BTYPE=01`), or
+/// block-specific dynamic (`BTYPE=10`) representation is smallest. Every choice
+/// (hash order, tie-breaks in code construction, block boundaries) is a pure
+/// function of the input, so output is **deterministic** across machines and OS
+/// versions — which the zip writer's byte-identical guarantee depends on, and a
+/// platform compressor does not promise. Output is decodable by `Inflate`,
+/// `unzip`, and every conforming DEFLATE reader.
 public enum Deflate {
     static let minMatch = 3
     static let maxMatch = 258
@@ -47,10 +48,13 @@ public enum Deflate {
     }()
 
     public static func deflate(_ input: Data) -> Data {
-        let bytes = [UInt8](input)
-        let n = bytes.count
+        let n = input.count
         var writer = BitWriter()
         writer.reserve(n / 2 + 16)
+        if n == 0 {
+            writeBlock([], [], rawBase: nil, rawCount: 0, isFinal: true, into: &writer)
+            return writer.finish()
+        }
 
         // Hash chains over 3-byte prefixes.
         // Small inputs get a smaller table: clearing 32,768 heads costs more
@@ -59,8 +63,9 @@ public enum Deflate {
         while hashBits < 15 && (1 << hashBits) < n { hashBits += 1 }
         let hashSize = 1 << hashBits
         let hashMask = hashSize - 1
+        let prevMask = windowSize - 1
         var head = [Int32](repeating: -1, count: hashSize)
-        var prev = [Int32](repeating: -1, count: max(1, n))
+        var prev = [Int32](repeating: -1, count: Swift.min(Swift.max(1, n), windowSize))
 
         // One block's tokens: a literal is (byte, 0), a match is (length, distance).
         var tokenValues: [UInt16] = []
@@ -68,16 +73,22 @@ public enum Deflate {
         tokenValues.reserveCapacity(Swift.min(n, blockTokens) + 1)
         tokenDistances.reserveCapacity(Swift.min(n, blockTokens) + 1)
 
-        bytes.withUnsafeBufferPointer { bytes in
+        input.withUnsafeBytes { rawInput in
+            let bytes = rawInput.bindMemory(to: UInt8.self)
+            guard let base = bytes.baseAddress else {
+                writeBlock([], [], rawBase: nil, rawCount: 0, isFinal: true, into: &writer)
+                return
+            }
+            let rawPtr = UnsafeRawPointer(base)
             head.withUnsafeMutableBufferPointer { head in
                 prev.withUnsafeMutableBufferPointer { prev in
                     @inline(__always) func hash(_ i: Int) -> Int {
-                        ((Int(bytes[i]) << 10 ^ Int(bytes[i + 1]) << 5 ^ Int(bytes[i + 2])) &* 0x9E3B) >> 1 & hashMask
+                        ((Int(base[i]) << 10 ^ Int(base[i + 1]) << 5 ^ Int(base[i + 2])) &* 0x9E3B) >> 1 & hashMask
                     }
                     @inline(__always) func insert(_ i: Int) {
                         guard i + 2 < n else { return }
                         let h = hash(i)
-                        prev[i] = head[h]
+                        prev[i & prevMask] = head[h]
                         head[h] = Int32(truncatingIfNeeded: i)
                     }
                     /// Longest match at `pos` that beats `floor` bytes.
@@ -92,27 +103,47 @@ public enum Deflate {
                         let minPos = pos - windowSize
                         while cand >= 0 && cand > minPos && chain > 0 {
                             // Quick reject: candidate must beat the current best at bestLen.
-                            if bytes[cand + bestLen] == bytes[pos + bestLen] {
+                            if base[cand + bestLen] == base[pos + bestLen] {
                                 var len = 0
-                                while len < maxLen && bytes[cand + len] == bytes[pos + len] { len += 1 }
+                                var mismatched = false
+                                while len + 8 <= maxLen {
+                                    let a = UInt64(littleEndian: rawPtr.loadUnaligned(fromByteOffset: cand + len, as: UInt64.self))
+                                    let b = UInt64(littleEndian: rawPtr.loadUnaligned(fromByteOffset: pos + len, as: UInt64.self))
+                                    let diff = a ^ b
+                                    if diff != 0 {
+                                        len += diff.trailingZeroBitCount >> 3
+                                        mismatched = true
+                                        break
+                                    }
+                                    len += 8
+                                }
+                                if !mismatched {
+                                    while len < maxLen && base[cand + len] == base[pos + len] { len += 1 }
+                                }
                                 if len > bestLen {
                                     bestLen = len
                                     bestDist = pos - cand
                                     if len >= maxLen || len >= niceMatch { break }
                                 }
                             }
-                            cand = Int(prev[cand])
+                            cand = Int(prev[cand & prevMask])
                             chain -= 1
                         }
                         return bestDist == 0 ? (0, 0) : (bestLen, bestDist)
                     }
 
                     var pos = 0
+                    var blockByteStart = 0
                     // A match found one position early by the lazy check.
                     var pending: (length: Int, distance: Int)? = nil
                     while pos < n {
                         if tokenValues.count >= blockTokens {
-                            writeBlock(tokenValues, tokenDistances, isFinal: false, into: &writer)
+                            writeBlock(
+                                tokenValues, tokenDistances,
+                                rawBase: base + blockByteStart, rawCount: pos - blockByteStart,
+                                isFinal: false, into: &writer
+                            )
+                            blockByteStart = pos
                             tokenValues.removeAll(keepingCapacity: true)
                             tokenDistances.removeAll(keepingCapacity: true)
                         }
@@ -125,7 +156,7 @@ public enum Deflate {
                             let next = longestMatch(pos + 1, floor: match.length,
                                                     chain: match.length >= goodMatch ? maxChain / 4 : maxChain)
                             if next.length > match.length {
-                                tokenValues.append(UInt16(bytes[pos]))
+                                tokenValues.append(UInt16(base[pos]))
                                 tokenDistances.append(0)
                                 pos += 1
                                 pending = next
@@ -145,16 +176,20 @@ public enum Deflate {
                             let end = pos + match.length
                             while pos < end { insert(pos); pos += 1 }
                         } else {
-                            tokenValues.append(UInt16(bytes[pos]))
+                            tokenValues.append(UInt16(base[pos]))
                             tokenDistances.append(0)
                             insert(pos)
                             pos += 1
                         }
                     }
+                    writeBlock(
+                        tokenValues, tokenDistances,
+                        rawBase: base + blockByteStart, rawCount: n - blockByteStart,
+                        isFinal: true, into: &writer
+                    )
                 }
             }
         }
-        writeBlock(tokenValues, tokenDistances, isFinal: true, into: &writer)
         return writer.finish()
     }
 
@@ -193,20 +228,30 @@ public enum Deflate {
     /// RFC 1951 §3.2.7 transmission order of the code-length alphabet.
     private static let codeLengthOrder = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]
 
-    /// Emit one block holding `values`/`distances`, choosing the cheaper of
-    /// the fixed code and a dynamic code built from this block's frequencies.
-    private static func writeBlock(_ values: [UInt16], _ distances: [UInt16], isFinal: Bool,
-                                   into writer: inout BitWriter) {
+    /// Emit one block holding `values`/`distances`, choosing the cheapest of
+    /// stored (`BTYPE=00`), fixed (`BTYPE=01`), and dynamic (`BTYPE=10`) coding.
+    private static func writeBlock(
+        _ values: [UInt16],
+        _ distances: [UInt16],
+        rawBase: UnsafePointer<UInt8>?,
+        rawCount: Int,
+        isFinal: Bool,
+        into writer: inout BitWriter
+    ) {
         var literalFrequency = [Int](repeating: 0, count: 286)
         var distanceFrequency = [Int](repeating: 0, count: 30)
         literalFrequency[256] = 1
+        var extraPayloadBits = 0
         for i in values.indices {
             let distance = Int(distances[i])
             if distance == 0 {
                 literalFrequency[Int(values[i])] += 1
             } else {
-                literalFrequency[257 + lengthCodeIndex[Int(values[i])]] += 1
-                distanceFrequency[distanceCode(distance)] += 1
+                let li = lengthCodeIndex[Int(values[i])]
+                let di = distanceCode(distance)
+                literalFrequency[257 + li] += 1
+                distanceFrequency[di] += 1
+                extraPayloadBits += lengthExtra[li] + distExtra[di]
             }
         }
 
@@ -232,9 +277,9 @@ public enum Deflate {
         var headerCount = 19
         while headerCount > 4 && headerLengths[codeLengthOrder[headerCount - 1]] == 0 { headerCount -= 1 }
 
-        var dynamicBits = 14 + 3 * headerCount
+        var dynamicBits = 14 + 3 * headerCount + extraPayloadBits
         for item in header { dynamicBits += Int(headerLengths[item.symbol]) + item.extraBits }
-        var fixedBits = 0
+        var fixedBits = 3 + extraPayloadBits
         for symbol in 0..<286 where literalFrequency[symbol] != 0 {
             dynamicBits += literalFrequency[symbol] * Int(literalLengths[symbol])
             fixedBits += literalFrequency[symbol] * Int(fixedLiteralLengths[symbol])
@@ -243,10 +288,30 @@ public enum Deflate {
             dynamicBits += distanceFrequency[symbol] * Int(distanceLengths[symbol])
             fixedBits += distanceFrequency[symbol] * 5
         }
+        // Account for the 3-bit dynamic block header (`BFINAL` + `BTYPE=10`) so
+        // dynamic vs fixed vs stored bit counts are measured from the same cursor.
+        let totalDynamicBits = 3 + dynamicBits
+        let totalFixedBits = fixedBits
+
+        if let rawBase, rawCount > 0 {
+            let subBlocks = (rawCount + 65_534) / 65_535
+            let firstPad = (8 - ((writer.pendingBitCount + 3) & 7)) & 7
+            let storedBits = (3 + firstPad + 32) + (subBlocks - 1) * 40 + rawCount * 8
+            if storedBits < totalDynamicBits && storedBits < totalFixedBits {
+                var offset = 0
+                while offset < rawCount {
+                    let chunk = Swift.min(65_535, rawCount - offset)
+                    let subFinal = isFinal && (offset + chunk == rawCount)
+                    writer.writeStoredBlock(base: rawBase + offset, count: chunk, isFinal: subFinal)
+                    offset += chunk
+                }
+                return
+            }
+        }
 
         writer.writeBits(isFinal ? 1 : 0, 1)
         let literalCodes: [UInt32], distanceCodes: [UInt32]
-        if dynamicBits < fixedBits {
+        if dynamicBits < fixedBits - 3 {
             writer.writeBits(2, 2)   // BTYPE = 10 (dynamic Huffman)
             writer.writeBits(literalCount - 257, 5)
             writer.writeBits(distanceCount - 1, 5)
@@ -448,19 +513,46 @@ struct BitWriter {
     private var bitBuffer: UInt64 = 0
     private var bitCount: Int = 0
 
+    var pendingBitCount: Int { bitCount }
+
     mutating func reserve(_ bytes: Int) { out.reserveCapacity(bytes) }
 
     /// Write the low `count` (0…32) bits of `value`, least-significant bit first.
     @inline(__always)
     mutating func writeBits(_ value: Int, _ count: Int) {
         guard count > 0 else { return }
-        bitBuffer |= (UInt64(truncatingIfNeeded: value) & ((1 << UInt64(count)) - 1)) << UInt64(bitCount)
+        bitBuffer |= (UInt64(truncatingIfNeeded: value) & ((UInt64(1) << UInt64(count)) - 1)) << UInt64(bitCount)
         bitCount += count
+        if bitCount >= 32 {
+            let word = UInt32(truncatingIfNeeded: bitBuffer)
+            out.append(UInt8(truncatingIfNeeded: word))
+            out.append(UInt8(truncatingIfNeeded: word >> 8))
+            out.append(UInt8(truncatingIfNeeded: word >> 16))
+            out.append(UInt8(truncatingIfNeeded: word >> 24))
+            bitBuffer >>= 32
+            bitCount -= 32
+        }
+    }
+
+    /// Emit an RFC 1951 `BTYPE=00` uncompressed stored block (`count <= 65535`).
+    mutating func writeStoredBlock(base: UnsafePointer<UInt8>, count: Int, isFinal: Bool) {
+        writeBits(isFinal ? 1 : 0, 1)
+        writeBits(0, 2) // BTYPE = 00
+        let rem = bitCount & 7
+        if rem != 0 { bitCount += 8 - rem }
         while bitCount >= 8 {
             out.append(UInt8(truncatingIfNeeded: bitBuffer))
             bitBuffer >>= 8
             bitCount -= 8
         }
+        bitBuffer = 0
+        let len = UInt16(count)
+        let nlen = ~len
+        out.append(UInt8(len & 0xFF))
+        out.append(UInt8(len >> 8))
+        out.append(UInt8(nlen & 0xFF))
+        out.append(UInt8(nlen >> 8))
+        out.append(contentsOf: UnsafeBufferPointer(start: base, count: count))
     }
 
     /// Write a Huffman code of `count` bits, most-significant bit first (the
@@ -476,6 +568,11 @@ struct BitWriter {
 
     /// Flush any partial byte and return the stream.
     mutating func finish() -> Data {
+        while bitCount >= 8 {
+            out.append(UInt8(truncatingIfNeeded: bitBuffer))
+            bitBuffer >>= 8
+            bitCount -= 8
+        }
         if bitCount > 0 {
             out.append(UInt8(truncatingIfNeeded: bitBuffer))
             bitBuffer = 0

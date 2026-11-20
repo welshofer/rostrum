@@ -9,17 +9,28 @@ import Foundation
 ///   of one call as `crc` of the next. `update` takes and returns the *raw*
 ///   (pre-finalization) running value; `checksum` wraps init/update/finalize.
 public enum CRC32 {
-    /// The 256-entry lookup table for the reflected polynomial 0xEDB88320.
-    private static let table: [UInt32] = {
-        var table = [UInt32](repeating: 0, count: 256)
+    /// Slicing-by-8 lookup tables (8 × 256 `UInt32` entries, flattened) for the
+    /// reflected IEEE 802.3 polynomial `0xEDB88320`. Slice 0 is the classic
+    /// single-byte table; slices 1…7 advance one additional zero byte each so
+    /// eight input bytes resolve in parallel per iteration.
+    private static let tables: [UInt32] = {
+        var t = [UInt32](repeating: 0, count: 8 * 256)
         for i in 0..<256 {
             var c = UInt32(i)
             for _ in 0..<8 {
                 c = (c & 1) != 0 ? (0xEDB8_8320 ^ (c >> 1)) : (c >> 1)
             }
-            table[i] = c
+            t[i] = c
         }
-        return table
+        for slice in 1..<8 {
+            let prevBase = (slice - 1) * 256
+            let curBase = slice * 256
+            for i in 0..<256 {
+                let prev = t[prevBase + i]
+                t[curBase + i] = (prev >> 8) ^ t[Int(prev & 0xFF)]
+            }
+        }
+        return t
     }()
 
     /// The checksum of `data`, complete with initialization and finalization.
@@ -39,11 +50,27 @@ public enum CRC32 {
 
     @inline(__always)
     static func update(_ crc: UInt32, bytes: UnsafePointer<UInt8>, count: Int) -> UInt32 {
-        var running = crc
-        for i in 0..<count {
-            running = table[Int((running ^ UInt32(bytes[i])) & 0xFF)] ^ (running >> 8)
+        tables.withUnsafeBufferPointer { (t: UnsafeBufferPointer<UInt32>) -> UInt32 in
+            var running = crc
+            var i = 0
+            let raw = UnsafeRawPointer(bytes)
+            while i + 8 <= count {
+                let word = UInt64(littleEndian: raw.loadUnaligned(fromByteOffset: i, as: UInt64.self))
+                let lo = UInt32(truncatingIfNeeded: word) ^ running
+                let hi = UInt32(truncatingIfNeeded: word >> 32)
+                let crcLo: UInt32 = (t[1792 + Int(lo & 0xFF)] ^ t[1536 + Int((lo >> 8) & 0xFF)])
+                    ^ (t[1280 + Int((lo >> 16) & 0xFF)] ^ t[1024 + Int(lo >> 24)])
+                let crcHi: UInt32 = (t[768 + Int(hi & 0xFF)] ^ t[512 + Int((hi >> 8) & 0xFF)])
+                    ^ (t[256 + Int((hi >> 16) & 0xFF)] ^ t[Int(hi >> 24)])
+                running = crcLo ^ crcHi
+                i += 8
+            }
+            while i < count {
+                running = t[Int((running ^ UInt32(bytes[i])) & 0xFF)] ^ (running >> 8)
+                i += 1
+            }
+            return running
         }
-        return running
     }
 
     /// Raw initial value of the running checksum (0xFFFF_FFFF).

@@ -119,40 +119,48 @@ part dirty, its DOM is serialized on save; untouched sibling parts still retain
 their original payloads. Relationships and content types follow their own dirty
 state so editing one slide does not require rewriting every package entry.
 
-Payload preservation and archive identity are different contracts. By default
-(`validation: .strict`), opening an archive validates every entry's DEFLATE
-stream, uncompressed size, and CRC-32 through `Inflate.verify`'s fixed-size
-sliding window without allocating uncompressed `Part` buffers, while retaining
-its original compressed bitstream (accommodating standard RFC 1951 stored-block
-framing up to `u + u/512 + 64` bytes while rejecting empty-block padding). Opt-in
-`validation: .onAccess` on `Presentation` and `OPCPackage.read` skips `Inflate`
-and `CRC32` completely on untouched parts and carried entries, decoding only
-`[Content_Types].xml` and `.rels` streams at open and verifying individual parts
-on first access via `Part.decodedData()`. Saving an unchanged foreign file
-preserves every member's decoded payload and copies retained compressed
-bitstreams straight through without inflating untouched parts or re-running
-`Deflate`; Rostrum's encoder runs only on new or mutated entries (or hostilely
-padded streams). Outer ZIP headers — fixed DOS epoch timestamps, sorted member
-order, UTF-8 name flags, and omitted streaming data descriptors or local extra
-fields — follow Rostrum's deterministic `ZipWriter`, so repeated equivalent
-Rostrum saves produce byte-identical archives (`save1 == save2`).
+Payload preservation and archive identity are different contracts. `Presentation(contentsOf:)`
+maps local files with `.mappedIfSafe`, and `ZipReader` slices raw entry payloads
+directly out of the archive buffer without copying. By default
+(`validation: .strict`), opening an archive validates every entry's payload and
+Slicing-by-8 `CRC32` (`Inflate.verify`'s fixed-size sliding window for DEFLATE
+streams, direct slice checksums for `STORED` entries) without allocating
+uncompressed `Part` heap buffers, while retaining its original archive slice
+(accommodating standard RFC 1951 stored-block framing up to `u + u/512 + 64`
+bytes while rejecting empty-block padding). Opt-in `validation: .onAccess` on
+`Presentation` and `OPCPackage.read` skips `Inflate` and `CRC32` completely on
+untouched parts and carried entries, decoding only `[Content_Types].xml` and
+`.rels` streams at open and verifying individual parts on first access via
+`Part.decodedData()`. Saving an unchanged foreign file preserves every member's
+decoded payload and copies retained compressed or `STORED` slices straight
+through without inflating untouched parts or re-running `Deflate`; Rostrum's
+encoder runs only on new or mutated entries (or hostilely padded streams), using
+a bounded 32 KiB match-chain ring buffer and emitting RFC 1951 `BTYPE=00` stored
+blocks whenever Huffman coding would expand an incompressible block. Outer ZIP
+headers — fixed DOS epoch timestamps, sorted member order, UTF-8 name flags, and
+omitted streaming data descriptors or local extra fields — follow Rostrum's
+deterministic `ZipWriter`, so repeated equivalent Rostrum saves produce
+byte-identical archives (`save1 == save2`).
 
 ## Load-bearing mechanisms
 
-**Pristine-until-mutated.** Every `Part` holds its original compressed archive
-payload (plus deferred or materialized uncompressed bytes) and a dirty flag.
-Clean DEFLATE parts remain unmaterialized across open → edit-another-part → save
-until a caller inspects their bytes or parses their XML DOM; media deduplication
-indexes clean `/ppt/media/*` parts from central-directory `(size, crc)` without
-inflating them. The first actual mutation flips authority to the DOM and
-discards the initial compressed payload; if an `.onAccess` part failed deferred
-decoding via non-throwing `Part.blob` and is subsequently marked dirty, saving
-throws the deferred decode error rather than overwriting unverified content.
-Save copies the original compressed payload for clean parts and serializes +
-compresses the DOM for dirty ones. DOM-writing facades call `markDirty()`;
-relationship changes and content-type changes maintain their corresponding
-pristine state and initial compressed payloads. Tests check that these
-representations remain coherent after edits, saves and reopens.
+**Pristine-until-mutated.** Every `Part` holds its original archive payload slice
+(plus deferred or materialized uncompressed bytes) and a dirty flag. Clean
+`DEFLATE` and `STORED` parts alike remain unmaterialized across
+open → edit-another-part → save until a caller inspects their bytes or parses
+their XML DOM, and public byte readers (`Part.blob`, `Part.decodedData()`,
+`ZipReader.data(forEntry:)`) always rebase returned `Data` values to
+`startIndex == 0`; media deduplication indexes clean `/ppt/media/*` parts from
+central-directory `(size, crc)` without inflating or copying them. The first
+actual mutation flips authority to the DOM and discards the initial archive
+payload; if an `.onAccess` part failed deferred decoding via non-throwing
+`Part.blob` and is subsequently marked dirty, saving throws the deferred decode
+error rather than overwriting unverified content. Save copies the original
+archive payload for clean parts and serializes + compresses the DOM for dirty
+ones. DOM-writing facades call `markDirty()`; relationship changes and
+content-type changes maintain their corresponding pristine state and initial
+compressed payloads. Tests check that these representations remain coherent
+after edits, saves and reopens.
 
 **Generated schema stratum.** python-pptx's `xmlchemy` synthesizes accessors
 at class-creation time (`RequiredAttribute`, `ZeroOrOne("p:sldSz",

@@ -10,6 +10,9 @@ import Foundation
 /// original bytes exactly — lossless round-trip by construction.
 public final class Part {
     enum DeferredBlob {
+        /// Stored (method 0) archive slice whose size and CRC-32 were verified
+        /// at open; rebased to a zero-based `Data` only if a caller reads it.
+        case verifiedStored(raw: Data)
         /// Stream and CRC already verified via `Inflate.verify` at open;
         /// guaranteed to inflate cleanly to `expectedSize` bytes.
         case verifiedDeflate(raw: Data, expectedSize: Int)
@@ -19,6 +22,7 @@ public final class Part {
 
         var declaredSize: Int {
             switch self {
+            case .verifiedStored(let raw): return raw.count
             case .verifiedDeflate(_, let expectedSize): return expectedSize
             case .onAccess(_, let entry): return entry.uncompressedSize
             }
@@ -104,6 +108,8 @@ public final class Part {
         guard let deferred = deferredBlob else { return Data() }
         let decoded: Data
         switch deferred {
+        case .verifiedStored(let raw):
+            decoded = raw.startIndex == 0 ? raw : Data(raw)
         case .verifiedDeflate(let raw, let expectedSize):
             decoded = try Inflate.inflate(raw, expectedOutputSize: expectedSize)
         case .onAccess(let raw, let entry):
@@ -115,7 +121,7 @@ public final class Part {
     }
 
     /// Verify a deferred `.onAccess` payload without allocating an uncompressed
-    /// buffer for DEFLATE streams.
+    /// buffer for DEFLATE or STORED streams.
     func verifyPayload() throws {
         if let deferredDecodeError { throw deferredDecodeError }
         if materializedBlob != nil { return }
@@ -129,6 +135,15 @@ public final class Part {
                 throw RostrumError.zipCorrupt("CRC-32 mismatch on \"\(entry.name)\"")
             }
             deferredBlob = .verifiedDeflate(raw: raw, expectedSize: entry.uncompressedSize)
+        } else if entry.method == 0 {
+            guard entry.compressedSize == entry.uncompressedSize else {
+                throw RostrumError.zipCorrupt(
+                    "stored entry \"\(entry.name)\" has mismatched sizes (\(entry.compressedSize) vs \(entry.uncompressedSize))")
+            }
+            guard CRC32.checksum(raw) == entry.crc32 else {
+                throw RostrumError.zipCorrupt("CRC-32 mismatch for entry \"\(entry.name)\"")
+            }
+            deferredBlob = .verifiedStored(raw: raw)
         } else {
             materializedBlob = try ZipReader.decodePayload(raw: raw, entry: entry)
             deferredBlob = nil
@@ -208,32 +223,36 @@ public final class OPCPackage {
     /// original compressed payload without eagerly materializing DEFLATE bytes.
     struct CarriedEntry {
         let name: String
-        private let materializedData: Data?
-        private let deferredRaw: Data?
-        private let deferredEntry: ZipReader.Entry?
+        private let raw: Data
+        private let entry: ZipReader.Entry
+        private let isVerified: Bool
         let uncompressedSize: Int
         let initialPayload: ZipWriter.Payload?
 
-        init(name: String, raw: Data, entry: ZipReader.Entry, initialPayload: ZipWriter.Payload?) {
+        init(
+            name: String,
+            raw: Data,
+            entry: ZipReader.Entry,
+            isVerified: Bool,
+            initialPayload: ZipWriter.Payload?
+        ) {
             self.name = name
-            self.materializedData = entry.method == 0 ? raw : nil
-            self.deferredRaw = entry.method == 0 ? nil : raw
-            self.deferredEntry = entry.method == 0 ? nil : entry
+            self.raw = raw
+            self.entry = entry
+            self.isVerified = isVerified
             self.uncompressedSize = entry.uncompressedSize
             self.initialPayload = initialPayload
         }
 
         var data: Data {
-            if let materializedData { return materializedData }
-            return (try? decodedData()) ?? Data()
+            (try? decodedData()) ?? Data()
         }
 
         func decodedData() throws -> Data {
-            if let materializedData { return materializedData }
-            if let raw = deferredRaw, let entry = deferredEntry {
-                return try ZipReader.decodePayload(raw: raw, entry: entry)
+            if isVerified, entry.method == 0 {
+                return raw.startIndex == 0 ? raw : Data(raw)
             }
-            return Data()
+            return try ZipReader.decodePayload(raw: raw, entry: entry)
         }
     }
 
@@ -405,11 +424,13 @@ public final class OPCPackage {
         package.contentTypes = contentTypes
 
         func loadCarried(_ name: String) throws -> CarriedEntry {
-            let loaded = validation == .strict
+            let isStrict = validation == .strict
+            let loaded = isStrict
                 ? try zip.verifiedRawPayload(forEntry: name)
                 : try zip.rawEntryPayload(forEntry: name)
             return CarriedEntry(
                 name: name, raw: loaded.raw, entry: loaded.entry,
+                isVerified: isStrict,
                 initialPayload: Self.initialPayload(raw: loaded.raw, entry: loaded.entry))
         }
 
@@ -472,8 +493,10 @@ public final class OPCPackage {
                 let verified = try zip.verifiedRawPayload(forEntry: name)
                 let initial = Self.initialPayload(raw: verified.raw, entry: verified.entry)
                 if verified.entry.method == 0 {
-                    part = Part(uri: uri, contentType: ct, blob: verified.raw)
-                    part.initialPayload = initial
+                    part = Part(
+                        uri: uri, contentType: ct,
+                        deferred: .verifiedStored(raw: verified.raw),
+                        initialPayload: initial)
                 } else if let initial {
                     part = Part(
                         uri: uri, contentType: ct,
