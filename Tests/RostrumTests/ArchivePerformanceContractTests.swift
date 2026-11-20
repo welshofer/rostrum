@@ -306,4 +306,40 @@ import Testing
         #expect(loaded.raw == framedRaw, "legitimate RFC 1951 stored-block framing must survive verbatim")
         #expect(loaded.decoded == original)
     }
+
+    @Test func mappedIfSafeStoredPartsStayUnmaterializedAndRebaseToZeroStartIndexOnRead() throws {
+        let png = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=")!
+        let builder = try Presentation()
+        let slide1 = try builder.slides[0]
+        let slide2 = try builder.slides.add()
+        try slide2.shapes.addPicture(png, frame: Rect(x: .zero, y: .zero, width: .inches(1), height: .inches(1)))
+
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rostrum-mapped-\(UUID().uuidString).pptx")
+        defer { try? FileManager.default.removeItem(at: tempURL) }
+        try builder.save(to: tempURL)
+
+        let reopened = try Presentation(contentsOf: tempURL)
+        let imageURI = PackURI("/ppt/media/image1.png")
+        let imagePart = try reopened.package.part(at: imageURI)
+        #expect(!imagePart.isBlobMaterialized, "untouched STORED media part stays unmaterialized on mapped open")
+        #expect(imagePart.uncompressedByteCount == png.count)
+
+        // Edit Slide 1 and save without ever materializing image1.png into a heap Data buffer.
+        try reopened.slides[0].shapes.addTextBox(
+            Rect(x: .zero, y: .zero, width: .inches(2), height: .inches(1))
+        ).textFrame?.text = "Touch slide 1 only"
+        let resaved = try reopened.serializedData()
+        #expect(!imagePart.isBlobMaterialized, "untouched STORED media part stays unmaterialized across save")
+        #expect(try ZipReader(data: resaved).data(forEntry: imageURI.memberName) == png)
+        _ = slide1
+
+        // When a caller DOES read `.blob` or `decodedData()`, the returned `Data`
+        // must always be zero-based (`startIndex == 0`) so `bytes[0]` never traps.
+        let decoded = try imagePart.decodedData()
+        #expect(decoded.startIndex == 0)
+        #expect(decoded[0] == png[0])
+        #expect(decoded == png)
+        #expect(imagePart.blob.startIndex == 0)
+    }
 }

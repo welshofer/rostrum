@@ -116,7 +116,11 @@ public final class Presentation {
         validation: OPCArchive.Validation = .strict,
         limits: ZipReader.Limits = .default
     ) throws {
-        try self.init(data: Data(contentsOf: url), validation: validation, limits: limits)
+        try self.init(
+            data: Data(contentsOf: url, options: .mappedIfSafe),
+            validation: validation,
+            limits: limits
+        )
     }
 
     /// Warnings recorded while opening the file: carried zip entries

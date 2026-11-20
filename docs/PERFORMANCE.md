@@ -2,6 +2,64 @@
 
 ## Latest reconciled measurements
 
+The 2026-11-20 archive slice and codec follow-up replaces single-byte `CRC32`
+with Slicing-by-8 (`1.45 GiB/s` on 64 MiB in Release), switches
+`ZipReader.rawEntryPayload` to zero-copy `Data` slices, opens file URLs with
+`.mappedIfSafe` while keeping clean `STORED` (`method == 0`) parts deferred via
+`verifiedStored` (rebasing public `Data` reads to `startIndex == 0`), and bounds
+`Deflate`'s `prev` table to a 32 KiB ring buffer with 8-byte match scanning,
+32-bit bit-buffer flushes, and RFC 1951 `BTYPE=00` stored-block fallback on
+incompressible blocks (`1,048,576` B high-entropy input → `1,048,731` B,
+`+0.015%`). Seven alternating fresh-process pairs (after one warmup pair) on one
+Linux x86-64 host (2 vCPUs, Swift 6.1.2, Release) compare `ed52b69` with the
+candidate; all eight scenarios produce byte-identical saved `.pptx` hashes
+(`savedOutputSHA256`), and every sample is in the
+[raw record](benchmarks/2026-11-20-zero-copy-slices-slicing-by-8-deflate.json).
+
+| Input | Phase | Baseline CPU (ms) | Candidate CPU (ms) | CPU change | Baseline peak RSS | Candidate peak RSS |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| FromKeynote.pptx | open | 139.25 | 63.11 | -54.7% | 160.09 MiB | 101.23 MiB |
+| FromKeynote.pptx | reopen | 122.24 | 50.52 | -58.7% | 160.09 MiB | 101.23 MiB |
+| FromKeynote.pptx | initial-save | 25.99 | 12.91 | -50.3% | 160.09 MiB | 101.23 MiB |
+| FromKeynote.pptx | unchanged-save | 19.02 | 13.47 | -29.2% | 160.09 MiB | 101.23 MiB |
+| MovieAndComments.pptx | open | 75.89 | 22.52 | -70.3% | 126.30 MiB | 81.14 MiB |
+| MovieAndComments.pptx | reopen | 64.87 | 11.61 | -82.1% | 126.30 MiB | 81.14 MiB |
+| FromGoogleSlides.pptx | open | 18.85 | 9.80 | -48.0% | 44.78 MiB | 44.78 MiB |
+| FromGoogleSlides.pptx | reopen | 16.18 | 7.55 | -53.3% | 44.78 MiB | 44.78 MiB |
+| SimplePowerPoint.pptx | open | 2.01 | 1.80 | -10.7% | 44.78 MiB | 44.78 MiB |
+| SimplePowerPoint.pptx | reopen | 1.28 | 1.02 | -20.5% | 44.78 MiB | 44.78 MiB |
+| slides-100 | initial-save | 16.94 | 14.09 | -16.8% | 44.78 MiB | 44.78 MiB |
+| slides-1000 | initial-save | 154.59 | 133.67 | -13.5% | 59.57 MiB | 57.56 MiB |
+| slides-1000 | reopen | 42.04 | 37.12 | -11.7% | 59.57 MiB | 57.56 MiB |
+| table-200x50 | initial-save | 102.03 | 82.21 | -19.4% | 175.91 MiB | 175.82 MiB |
+| table-200x50 | one-cell-edit-save | 99.76 | 82.15 | -17.6% | 175.91 MiB | 175.82 MiB |
+| table-200x50 | reopen | 12.63 | 3.79 | -70.0% | 175.91 MiB | 175.82 MiB |
+| images-unique | initial-save | 6.63 | 5.88 | -11.3% | 44.78 MiB | 44.78 MiB |
+| table-200x50 | render | 644.46 | 660.08 | +2.4% | 175.91 MiB | 175.82 MiB |
+
+| Isolated file-to-file (`Presentation(contentsOf:)` + 1-slide edit + `save(to:)`) | `.strict` open (ms) | `.strict` total (ms) | `.onAccess` open (ms) | `.onAccess` total (ms) | Isolated peak RSS |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| FromKeynote.pptx | 62.46 | 69.44 | 13.17 | 20.14 | 39.09 MiB |
+| MovieAndComments.pptx | 20.66 | 25.52 | 10.79 | 16.28 | 34.08 MiB |
+| FromGoogleSlides.pptx | 9.15 | 13.07 | 2.80 | 6.83 | 21.88 MiB |
+| SimplePowerPoint.pptx | 1.53 | 3.39 | 1.05 | 2.94 | 18.98 MiB |
+
+Zero-copy archive slices, `.mappedIfSafe` file reads, deferred `STORED` part
+materialization, and Slicing-by-8 `CRC32` cut `.strict` open CPU by 48–70% on
+multi-megabyte decks and reduce `rostrum-bench` process peak RSS (which also
+holds an in-memory `serializedData()` buffer for `reopen`) by 58.86 MiB (-36.8%)
+on `FromKeynote.pptx` and 45.16 MiB (-35.8%) on `MovieAndComments.pptx`; in an
+isolated file-to-file open + edit + save process, peak RSS stays at 39.09 MiB
+for `FromKeynote.pptx` (`21.0 MB`) and 34.08 MiB for `MovieAndComments.pptx`
+(`15.9 MB`). `OPCArchive` `.onAccess` `lazy-open` drops from `9.80 ms` to
+`0.29 ms` (-97.1%) on `MovieAndComments.pptx` and from `6.38 ms` to `0.44 ms`
+(-93.2%) on `FromKeynote.pptx`. `Deflate` + `CRC32` changes reduce `initial-save`
+CPU by 13.5–19.4% across `slides-100`, `slides-1000`, and `table-200x50`. Small
+non-codec phases retained normal run-to-run drift (`images-unique` `image-import`
++8.0%, sub-millisecond `first-slide` / `traversal` on `FromGoogleSlides.pptx`,
+and `table-200x50` `render` +2.4%); rendering algorithms were untouched and no
+rendering speedup or native Mac measurement is claimed.
+
 The 2026-11-19 archive read/passthrough follow-up replaces eager uncompressed
 `Part` allocation during `.strict` open with streaming `Inflate.verify` (a
 fixed ~64 KiB sliding window), indexes `/ppt/media/*` deduplication from

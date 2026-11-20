@@ -6,20 +6,25 @@ the conformance documentation separately describes rendering limitations.
 
 ## [Unreleased]
 
-- Open decks faster: `Inflate` decodes through a prefix lookup table with a
-  64-bit bit buffer, `Inflate.verify` validates DEFLATE streams and CRCs at
-  open through a fixed ~64 KiB sliding window without allocating uncompressed
-  buffers for untouched parts, opt-in `Presentation(data:validation: .onAccess)`
-  + `Part.decodedData()` skips codecs on untouched parts altogether, and plain
-  XML parts take a direct byte-level parser (`XMLFastParser`) that declines
-  anything the `XMLParser` bridge would treat differently. Differential tests
-  compare both parsers over the fixture corpus and deterministic mutations. See
-  the [measurements](docs/PERFORMANCE.md).
-- Write smaller archives: `Deflate` adds lazy matching and per-block dynamic
-  Huffman codes, staying a pure function of its input. **Saved bytes change**
-  for every deck Rostrum compresses; decoded parts do not. Untouched parts,
-  `.rels` streams, `[Content_Types].xml` and carried entries retain their
-  opened compressed payloads directly (including RFC 1951 stored-block media
+- Open decks faster and with lower memory: `Presentation(contentsOf:)` maps
+  files with `.mappedIfSafe`, `ZipReader` slices archive payloads without
+  copying, `CRC32` uses Slicing-by-8 lookup tables, `Inflate` decodes through a
+  prefix lookup table with a 64-bit bit buffer, `Inflate.verify` validates
+  DEFLATE streams and CRCs at open through a fixed ~64 KiB sliding window
+  without allocating uncompressed buffers for untouched `DEFLATE` or `STORED`
+  parts, opt-in `Presentation(data:validation: .onAccess)` + `Part.decodedData()`
+  skips codecs on untouched parts altogether, and plain XML parts take a direct
+  byte-level parser (`XMLFastParser`) that declines anything the `XMLParser`
+  bridge would treat differently. Differential and adversarial tests check the
+  parsers and codecs against `XMLParser` and Python's `zlib`. See the
+  [measurements](docs/PERFORMANCE.md).
+- Write smaller archives faster: `Deflate` adds lazy matching, per-block dynamic
+  Huffman codes with `BTYPE=00` stored-block fallback on incompressible blocks,
+  a bounded 32 KiB match-chain ring buffer, 8-byte match scanning, and 32-bit
+  bit-buffer flushes, staying a pure function of its input. **Saved bytes
+  change** for every deck Rostrum compresses; decoded parts do not. Untouched
+  parts, `.rels` streams, `[Content_Types].xml` and carried entries retain their
+  opened archive payload slices directly (including RFC 1951 stored-block media
   framing) and copy them through on save without inflating or re-deflating;
   repeated saves of rebuilt streams also reuse cached compression.
 - Preview every DrawingML preset with its own outline. The 81 presets without
