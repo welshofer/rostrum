@@ -202,6 +202,44 @@ import Testing
         #expect(!layout.fits) // the unkerned A is wider than 8pt
     }
 
+    @Test func unbrokenPiecesSkipRedundantEmitShapingWhileWrappedAndTabSplitPiecesRemeasure() throws {
+        let font = try FontMetrics(contentsOf: URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+            .appendingPathComponent("Fixtures/Typography/DejaVuSans.ttf"))
+        let kernedXML = try body("<a:p><a:r><a:rPr sz=\"1200\" kern=\"1200\" spc=\"50\"/><a:t>AV</a:t></a:r></a:p>")
+
+        let unbrokenFragments = RichTextLayout.FragmentMeasurements()
+        let unbroken = RichTextLayout(
+            textBody: kernedXML, width: 100, height: 100, fallbackMetrics: font,
+            preparation: RichTextLayout.Preparation(fragments: unbrokenFragments))
+        #expect(unbroken.lines.count == 1)
+        #expect(unbroken.lines[0].spans[0].run.usesKerning)
+        #expect(unbrokenFragments.count == 0, "intact single-line piece must bypass emit() re-shaping")
+        // Unkerned DejaVu 12pt 'A' + 'V' with +0.5pt/char tracking is 8.25 + 8.25 + 1.0 = 17.5pt;
+        // 'AV' negative kerning must survive on the unbroken single-line span.
+        #expect(unbroken.lines[0].spans[0].width < 17.5)
+
+        let wrappedFragments = RichTextLayout.FragmentMeasurements()
+        let wrapped = RichTextLayout(
+            textBody: kernedXML, width: 8.5, height: 100, fallbackMetrics: font,
+            preparation: RichTextLayout.Preparation(fragments: wrappedFragments))
+        #expect(wrapped.lines.count == 2)
+        #expect(wrappedFragments.count == 2, "wrapped pieces must re-shape each split line fragment")
+        #expect(wrapped.lines[0].spans[0].width == 8.75) // 8.25pt base 'A' + 0.5pt tracking, pair kerning stripped
+
+        // Control-split source piece ('AV\tXY') must measure 'AV' and 'XY' independently rather than treating
+        // either 2-atom half as the full intact source piece.
+        let tabSplitXML = try body("<a:p><a:pPr><a:tabLst><a:tab pos=\"635000\"/></a:tabLst></a:pPr><a:r><a:rPr sz=\"1200\" kern=\"1200\"/><a:t>AV\tXY</a:t></a:r></a:p>")
+        let standaloneXY = try body("<a:p><a:r><a:rPr sz=\"1200\" kern=\"1200\"/><a:t>XY</a:t></a:r></a:p>")
+        let tabFragments = RichTextLayout.FragmentMeasurements()
+        let tabLayout = RichTextLayout(
+            textBody: tabSplitXML, width: 200, height: 100, fallbackMetrics: font,
+            preparation: RichTextLayout.Preparation(fragments: tabFragments))
+        let xyLayout = RichTextLayout(textBody: standaloneXY, width: 200, height: 100, fallbackMetrics: font)
+        #expect(tabFragments.count == 2)
+        #expect(tabLayout.lines[0].spans.count == 2)
+        #expect(tabLayout.lines[0].spans[1].width == xyLayout.lines[0].spans[0].width)
+    }
+
     @Test func fallbackASCIIKeepsBreaksTrackingControlsAndLiveDOMChanges() throws {
         let xml = try body("<a:p><a:pPr><a:tabLst><a:tab pos=\"228600\"/></a:tabLst></a:pPr><a:r><a:rPr sz=\"1000\" spc=\"100\"/><a:t>AB-CD EF\tGH\r\nIJ</a:t></a:r></a:p>")
         let layout = RichTextLayout(textBody: xml, width: 18, height: 200)
