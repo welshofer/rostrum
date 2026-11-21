@@ -66,12 +66,16 @@ public final class TextFrame {
         self.shapeElement = shapeElement
     }
 
+    private var existingBodyPr: XML.Element? {
+        txBody.firstChild(named: "a:bodyPr")
+    }
+
     private var bodyPr: XML.Element {
         txBody.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
     }
 
     public var wordWrap: Bool {
-        get { bodyPr[attribute: "wrap"] != "none" }
+        get { existingBodyPr?[attribute: "wrap"] != "none" }
         set {
             bodyPr[attribute: "wrap"] = newValue ? "square" : "none"
             part.markDirty()
@@ -90,7 +94,7 @@ public final class TextFrame {
 
     /// Whether the shape resizes vertically to fit its text (`a:spAutoFit`).
     public var shapeAutoFit: Bool {
-        get { bodyPr.firstChild(named: "a:spAutoFit") != nil }
+        get { existingBodyPr?.firstChild(named: "a:spAutoFit") != nil }
         set {
             for name in ["a:noAutofit", "a:normAutofit", "a:spAutoFit"] { bodyPr.removeChildren(named: name) }
             if newValue {
@@ -127,7 +131,7 @@ public final class TextFrame {
     }
 
     public var verticalAnchor: VerticalAnchor {
-        get { bodyPr[attribute: "anchor"].flatMap(VerticalAnchor.init(rawValue:)) ?? .top }
+        get { existingBodyPr?[attribute: "anchor"].flatMap(VerticalAnchor.init(rawValue:)) ?? .top }
         set {
             bodyPr[attribute: "anchor"] = newValue.rawValue
             part.markDirty()
@@ -136,7 +140,7 @@ public final class TextFrame {
 
     /// Vertical text orientation (`a:bodyPr@vert`).
     public var textDirection: BodyTextDirection {
-        get { bodyPr[attribute: "vert"].flatMap(BodyTextDirection.init(rawValue:)) ?? .horizontal }
+        get { existingBodyPr?[attribute: "vert"].flatMap(BodyTextDirection.init(rawValue:)) ?? .horizontal }
         set {
             bodyPr[attribute: "vert"] = newValue == .horizontal ? nil : newValue.rawValue
             part.markDirty()
@@ -145,7 +149,7 @@ public final class TextFrame {
 
     /// Number of text columns (`a:bodyPr@numCol`, 1...16).
     public var columnCount: Int {
-        get { max(1, min(16, bodyPr.boundedInt("numCol", in: 1...16) ?? 1)) }
+        get { max(1, min(16, existingBodyPr?.boundedInt("numCol", in: 1...16) ?? 1)) }
         set {
             let clamped = max(1, min(16, newValue))
             bodyPr[attribute: "numCol"] = clamped == 1 ? nil : String(clamped)
@@ -155,7 +159,7 @@ public final class TextFrame {
 
     /// Spacing between text columns (`a:bodyPr@spcCol`).
     public var columnSpacing: EMU {
-        get { EMU(bodyPr.coordinate("spcCol") ?? 0) }
+        get { EMU(existingBodyPr?.coordinate("spcCol") ?? 0) }
         set {
             let clamped = max(0, min(Int(Int32.max), newValue.rawValue))
             bodyPr[attribute: "spcCol"] = clamped == 0 ? nil : String(clamped)
@@ -221,9 +225,10 @@ public final class TextFrame {
         part.markDirty()
     }
 
-    /// Ensure the body is schema-valid (at least one `a:p`).
+    /// Ensure the body is schema-valid (at least one `a:p` preceded by `a:bodyPr`).
     func ensureNonEmpty() {
         if txBody.firstChild(named: "a:p") == nil {
+            _ = txBody.getOrAddChild("a:bodyPr", beforeAnyOf: ["a:lstStyle", "a:p"])
             txBody.appendElement(XML.Element("a:p"))
         }
     }
@@ -472,7 +477,7 @@ public final class Paragraph {
         let t = XML.Element("a:t")
         t.children = [.text(text)]
         r.appendElement(t)
-        p.appendElement(r)
+        p.insertChild(r, beforeAnyOf: ["a:endParaRPr", "a:extLst"])
         part.markDirty()
         return Run(r: r, part: part)
     }
@@ -488,11 +493,15 @@ public final class Run {
         self.part = part
     }
 
+    private var existingRPr: XML.Element? {
+        r.firstChild(named: "a:rPr")
+    }
+
     /// `a:rPr` must precede `a:t`.
     private var rPr: XML.Element {
-        if let existing = r.firstChild(named: "a:rPr") { return existing }
+        if let existing = existingRPr { return existing }
         let rPr = XML.Element("a:rPr", attributes: [("lang", "en-US"), ("dirty", "0")])
-        r.children.insert(.element(rPr), at: 0)
+        r.insertChild(rPr, beforeAnyOf: ["a:t"])
         return rPr
     }
 
@@ -507,7 +516,7 @@ public final class Run {
 
     /// Font size in points.
     public var fontSize: Double? {
-        get { rPr[attribute: "sz"].flatMap { Int($0) }.map { Double($0) / 100 } }
+        get { existingRPr?[attribute: "sz"].flatMap { Int($0) }.map { Double($0) / 100 } }
         set {
             rPr[attribute: "sz"] = newValue.map { String(Int(($0 * 100).rounded())) }
             part.markDirty()
@@ -515,7 +524,7 @@ public final class Run {
     }
 
     public var bold: Bool {
-        get { rPr[attribute: "b"] == "1" }
+        get { existingRPr?[attribute: "b"] == "1" }
         set {
             rPr[attribute: "b"] = newValue ? "1" : nil
             part.markDirty()
@@ -523,7 +532,7 @@ public final class Run {
     }
 
     public var italic: Bool {
-        get { rPr[attribute: "i"] == "1" }
+        get { existingRPr?[attribute: "i"] == "1" }
         set {
             rPr[attribute: "i"] = newValue ? "1" : nil
             part.markDirty()
@@ -532,7 +541,7 @@ public final class Run {
 
     /// Letter spacing (tracking) in points; positive spreads, negative tightens.
     public var letterSpacing: Double? {
-        get { rPr[attribute: "spc"].flatMap { Int($0) }.map { Double($0) / 100 } }
+        get { existingRPr?[attribute: "spc"].flatMap { Int($0) }.map { Double($0) / 100 } }
         set {
             rPr[attribute: "spc"] = newValue.map { String(Int(($0 * 100).rounded())) }
             part.markDirty()
@@ -541,7 +550,7 @@ public final class Run {
 
     /// Capitalization style (`a:rPr@cap`: `.none`, `.small`, `.all`).
     public var caps: TextCaps? {
-        get { rPr[attribute: "cap"].flatMap(TextCaps.init(rawValue:)) }
+        get { existingRPr?[attribute: "cap"].flatMap(TextCaps.init(rawValue:)) }
         set {
             rPr[attribute: "cap"] = (newValue == nil || newValue == TextCaps.none) ? nil : newValue?.rawValue
             part.markDirty()
@@ -550,7 +559,7 @@ public final class Run {
 
     /// Typeface name (e.g. "Avenir Next"). Sets latin script fonts.
     public var fontName: String? {
-        get { rPr.firstChild(named: "a:latin")?[attribute: "typeface"] }
+        get { existingRPr?.firstChild(named: "a:latin")?[attribute: "typeface"] }
         set {
             rPr.removeChildren(named: "a:latin")
             if let newValue {
@@ -566,7 +575,7 @@ public final class Run {
 
     public var color: Color? {
         get {
-            rPr.firstChild(named: "a:solidFill")?
+            existingRPr?.firstChild(named: "a:solidFill")?
                 .firstChild(named: "a:srgbClr")?[attribute: "val"]
                 .flatMap { Color(validating: $0) }
         }
@@ -586,7 +595,7 @@ public final class Run {
 
     /// Underline (`a:rPr@u`; sng/dbl/none/…).
     public var underline: Bool {
-        get { let u = rPr[attribute: "u"]; return u != nil && u != "none" }
+        get { let u = existingRPr?[attribute: "u"]; return u != nil && u != "none" }
         set {
             rPr[attribute: "u"] = newValue ? "sng" : nil
             part.markDirty()
@@ -595,7 +604,7 @@ public final class Run {
 
     /// Strikethrough (`a:rPr@strike`).
     public var strikethrough: Bool {
-        get { let s = rPr[attribute: "strike"]; return s != nil && s != "noStrike" }
+        get { let s = existingRPr?[attribute: "strike"]; return s != nil && s != "noStrike" }
         set {
             rPr[attribute: "strike"] = newValue ? "sngStrike" : nil
             part.markDirty()
@@ -604,7 +613,7 @@ public final class Run {
 
     /// Strikethrough style (`a:rPr@strike`: `.none`, `.single`, `.double`).
     public var strikethroughStyle: StrikethroughStyle {
-        get { rPr[attribute: "strike"].flatMap(StrikethroughStyle.init(rawValue:)) ?? .none }
+        get { existingRPr?[attribute: "strike"].flatMap(StrikethroughStyle.init(rawValue:)) ?? .none }
         set {
             rPr[attribute: "strike"] = newValue == .none ? nil : newValue.rawValue
             part.markDirty()
@@ -614,7 +623,7 @@ public final class Run {
     /// Baseline shift as a percent of font size (`a:rPr@baseline`): positive
     /// raises (superscript), negative lowers (subscript), nil is normal.
     public var baselinePercent: Double? {
-        get { rPr[attribute: "baseline"].flatMap { Int($0) }.map { Double($0) / 1000 } }
+        get { existingRPr?[attribute: "baseline"].flatMap { Int($0) }.map { Double($0) / 1000 } }
         set {
             rPr[attribute: "baseline"] = newValue.map { String(Int(($0 * 1000).rounded())) }
             part.markDirty()
@@ -637,7 +646,7 @@ public final class Run {
     /// The hyperlink target if this run is a link, resolved through the part's
     /// relationships (or `action` URI when no relationship target is used).
     public var hyperlink: String? {
-        guard let hlink = rPr.firstChild(named: "a:hlinkClick") else { return nil }
+        guard let hlink = existingRPr?.firstChild(named: "a:hlinkClick") else { return nil }
         if let rId = hlink[attribute: "r:id"], !rId.isEmpty,
            let target = part.rels.relationship(withId: rId)?.target {
             return target

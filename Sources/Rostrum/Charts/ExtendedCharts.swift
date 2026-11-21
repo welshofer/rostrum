@@ -86,9 +86,23 @@ public final class ExtendedChart {
         return subtotals.children(named: "cx:idx").compactMap { $0[attribute: "val"].flatMap(Int.init) }
     }
 
-    /// Categories from `cx:chartData/cx:data/cx:strDim`.
+    /// Categories from `cx:chartData/cx:data/cx:strDim`, preferring series-mapped `cx:data` elements.
     public var categories: [String] {
-        for dataEl in dataElements {
+        let dataById = dataByIdMap
+        let datas = dataElements
+        var candidates: [XML.Element] = []
+        var seen: Set<ObjectIdentifier> = []
+        for (index, ser) in seriesElements.enumerated() {
+            let dataId = ser.firstChild(named: "cx:dataId")?[attribute: "val"]
+            if let el = dataId.flatMap({ dataById[$0] }) ?? (index < datas.count ? datas[index] : nil),
+               seen.insert(ObjectIdentifier(el)).inserted {
+                candidates.append(el)
+            }
+        }
+        for el in datas where seen.insert(ObjectIdentifier(el)).inserted {
+            candidates.append(el)
+        }
+        for dataEl in candidates {
             guard let strDim = dataEl.firstChild(named: "cx:strDim") else { continue }
             let pts = Self.readStringDimension(strDim)
             if !pts.isEmpty { return pts }
@@ -96,14 +110,20 @@ public final class ExtendedChart {
         return []
     }
 
+    private var dataByIdMap: [String: XML.Element] {
+        var map: [String: XML.Element] = [:]
+        for el in dataElements {
+            if let id = el[attribute: "id"], map[id] == nil {
+                map[id] = el
+            }
+        }
+        return map
+    }
+
     /// Series values from `cx:series` paired with `cx:chartData/cx:data/cx:numDim`.
     public var series: [ChartData.Series] {
-        let dataById: [String: XML.Element] = Dictionary(
-            uniqueKeysWithValues: dataElements.compactMap { el in
-                guard let id = el[attribute: "id"] else { return nil }
-                return (id, el)
-            }
-        )
+        let dataById = dataByIdMap
+        let datas = dataElements
         return seriesElements.enumerated().map { index, ser in
             let name = ser.firstChild(named: "cx:tx")?
                 .firstChild(named: "cx:txData")?
@@ -111,7 +131,7 @@ public final class ExtendedChart {
                 ?? ser.firstChild(named: "cx:tx")?.firstChild(named: "cx:v")?.textContent
                 ?? ""
             let dataId = ser.firstChild(named: "cx:dataId")?[attribute: "val"]
-            let dataEl = dataId.flatMap { dataById[$0] } ?? (index < dataElements.count ? dataElements[index] : nil)
+            let dataEl = dataId.flatMap { dataById[$0] } ?? (index < datas.count ? datas[index] : nil)
             let values: [Double?]
             if let numDim = dataEl?.firstChild(named: "cx:numDim") {
                 values = Self.readNumberDimension(numDim)
@@ -140,32 +160,185 @@ public final class ExtendedChart {
         return try? package.part(at: PackURI.resolve(target: rel.target, relativeTo: part.uri.baseURI))
     }
 
+    /// Check whether `formula` uses `Sheet1!$<COL>$2:$<COL>$<N>` (or `'Sheet1'!$...`)
+    /// layout so `ChartWorkbook.make` can safely rewrite the embedded workbook.
+    private static func isCanonicalSheet1Range(_ formula: String, columnRequirement: String? = nil) -> Bool {
+        var normalized = formula.trimmingCharacters(in: .whitespacesAndNewlines)
+        if normalized.hasPrefix("("), normalized.hasSuffix(")"), normalized.count >= 2 {
+            normalized = String(normalized.dropFirst().dropLast())
+        }
+        if normalized.hasPrefix("'Sheet1'!$") {
+            normalized = "Sheet1!$" + normalized.dropFirst("'Sheet1'!$".count)
+        }
+        guard normalized.hasPrefix("Sheet1!$") else { return false }
+        let rest = normalized.dropFirst("Sheet1!$".count)
+        let halves = rest.split(separator: ":", omittingEmptySubsequences: false)
+        guard halves.count == 2 else { return false }
+        let start = halves[0] // <COL>$2
+        let end = halves[1]   // $<COL>$<ROW>
+        guard let startDollar = start.firstIndex(of: "$"),
+              start[start.index(after: startDollar)...] == "2" else { return false }
+        let col = String(start[..<startDollar])
+        guard !col.isEmpty, col.utf8.allSatisfy({ $0 >= 0x41 && $0 <= 0x5A }) else { return false }
+        if let columnRequirement, col != columnRequirement { return false }
+        guard end.hasPrefix("$\(col)$") else { return false }
+        let endRow = end.dropFirst(col.count + 2)
+        guard let rowVal = Int(endRow), rowVal >= 2 else { return false }
+        return true
+    }
+
     /// Replace data in place across `cx:chartData` and the embedded workbook.
     public func replaceData(_ newData: ChartData) throws {
         try newData.requireFiniteValues()
         let sers = seriesElements
         let datas = dataElements
-        guard !sers.isEmpty, sers.count == newData.series.count, datas.count >= sers.count else {
+        guard !sers.isEmpty else {
+            throw Chart.ReplacementProblem.noSeries
+        }
+        guard sers.count == newData.series.count else {
             throw Chart.ReplacementProblem.seriesCountMismatch(chart: sers.count, replacement: newData.series.count)
+        }
+        guard !newData.categories.isEmpty else {
+            throw Chart.ReplacementProblem.categoryCountMismatch(chart: categories.count, replacement: 0)
+        }
+        for (index, entry) in newData.series.enumerated() where entry.values.count != newData.categories.count {
+            throw Chart.ReplacementProblem.seriesValueCountMismatch(
+                index: index,
+                chart: newData.categories.count,
+                replacement: entry.values.count
+            )
+        }
+
+        let dataById = dataByIdMap
+        var resolvedTargets: [XML.Element] = []
+        resolvedTargets.reserveCapacity(sers.count)
+        var usedTargets: Set<ObjectIdentifier> = []
+        var usedDataIds: Set<String> = []
+        let workbook = workbookPart
+        let hasWorkbook = workbook != nil
+
+        for (index, ser) in sers.enumerated() {
+            let target: XML.Element?
+            if let dataId = ser.firstChild(named: "cx:dataId")?[attribute: "val"] {
+                target = dataById[dataId]
+            } else {
+                target = index < datas.count ? datas[index] : nil
+            }
+            guard let dataEl = target else {
+                throw Chart.ReplacementProblem.seriesNotWritable(index: index, missing: "cx:data")
+            }
+            guard usedTargets.insert(ObjectIdentifier(dataEl)).inserted else {
+                throw Chart.ReplacementProblem.seriesNotWritable(index: index, missing: "unique cx:data")
+            }
+            if let id = dataEl[attribute: "id"] {
+                usedDataIds.insert(id)
+            }
+            if let strDim = dataEl.firstChild(named: "cx:strDim") {
+                if strDim.children(named: "cx:lvl").count > 1 {
+                    throw Chart.ReplacementProblem.categoryEncodingUnsupported(index: index)
+                }
+                if hasWorkbook,
+                   let strF = strDim.firstChild(named: "cx:f")?.textContent,
+                   !strF.isEmpty,
+                   !Self.isCanonicalSheet1Range(strF, columnRequirement: "A") {
+                    throw Chart.ReplacementProblem.workbookLayoutNotRecognized(formula: strF)
+                }
+            }
+            guard let numDim = dataEl.firstChild(named: "cx:numDim") else {
+                throw Chart.ReplacementProblem.seriesNotWritable(index: index, missing: "cx:numDim")
+            }
+            if numDim.children(named: "cx:lvl").count > 1 {
+                throw Chart.ReplacementProblem.seriesNotWritable(index: index, missing: "single-level cx:numDim")
+            }
+            if hasWorkbook,
+               let numF = numDim.firstChild(named: "cx:f")?.textContent,
+               !numF.isEmpty,
+               !Self.isCanonicalSheet1Range(numF) {
+                throw Chart.ReplacementProblem.workbookLayoutNotRecognized(formula: numF)
+            }
+            resolvedTargets.append(dataEl)
+        }
+
+        // Also validate any unreferenced extra cx:data elements carrying cx:strDim
+        // before mutating so fallback category dimensions never bypass preflight.
+        for extra in datas where !usedTargets.contains(ObjectIdentifier(extra)) {
+            if let id = extra[attribute: "id"], usedDataIds.contains(id) { continue }
+            if let strDim = extra.firstChild(named: "cx:strDim") {
+                if strDim.children(named: "cx:lvl").count > 1 {
+                    throw Chart.ReplacementProblem.categoryEncodingUnsupported(index: 0)
+                }
+                if hasWorkbook,
+                   let strF = strDim.firstChild(named: "cx:f")?.textContent,
+                   !strF.isEmpty,
+                   !Self.isCanonicalSheet1Range(strF, columnRequirement: "A") {
+                    throw Chart.ReplacementProblem.workbookLayoutNotRecognized(formula: strF)
+                }
+            }
+        }
+
+        // Build the replacement workbook bytes BEFORE mutating the XML DOM so a
+        // workbook generation error (e.g. >255 series) never leaves partial edits.
+        let newWorkbookBytes = try workbook != nil ? ChartWorkbook.make(data: newData) : nil
+
+        let lastRow = newData.categories.count + 1
+        // Remove unreferenced duplicate-id cx:data shadows so stale copies never linger.
+        if let chartDataEl = root?.firstChild(named: "cx:chartData") {
+            for extra in datas where !usedTargets.contains(ObjectIdentifier(extra)) {
+                if let id = extra[attribute: "id"], usedDataIds.contains(id) {
+                    chartDataEl.removeChild(extra)
+                } else if let strDim = extra.firstChild(named: "cx:strDim") {
+                    if let f = strDim.firstChild(named: "cx:f"), !f.textContent.isEmpty,
+                       hasWorkbook || Self.isCanonicalSheet1Range(f.textContent, columnRequirement: "A") {
+                        f.children = [.text("Sheet1!$A$2:$A$\(lastRow)")]
+                    }
+                    Self.writeStringDimension(newData.categories, into: strDim)
+                }
+            }
         }
         for (index, ser) in sers.enumerated() {
             let entry = newData.series[index]
+            let col = seriesColumn(index)
             if let tx = ser.firstChild(named: "cx:tx") {
                 let txData = tx.getOrAddChild("cx:txData")
                 let v = txData.getOrAddChild("cx:v")
                 v.children = [.text(entry.name)]
             }
-            let dataEl = datas[index]
+            let dataEl = resolvedTargets[index]
             if let strDim = dataEl.firstChild(named: "cx:strDim") {
+                if let f = strDim.firstChild(named: "cx:f"), !f.textContent.isEmpty,
+                   hasWorkbook || Self.isCanonicalSheet1Range(f.textContent, columnRequirement: "A") {
+                    f.children = [.text("Sheet1!$A$2:$A$\(lastRow)")]
+                }
                 Self.writeStringDimension(newData.categories, into: strDim)
             }
             if let numDim = dataEl.firstChild(named: "cx:numDim") {
+                if let f = numDim.firstChild(named: "cx:f"), !f.textContent.isEmpty,
+                   hasWorkbook || Self.isCanonicalSheet1Range(f.textContent) {
+                    f.children = [.text("Sheet1!$\(col)$2:$\(col)$\(lastRow)")]
+                }
                 Self.writeNumberDimension(entry.values, into: numDim)
+            }
+            if let layoutPr = ser.firstChild(named: "cx:layoutPr"),
+               let subtotals = layoutPr.firstChild(named: "cx:subtotals") {
+                let validCount = newData.categories.count
+                for idxNode in subtotals.children(named: "cx:idx") {
+                    guard let idxVal = idxNode[attribute: "val"].flatMap(Int.init),
+                          idxVal >= 0, idxVal < validCount else {
+                        subtotals.removeChild(idxNode)
+                        continue
+                    }
+                }
+                if subtotals.children(named: "cx:idx").isEmpty {
+                    layoutPr.removeChild(subtotals)
+                    if layoutPr.childElements.isEmpty {
+                        ser.removeChild(layoutPr)
+                    }
+                }
             }
         }
         part.markDirty()
-        if let workbook = workbookPart {
-            workbook.replaceBlob(try ChartWorkbook.make(data: newData))
+        if let workbook, let newWorkbookBytes {
+            workbook.replaceBlob(newWorkbookBytes)
         }
     }
 
