@@ -292,7 +292,9 @@ public struct RichTextLayout: Sendable {
             }
             let emptySpacingMetric = spacingMetric(baseMetrics, size: baseSize, style: baseStyle)
             var spacingRunMetrics: [SpacingMetric?] = []
+            var intactPieces: [(atomCount: Int, exact: Double)?] = []
             func shapePieces() {
+                intactPieces = Array(repeating: nil, count: pieces.count)
                 for piece in pieces {
                     let text = piece.text, metrics = piece.metrics
                     if let substitution = piece.previewSubstitution { warnings.append(.unsupportedLayoutFeature(substitution)) }
@@ -312,6 +314,7 @@ public struct RichTextLayout: Sendable {
                     let ascent = vertical.ascent, lineHeight = vertical.height
                     // Segment control characters before shaping: tabs are paragraph geometry.
                     var segment = ""
+                    var hadControl = false
                     func appendSegment() {
                         guard !segment.isEmpty else { return }
                         if metrics == nil { usesNativeAdvanceGrid = false }
@@ -331,6 +334,7 @@ public struct RichTextLayout: Sendable {
                             return
                         }
                         if let metrics {
+                            let startAtomCount = atoms.count
                             let input = preparation?.segment(segment)
                             let shaper = TextShaper(metrics)
                             let shaped = input.map {
@@ -345,6 +349,9 @@ public struct RichTextLayout: Sendable {
                             }
                             let scalars = input?.scalars ?? Array(segment.unicodeScalars)
                             let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: segment)
+                            let exactAdvance = (nativeGrid ? shaped.glyphs.reduce(0) {
+                                $0 + Self.nativeAdvance($1, font: metrics, pointSize: style.measurementPointSize)
+                            } : shaped.width) + Double(segment.count) * style.tracking
                             if !nativeGrid {
                                 usesNativeAdvanceGrid = false
                                 warnings.append(.unsupportedLayoutFeature("Native advance rounding outside single-scalar left-to-right ASCII glyphs is not verified"))
@@ -359,6 +366,9 @@ public struct RichTextLayout: Sendable {
                                         ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
                                         source: source, breakAfter: breaks.contains(glyph.scalarRange.upperBound)))
                                 }
+                                if !hadControl {
+                                    intactPieces[source - 1] = (atoms.count - startAtomCount, exactAdvance)
+                                }
                                 segment = ""
                                 return
                             }
@@ -366,6 +376,9 @@ public struct RichTextLayout: Sendable {
                                 breaks: breaks, styleIndex: styleIndex, tracking: style.tracking,
                                 ascent: ascent, lineHeight: lineHeight, drawingML: vertical.drawingML,
                                 source: source, atoms: &atoms) {
+                                if !hadControl, shaped.glyphs.reduce(0, { $0 + $1.scalarRange.count }) == scalars.count {
+                                    intactPieces[source - 1] = (atoms.count - startAtomCount, exactAdvance)
+                                }
                                 segment = ""
                                 return
                             }
@@ -377,12 +390,18 @@ public struct RichTextLayout: Sendable {
                                 grouped[glyph.scalarRange, default: 0] += nativeGrid
                                     ? Self.nativeAdvance(glyph, font: metrics, pointSize: style.measurementPointSize) : glyph.advance
                             }
+                            var expectedScalar = 0, coversAllScalars = true
                             for range in grouped.keys.sorted(by: { $0.lowerBound < $1.lowerBound }) {
+                                if range.lowerBound != expectedScalar { coversAllScalars = false }
+                                expectedScalar = range.upperBound
                                 let value = String(String.UnicodeScalarView(scalars[range]))
                                 atoms.append(Atom(text: value, styleIndex: styleIndex,
                                     width: (grouped[range] ?? 0) + style.tracking * Double(value.count),
                                     ascent: ascent, height: lineHeight, drawingML: vertical.drawingML,
                                     source: source, breakAfter: breaks.contains(range.upperBound)))
+                            }
+                            if !hadControl, coversAllScalars, expectedScalar == scalars.count {
+                                intactPieces[source - 1] = (atoms.count - startAtomCount, exactAdvance)
                             }
                         } else {
                             let breaks = Set(TextShaper.lineBreaks(in: segment).map(\.scalarOffset))
@@ -399,6 +418,8 @@ public struct RichTextLayout: Sendable {
                     }
                     for character in style.text {
                         if character == "\t" || character == "\n" || character == "\r" || character == "\r\n" {
+                            hadControl = true
+                            intactPieces[source - 1] = nil
                             appendSegment()
                             if character == "\t" { hasTabs = true }
                             atoms.append(Atom(text: character == "\t" ? "\t" : "", styleIndex: styleIndex,
@@ -686,17 +707,23 @@ public struct RichTextLayout: Sendable {
                         // including empty runs. Font resolution is already complete
                         // for this immutable paragraph; only fragment text changes.
                         if let font = pieces[lineAtoms[fragmentStart].source - 1].metrics {
-                            let value = fragment.map(\.text).joined()
-                            func measureFragment() -> Double {
-                                let shaped = TextShaper(font).shape(value, pointSize: style.measurementPointSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
-                                let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: value)
-                                return nativeGrid ? shaped.glyphs.reduce(0) {
-                                    $0 + Self.nativeAdvance($1, font: font, pointSize: style.measurementPointSize)
-                                } : shaped.width
+                            let exact: Double
+                            if let intact = intactPieces[lineAtoms[fragmentStart].source - 1],
+                               fragment.count == intact.atomCount {
+                                exact = intact.exact
+                            } else {
+                                let value = fragment.map(\.text).joined()
+                                func measureFragment() -> Double {
+                                    let shaped = TextShaper(font).shape(value, pointSize: style.measurementPointSize, kerning: style.usesKerning, standardLigatures: style.usesStandardLigatures)
+                                    let nativeGrid = nativeLeftToRight && Self.supportsNativeAdvanceGrid(shaped, text: value)
+                                    return nativeGrid ? shaped.glyphs.reduce(0) {
+                                        $0 + Self.nativeAdvance($1, font: font, pointSize: style.measurementPointSize)
+                                    } : shaped.width
+                                }
+                                let advance = preparation?.fragments?.advance(value, style: style,
+                                    nativeLTR: nativeLeftToRight, create: measureFragment) ?? measureFragment()
+                                exact = advance + Double(value.count) * style.tracking
                             }
-                            let advance = preparation?.fragments?.advance(value, style: style,
-                                nativeLTR: nativeLeftToRight, create: measureFragment) ?? measureFragment()
-                            let exact = advance + Double(value.count) * style.tracking
                             let adjustment = exact - fragment.reduce(0) { $0 + $1.width }
                             lineAtoms[end - 1].width += adjustment; lineWidth += adjustment
                         }
