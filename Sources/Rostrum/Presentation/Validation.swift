@@ -9,15 +9,25 @@ extension Presentation {
         public var description: String { "\(part): <\(element)> \(message)" }
     }
 
-    /// Check every XML part against the generated schema's required-attribute
-    /// rules (extracted from python-pptx's descriptors). An empty result means
+    /// Check every XML part against XML well-formedness and the generated
+    /// schema's required-attribute rules (extracted from python-pptx's
+    /// descriptors). An empty result means every XML part parses cleanly and
     /// no required attribute is missing anywhere in the deck. This is a lint,
     /// not a full XSD validation, and it does not mutate the document.
     public func validate() throws -> [ValidationIssue] {
         var issues: [ValidationIssue] = []
         for (uri, part) in package.parts.sorted(by: { $0.key.value < $1.key.value }) {
             _ = try part.decodedData()
-            guard uri.ext == "xml", let dom = try? part.dom() else { continue }
+            guard Self.isXMLContentType(part.contentType) else { continue }
+            let dom: XML.Element
+            do {
+                dom = try part.dom()
+            } catch RostrumError.xmlMalformed(let detail) {
+                issues.append(ValidationIssue(
+                    part: uri.value, element: "#document",
+                    message: "malformed XML (\(detail))"))
+                continue
+            }
             var stack: [XML.Element] = [dom]
             while let el = stack.popLast() {
                 if let required = OOXMLSchema.requiredAttributes[el.name],
@@ -32,6 +42,14 @@ extension Presentation {
             }
         }
         return issues
+    }
+
+    private static func isXMLContentType(_ contentType: String) -> Bool {
+        let mediaType = contentType.prefix(while: { $0 != ";" })
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+        guard mediaType.contains("/"), !mediaType.hasPrefix("image/") else { return false }
+        return mediaType == "application/xml" || mediaType == "text/xml" || mediaType.hasSuffix("+xml")
     }
 
     /// Some element names are shared by two unrelated schema types, so a
