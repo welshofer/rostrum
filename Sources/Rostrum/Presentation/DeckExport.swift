@@ -122,10 +122,19 @@ public enum DeckExport {
 
     static func field(_ value: String) -> String {
         let guarded = needsFormulaGuard(value) ? "'" + value : value
-        let mustQuote = guarded.contains(",") || guarded.contains("\"")
-            || guarded.contains("\n") || guarded.contains("\r")
+        let mustQuote = guarded.utf8.contains {
+            $0 == UInt8(ascii: ",") || $0 == UInt8(ascii: "\"") || $0 == 0x0A || $0 == 0x0D
+        }
         guard mustQuote else { return guarded }
-        return "\"" + guarded.replacingOccurrences(of: "\"", with: "\"\"") + "\""
+        var out = String.UnicodeScalarView()
+        out.reserveCapacity(guarded.unicodeScalars.count + 4)
+        out.append("\"")
+        for scalar in guarded.unicodeScalars {
+            if scalar == "\"" { out.append("\"") }
+            out.append(scalar)
+        }
+        out.append("\"")
+        return String(out)
     }
 
     /// Whether a cell would be executed rather than displayed.
@@ -141,14 +150,60 @@ public enum DeckExport {
     /// corrupt real chart data to defend against nothing — and only a leading
     /// `-` that is *not* part of a number is guarded.
     static func needsFormulaGuard(_ value: String) -> Bool {
-        guard let first = value.first else { return false }
+        var scalars = value.unicodeScalars.makeIterator()
+        guard let first = scalars.next() else { return false }
         switch first {
-        case "=", "+", "@", "\t", "\r":
+        case "=", "+", "@", "\t", "\n", "\u{000B}", "\u{000C}", "\r":
             return true
         case "-":
-            return Double(value) == nil
+            return !isFiniteNegativeDecimal(value)
         default:
-            return false
+            break
         }
+        if first.properties.isWhitespace || first.value == 0xFEFF {
+            while let next = scalars.next() {
+                if next.properties.isWhitespace || next.value == 0xFEFF { continue }
+                switch next {
+                case "=", "+", "@", "-":
+                    return true
+                default:
+                    return false
+                }
+            }
+        }
+        return false
+    }
+
+    private static func isFiniteNegativeDecimal(_ value: String) -> Bool {
+        var bytes = value.utf8.makeIterator()
+        guard bytes.next() == UInt8(ascii: "-") else { return false }
+        var sawDigit = false
+        var current = bytes.next()
+        while let b = current, b >= UInt8(ascii: "0") && b <= UInt8(ascii: "9") {
+            sawDigit = true
+            current = bytes.next()
+        }
+        if current == UInt8(ascii: ".") {
+            current = bytes.next()
+            while let b = current, b >= UInt8(ascii: "0") && b <= UInt8(ascii: "9") {
+                sawDigit = true
+                current = bytes.next()
+            }
+        }
+        guard sawDigit else { return false }
+        if current == UInt8(ascii: "e") || current == UInt8(ascii: "E") {
+            current = bytes.next()
+            if current == UInt8(ascii: "+") || current == UInt8(ascii: "-") {
+                current = bytes.next()
+            }
+            var sawExpDigit = false
+            while let b = current, b >= UInt8(ascii: "0") && b <= UInt8(ascii: "9") {
+                sawExpDigit = true
+                current = bytes.next()
+            }
+            guard sawExpDigit else { return false }
+        }
+        guard current == nil else { return false }
+        return Double(value)?.isFinite == true
     }
 }
