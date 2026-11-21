@@ -90,19 +90,24 @@ final class RenderTextAttributes {
 enum SVGMarkup {
     static func escape(_ text: String) -> String {
         // Most slide text and typeface names need no escaping. Avoid building
-        // an identical string character by character in that common case.
-        guard text.utf8.contains(where: { $0 == 38 || $0 == 60 || $0 == 62 || $0 == 34 }) else { return text }
-        var result = ""
-        result.reserveCapacity(text.utf8.count)
-        for character in text {
-            switch character {
-            case "&": result += "&amp;"
-            case "<": result += "&lt;"
-            case ">": result += "&gt;"
-            case "\"": result += "&quot;"
-            default: result.append(character)
+        // an identical string scalar by scalar in that common case.
+        guard text.utf8.contains(where: {
+            $0 == 38 || $0 == 60 || $0 == 62 || $0 == 34
+                || ($0 < 0x20 && $0 != 0x09 && $0 != 0x0A && $0 != 0x0D)
+                || $0 == 0xEF
+        }) else { return text }
+        var out = String.UnicodeScalarView()
+        out.reserveCapacity(text.unicodeScalars.count + 8)
+        for scalar in text.unicodeScalars {
+            guard XML.isXMLChar(scalar.value) else { continue }
+            switch scalar {
+            case "&": out.append(contentsOf: "&amp;".unicodeScalars)
+            case "<": out.append(contentsOf: "&lt;".unicodeScalars)
+            case ">": out.append(contentsOf: "&gt;".unicodeScalars)
+            case "\"": out.append(contentsOf: "&quot;".unicodeScalars)
+            default: out.append(scalar)
             }
         }
-        return result
+        return String(out)
     }
 }

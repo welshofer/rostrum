@@ -208,10 +208,31 @@ public final class Presentation {
 
     // MARK: - Saving
 
+    /// Restore the required `a:bodyPr` + empty `a:p` on any mutated XML part
+    /// whose text body had all paragraphs cleared via `TextFrame.clear()`.
+    private func repairDirtyEmptyTextBodies() {
+        for part in package.parts.values where part.isDirty {
+            let mediaType = part.contentType.prefix(while: { $0 != ";" })
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .lowercased()
+            guard mediaType.contains("/"), !mediaType.hasPrefix("image/"),
+                  mediaType == "application/xml" || mediaType == "text/xml" || mediaType.hasSuffix("+xml"),
+                  let root = try? part.dom() else { continue }
+            var stack: [XML.Element] = [root]
+            while let element = stack.popLast() {
+                if element.name == "p:txBody" || element.name == "a:txBody" || element.name == "dsp:txBody" {
+                    TextFrame(txBody: element, part: part).ensureNonEmpty()
+                }
+                stack.append(contentsOf: element.childElements)
+            }
+        }
+    }
+
     /// The complete .pptx file bytes. Untouched parts re-emit their original
     /// bytes; only mutated parts are re-serialized.
     public func serializedData() throws -> Data {
-        try package.serialize()
+        repairDirtyEmptyTextBodies()
+        return try package.serialize()
     }
 
     /// Write the file, atomically.
@@ -226,6 +247,7 @@ public final class Presentation {
     /// the destination once it is complete, so a reader sees either the old
     /// file or the new one and never something in between.
     public func save(to url: URL) throws {
+        repairDirtyEmptyTextBodies()
         try package.writeAtomically(to: url)
     }
 

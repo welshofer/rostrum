@@ -557,8 +557,18 @@ public enum XML {
     /// `<?target data?>`, or `<?target?>` when `data` is nil — the dataless
     /// form is a distinct spelling and must come back as it went in.
     fileprivate static func processingInstructionMarkup(target: String, data: String?) -> String {
-        let body = data.map { target + " " + $0 } ?? target
+        let cleanTarget = breakingUpPairs(in: target, of: "?", and: ">", padTrailing: false)
+        guard !cleanTarget.isEmpty else { return "" }
+        guard let data else { return "<?" + cleanTarget + "?>" }
+        let body = cleanTarget + " " + data
         return "<?" + breakingUpPairs(in: body, of: "?", and: ">", padTrailing: false) + "?>"
+    }
+
+    /// Fast UTF-8 byte precheck for scalars outside XML 1.0 `Char`
+    /// (`0x00...0x1F` excluding TAB/LF/CR, plus `0xEF` prefix of `U+FFFE`/`U+FFFF`).
+    @inline(__always)
+    private static func mayContainDisallowedXMLByte(_ b: UInt8) -> Bool {
+        (b < 0x20 && b != 0x09 && b != 0x0A && b != 0x0D) || b == 0xEF
     }
 
     /// Separate every `first`+`second` pair in `body` with a space, and (when
@@ -577,12 +587,15 @@ public enum XML {
     private static func breakingUpPairs(
         in body: String, of first: Unicode.Scalar, and second: Unicode.Scalar, padTrailing: Bool
     ) -> String {
-        // Fast path: without `first` there is no pair to break.
-        guard body.unicodeScalars.contains(first) else { return body }
+        let firstByte = UInt8(ascii: first)
+        guard body.utf8.contains(where: { $0 == firstByte || mayContainDisallowedXMLByte($0) }) else {
+            return body
+        }
         var out = String.UnicodeScalarView()
         out.reserveCapacity(body.unicodeScalars.count + 8)
         var previousWasFirst = false
         for scalar in body.unicodeScalars {
+            guard isXMLChar(scalar.value) else { continue }
             if previousWasFirst, scalar == second { out.append(" ") }
             out.append(scalar)
             previousWasFirst = scalar == first
@@ -594,23 +607,25 @@ public enum XML {
     // MARK: - Escaping
 
     /// Escape `& < >` (and CR, which XML line-ending normalization would turn
-    /// into LF on any reparse) for use inside text content. Non-ASCII passes
-    /// through verbatim (the output is UTF-8).
+    /// into LF on any reparse) for use inside text content, omitting scalars
+    /// outside XML 1.0 `Char`. Non-ASCII passes through verbatim (the output is UTF-8).
     ///
     /// Escaping MUST iterate Unicode scalars, not Characters: a `&` followed by
     /// a combining mark forms a single grapheme cluster that `== "&"` misses,
     /// which would emit a bare ampersand no parser can reopen.
     fileprivate static func escapeText(_ string: String) -> String {
-        // Fast path: nothing to escape.
+        // Fast path: nothing to escape or strip.
         guard string.utf8.contains(where: {
             $0 == UInt8(ascii: "&") || $0 == UInt8(ascii: "<")
                 || $0 == UInt8(ascii: ">") || $0 == 0x0D
+                || mayContainDisallowedXMLByte($0)
         }) else {
             return string
         }
         var out = String.UnicodeScalarView()
         out.reserveCapacity(string.unicodeScalars.count + 16)
         for scalar in string.unicodeScalars {
+            guard isXMLChar(scalar.value) else { continue }
             switch scalar {
             case "&": out.append(contentsOf: "&amp;".unicodeScalars)
             case "<": out.append(contentsOf: "&lt;".unicodeScalars)
@@ -623,22 +638,24 @@ public enum XML {
     }
 
     /// Escape `& < > "` plus TAB/LF/CR for use inside a double-quoted attribute
-    /// value. The whitespace characters must be character references: XML
-    /// attribute-value normalization replaces literal tab/newline bytes with
-    /// spaces on every conforming reparse, silently corrupting round-trips
-    /// (e.g. multi-line alt text) if written bare.
+    /// value, omitting scalars outside XML 1.0 `Char`. The whitespace characters
+    /// must be character references: XML attribute-value normalization replaces
+    /// literal tab/newline bytes with spaces on every conforming reparse,
+    /// silently corrupting round-trips (e.g. multi-line alt text) if written bare.
     fileprivate static func escapeAttributeValue(_ string: String) -> String {
-        // Fast path: nothing to escape.
+        // Fast path: nothing to escape or strip.
         guard string.utf8.contains(where: {
             $0 == UInt8(ascii: "&") || $0 == UInt8(ascii: "<")
                 || $0 == UInt8(ascii: ">") || $0 == UInt8(ascii: "\"")
                 || $0 == 0x09 || $0 == 0x0A || $0 == 0x0D
+                || mayContainDisallowedXMLByte($0)
         }) else {
             return string
         }
         var out = String.UnicodeScalarView()
         out.reserveCapacity(string.unicodeScalars.count + 16)
         for scalar in string.unicodeScalars {
+            guard isXMLChar(scalar.value) else { continue }
             switch scalar {
             case "&": out.append(contentsOf: "&amp;".unicodeScalars)
             case "<": out.append(contentsOf: "&lt;".unicodeScalars)

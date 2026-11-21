@@ -191,6 +191,69 @@ struct SVGRenderer {
 
     // MARK: - Shape tree and transforms
 
+    private static let allowedSlideShowActions: Set<String> = [
+        "ppaction://hlinkshowjump?jump=nextslide",
+        "ppaction://hlinkshowjump?jump=previousslide",
+        "ppaction://hlinkshowjump?jump=firstslide",
+        "ppaction://hlinkshowjump?jump=lastslide",
+        "ppaction://hlinkshowjump?jump=lastslideviewed",
+        "ppaction://hlinkshowjump?jump=endshow",
+    ]
+
+    private static func isASCIIWhitespace(_ b: UInt8) -> Bool {
+        b == 0x20 || b == 0x09 || b == 0x0A || b == 0x0C || b == 0x0D
+    }
+
+    private static func trimASCIIWhitespace(_ raw: String) -> String {
+        let bytes = Array(raw.utf8)
+        var start = 0
+        var end = bytes.count
+        while start < end, isASCIIWhitespace(bytes[start]) { start += 1 }
+        while end > start, isASCIIWhitespace(bytes[end - 1]) { end -= 1 }
+        if start == 0 && end == bytes.count { return raw }
+        return String(decoding: bytes[start..<end], as: UTF8.self)
+    }
+
+    private static func hasASCIIPrefixCaseInsensitive(_ raw: String, _ lowerASCIIPrefix: StaticString) -> Bool {
+        let bytes = Array(raw.utf8)
+        guard bytes.count > lowerASCIIPrefix.utf8CodeUnitCount else { return false }
+        return lowerASCIIPrefix.withUTF8Buffer { prefix in
+            for i in 0..<prefix.count {
+                let b = bytes[i]
+                let lower = (b >= 0x41 && b <= 0x5A) ? (b | 0x20) : b
+                if lower != prefix[i] { return false }
+            }
+            return true
+        }
+    }
+
+    private static func safeExternalHyperlink(_ raw: String) -> String? {
+        let trimmed = trimASCIIWhitespace(raw)
+        guard !trimmed.isEmpty,
+              !trimmed.unicodeScalars.contains(where: { s in
+                  let v = s.value
+                  return v <= 0x20 || v == 0x7F || v == 0x22 || v == 0x3C || v == 0x3E || v == 0x5C || v == 0x60
+                      || !XML.isXMLChar(v)
+              }) else {
+            return nil
+        }
+        if hasASCIIPrefixCaseInsensitive(trimmed, "https://") { return trimmed }
+        if hasASCIIPrefixCaseInsensitive(trimmed, "http://") { return trimmed }
+        if hasASCIIPrefixCaseInsensitive(trimmed, "mailto:") { return trimmed }
+        return nil
+    }
+
+    private static func safeActionHyperlink(_ raw: String) -> String? {
+        let trimmed = trimASCIIWhitespace(raw)
+        guard !trimmed.isEmpty,
+              trimmed.utf8.allSatisfy({ $0 > 0x20 && $0 < 0x7F }) else {
+            return nil
+        }
+        let lower = String(decoding: trimmed.utf8.map { ($0 >= 0x41 && $0 <= 0x5A) ? ($0 | 0x20) : $0 }, as: UTF8.self)
+        guard allowedSlideShowActions.contains(lower) else { return nil }
+        return trimmed
+    }
+
     private func shapeHyperlinkHref(_ node: XML.Element, ownedBy owner: Part) -> String? {
         guard let hlink = node.childElements.first?.firstChild(named: "p:cNvPr")?.firstChild(named: "a:hlinkClick") else {
             return nil
@@ -199,22 +262,25 @@ struct SVGRenderer {
         if action == "ppaction://media" { return nil }
         if let rId = hlink[attribute: "r:id"], !rId.isEmpty,
            let rel = owner.rels.relationship(withId: rId) {
-            if !rel.isExternal, rel.type == RelType.slide {
+            if !rel.isExternal {
+                guard rel.type == RelType.slide else { return nil }
                 let targetURI = PackURI.resolve(target: rel.target, relativeTo: owner.uri.baseURI)
                 if let main = try? package.mainDocumentPart(),
                    let sldIdLst = (try? main.dom())?.firstChild(named: "p:sldIdLst") {
                     for (idx, sldId) in sldIdLst.children(named: "p:sldId").enumerated() {
                         if let sRelId = sldId[attribute: "r:id"],
                            let sRel = main.rels.relationship(withId: sRelId),
+                           !sRel.isExternal,
                            PackURI.resolve(target: sRel.target, relativeTo: main.uri.baseURI) == targetURI {
                             return "#slide-\(idx + 1)"
                         }
                     }
                 }
+                return nil
             }
-            return rel.target
+            return Self.safeExternalHyperlink(rel.target)
         }
-        if let action, !action.isEmpty { return action }
+        if let action, !action.isEmpty { return Self.safeActionHyperlink(action) }
         return nil
     }
 
