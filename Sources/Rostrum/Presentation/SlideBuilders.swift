@@ -743,7 +743,7 @@ public extension Presentation {
         for column in 0..<columns where Self.isNumericColumn(grid, column) {
             for row in 0..<grid.count {
                 guard let cell = try? table.cell(row, column) else { continue }
-                var text = s.type(row == 0 ? .heading : .body)
+                var text = tableStyle.type(row == 0 ? .heading : .body)
                 text.color = cell.textFrame.paragraphs.first?.runs.first?.color ?? text.color
                 cell.applyTextStyle(text, align: .right)
             }
@@ -779,16 +779,27 @@ public extension Presentation {
     /// that is still a table rather than a diagram of text.
     private func fitTableText(_ grid: [[String]], widths: [EMU],
                               height: EMU, style: DeckStyle) -> Double {
-        let rowBudgetPt = Double(height.rawValue) / Double(Swift.max(1, grid.count))
-            / Double(EMU.perPoint)
-        for size in [style.type(.body).sizePt, 20, 18, 16, 14, 12, 11].sorted(by: >) {
-            var text = style.type(.body)
-            text.sizePt = size
-            let lineHeight = size * Swift.min(text.lineHeight, 1.25)
-            let fits = grid.allSatisfy { row in
+        let clampedPad = Swift.min(Swift.max(0, style.spacing.xs.rawValue), OOXMLBounds.coordinate.upperBound)
+        let padEMU = 2 * clampedPad
+        let padPt = Double(padEMU) / Double(EMU.perPoint)
+        let rowBudgetPt = Swift.max(
+            0,
+            Double(height.rawValue) / Double(Swift.max(1, grid.count)) / Double(EMU.perPoint) - padPt
+        )
+        let headingBase = style.type(.heading)
+        let bodyBase = style.type(.body)
+        for size in Array(Set([bodyBase.sizePt, 20, 18, 16, 14, 12, 11])).sorted(by: >) {
+            var bodyText = bodyBase
+            bodyText.sizePt = Swift.min(bodyBase.sizePt, size)
+            var headerText = headingBase
+            headerText.sizePt = Swift.min(headingBase.sizePt, size)
+            let fits = grid.enumerated().allSatisfy { rowIdx, row in
+                let cellStyle = rowIdx == 0 ? headerText : bodyText
+                let lineHeight = cellStyle.sizePt * Swift.min(cellStyle.lineHeight, 1.25)
                 let tallest = row.enumerated().map { column, cell -> Int in
                     guard column < widths.count else { return 1 }
-                    return estimatedLines(cell, style: text, width: widths[column])
+                    let usableWidth = EMU(Swift.max(EMU.perPoint, widths[column].rawValue - padEMU))
+                    return estimatedLines(cell, style: cellStyle, width: usableWidth)
                 }.max() ?? 1
                 return Double(tallest) * lineHeight <= rowBudgetPt
             }

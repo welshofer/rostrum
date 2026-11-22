@@ -65,10 +65,18 @@ struct SVGRenderer {
         // p:sldSz comes from the file too, and the aspect-ratio conversion below
         // goes through Int(_: Double), which traps when the double is out of
         // range — so bound the dimensions before dividing by them.
-        let bound = OOXMLBounds.coordinate
+        let bound = 0...OOXMLBounds.coordinate.upperBound
         let w = bound.contains(slideSize.width.rawValue) ? slideSize.width.rawValue : 0
         let h = bound.contains(slideSize.height.rawValue) ? slideSize.height.rawValue : 0
-        let pxH = w > 0 ? Int((Double(pixelWidth) * Double(h) / Double(w)).rounded()) : pixelWidth
+        let pxW = min(max(pixelWidth, 1), 32_768)
+        let pxH: Int
+        if w > 0 && h > 0 {
+            let scaled = (Double(pxW) * Double(h) / Double(w)).rounded()
+            let clamped = scaled.isFinite ? min(max(scaled, 1.0), 32_768.0) : Double(pxW)
+            pxH = Int(clamped)
+        } else {
+            pxH = pxW
+        }
         var defs = SVGDefinitions()
         var body = ""
 
@@ -117,7 +125,7 @@ struct SVGRenderer {
         }
 
         defs += diagnostics.fontDefinitions
-        let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(pixelWidth)\" height=\"\(pxH)\" "
+        let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(pxW)\" height=\"\(pxH)\" "
             + "viewBox=\"0 0 \(w) \(h)\"><defs>\(defs)</defs>\(body)</svg>"
         problems.fidelityIssues += diagnostics.issues
         return (svg, problems)
@@ -867,14 +875,33 @@ struct SVGRenderer {
         let ligatureStyle = " style=\"font-feature-settings: 'liga' 0\""
         var pictureBulletsSVG = ""
         let paragraphs = txBody.children(named: "a:p")
-        if paragraphs.contains(where: { $0.firstChild(named: "a:pPr")?.firstChild(named: "a:buBlip") != nil }) {
+        let bodyLstStyle = txBody.firstChild(named: "a:lstStyle")
+        let hasLocalOrBodyBlip = paragraphs.contains(where: { $0.firstChild(named: "a:pPr")?.firstChild(named: "a:buBlip") != nil })
+            || bodyLstStyle?.childElements.contains(where: { $0.firstChild(named: "a:buBlip") != nil }) == true
+        if hasLocalOrBodyBlip {
             let resolvedOwner = owner ?? slidePart
-            for (pIndex, p) in paragraphs.enumerated() where pIndex < layout.lines.count {
-                guard let buBlip = p.firstChild(named: "a:pPr")?.firstChild(named: "a:buBlip")?.firstChild(named: "a:blip"),
+            let bulletChoiceNames = ["a:buNone", "a:buChar", "a:buAutoNum", "a:buBlip"]
+            for (pIndex, p) in paragraphs.enumerated() {
+                let own = p.firstChild(named: "a:pPr")
+                let rawLevel = own?[attribute: "lvl"].flatMap(Double.init) ?? 0
+                let level = Int(min(max(rawLevel.isFinite ? rawLevel : 0, 0), 8))
+                let localProps = [
+                    own,
+                    bodyLstStyle?.firstChild(named: "a:lvl\(level + 1)pPr"),
+                    bodyLstStyle?.firstChild(named: "a:defPPr"),
+                ].compactMap { $0 }
+                let chosenProp = localProps.first { prop in
+                    bulletChoiceNames.contains { prop.firstChild(named: $0) != nil }
+                }
+                guard let chosenProp,
+                      chosenProp.firstChild(named: "a:buNone") == nil,
+                      chosenProp.firstChild(named: "a:buChar") == nil,
+                      chosenProp.firstChild(named: "a:buAutoNum") == nil,
+                      let buBlip = chosenProp.firstChild(named: "a:buBlip")?.firstChild(named: "a:blip"),
+                      let line = layout.lines.first(where: { $0.paragraphIndex == pIndex && !$0.spans.isEmpty }),
                       let resource = SVGEmbeddedImage.resolve(in: buBlip, owner: resolvedOwner, package: package, resources: diagnostics.images),
                       resource.supported,
                       let url = diagnostics.images.url(for: resource) else { continue }
-                let line = layout.lines[pIndex]
                 let firstSpan = line.spans.first
                 let fontSize = firstSpan?.run.fontSize ?? 18.0
                 let sizeEMU = max(12700, Int((fontSize * 0.75 * Double(emuPerPoint)).rounded()))

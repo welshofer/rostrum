@@ -367,12 +367,15 @@ extension SlideOutline {
     }
 
     private static func rows(of table: Table) -> [[String]] {
-        guard table.rowCount > 0, table.columnCount > 0 else { return [] }
-        return (0..<table.rowCount).map { row in
-            (0..<table.columnCount).map { column in
+        let snapshot = TableGridSnapshot(table.tbl)
+        guard !snapshot.rows.isEmpty, !snapshot.columns.isEmpty else { return [] }
+        let columnCount = snapshot.columns.count
+        return snapshot.cells.map { rowCells in
+            (0..<columnCount).map { column in
                 // A foreign table can declare more grid columns than a row has
                 // cells, so a missing cell is a blank, not a failure.
-                guard let cell = try? table.cell(row, column) else { return "" }
+                guard column < rowCells.count else { return "" }
+                let cell = TableCell(tc: rowCells[column], part: table.part, package: table.package, owner: table)
                 guard let frame = cell.existingTextFrame else { return "" }
                 return frame.paragraphs
                     .map(\.plainText)
