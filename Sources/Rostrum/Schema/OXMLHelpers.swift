@@ -101,15 +101,29 @@ extension XML.Element {
     /// reference type, so cloning a subtree by hand is the only way to edit
     /// the copy without the edits reaching back into the original.
     package func deepCopy() -> XML.Element {
-        XML.Element(name, attributes: attributes, children: children.map { node in
-            switch node {
-            case .text(let text): return .text(text)
-            case .element(let element): return .element(element.deepCopy())
-            case .comment(let body): return .comment(body)
-            case .processingInstruction(let target, let data):
-                return .processingInstruction(target: target, data: data)
+        let rootCopy = XML.Element(name, attributes: attributes)
+        guard !children.isEmpty else { return rootCopy }
+        var stack: [(source: XML.Element, target: XML.Element)] = [(self, rootCopy)]
+        while let (source, target) = stack.popLast() {
+            target.children.reserveCapacity(source.children.count)
+            for node in source.children {
+                switch node {
+                case .text(let text):
+                    target.children.append(.text(text))
+                case .element(let element):
+                    let childCopy = XML.Element(element.name, attributes: element.attributes)
+                    target.children.append(.element(childCopy))
+                    if !element.children.isEmpty {
+                        stack.append((element, childCopy))
+                    }
+                case .comment(let body):
+                    target.children.append(.comment(body))
+                case .processingInstruction(let targetName, let data):
+                    target.children.append(.processingInstruction(target: targetName, data: data))
+                }
             }
-        })
+        }
+        return rootCopy
     }
 }
 

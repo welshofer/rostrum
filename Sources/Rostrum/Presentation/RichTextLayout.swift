@@ -56,6 +56,8 @@ public struct RichTextLine: Equatable, Sendable {
     /// ink bounds. Includes tab advances; excludes the separate bullet span,
     /// paragraph indentation, body insets and alignment offset.
     public let visibleWidth: Double
+    /// Zero-based index of the source `<a:p>` paragraph in the laid-out text body.
+    public let paragraphIndex: Int
 }
 
 /// Shared, read-only paragraph layout used by fitting and SVG previews.
@@ -521,8 +523,13 @@ public struct RichTextLayout: Sendable {
             }
             // A local buNone/choice suppresses inherited bullets as a group.
             let bulletProperties = properties.first { p in
-                ["a:buNone", "a:buChar", "a:buAutoNum"].contains { p.firstChild(named: $0) != nil }
+                ["a:buNone", "a:buChar", "a:buAutoNum", "a:buBlip"].contains { p.firstChild(named: $0) != nil }
             }
+            let hasPictureBullet = atoms.contains(where: { !$0.text.isEmpty })
+                && bulletProperties?.firstChild(named: "a:buNone") == nil
+                && bulletProperties?.firstChild(named: "a:buChar") == nil
+                && bulletProperties?.firstChild(named: "a:buAutoNum") == nil
+                && bulletProperties?.firstChild(named: "a:buBlip") != nil
             var bullet: ResolvedTextRun?
             var markerPositions: [Double]?
             var markerWidth = 0.0
@@ -611,7 +618,8 @@ public struct RichTextLayout: Sendable {
             var lineAtoms: [Atom] = [], lineWidth = 0.0, firstLine = true, index = 0
             func startX() -> Double {
                 let markerOffset = markerPositions != nil && !firstLine ? 0 : max(0, indent + bulletAdvance)
-                let value = left + (bullet != nil ? markerOffset : (firstLine ? indent : 0))
+                let nonTextBulletOffset = firstLine ? (hasPictureBullet ? max(0, indent) : indent) : 0
+                let value = left + (bullet != nil ? markerOffset : nonTextBulletOffset)
                 return usesNativeAdvanceGrid ? max(0, value) : value
             }
             func limit() -> Double { max(0, availableWidth - right - startX()) }
@@ -888,7 +896,8 @@ public struct RichTextLayout: Sendable {
                 }
                 output.append(RichTextLine(spans: spans, baseline: baseline,
                                            height: advance, width: lineWidth,
-                                           visibleWidth: lineWidth - trailingSpace))
+                                           visibleWidth: lineWidth - trailingSpace,
+                                           paragraphIndex: paragraphIndex))
                 cursor += advance; lineAtoms = []; lineWidth = 0; firstLine = false
             }
             while index < atoms.count {
@@ -1084,7 +1093,7 @@ public struct RichTextLayout: Sendable {
         return projected ?? style
     }
 
-    private static let inheritedMarkerChoices: Set<String> = ["a:buNone", "a:buChar", "a:buAutoNum",
+    private static let inheritedMarkerChoices: Set<String> = ["a:buNone", "a:buChar", "a:buAutoNum", "a:buBlip",
         "a:buFont", "a:buFontTx", "a:buSzPct", "a:buSzPts", "a:buSzTx"]
 
     private static func validNativeMarkerSize(_ size: XML.Element?) -> Bool {

@@ -627,4 +627,106 @@ import Testing
             .firstChild(named: "a:tbl"))
         #expect(tbl.children(named: "a:tr").count == SlideCapacity.tableRows)
     }
+
+    @Test func tableSlidePreservesFittedFontSizeAndContrastOnNumericColumns() throws {
+        let deck = try Presentation()
+        let denseRows: [[String]] = [
+            ["Strategic Operating Workstream, Multi-Year Delivery Milestones & Regional Scope", "FY25 Actual", "FY26 Target"],
+            ["Enterprise Core Cloud Migration and Stateful Workload Replatforming across North America and EMEA", "$14,250,000", "$19,800,000"],
+            ["Automated Compliance Controls, Continuous Audit Logging & Real-Time Fraud Prevention Platform", "$8,400,000", "$12,150,000"],
+            ["Self-Serve Partner Onboarding, Contract Lifecycle Automation and Global Marketplace Settlement", "$5,120,000", "$9,600,000"],
+            ["Regional Edge Caching, Zero-Downtime Failover Mesh and Multi-Region Disaster Recovery", "$6,750,000", "$7,900,000"],
+            ["Unified Customer Telemetry Pipeline, Cohort Attribution and Predictive Retention Scoring", "$3,980,000", "$6,450,000"],
+            ["Legacy Data Warehouse Decommissioning, Regulatory Archive Verification & Cold Storage Tiering", "($1,850,000)", "($4,200,000)"],
+        ]
+        let slide = try deck.tableSlide("Capital Allocation by Workstream", rows: denseRows)
+        let tables = slide.shapes.all.compactMap { ($0 as? TableFrame)?.table }
+        let table = try #require(tables.first)
+        #expect(table.rowCount == 7)
+        #expect(table.columnCount == 3)
+
+        let textHeaderRun = try #require(try table.cell(0, 0).textFrame.paragraphs.first?.runs.first)
+        let numHeaderRun1 = try #require(try table.cell(0, 1).textFrame.paragraphs.first?.runs.first)
+        let numHeaderRun2 = try #require(try table.cell(0, 2).textFrame.paragraphs.first?.runs.first)
+        let fittedHeaderSize = try #require(textHeaderRun.fontSize)
+
+        #expect(fittedHeaderSize < deck.style.type(.body).sizePt)
+        #expect(numHeaderRun1.fontSize == fittedHeaderSize)
+        #expect(numHeaderRun2.fontSize == fittedHeaderSize)
+        #expect(numHeaderRun1.color == textHeaderRun.color)
+        #expect(try table.cell(0, 1).textFrame.paragraphs.first?.alignment == .right)
+        #expect(try table.cell(0, 2).textFrame.paragraphs.first?.alignment == .right)
+
+        for row in 1..<table.rowCount {
+            let textRun = try #require(try table.cell(row, 0).textFrame.paragraphs.first?.runs.first)
+            let numRun1 = try #require(try table.cell(row, 1).textFrame.paragraphs.first?.runs.first)
+            let numRun2 = try #require(try table.cell(row, 2).textFrame.paragraphs.first?.runs.first)
+            let fittedBodySize = try #require(textRun.fontSize)
+            #expect(fittedBodySize < deck.style.type(.body).sizePt)
+            #expect(numRun1.fontSize == fittedBodySize)
+            #expect(numRun2.fontSize == fittedBodySize)
+            #expect(numRun1.color == textRun.color)
+            #expect(numRun2.color == textRun.color)
+            #expect(try table.cell(row, 1).textFrame.paragraphs.first?.alignment == .right)
+            #expect(try table.cell(row, 2).textFrame.paragraphs.first?.alignment == .right)
+        }
+
+        // Small tables that already fit at full body size remain unshrunk.
+        let smallDeck = try Presentation()
+        let smallSlide = try smallDeck.tableSlide("Compact", rows: [["Metric", "Value"], ["NPS", "64"]])
+        let smallTables = smallSlide.shapes.all.compactMap { ($0 as? TableFrame)?.table }
+        let smallTable = try #require(smallTables.first)
+        let expectedFullSize = smallDeck.style.type(.body).sizePt
+        #expect(try smallTable.cell(1, 0).textFrame.paragraphs.first?.runs.first?.fontSize == expectedFullSize)
+        #expect(try smallTable.cell(1, 1).textFrame.paragraphs.first?.runs.first?.fontSize == expectedFullSize)
+        #expect(try smallTable.cell(0, 1).textFrame.paragraphs.first?.runs.first?.fontSize == smallTable.cell(0, 0).textFrame.paragraphs.first?.runs.first?.fontSize)
+
+        func styleWithXS(_ xs: EMU) -> DeckStyle {
+            var copy = smallDeck.style
+            copy.spacing = TokenScale([
+                "xs": xs,
+                "sm": copy.spacing.sm,
+                "md": copy.spacing.md,
+                "lg": copy.spacing.lg,
+                "xl": copy.spacing.xl,
+                "xxl": copy.spacing.xxl,
+            ])
+            return copy
+        }
+        func fontSize(on slide: Slide, row: Int, col: Int) throws -> Double {
+            let tables = slide.shapes.all.compactMap { ($0 as? TableFrame)?.table }
+            let tbl = try #require(tables.first)
+            let size = try tbl.cell(row, col).textFrame.paragraphs.first?.runs.first?.fontSize
+            return try #require(size)
+        }
+
+        // Vertical padding boundary: identical 7-row short table fits at 20pt when xs = .zero
+        // and steps down when vertical cell padding (2 * 18pt) reduces rowBudgetPt.
+        let shortSevenRows = [["Item", "Count"]] + (1...6).map { ["Row \($0)", "\($0)"] }
+        let zeroPadStyle = styleWithXS(.zero)
+        let tallPadStyle = styleWithXS(.points(18))
+
+        let zeroVertSlide = try smallDeck.tableSlide("Vertical Zero", rows: shortSevenRows, style: zeroPadStyle)
+        let tallVertSlide = try smallDeck.tableSlide("Vertical Tall", rows: shortSevenRows, style: tallPadStyle)
+        let zeroVertSize = try fontSize(on: zeroVertSlide, row: 1, col: 1)
+        let tallVertSize = try fontSize(on: tallVertSlide, row: 1, col: 1)
+        #expect(zeroVertSize == expectedFullSize)
+        #expect(tallVertSize < zeroVertSize)
+
+        // Horizontal padding boundary: at xs = 8pt, 1 line at 20pt still fits vertically (short control stays 20pt),
+        // while a 79-char cell wraps from 1 line (at xs = .zero) to 2 lines once 2 * 8pt is deducted from column width.
+        let horizPadStyle = styleWithXS(.points(8))
+        let horizControlSlide = try smallDeck.tableSlide("Horizontal Control", rows: shortSevenRows, style: horizPadStyle)
+        let horizControlSize = try fontSize(on: horizControlSlide, row: 1, col: 1)
+        #expect(horizControlSize == expectedFullSize)
+
+        let borderlineLine = String(repeating: "x", count: 79)
+        let horizRows = [["Summary"]] + (1...6).map { _ in [borderlineLine] }
+        let zeroHorizSlide = try smallDeck.tableSlide("Horizontal Zero", rows: horizRows, style: zeroPadStyle)
+        let paddedHorizSlide = try smallDeck.tableSlide("Horizontal Padded", rows: horizRows, style: horizPadStyle)
+        let zeroHorizSize = try fontSize(on: zeroHorizSlide, row: 1, col: 0)
+        let paddedHorizSize = try fontSize(on: paddedHorizSlide, row: 1, col: 0)
+        #expect(zeroHorizSize == expectedFullSize)
+        #expect(paddedHorizSize < zeroHorizSize)
+    }
 }
