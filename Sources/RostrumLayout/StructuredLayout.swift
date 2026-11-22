@@ -103,14 +103,17 @@ public enum StructuredLayout {
                                           line: Line(color: style.accent(1).lighten(0.6), width: .points(0.5 * scale)))
             let stripe = Rect(x: cell.x, y: cell.y, width: .points(3 * scale), height: cell.height)
             _ = try slide.shapes.addShape(.rectangle, frame: stripe, fill: .solid(style.accent(1)))
+            let headingRole: TypeRole = kind == .metrics ? .stat : .heading
             var local = style
-            local.type = local.type.overriding(.heading) { $0.sizePt = size; $0.lineHeight = 1.05 }
+            local.type = local.type.overriding(headingRole) { $0.sizePt = size; $0.lineHeight = 1.05 }
                 .overriding(.body) { $0.sizePt = 18 * engine.objectScale; $0.lineHeight = 1.1 }
             let head = Rect(x: cell.x + .points(12 * scale), y: cell.y + .points(12 * scale), width: cell.width - .points(24 * scale), height: .points(hh))
-            _ = try slide.shapes.addText(item.heading, in: head, role: .heading, style: local)
+            let headShape = try slide.shapes.addText(item.heading, in: head, role: headingRole, style: local)
+            headShape.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
             if dh > 0 {
                 let detail = Rect(x: head.x, y: head.maxY + .points(10 * scale), width: head.width, height: .points(dh - 10 * scale))
-                _ = try slide.shapes.addText(item.detail, in: detail, role: .body, style: local)
+                let detailShape = try slide.shapes.addText(item.detail, in: detail, role: .body, style: local)
+                detailShape.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
             }
             if [.process, .timeline, .cycle].contains(kind), i + 1 < cells.count {
                 let next = cells[(i + 1) % cells.count]
@@ -119,22 +122,25 @@ public enum StructuredLayout {
                 let y = next.y == cell.y ? cell.y.points + cell.height.points / 2 - 12 * scale : min(cell.maxY.points, next.maxY.points)
                 let box = Rect(x: .points(x), y: .points(y), width: .points(16 * scale), height: .points(next.y == cell.y ? 24 * scale : 16 * scale))
                 var arrows = style; arrows.type = arrows.type.overriding(.body) { $0.sizePt = 12 * scale; $0.lineHeight = 1 }
-                _ = try slide.shapes.addText(arrow, in: box, role: .body, style: arrows, align: .center)
+                let arrowShape = try slide.shapes.addText(arrow, in: box, role: .body, style: arrows, align: .center)
+                arrowShape.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
             }
         }
         if kind == .cycle, let first = cells.first, let last = cells.last, cells.count > 1,
            first.x == last.x, first.y < last.y {
             var arrows = style
             arrows.type = arrows.type.overriding(.body) { $0.sizePt = 12 * scale; $0.lineHeight = 1 }
-            _ = try slide.shapes.addText("↑", in: Rect(x: first.x + first.width / 2 - .points(8 * scale),
+            let loopArrow = try slide.shapes.addText("↑", in: Rect(x: first.x + first.width / 2 - .points(8 * scale),
                 y: first.maxY, width: .points(16 * scale), height: .points(16 * scale)), role: .body, style: arrows, align: .center)
+            loopArrow.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
         }
         if kind == .cycle {
             var local = style
             local.type = local.type.overriding(.body) { $0.sizePt = 14 * scale }
-            _ = try slide.shapes.addText("Repeat cycle",
+            let labelShape = try slide.shapes.addText("Repeat cycle",
                 in: Rect(x: compact.x, y: compact.maxY + .points(6 * scale), width: compact.width, height: .points(22 * scale)),
                 role: .body, style: local, align: .center)
+            labelShape.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
         }
         return boundary
     }
