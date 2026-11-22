@@ -132,8 +132,9 @@ extension TemplateLayoutEngine {
         return try zip(current.pages, prepared).map { page, prepared in
             let slide = try write(page.slide, prepared: prepared)
             if let frame = page.slide.captionFrame {
-                try slide.addText(current.caption, in: frame, role: .caption,
+                let captionShape = try slide.addText(current.caption, in: frame, role: .caption,
                     style: style)
+                captionShape.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
             }
             return slide
         }

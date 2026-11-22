@@ -90,15 +90,18 @@ public enum PanelLayout {
                 let badge = Rect(x: plan.cell.x + .points(10 * scale), y: plan.cell.y + (plan.cell.height - .points(32 * scale)) / 2,
                     width: .points(32 * scale), height: .points(32 * scale))
                 _ = try slide.shapes.addShape(.ellipse, frame: badge, fill: .solid(accent))
-                _ = try slide.shapes.addText(String(index + 1), in: badge, role: .body, style: local,
+                let badgeShape = try slide.shapes.addText(String(index + 1), in: badge, role: .body, style: local,
                     color: Color.bestTextColor(on: accent), align: .center, anchor: .middle)
+                badgeShape.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
             } else {
                 let rule = Rect(x: plan.cell.x, y: plan.cell.y, width: plan.cell.width, height: .points(3 * scale))
                 _ = try slide.shapes.addShape(.rectangle, frame: rule, fill: .solid(accent))
             }
-            _ = try slide.shapes.addText(item.heading, in: plan.heading, role: .heading, style: local, anchor: .top)
+            let headingShape = try slide.shapes.addText(item.heading, in: plan.heading, role: .heading, style: local, anchor: .top)
+            headingShape.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
             if !item.detail.isEmpty {
-                _ = try slide.shapes.addText(item.detail, in: plan.detail, role: .body, style: local, anchor: .top)
+                let detailShape = try slide.shapes.addText(item.detail, in: plan.detail, role: .body, style: local, anchor: .top)
+                detailShape.textFrame?.setMargins(left: .zero, top: .zero, right: .zero, bottom: .zero)
             }
         }
         return boundary

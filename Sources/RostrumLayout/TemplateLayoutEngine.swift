@@ -17,8 +17,27 @@ public struct TextMeasureRequest: Sendable, Hashable {
     public let font: String
     public let size: Double
     public let bold: Bool
+    public let italic: Bool
     public let tracking: Double
     public let width: Double
+
+    public init(
+        text: String,
+        font: String,
+        size: Double,
+        bold: Bool,
+        italic: Bool = false,
+        tracking: Double,
+        width: Double
+    ) {
+        self.text = text
+        self.font = font
+        self.size = size
+        self.bold = bold
+        self.italic = italic
+        self.tracking = tracking
+        self.width = width
+    }
 }
 
 public typealias TextHeightMeasurer = (TextMeasureRequest) -> Double
@@ -411,7 +430,7 @@ public final class TemplateLayoutEngine {
 
     /// Height for a zero-inset, styled text block, including explicit newlines.
     /// Uses shared rich-text geometry and an optional conservative host check.
-    public func measuredHeight(_ text: String, style: TextStyle, width: Double) -> Double {
+    public func measuredHeight(_ text: String, style: TextStyle, width: Double, italic: Bool = false) -> Double {
         guard width.isFinite, width > 0, style.sizePt.isFinite, (1...4000).contains(style.sizePt),
               style.trackingPt.isFinite, abs(style.trackingPt) <= 4000,
               style.lineHeight.isFinite, (0...100).contains(style.lineHeight) else { return .infinity }
@@ -419,6 +438,7 @@ public final class TemplateLayoutEngine {
             .element(XML.Element("a:spcPct", attributes: [("val", String(Int((style.lineHeight * 100000).rounded())))]))]))])
         let run = XML.Element("a:r", children: [.element(XML.Element("a:rPr", attributes: [
             ("sz", String(Int((style.sizePt * 100).rounded()))), ("b", style.bold ? "1" : "0"),
+            ("i", italic ? "1" : "0"),
             ("spc", String(Int((style.trackingPt * 100).rounded())))], children: [
                 .element(XML.Element("a:latin", attributes: [("typeface", style.font)]))])),
             .element(XML.Element("a:t", children: [.text(style.uppercase ? text.uppercased() : text)]))])
@@ -445,7 +465,7 @@ public final class TemplateLayoutEngine {
                     let run = span.run
                     guard let value = self.height(TextMeasureRequest(text: run.text,
                         font: run.fontFamily ?? context?.theme?.minorFont ?? presentation.theme.minorFont ?? "Arial",
-                        size: run.fontSize, bold: run.bold, tracking: run.tracking, width: max(0, width - left - right))),
+                        size: run.fontSize, bold: run.bold, italic: run.italic, tracking: run.tracking, width: max(0, width - left - right))),
                           value.isFinite, value >= 0 else { return (geometry, .infinity) }
                     hostHeight = max(hostHeight, value)
                 }
