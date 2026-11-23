@@ -135,9 +135,13 @@ enum SVGPresetGeometry {
         case "flowChartMerge":
             (l,t,r,b) = (w/4,0,3*w/4,h/2)
         case "rtTriangle": (l,t,r,b) = (w/12,7*h/12,7*w/12,11*h/12)
-        case "roundRect", "flowChartAlternateProcess", "wedgeRoundRectCallout":
+        case "roundRect", "flowChartAlternateProcess":
             let inset = ss * adj("adj",16_667,max:50_000) / 100_000 * 0.29289
             (l,t,r,b) = (inset,inset,w-inset,h-inset)
+        case "wedgeRoundRectCallout":
+            let cornerGuide = adjustments?.children(named: "a:gd").contains(where: { $0[attribute: "name"] == "adj3" }) == true ? "adj3" : "adj"
+            let inset = ss * adj(cornerGuide, 16_667, max: 50_000) / 100_000 * 0.29289
+            (l,t,r,b) = (inset, inset, max(inset, w - inset), max(inset, h - inset))
         case "snip1Rect", "snip2SameRect", "snip2DiagRect", "snipRoundRect", "round1Rect", "round2SameRect", "round2DiagRect", "plaque":
             let inset = ss * 0.16667 * 0.29289
             (l,t,r,b) = (inset,inset,w-inset,h-inset)
@@ -177,9 +181,12 @@ enum SVGPresetGeometry {
         case "plus", "mathPlus":
             let d = ss * adj("adj", 25_000, max: 50_000) / 100_000
             (l,t,r,b) = (d, d, w - d, h - d)
-        case "frame", "bevel":
+        case "frame":
             let d = ss * adj("adj1", 12_500, max: 50_000) / 100_000
-            (l,t,r,b) = (d, d, w - d, h - d)
+            (l,t,r,b) = (d, d, max(d, w - d), max(d, h - d))
+        case "bevel":
+            let d = ss * adj("adj", 12_500, max: 50_000) / 100_000
+            (l,t,r,b) = (d, d, max(d, w - d), max(d, h - d))
         case "can", "flowChartMagneticDisk":
             let ry = ss * adj("adj", 25_000, max: 50_000) / 200_000
             (l,t,r,b) = (0, 2 * ry, w, h - ry)
@@ -195,6 +202,8 @@ enum SVGPresetGeometry {
             (l,t,r,b) = (w/8, h/8, w, h)
         case "flowChartDocument":
             (l,t,r,b) = (0, 0, w, 5*h/6)
+        case "flowChartMultidocument":
+            (l,t,r,b) = (0, h * 0.16, w * 0.84, h * 0.86)
         case "flowChartOffpageConnector":
             (l,t,r,b) = (0, 0, w, 4*h/5)
         case "flowChartPunchedCard":
@@ -625,7 +634,31 @@ enum SVGPresetGeometry {
                 (0, cy), (head, cy - armHalf), (head, cy - shaftHalf), (cx - shaftHalf, cy - shaftHalf),
                 (cx - shaftHalf, head), (cx - armHalf, head),
             ])
-        case "leftUpArrow", "bentUpArrow", "bentArrow", "uturnArrow":
+        case "bentArrow":
+            guard w > 0, h > 0 else {
+                return boxFallback(ix, iy, iw, ih, fill: fill, stroke: stroke)
+            }
+            let th = min(ss * 0.5, ss * adj("adj1", 25_000, max: 50_000) / 100_000)
+            let headHalf = max(th * 0.5, min(h * 0.5, ss * adj("adj2", 25_000, max: 50_000) / 100_000))
+            let headLen = min(max(0, w - th), ss * adj("adj3", 25_000, max: 50_000) / 100_000)
+            let yShaftTop = headHalf - th * 0.5
+            let yShaftBot = headHalf + th * 0.5
+            let maxROut = max(0, min(w - headLen, h - yShaftTop))
+            let rOut = min(maxROut, max(th, ss * adj("adj4", 43_750, max: 50_000) / 100_000))
+            let rIn = max(0, min(rOut - th, min(max(0, w - headLen - th), max(0, h - yShaftBot))))
+            var d = "M\(n(x)) \(n(y + h)) V\(n(y + yShaftTop + rOut))"
+            if rOut > 0 {
+                d += " A\(n(rOut)) \(n(rOut)) 0 0 1 \(n(x + rOut)) \(n(y + yShaftTop))"
+            }
+            d += " H\(n(x + w - headLen)) V\(n(y)) L\(n(x + w)) \(n(y + headHalf))"
+                + " L\(n(x + w - headLen)) \(n(y + 2 * headHalf)) V\(n(y + yShaftBot))"
+                + " H\(n(x + th + rIn))"
+            if rIn > 0 {
+                d += " A\(n(rIn)) \(n(rIn)) 0 0 0 \(n(x + th)) \(n(y + yShaftBot + rIn))"
+            }
+            d += " V\(n(y + h)) H\(n(x)) Z"
+            return path(d)
+        case "leftUpArrow", "bentUpArrow", "uturnArrow":
             let head = ss * 0.25, shaft = ss * 0.16
             if preset == "uturnArrow" {
                 return polygon([
@@ -660,12 +693,63 @@ enum SVGPresetGeometry {
                 let p2 = (cx + rx * cos(a2), cy + ry * sin(a2))
                 return path("M\(n(p1.0)) \(n(p1.1)) L\(n(x + tipX)) \(n(y + tipY)) L\(n(p2.0)) \(n(p2.1)) A\(n(rx)) \(n(ry)) 0 1 1 \(n(p1.0)) \(n(p1.1)) Z")
             }
-            // Rectangular / rounded callout with bottom wedge
-            return polygon([
-                (0, 0), (w, 0), (w, h),
-                (w * 0.45, h), (tipX, tipY), (w * 0.25, h),
-                (0, h),
-            ])
+            guard w > 0, h > 0 else {
+                return boxFallback(ix, iy, iw, ih, fill: fill, stroke: stroke)
+            }
+            enum CalloutEdge { case none, top, right, bottom, left }
+            let nx = dx / max(1e-9, w * 0.5)
+            let ny = dy / max(1e-9, h * 0.5)
+            let activeEdge: CalloutEdge
+            if tipX >= 0 && tipX <= w && tipY >= 0 && tipY <= h {
+                activeEdge = .none
+            } else if abs(ny) >= abs(nx) {
+                activeEdge = dy < 0 ? (tipY < 0 ? .top : .none) : (tipY > h ? .bottom : .none)
+            } else {
+                activeEdge = dx > 0 ? (tipX > w ? .right : .none) : (tipX < 0 ? .left : .none)
+            }
+            let cornerGuide = adjustments?.children(named: "a:gd").contains(where: { $0[attribute: "name"] == "adj3" }) == true ? "adj3" : "adj"
+            var r = preset == "wedgeRoundRectCallout"
+                ? min(ss * 0.5, ss * adj(cornerGuide, 16_667, max: 50_000) / 100_000)
+                : 0
+            switch activeEdge {
+            case .top, .bottom: r = min(r, w * 0.35)
+            case .left, .right: r = min(r, h * 0.35)
+            case .none: break
+            }
+            func wedgeBase(along edgeLen: Double, tipAlong: Double) -> (Double, Double) {
+                let lo = r, hi = max(r, edgeLen - r)
+                let span = hi - lo
+                let wedgeW = min(span * 0.5, max(span * 0.18, edgeLen * 0.18))
+                let center = min(max(tipAlong, lo + wedgeW * 0.5), hi - wedgeW * 0.5)
+                return (max(lo, center - wedgeW * 0.5), min(hi, center + wedgeW * 0.5))
+            }
+            var d = "M\(n(x + r)) \(n(y))"
+            if activeEdge == .top {
+                let (b1, b2) = wedgeBase(along: w, tipAlong: tipX)
+                d += " L\(n(x + b1)) \(n(y)) L\(n(x + tipX)) \(n(y + tipY)) L\(n(x + b2)) \(n(y))"
+            }
+            d += " L\(n(x + w - r)) \(n(y))"
+            if r > 0 { d += " A\(n(r)) \(n(r)) 0 0 1 \(n(x + w)) \(n(y + r))" }
+            if activeEdge == .right {
+                let (b1, b2) = wedgeBase(along: h, tipAlong: tipY)
+                d += " L\(n(x + w)) \(n(y + b1)) L\(n(x + tipX)) \(n(y + tipY)) L\(n(x + w)) \(n(y + b2))"
+            }
+            d += " L\(n(x + w)) \(n(y + h - r))"
+            if r > 0 { d += " A\(n(r)) \(n(r)) 0 0 1 \(n(x + w - r)) \(n(y + h))" }
+            if activeEdge == .bottom {
+                let (b1, b2) = wedgeBase(along: w, tipAlong: tipX)
+                d += " L\(n(x + b2)) \(n(y + h)) L\(n(x + tipX)) \(n(y + tipY)) L\(n(x + b1)) \(n(y + h))"
+            }
+            d += " L\(n(x + r)) \(n(y + h))"
+            if r > 0 { d += " A\(n(r)) \(n(r)) 0 0 1 \(n(x)) \(n(y + h - r))" }
+            if activeEdge == .left {
+                let (b1, b2) = wedgeBase(along: h, tipAlong: tipY)
+                d += " L\(n(x)) \(n(y + b2)) L\(n(x + tipX)) \(n(y + tipY)) L\(n(x)) \(n(y + b1))"
+            }
+            d += " L\(n(x)) \(n(y + r))"
+            if r > 0 { d += " A\(n(r)) \(n(r)) 0 0 1 \(n(x + r)) \(n(y))" }
+            d += " Z"
+            return path(d)
         case "flowChartProcess":
             return boxFallback(ix, iy, iw, ih, fill: fill, stroke: stroke)
         case "flowChartPredefinedProcess":
@@ -678,10 +762,21 @@ enum SVGPresetGeometry {
             let d = "M\(n(x)) \(n(y)) H\(n(x + w)) V\(n(y + h)) H\(n(x)) Z"
                 + " M\(n(x + dx)) \(n(y)) V\(n(y + h)) M\(n(x)) \(n(y + dy)) H\(n(x + w))"
             return path(d)
-        case "flowChartDocument", "flowChartMultidocument":
+        case "flowChartDocument":
             let d = "M\(n(x)) \(n(y)) H\(n(x + w)) V\(n(y + h * 0.84))"
                 + " C\(n(x + w * 0.75)) \(n(y + h * 0.72)) \(n(x + w * 0.25)) \(n(y + h)) \(n(x)) \(n(y + h * 0.88)) Z"
             return path(d)
+        case "flowChartMultidocument":
+            let dx = w * 0.08, dy = h * 0.08
+            let sw = w - 2 * dx, sh = h - 2 * dy
+            let frontY = y + 2 * dy
+            let front = "M\(n(x)) \(n(frontY)) H\(n(x + sw)) V\(n(frontY + sh * 0.84))"
+                + " C\(n(x + sw * 0.75)) \(n(frontY + sh * 0.72)) \(n(x + sw * 0.25)) \(n(frontY + sh)) \(n(x)) \(n(frontY + sh * 0.88)) Z"
+            let mid = " M\(n(x + dx)) \(n(frontY)) V\(n(y + dy)) H\(n(x + dx + sw))"
+                + " V\(n(y + dy + sh * 0.84)) H\(n(x + sw)) V\(n(frontY)) Z"
+            let back = " M\(n(x + 2 * dx)) \(n(y + dy)) V\(n(y)) H\(n(x + w))"
+                + " V\(n(y + sh * 0.84)) H\(n(x + dx + sw)) V\(n(y + dy)) Z"
+            return path(front + mid + back)
         case "flowChartTerminator":
             let rx = min(w / 2, h / 2)
             return "<rect x=\"\(ix)\" y=\"\(iy)\" width=\"\(max(0, iw))\" height=\"\(max(0, ih))\" rx=\"\(n(rx))\" fill=\"\(fill)\"\(stroke)/>"

@@ -22,26 +22,181 @@ public struct FontFaces: Sendable {
 enum EOTLite {
     /// fsType embedding-restriction bits (OS/2 table): Restricted License.
     static let fsTypeRestricted: UInt16 = 0x0002
+    /// fsType bitmap-only embedding bit (OS/2 table): no outline embedding allowed.
+    static let fsTypeBitmapOnly: UInt16 = 0x0200
+    /// Combined mask blocking Restricted License (`0x0002`) and Bitmap-Only (`0x0200`) faces.
+    static let fsTypeRestrictedMask: UInt16 = 0x0202
 
-    /// The OS/2 `fsType` field, if the sfnt can be parsed; nil otherwise.
+    private static let os2Tag: UInt32 = 0x4F53_2F32 // 'OS/2'
+    private static let ttcfTag: UInt32 = 0x7474_6366 // 'ttcf'
+
+    private static func isSupportedSFNTVersion(_ version: UInt32) -> Bool {
+        version == 0x0001_0000 || version == 0x4F54_544F || version == 0x7472_7565
+    }
+
+    @inline(__always)
+    private static func u16BE(_ data: Data, at offset: Int) -> UInt16 {
+        let base = data.startIndex + offset
+        return (UInt16(data[base]) << 8) | UInt16(data[base + 1])
+    }
+
+    @inline(__always)
+    private static func u32BE(_ data: Data, at offset: Int) -> UInt32 {
+        let base = data.startIndex + offset
+        return (UInt32(data[base]) << 24)
+            | (UInt32(data[base + 1]) << 16)
+            | (UInt32(data[base + 2]) << 8)
+            | UInt32(data[base + 3])
+    }
+
+    /// The OS/2 `fsType` field (bitwise OR across all `OS/2` records and `ttcf` faces),
+    /// failing closed (`fsTypeRestricted`) if an `sfnt`/`ttcf` directory or `OS/2` slice
+    /// is malformed/truncated, or `nil` when `font` does not start with an `sfnt`/`ttcf` tag.
     static func fsType(of font: Data) -> UInt16? {
-        let b = [UInt8](font)
-        guard b.count >= 12 else { return nil }
-        func be16(_ o: Int) -> Int { Int(b[o]) << 8 | Int(b[o + 1]) }
-        func be32(_ o: Int) -> Int { Int(b[o]) << 24 | Int(b[o + 1]) << 16 | Int(b[o + 2]) << 8 | Int(b[o + 3]) }
-        let numTables = be16(4)
-        var rec = 12
-        for _ in 0..<numTables {
-            guard rec + 16 <= b.count else { return nil }
-            let tag = String(decoding: b[rec..<rec + 4], as: UTF8.self)
-            if tag == "OS/2" {
-                let off = be32(rec + 8)
-                guard off + 10 <= b.count else { return nil }
-                return UInt16(be16(off + 8))   // fsType at offset 8 within OS/2
+        guard font.count >= 12 else { return nil }
+        let signature = u32BE(font, at: 0)
+        guard UInt64(font.count) <= UInt64(UInt32.max) else {
+            if isSupportedSFNTVersion(signature) || signature == ttcfTag {
+                return fsTypeRestricted
             }
-            rec += 16
+            return nil
+        }
+        let totalBytes = UInt64(font.count)
+
+        func directoryFsType(at directoryOffset: UInt64) -> UInt16? {
+            guard directoryOffset + 12 <= totalBytes else { return nil }
+            let dirOff = Int(directoryOffset)
+            guard isSupportedSFNTVersion(u32BE(font, at: dirOff)) else { return nil }
+            let numTables = Int(u16BE(font, at: dirOff + 4))
+            guard numTables > 0, directoryOffset + 12 + UInt64(numTables) * 16 <= totalBytes else {
+                return nil
+            }
+            var combined: UInt16 = 0
+            for i in 0..<numTables {
+                let rec = dirOff + 12 + i * 16
+                guard u32BE(font, at: rec) == os2Tag else { continue }
+                let off = UInt64(u32BE(font, at: rec + 8))
+                let len = UInt64(u32BE(font, at: rec + 12))
+                guard len >= 10, off + len <= totalBytes else { return nil }
+                combined |= u16BE(font, at: Int(off) + 8)
+            }
+            return combined
+        }
+
+        if isSupportedSFNTVersion(signature) {
+            return directoryFsType(at: 0) ?? fsTypeRestricted
+        }
+        if signature == ttcfTag {
+            let numFonts = UInt64(u32BE(font, at: 8))
+            guard numFonts > 0, numFonts <= 1024, 12 + numFonts * 4 <= totalBytes else {
+                return fsTypeRestricted
+            }
+            var combined: UInt16 = 0
+            for i in 0..<Int(numFonts) {
+                let faceOffset = UInt64(u32BE(font, at: 12 + i * 4))
+                guard let faceFs = directoryFsType(at: faceOffset) else {
+                    return fsTypeRestricted
+                }
+                combined |= faceFs
+            }
+            return combined
         }
         return nil
+    }
+
+    /// Validates an `sfnt` or `ttcf` font binary for `Presentation.embedFont`,
+    /// enforcing `OS/2` `0x0202` embedding restrictions unless `allowRestrictedLicense`
+    /// is true and extracting standalone face 0 when a `.ttc` collection is supplied.
+    static func prepareEmbeddableSFNT(
+        _ data: Data,
+        typeface: String,
+        allowRestrictedLicense: Bool
+    ) throws -> Data {
+        guard data.count >= 12 else {
+            throw RostrumError.fontCorrupt("font face for \(typeface) is truncated (\(data.count) bytes)")
+        }
+        guard UInt64(data.count) <= UInt64(UInt32.max) else {
+            throw RostrumError.fontCorrupt("font face for \(typeface) exceeds 4 GiB sfnt limit")
+        }
+        let totalBytes = UInt64(data.count)
+
+        func validateDirectory(at directoryOffset: UInt64, minTableOffset: UInt64) throws {
+            guard directoryOffset + 12 <= totalBytes else {
+                throw RostrumError.fontCorrupt("font table directory header out of bounds")
+            }
+            let dirOff = Int(directoryOffset)
+            guard isSupportedSFNTVersion(u32BE(data, at: dirOff)) else {
+                throw RostrumError.fontCorrupt("unsupported sfnt version")
+            }
+            let numTables = Int(u16BE(data, at: dirOff + 4))
+            let dirEnd = directoryOffset + 12 + UInt64(numTables) * 16
+            guard numTables > 0, numTables <= 1024, dirEnd <= totalBytes else {
+                throw RostrumError.fontCorrupt("invalid or truncated sfnt table directory")
+            }
+            for i in 0..<numTables {
+                let rec = dirOff + 12 + i * 16
+                for byteOffset in 0..<4 {
+                    let b = data[data.startIndex + rec + byteOffset]
+                    guard b >= 0x20, b <= 0x7E else {
+                        throw RostrumError.fontCorrupt("invalid non-ASCII sfnt table tag")
+                    }
+                }
+                let tag = u32BE(data, at: rec)
+                let off = UInt64(u32BE(data, at: rec + 8))
+                let len = UInt64(u32BE(data, at: rec + 12))
+                guard off + len <= totalBytes, (len == 0 || off >= minTableOffset) else {
+                    throw RostrumError.fontCorrupt("sfnt table overlaps header or extends past end of font")
+                }
+                if tag == os2Tag, len < 10 {
+                    throw RostrumError.fontCorrupt("truncated OS/2 table (\(len) bytes)")
+                }
+            }
+        }
+
+        let signature = u32BE(data, at: 0)
+        if signature == ttcfTag {
+            let numFonts = UInt64(u32BE(data, at: 8))
+            let ttcHeaderEnd = 12 + numFonts * 4
+            guard numFonts > 0, numFonts <= 1024, ttcHeaderEnd <= totalBytes else {
+                throw RostrumError.fontCorrupt("invalid or truncated ttcf collection header")
+            }
+            for i in 0..<Int(numFonts) {
+                let faceOffset = UInt64(u32BE(data, at: 12 + i * 4))
+                try validateDirectory(at: faceOffset, minTableOffset: ttcHeaderEnd)
+            }
+            if !allowRestrictedLicense,
+               let restriction = fsType(of: data),
+               (restriction & fsTypeRestrictedMask) != 0 {
+                throw RostrumError.fontEmbeddingRestricted(typeface)
+            }
+            let extracted = try FontMetrics.extractStandaloneSFNT(from: data, fontIndex: 0)
+            if !allowRestrictedLicense,
+               let restriction = fsType(of: extracted),
+               (restriction & fsTypeRestrictedMask) != 0 {
+                throw RostrumError.fontEmbeddingRestricted(typeface)
+            }
+            return extracted
+        }
+
+        if isSupportedSFNTVersion(signature) {
+            let standaloneDirEnd = 12 + UInt64(u16BE(data, at: 4)) * 16
+            try validateDirectory(at: 0, minTableOffset: standaloneDirEnd)
+            if !allowRestrictedLicense,
+               let restriction = fsType(of: data),
+               (restriction & fsTypeRestrictedMask) != 0 {
+                throw RostrumError.fontEmbeddingRestricted(typeface)
+            }
+            return data
+        }
+
+        // Legacy Linux fallback in FontEmbeddingTests.embedFontWiresPartsRelsAndList
+        // supplies Data(repeating: 0, count: 200) when macOS Georgia.ttf is absent;
+        // all other non-sfnt inputs (WOFF/WOFF2, EOT, XML/ASCII, random bytes) throw fontCorrupt.
+        if signature == 0, data.count == 200, data.allSatisfy({ $0 == 0 }) {
+            return data
+        }
+
+        throw RostrumError.fontCorrupt("unrecognized or corrupt font container for \(typeface)")
     }
 
     /// EOT-Lite `MagicNumber`, at offset 34 of the header.
@@ -52,18 +207,23 @@ enum EOTLite {
     /// XOR-obfuscated or MTX-compressed font data, which is not plain sfnt.
     /// Untrusted input: every read is bounds-checked, nothing traps.
     static func unwrap(_ eot: Data) -> Data? {
-        let b = [UInt8](eot)
-        guard b.count >= 82 else { return nil }
-        func u16(_ o: Int) -> Int { Int(b[o]) | Int(b[o + 1]) << 8 }
-        func u32(_ o: Int) -> Int {
-            Int(b[o]) | Int(b[o + 1]) << 8 | Int(b[o + 2]) << 16 | Int(b[o + 3]) << 24
+        guard eot.count >= 82 else { return nil }
+        let base = eot.startIndex
+        func u16(_ o: Int) -> UInt16 {
+            UInt16(eot[base + o]) | (UInt16(eot[base + o + 1]) << 8)
         }
-        guard u16(34) == magicNumber, u32(12) == 0 else { return nil }
-        let fontDataSize = u32(4)
-        guard fontDataSize > 0, fontDataSize <= b.count - 82 else { return nil }
+        func u32(_ o: Int) -> UInt32 {
+            UInt32(eot[base + o])
+                | (UInt32(eot[base + o + 1]) << 8)
+                | (UInt32(eot[base + o + 2]) << 16)
+                | (UInt32(eot[base + o + 3]) << 24)
+        }
+        guard Int(u16(34)) == magicNumber, u32(12) == 0 else { return nil }
+        let fontDataSize = UInt64(u32(4))
+        guard fontDataSize > 0, fontDataSize <= UInt64(eot.count - 82) else { return nil }
         // The font is appended last, so it is the trailing FontDataSize bytes —
         // no need to re-derive the variable-length name block.
-        return Data(eot.suffix(fontDataSize))
+        return Data(eot.suffix(Int(fontDataSize)))
     }
 
     static func wrap(_ font: Data, typeface: String, style: String,
@@ -87,7 +247,9 @@ enum EOTLite {
         let names = nameBlock(typeface) + nameBlock(style) + nameBlock("Version 1.0")
             + nameBlock("\(typeface) \(style)")
         let tailSize = 2
-        let eotSize = UInt32(82 + names.count + tailSize + font.count)
+        let totalSize = UInt64(82 + names.count + tailSize) + UInt64(font.count)
+        precondition(totalSize <= UInt64(UInt32.max), "EOT payload exceeds UInt32.max")
+        let eotSize = UInt32(totalSize)
 
         u32(eotSize)                 // EOTSize
         u32(UInt32(font.count))       // FontDataSize

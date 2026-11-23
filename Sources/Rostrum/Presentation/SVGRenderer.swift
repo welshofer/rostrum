@@ -412,6 +412,7 @@ struct SVGRenderer {
         var optionalProblems: SlideRenderProblems? = problems
         let attrs = "stroke=\"\(color)\" stroke-width=\"\(width)\" fill=\"none\""
             + dashAttributes(line, width: width, problems: &optionalProblems)
+            + lineCapJoinAttributes(line)
             + lineEndMarkers(line, color: color, defs: &defs, problems: &problems)
         if let updated = optionalProblems { problems = updated }
         func adjustment(_ name: String, default fallback: Double = 0.5) -> Double {
@@ -2376,6 +2377,7 @@ struct SVGRenderer {
             } else {
                 let scatterStyle = plot?.firstChild(named: "c:scatterStyle")?[attribute: "val"] ?? "lineMarker"
                 let defaultLine = ["line", "lineMarker", "smooth", "smoothMarker"].contains(scatterStyle)
+                let defaultSmooth = ["smooth", "smoothMarker"].contains(scatterStyle)
                 let defaultMarkers = ["lineMarker", "smoothMarker", "marker"].contains(scatterStyle)
                 let fallbackMarker = XML.Element("c:marker", children: [
                     .element(XML.Element("c:symbol", attributes: [("val", "circle")]))
@@ -2407,11 +2409,17 @@ struct SVGRenderer {
                     let ln = properties?.firstChild(named: "a:ln")
                     let hasExplicitLine = ln?.firstChild(named: "a:solidFill") != nil
                     if points.count > 1, (defaultLine || hasExplicitLine), ln?.firstChild(named: "a:noFill") == nil {
-                        let path = points.map { "\(coord($0.0)),\(coord($0.1))" }.joined(separator: " ")
                         let stroke = colorHex(in: ln?.firstChild(named: "a:solidFill")) ?? seriesCol
                         let lineWidth = ln?.coordinate("w") ?? 25400
                         let dash = dashAttributes(ln, width: lineWidth)
-                        body += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" stroke-width=\"\(lineWidth)\"\(dash) stroke-linejoin=\"round\"/>"
+                        let capJoin = chartCapJoinAttributes(ln)
+                        if Self.isSmoothSeries(styles[s], defaultSmooth: defaultSmooth) {
+                            let spline = catmullRomSplinePath(points)
+                            body += "<path d=\"\(spline)\" fill=\"none\" stroke=\"\(stroke)\" stroke-width=\"\(lineWidth)\"\(dash)\(capJoin)/>"
+                        } else {
+                            let path = points.map { "\(coord($0.0)),\(coord($0.1))" }.joined(separator: " ")
+                            body += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" stroke-width=\"\(lineWidth)\"\(dash)\(capJoin)/>"
+                        }
                     }
                     body += renderSeriesOverlays(styles[s], points: overlayPts, scale: yScale, area: area, horizontal: false, defaultColor: seriesCol)
                 }
@@ -2846,10 +2854,43 @@ struct SVGRenderer {
             let stroke = ln?.firstChild(named: "a:noFill") != nil ? "none" : colorHex(in: ln?.firstChild(named: "a:solidFill")) ?? color
             let lineWidth = ln?.coordinate("w") ?? 25400
             let dash = dashAttributes(ln, width: lineWidth)
-            out += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" "
-                + "stroke-width=\"\(lineWidth)\"\(dash) stroke-linejoin=\"round\"/>"
+            let capJoin = chartCapJoinAttributes(ln)
+            if !filled, Self.isSmoothSeries(styles[s], defaultSmooth: false) {
+                let spline = catmullRomSplinePath(points)
+                out += "<path d=\"\(spline)\" fill=\"none\" stroke=\"\(stroke)\" "
+                    + "stroke-width=\"\(lineWidth)\"\(dash)\(capJoin)/>"
+            } else {
+                out += "<polyline points=\"\(path)\" fill=\"none\" stroke=\"\(stroke)\" "
+                    + "stroke-width=\"\(lineWidth)\"\(dash)\(capJoin)/>"
+            }
         }
         return out
+    }
+
+    private static func isSmoothSeries(_ seriesElement: XML.Element, defaultSmooth: Bool) -> Bool {
+        guard let smooth = seriesElement.firstChild(named: "c:smooth") else {
+            return defaultSmooth
+        }
+        let val = smooth[attribute: "val"] ?? "1"
+        return val == "1" || val == "true"
+    }
+
+    private func catmullRomSplinePath(_ points: [(Double, Double)]) -> String {
+        guard let first = points.first else { return "" }
+        var d = "M\(coord(first.0)) \(coord(first.1))"
+        guard points.count >= 2 else { return d }
+        for i in 0..<(points.count - 1) {
+            let p0 = i > 0 ? points[i - 1] : points[0]
+            let p1 = points[i]
+            let p2 = points[i + 1]
+            let p3 = (i + 2 < points.count) ? points[i + 2] : points[points.count - 1]
+            let c1x = p1.0 + (p2.0 - p0.0) / 6.0
+            let c1y = p1.1 + (p2.1 - p0.1) / 6.0
+            let c2x = p2.0 - (p3.0 - p1.0) / 6.0
+            let c2y = p2.1 - (p3.1 - p1.1) / 6.0
+            d += " C\(coord(c1x)) \(coord(c1y)) \(coord(c2x)) \(coord(c2y)) \(coord(p2.0)) \(coord(p2.1))"
+        }
+        return d
     }
 
     private func pieBody(_ entry: ChartData.Series, kind: String, plot: XML.Element?,
@@ -3280,11 +3321,24 @@ struct SVGRenderer {
         guard let inherited = styleEntry(reference, list: "a:lnStyleLst") else { return properties }
         if let direct = properties.firstChild(named: "a:ln") {
             // Direct attributes/children override the theme property by property.
+            let fillNames: Set<String> = ["a:noFill", "a:solidFill", "a:gradFill", "a:pattFill"]
+            let joinNames: Set<String> = ["a:round", "a:bevel", "a:miter"]
+            let dashNames: Set<String> = ["a:prstDash", "a:custDash"]
             for attribute in direct.attributes { inherited[attribute: attribute.name] = attribute.value }
             for child in direct.childElements {
-                if ["a:noFill", "a:solidFill", "a:gradFill", "a:pattFill"].contains(child.name) {
+                if fillNames.contains(child.name) {
                     inherited.children.removeAll { node in
-                        if case .element(let e) = node { return ["a:noFill", "a:solidFill", "a:gradFill", "a:pattFill"].contains(e.name) }
+                        if case .element(let e) = node { return fillNames.contains(e.name) }
+                        return false
+                    }
+                } else if joinNames.contains(child.name) {
+                    inherited.children.removeAll { node in
+                        if case .element(let e) = node { return joinNames.contains(e.name) }
+                        return false
+                    }
+                } else if dashNames.contains(child.name) {
+                    inherited.children.removeAll { node in
+                        if case .element(let e) = node { return dashNames.contains(e.name) }
                         return false
                     }
                 } else {
@@ -3370,11 +3424,44 @@ struct SVGRenderer {
         return values
     }
 
+    private func lineCapJoinAttributes(_ line: XML.Element?, includeJoin: Bool = true) -> String {
+        guard let line else { return "" }
+        var attrs = ""
+        switch line[attribute: "cap"] {
+        case "rnd": attrs += " stroke-linecap=\"round\""
+        case "sq": attrs += " stroke-linecap=\"square\""
+        default: break
+        }
+        if includeJoin {
+            if line.firstChild(named: "a:round") != nil {
+                attrs += " stroke-linejoin=\"round\""
+            } else if line.firstChild(named: "a:bevel") != nil {
+                attrs += " stroke-linejoin=\"bevel\""
+            }
+        }
+        return attrs
+    }
+
+    private func chartCapJoinAttributes(_ line: XML.Element?) -> String {
+        let cap = lineCapJoinAttributes(line, includeJoin: false)
+        let join: String
+        if line?.firstChild(named: "a:bevel") != nil {
+            join = "bevel"
+        } else if line?.firstChild(named: "a:miter") != nil {
+            join = "miter"
+        } else {
+            join = "round"
+        }
+        return cap + " stroke-linejoin=\"\(join)\""
+    }
+
     private func strokeAttrs(_ spPr: XML.Element) -> String {
         guard let ln = spPr.firstChild(named: "a:ln"), ln.firstChild(named: "a:noFill") == nil,
               let color = colorHex(in: ln.firstChild(named: "a:solidFill")) else { return "" }
         let width = ln.coordinate("w") ?? 12700
-        return " stroke=\"\(color)\" stroke-width=\"\(max(0, width))\"" + dashAttributes(ln, width: width)
+        return " stroke=\"\(color)\" stroke-width=\"\(max(0, width))\""
+            + dashAttributes(ln, width: width)
+            + lineCapJoinAttributes(ln)
     }
 
     private func dashAttributes(_ line: XML.Element?, width: Int, problems: inout SlideRenderProblems?) -> String {
