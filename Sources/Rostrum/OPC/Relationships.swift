@@ -75,8 +75,17 @@ public final class Relationships {
         items.first { $0.rId == rId }
     }
 
-    public func first(ofType type: String) -> Relationship? {
-        items.first { $0.type == type }
+    /// First matching relationship of `type`.
+    ///
+    /// OPC part relationships (`officeDocument`, `slideLayout`, `slideMaster`,
+    /// `theme`, `notesSlide`, `package`, `font`, etc.) address internal package
+    /// parts, so `TargetMode="External"` entries are ignored unless
+    /// `type == RelType.hyperlink` or `includeExternal == true`.
+    public func first(ofType type: String, includeExternal: Bool? = nil) -> Relationship? {
+        if includeExternal ?? (type == RelType.hyperlink) {
+            return items.first { $0.type == type }
+        }
+        return items.first { $0.type == type && !$0.isExternal }
     }
 
     public func all(ofType type: String) -> [Relationship] {
