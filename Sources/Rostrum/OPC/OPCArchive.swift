@@ -87,7 +87,8 @@ public final class OPCArchive {
     }
 
     public var mainPartURI: PackURI? {
-        guard let rel = relationships.first(ofType: RelType.officeDocument) else { return nil }
+        guard let rel = relationships.first(ofType: RelType.officeDocument, includeExternal: false),
+              !rel.isExternal else { return nil }
         let resolved = PackURI.resolve(target: rel.target, relativeTo: "/")
         if reader.contains(resolved.memberName) { return resolved }
         if let decoded = resolved.percentDecoded, reader.contains(decoded.memberName) { return decoded }

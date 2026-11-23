@@ -203,7 +203,7 @@ public final class Part {
 
     /// The part a relationship of `type` points at, resolved through `package`.
     public func related(by type: String, in package: OPCPackage) throws -> Part {
-        guard let rel = rels.first(ofType: type) else {
+        guard let rel = rels.first(ofType: type, includeExternal: false), !rel.isExternal else {
             throw RostrumError.packageInvalid("part \(uri) has no relationship of type \(type)")
         }
         return try package.part(at: PackURI.resolve(target: rel.target, relativeTo: uri.baseURI))
@@ -634,7 +634,7 @@ public final class OPCPackage {
     /// The part the package-level officeDocument relationship points at
     /// (`/ppt/presentation.xml` in a .pptx).
     public func mainDocumentPart() throws -> Part {
-        guard let rel = rels.first(ofType: RelType.officeDocument) else {
+        guard let rel = rels.first(ofType: RelType.officeDocument, includeExternal: false), !rel.isExternal else {
             throw RostrumError.packageInvalid("package has no officeDocument relationship")
         }
         return try part(at: PackURI.resolve(target: rel.target, relativeTo: "/"))

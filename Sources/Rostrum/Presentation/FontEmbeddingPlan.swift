@@ -54,9 +54,11 @@ struct FontEmbeddingPlan {
         ]
         for variant in variants {
             guard let data = variant.data else { continue }
-            if !allowRestrictedLicense, let fsType = EOTLite.fsType(of: data), fsType & EOTLite.fsTypeRestricted != 0 {
-                throw RostrumError.fontEmbeddingRestricted(typeface)
-            }
+            let normalizedData = try EOTLite.prepareEmbeddableSFNT(
+                data,
+                typeface: typeface,
+                allowRestrictedLicense: allowRestrictedLicense
+            )
             let existing = EmbeddedFontXML.children(family, variant.tag, inheriting: listScope)
             guard existing.count <= 1 else {
                 throw RostrumError.packageInvalid("ambiguous embedded face: \(typeface) \(variant.tag)")
@@ -74,7 +76,9 @@ struct FontEmbeddingPlan {
                 let uri = PackURI.resolve(target: rel.target, relativeTo: presentation.uri.baseURI)
                 guard let part = try? package.part(at: uri) else { throw RostrumError.packageInvalid("embedded font part is missing: \(uri)") }
                 let existingBytes = try part.decodedData()
-                guard part.contentType == "application/x-fontdata", EOTLite.unwrap(existingBytes) == data else {
+                let unwrapped = EOTLite.unwrap(existingBytes)
+                guard part.contentType == "application/x-fontdata",
+                      unwrapped == normalizedData || unwrapped == data else {
                     throw RostrumError.packageInvalid("embedded font conflicts with requested face: \(typeface) \(variant.tag)")
                 }
             } else {
@@ -83,10 +87,10 @@ struct FontEmbeddingPlan {
                 let lengths = [typeface.utf16.count, variant.style.utf16.count, 11,
                                typeface.utf16.count + 1 + variant.style.utf16.count]
                 guard lengths.allSatisfy({ $0 <= Int(UInt16.max) / 2 }),
-                      data.count <= Int(UInt32.max) - (82 + 16 + 2 + lengths.reduce(0, +) * 2) else {
+                      normalizedData.count <= Int(UInt32.max) - (82 + 16 + 2 + lengths.reduce(0, +) * 2) else {
                     throw RostrumError.fontCorrupt("font embedding exceeds EOT size limits")
                 }
-                pending.append((variant.tag, EOTLite.wrap(data, typeface: typeface, style: variant.style,
+                pending.append((variant.tag, EOTLite.wrap(normalizedData, typeface: typeface, style: variant.style,
                                                          weight: variant.weight, italic: variant.italic)))
             }
         }
