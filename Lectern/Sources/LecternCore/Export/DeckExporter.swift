@@ -30,11 +30,30 @@ public enum DeckExporter {
     ///
     /// A deck called `Q3 Review.pptx` becomes `Q3 Review/`, which is the name
     /// the person already has in their head. Path separators cannot survive
-    /// `lastPathComponent`, so what comes back is always a single component.
+    /// `lastPathComponent`, and trimming dots/whitespace guarantees `.`, `..`,
+    /// and dot-only stems fall back to `"Deck"` rather than writing outside the
+    /// chosen destination folder.
     public static func folderName(for deck: URL) -> String {
-        let stem = deck.deletingPathExtension().lastPathComponent
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        return stem.isEmpty ? "Deck" : stem
+        var raw = deck.deletingPathExtension().lastPathComponent
+        // Foundation leaves leading-dot filenames (such as `...pptx` or
+        // `.hidden.pptx`) untouched in `deletingPathExtension()`. Strip the
+        // trailing extension segment before normalizing dots so dot-only deck
+        // names collapse to `"Deck"` rather than `"pptx"` or hidden folders.
+        if raw.hasPrefix("."), let dot = raw.lastIndex(of: "."), dot > raw.startIndex {
+            raw = String(raw[..<dot])
+        }
+        var stem = raw
+        while true {
+            let trimmed = stem
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: CharacterSet(charactersIn: "."))
+            if trimmed == stem { break }
+            stem = trimmed
+        }
+        if stem.isEmpty || stem == "." || stem == ".." {
+            return "Deck"
+        }
+        return stem
     }
 
     /// Open the deck at `deck` and export it into a new folder inside `parent`.
@@ -47,7 +66,12 @@ public enum DeckExporter {
         let presentation = try Presentation(contentsOf: deck,
             limits: .init(totalUncompressedBytes: DeckInspector.defaultReadLimit))
         let name = folderName(for: deck)
-        let directory = parent.appendingPathComponent(name, isDirectory: true)
+        let resolvedParent = parent.standardizedFileURL
+        let directory = resolvedParent.appendingPathComponent(name, isDirectory: true).standardizedFileURL
+        guard directory.deletingLastPathComponent() == resolvedParent,
+              directory != resolvedParent else {
+            throw CocoaError(.fileWriteInvalidFileName)
+        }
         try Task.checkCancellation()
         try TableTextExtractor.preflight(presentation)
         let outline = presentation.outline()
