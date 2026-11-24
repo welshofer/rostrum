@@ -304,8 +304,9 @@ extension Presentation {
     ///
     /// Reads `p:embeddedFontLst`, unwraps each EOT-Lite part back to raw sfnt
     /// bytes, and registers it under the deck's declared typeface name (plus
-    /// whatever family names the font itself carries). Every supplied variant
-    /// is registered under its declared style. Returns each registered family once.
+    /// any non-conflicting family names the font itself carries, without
+    /// overwriting already-registered faces). Every supplied variant is
+    /// registered under its declared style. Returns each registered family once.
     ///
     /// Explicit by design: nothing registers fonts behind your back, so
     /// output stays deterministic unless you ask for this.
@@ -335,7 +336,7 @@ extension Presentation {
                 guard let part = try? package.part(at: uri),
                       let fontBytes = try? part.decodedData(),
                       let sfnt = EOTLite.unwrap(fontBytes),
-                      (try? fonts.register(sfnt, face: FontFaceKey(
+                      (try? fonts.registerEmbedded(sfnt, face: FontFaceKey(
                         family: typeface, bold: bold, italic: italic))) != nil else { continue }
                 if !registered.contains(typeface) { registered.append(typeface) }
             }

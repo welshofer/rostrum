@@ -329,13 +329,23 @@ public struct FontMetrics: Sendable {
         // (MacRoman) are decoded only when pure ASCII — where the encodings
         // agree — so `familyNames.first` is always a faithful name, never a
         // mojibake decode of a non-ASCII Mac record.
+        // Bound name-table parsing against hostile 65,535-record sfnt tables:
+        // deduplicate in O(1) via Sets and cap both scanned records and
+        // distinct emitted family names while preserving deterministic order.
+        let maxNameRecords = 1024
+        let maxFamilyNames = 16
         var unicodeLegacyNames: [String] = []
         var macLegacyNames: [String] = []
         var unicodeTypographicNames: [String] = []
         var macTypographicNames: [String] = []
         var typographicSubfamilies: [String] = []
+        var seenUnicodeLegacy: Set<String> = []
+        var seenMacLegacy: Set<String> = []
+        var seenUnicodeTypographic: Set<String> = []
+        var seenMacTypographic: Set<String> = []
+        var seenTypographicSubfamilies: Set<String> = []
         if let name = tables["name"], name.length >= 6 {
-            let count = (try? reader.u16(name.offset + 2)) ?? 0
+            let count = Swift.min((try? reader.u16(name.offset + 2)) ?? 0, maxNameRecords)
             let storage = name.offset + ((try? reader.u16(name.offset + 4)) ?? 0)
             for i in 0..<count {
                 let record = name.offset + 6 + 12 * i
@@ -361,15 +371,15 @@ public struct FontMetrics: Sendable {
                 }
                 guard let decoded, !decoded.isEmpty else { continue }
                 switch (nameID, isUnicode) {
-                case (1, true) where !unicodeLegacyNames.contains(decoded):
+                case (1, true) where seenUnicodeLegacy.insert(decoded).inserted:
                     unicodeLegacyNames.append(decoded)
-                case (1, false) where !macLegacyNames.contains(decoded):
+                case (1, false) where seenMacLegacy.insert(decoded).inserted:
                     macLegacyNames.append(decoded)
-                case (16, true) where !unicodeTypographicNames.contains(decoded):
+                case (16, true) where seenUnicodeTypographic.insert(decoded).inserted:
                     unicodeTypographicNames.append(decoded)
-                case (16, false) where !macTypographicNames.contains(decoded):
+                case (16, false) where seenMacTypographic.insert(decoded).inserted:
                     macTypographicNames.append(decoded)
-                case (17, _) where !typographicSubfamilies.contains(decoded):
+                case (17, _) where seenTypographicSubfamilies.insert(decoded).inserted:
                     typographicSubfamilies.append(decoded)
                 default:
                     break
@@ -391,17 +401,20 @@ public struct FontMetrics: Sendable {
                 let normalized = subfamily.lowercased().filter { !$0.isWhitespace && $0 != "-" }
                 return standardSubfamilies.contains(normalized)
             }
-        var unicodeNames = unicodeLegacyNames
-        var macNames = macLegacyNames
-        if includeTypographicFamily {
-            for name in unicodeTypographicNames where !unicodeNames.contains(name) {
-                unicodeNames.append(name)
-            }
-            for name in macTypographicNames where !macNames.contains(name) {
-                macNames.append(name)
+        var merged: [String] = []
+        var seenMerged: Set<String> = []
+        func appendUnique(_ list: [String]) {
+            for candidate in list where merged.count < maxFamilyNames {
+                if seenMerged.insert(candidate).inserted {
+                    merged.append(candidate)
+                }
             }
         }
-        familyNames = unicodeNames + macNames.filter { !unicodeNames.contains($0) }
+        appendUnique(unicodeLegacyNames)
+        if includeTypographicFamily { appendUnique(unicodeTypographicNames) }
+        appendUnique(macLegacyNames)
+        if includeTypographicFamily { appendUnique(macTypographicNames) }
+        familyNames = merged
 
         if let os2 = tables["OS/2"], os2.length >= 74 {
             let fsSelection = try reader.u16(os2.offset + 62)

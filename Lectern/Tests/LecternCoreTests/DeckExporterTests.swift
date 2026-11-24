@@ -54,4 +54,38 @@ import Rostrum
         let entries = try FileManager.default.contentsOfDirectory(atPath: root.path)
         #expect(entries.filter { $0.hasPrefix("Deck") && !$0.hasSuffix(".pptx") } == ["Deck"])
     }
+
+    @Test func dotOnlyDeckNamesFallBackToDeckAndStayInsideParent() throws {
+        #expect(DeckExporter.folderName(for: URL(fileURLWithPath: "/tmp/...pptx")) == "Deck")
+        #expect(DeckExporter.folderName(for: URL(fileURLWithPath: "/tmp/..pptx")) == "Deck")
+        #expect(DeckExporter.folderName(for: URL(fileURLWithPath: "/tmp/.. .pptx")) == "Deck")
+        #expect(DeckExporter.folderName(for: URL(fileURLWithPath: "/tmp/ .. .pptx")) == "Deck")
+        #expect(DeckExporter.folderName(for: URL(fileURLWithPath: "/tmp/..")) == "Deck")
+        #expect(DeckExporter.folderName(for: URL(fileURLWithPath: "/tmp/.")) == "Deck")
+
+        let root = try scratchDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let parent = root.appendingPathComponent("exports", isDirectory: true)
+        try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: true)
+
+        let deck = try Presentation()
+        for filename in ["...pptx", " .. .pptx"] {
+            let deckURL = root.appendingPathComponent(filename)
+            try deck.serializedData().write(to: deckURL)
+
+            let outcome = try DeckExporter.export(deckAt: deckURL, into: parent)
+            #expect(outcome.directory.standardizedFileURL.deletingLastPathComponent().path == parent.standardizedFileURL.path)
+            #expect(outcome.directory.lastPathComponent == "Deck")
+            #expect(!FileManager.default.fileExists(atPath: root.appendingPathComponent("..md").path))
+        }
+
+        // Callers such as CLI tools and tests often construct `parent` via
+        // `URL(fileURLWithPath:)` without `isDirectory: true` (no trailing slash).
+        let deckURL = root.appendingPathComponent("Plain.pptx")
+        try deck.serializedData().write(to: deckURL)
+        let plainParent = URL(fileURLWithPath: parent.path)
+        let plainOutcome = try DeckExporter.export(deckAt: deckURL, into: plainParent)
+        #expect(plainOutcome.directory.standardizedFileURL.deletingLastPathComponent().path == plainParent.standardizedFileURL.path)
+        #expect(plainOutcome.directory.lastPathComponent == "Plain")
+    }
 }

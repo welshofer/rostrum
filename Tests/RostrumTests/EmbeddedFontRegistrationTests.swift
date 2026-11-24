@@ -60,6 +60,33 @@ import Testing
         // Reading fonts is a read: the deck must still re-emit its original bytes.
         #expect(try reopened.serializedData() == original)
     }
+
+    @Test func embeddedFontInternalAliasesDoNotOverwriteRegisteredFamilies() throws {
+        // Build a distinct "Calibri" face (advance of 'W' = 700 instead of 900).
+        let calibriAdvances = [600] + (0x20...0x7E).map { $0 == 0x57 ? 700 : 500 }
+        let calibriSFNT = Data(TestFont.assemble(tables: [
+            ("head", TestFont.head(upem: 1000)),
+            ("hhea", TestFont.hhea(ascender: 800, descender: -200, lineGap: 0, numberOfHMetrics: calibriAdvances.count)),
+            ("maxp", TestFont.maxp(numGlyphs: calibriAdvances.count)),
+            ("hmtx", TestFont.hmtx(advances: calibriAdvances)),
+            ("cmap", TestFont.cmapFormat4()),
+            ("name", TestFont.nameTable(family: "Calibri")),
+        ]))
+        // Hostile embedded font declared as "DeckCustom" whose internal name table
+        // claims "Calibri" (with W = 900).
+        let embeddedSFNT = TestFont.standard(familyName: "Calibri")
+
+        let deck = try Presentation()
+        try deck.embedFont("DeckCustom", faces: FontFaces(regular: embeddedSFNT))
+        let reopened = try Presentation(data: try deck.serializedData())
+        try reopened.fonts.register(calibriSFNT)
+
+        let registered = reopened.registerEmbeddedFonts()
+        #expect(registered == ["DeckCustom"])
+        #expect(reopened.fonts.metrics(for: "DeckCustom")?.advance(of: "W") == 900)
+        // Pre-registered Calibri must remain intact rather than being hijacked.
+        #expect(reopened.fonts.metrics(for: "Calibri")?.advance(of: "W") == 700)
+    }
 }
 
 @Suite struct SlideCapacityTests {
