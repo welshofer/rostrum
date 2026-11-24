@@ -117,6 +117,22 @@ public final class FontLibrary {
                      bold: face.bold, italic: face.italic)
     }
 
+    /// Register a deck-embedded font under its declared `face`, adding internal
+    /// `name`-table family aliases only when they do not already exist in this
+    /// library so an untrusted deck cannot hijack pre-registered system or user
+    /// families such as Calibri or Arial.
+    @discardableResult
+    func registerEmbedded(_ data: Data, face: FontFaceKey, fontIndex: Int = 0) throws -> String {
+        let prepared = try PreparedFont(data: data, fontIndex: fontIndex)
+        let extraAliases = prepared.metrics.familyNames.filter { alias in
+            let key = FontFaceKey(family: alias, bold: face.bold, italic: face.italic)
+            return key != face && byFace[key] == nil
+        }
+        return try register(prepared.metrics, data: prepared.data, fontIndex: prepared.fontIndex,
+                            names: [face.family] + extraAliases,
+                            bold: face.bold, italic: face.italic)
+    }
+
     private func register(_ metrics: FontMetrics, data: Data, fontIndex: Int, names: [String], bold: Bool, italic: Bool) throws -> String {
         guard let primary = names.first else {
             throw RostrumError.fontCorrupt("font has no family name; pass aliases: when registering")

@@ -259,6 +259,64 @@ enum TestFont {
             #expect(throws: RostrumError.self) { try FontMetrics(data: good.prefix(cut)) }
         }
     }
+
+    @Test func nameTableCapsProcessedRecordsAndDistinctFamilyNames() throws {
+        // Point many platform-3 nameID-1 records at distinct overlapping slices
+        // of a compact UTF-16BE storage buffer (each slice offset fits UInt16).
+        let recordCount = 2000
+        let units = 300
+        var storage: [UInt8] = []
+        storage.reserveCapacity(units * 2)
+        for u in 0..<units {
+            storage += TestFont.be16(0x0041 + (u % 26) + (u / 26) * 32)
+        }
+        var recs: [UInt8] = []
+        recs.reserveCapacity(recordCount * 12)
+        for i in 0..<recordCount {
+            let startUnit = i % 150
+            let lenUnits = 1 + ((i / 150) % 140)
+            recs += TestFont.be16(3) + TestFont.be16(1) + TestFont.be16(0x409)
+                + TestFont.be16(1) + TestFont.be16(lenUnits * 2) + TestFont.be16(startUnit * 2)
+        }
+        let nameTable = TestFont.be16(0) + TestFont.be16(recordCount)
+            + TestFont.be16(6 + 12 * recordCount) + recs + storage
+        let advances = [600] + (0x20...0x7E).map { _ in 500 }
+        let sfnt = Data(TestFont.assemble(tables: [
+            ("head", TestFont.head(upem: 1000)),
+            ("hhea", TestFont.hhea(ascender: 800, descender: -200, lineGap: 0, numberOfHMetrics: advances.count)),
+            ("maxp", TestFont.maxp(numGlyphs: advances.count)),
+            ("hmtx", TestFont.hmtx(advances: advances)),
+            ("cmap", TestFont.cmapFormat4()),
+            ("name", nameTable),
+        ]))
+
+        let metrics = try FontMetrics(data: sfnt)
+        #expect(metrics.familyNames.count <= 16)
+        #expect(!metrics.familyNames.isEmpty)
+
+        // Full 65,535-record hostile name table pointing storageOffset into the
+        // table body must also parse linearly and obey the family-name ceiling.
+        let maxCount = 65_535
+        var hostileRecs: [UInt8] = []
+        hostileRecs.reserveCapacity(maxCount * 12)
+        for i in 0..<maxCount {
+            let startOffset = (i % 512) * 2
+            let byteLen = (1 + ((i / 512) % 32)) * 2
+            hostileRecs += TestFont.be16(3) + TestFont.be16(1) + TestFont.be16(0x409)
+                + TestFont.be16(1) + TestFont.be16(byteLen) + TestFont.be16(startOffset)
+        }
+        let hostileName = TestFont.be16(0) + TestFont.be16(maxCount) + TestFont.be16(6) + hostileRecs
+        let hostileSFNT = Data(TestFont.assemble(tables: [
+            ("head", TestFont.head(upem: 1000)),
+            ("hhea", TestFont.hhea(ascender: 800, descender: -200, lineGap: 0, numberOfHMetrics: advances.count)),
+            ("maxp", TestFont.maxp(numGlyphs: advances.count)),
+            ("hmtx", TestFont.hmtx(advances: advances)),
+            ("cmap", TestFont.cmapFormat4()),
+            ("name", hostileName),
+        ]))
+        let hostileMetrics = try FontMetrics(data: hostileSFNT)
+        #expect(hostileMetrics.familyNames.count <= 16)
+    }
 }
 
 @Suite struct TextMeasurerTests {
