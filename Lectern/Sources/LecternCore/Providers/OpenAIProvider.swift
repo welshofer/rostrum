@@ -194,6 +194,10 @@ public struct OpenAIProvider: LLMProvider {
                 return (data, parseUsage(data))
             case 401, 403:
                 throw LecternError.authFailed(provider: displayName)
+            case 429 where HTTPRetry.openAIInsufficientQuotaMessage(in: data) != nil:
+                throw LecternError.providerError(
+                    status: 429,
+                    message: HTTPRetry.openAIInsufficientQuotaMessage(in: data) ?? message(data))
             case let status where HTTPRetry.isRetriable(status: status):
                 let retryAfter = HTTPRetry.retryAfterSeconds(http)
                 let wait = HTTPRetry.backoff(attempt: attempt, retryAfter: retryAfter)

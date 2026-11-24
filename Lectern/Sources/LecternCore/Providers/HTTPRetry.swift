@@ -105,6 +105,22 @@ enum HTTPRetry {
         now.addingTimeInterval(TimeInterval(nextWait)).timeIntervalSince(startedAt) < deadline
     }
 
+    /// OpenAI returns HTTP 429 for both transient rate limits and permanent
+    /// billing/quota exhaustion (`error.code` or `error.type` == `"insufficient_quota"`).
+    /// Retrying the latter only burns backoff time and hides the server's
+    /// billing message behind `.rateLimited(afterSeconds:)`.
+    static func openAIInsufficientQuotaMessage(in data: Data) -> String? {
+        guard let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let error = obj["error"] as? [String: Any] else { return nil }
+        let code = error["code"] as? String
+        let type = error["type"] as? String
+        guard code == "insufficient_quota" || type == "insufficient_quota" else { return nil }
+        if let message = error["message"] as? String, !message.isEmpty {
+            return message
+        }
+        return "OpenAI API quota exceeded"
+    }
+
     /// Sleep between attempts. Cancellation propagates: a user who pressed
     /// Cancel should not wait out a backoff first.
     static func wait(seconds: Int) async throws {

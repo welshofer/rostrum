@@ -170,6 +170,52 @@ import Testing
         #expect(attempts.count == 2)
         #expect(waits.count == 1)
     }
+
+    @Test func insufficientQuota429FailsImmediatelyWithServerMessage() async {
+        let quotaBody = Data(#"{"error":{"type":"insufficient_quota","code":"insufficient_quota","message":"You exceeded your current quota"}}"#.utf8)
+
+        let textAttempts = AttemptCounter(), textWaits = AttemptCounter()
+        let provider = OpenAIProvider(apiKey: "k",
+            wait: { _ in _ = textWaits.next() },
+            send: { _ in
+                _ = textAttempts.next()
+                return (quotaBody, Self.http(429, headers: ["Retry-After": "0"]))
+            })
+
+        await #expect(throws: LecternError.providerError(status: 429, message: "You exceeded your current quota")) {
+            _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
+        }
+        #expect(textAttempts.count == 1)
+        #expect(textWaits.count == 0)
+
+        let modelAttempts = AttemptCounter()
+        await #expect(throws: LecternError.providerError(status: 429, message: "You exceeded your current quota")) {
+            _ = try await OpenAIModels.list(apiKey: "k", send: { _ in
+                _ = modelAttempts.next()
+                return (quotaBody, Self.http(429, headers: ["Retry-After": "0"]))
+            })
+        }
+        #expect(modelAttempts.count == 1)
+    }
+
+    @Test func transientRateLimit429StillRetriesAndReportsRateLimited() async {
+        let attempts = AttemptCounter(), waits = AttemptCounter()
+        let start = Date(timeIntervalSince1970: 0)
+        let provider = OpenAIProvider(apiKey: "k",
+            now: { start.addingTimeInterval(Double(waits.count) * 2) },
+            wait: { _ in _ = waits.next() },
+            send: { _ in
+                _ = attempts.next()
+                let body = Data(#"{"error":{"type":"rate_limit_error","code":"rate_limit_exceeded","message":"Slow down"}}"#.utf8)
+                return (body, Self.http(429, headers: ["Retry-After": "7"]))
+            })
+
+        await #expect(throws: LecternError.rateLimited(afterSeconds: 7)) {
+            _ = try await provider.draft(DeckRequest(prompt: "x"), repairing: nil) { _ in }
+        }
+        #expect(attempts.count == HTTPRetry.maxAttempts)
+        #expect(waits.count == HTTPRetry.maxAttempts - 1)
+    }
 }
 
 /// Small thread-safe boxes so a `@Sendable` stub can report what it saw.
