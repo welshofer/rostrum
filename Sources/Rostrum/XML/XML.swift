@@ -471,6 +471,12 @@ public enum XML {
             throw RostrumError.xmlMalformed(
                 "input contains U+\(String(format: "%04X", bad.value)), not permitted in XML")
         }
+        // Bytes were already validated as UTF-8 above, and XMLFastParser declines
+        // any non-UTF-8 declaration and routes it here. Reject any declared
+        // encoding other than UTF-8 before the literal `<!DOCTYPE` check and
+        // before libxml2/iconv can reinterpret ASCII bytes (e.g. UTF-7) into a
+        // hidden DTD / entity-expansion payload.
+        try Self.validateDeclaredEncoding(text)
         // No OOXML part legitimately carries a document type declaration, and
         // an internal DTD subset is the one entity-expansion vector that
         // `shouldResolveExternalEntities = false` below does not cover
@@ -517,6 +523,85 @@ public enum XML {
             throw RostrumError.xmlMalformed("line \(line): \(message)")
         }
         return Document(root: root, prologue: builder.prologue, epilogue: builder.epilogue)
+    }
+
+    /// Reject any XML declaration whose `encoding` pseudo-attribute is not
+    /// UTF-8. Called only after the input bytes have already been proven to be
+    /// valid UTF-8. Uses `unicodeScalars` so CRLF pairs match XML 1.0 `S` and
+    /// large documents are never scanned past the declaration header.
+    private static func validateDeclaredEncoding(_ text: String) throws {
+        let scalars = text.unicodeScalars
+        var i = scalars.startIndex
+        if i < scalars.endIndex && scalars[i] == "\u{FEFF}" {
+            i = scalars.index(after: i)
+        }
+        // Match `<?xml` (case-insensitively) followed by XML 1.0 whitespace `S`.
+        func isXMLSpace(_ s: UnicodeScalar) -> Bool {
+            s == " " || s == "\t" || s == "\r" || s == "\n"
+        }
+        let xmlPrefix: [UInt32] = [0x3C, 0x3F, 0x78, 0x6D, 0x6C] // <?xml
+        for expected in xmlPrefix {
+            guard i < scalars.endIndex else { return }
+            let v = scalars[i].value
+            let lower = (v >= 0x41 && v <= 0x5A) ? (v + 0x20) : v
+            guard lower == expected else { return }
+            i = scalars.index(after: i)
+        }
+        guard i < scalars.endIndex && isXMLSpace(scalars[i]) else { return }
+
+        // Locate the closing `?>` within the declaration header.
+        let bodyStart = i
+        var closeStart: String.UnicodeScalarView.Index?
+        var scan = bodyStart
+        while scan < scalars.endIndex {
+            let next = scalars.index(after: scan)
+            if scalars[scan] == "?" && next < scalars.endIndex && scalars[next] == ">" {
+                closeStart = scan
+                break
+            }
+            scan = next
+        }
+        guard let declEnd = closeStart else {
+            throw RostrumError.xmlMalformed("unterminated XML declaration")
+        }
+
+        i = bodyStart
+        while i < declEnd {
+            while i < declEnd && isXMLSpace(scalars[i]) { i = scalars.index(after: i) }
+            if i == declEnd { break }
+            let nameStart = i
+            while i < declEnd && !isXMLSpace(scalars[i]) && scalars[i] != "=" {
+                i = scalars.index(after: i)
+            }
+            let name = String(scalars[nameStart..<i])
+            guard !name.isEmpty else {
+                throw RostrumError.xmlMalformed("malformed XML declaration")
+            }
+            while i < declEnd && isXMLSpace(scalars[i]) { i = scalars.index(after: i) }
+            guard i < declEnd && scalars[i] == "=" else {
+                throw RostrumError.xmlMalformed("malformed XML declaration")
+            }
+            i = scalars.index(after: i)
+            while i < declEnd && isXMLSpace(scalars[i]) { i = scalars.index(after: i) }
+            guard i < declEnd && (scalars[i] == "\"" || scalars[i] == "'") else {
+                throw RostrumError.xmlMalformed("malformed XML declaration")
+            }
+            let quote = scalars[i]
+            i = scalars.index(after: i)
+            let valueStart = i
+            while i < declEnd && scalars[i] != quote {
+                i = scalars.index(after: i)
+            }
+            guard i < declEnd else {
+                throw RostrumError.xmlMalformed("malformed XML declaration")
+            }
+            let value = String(scalars[valueStart..<i])
+            i = scalars.index(after: i)
+            if name == "encoding" && value.lowercased() != "utf-8" {
+                throw RostrumError.xmlMalformed(
+                    "unsupported XML encoding \"\(value)\"; OOXML parts must be UTF-8")
+            }
+        }
     }
 
     /// Serialize a root element into a complete UTF-8 document, with the

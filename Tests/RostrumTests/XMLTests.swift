@@ -620,6 +620,28 @@ struct XMLTests {
         expectMalformed("<!DOCTYPE r><r/>")
     }
 
+    @Test func rejectsNonUTF8DeclaredEncodings() throws {
+        // XMLFastParser declines non-UTF-8 declarations and hands them to
+        // XMLParser; the slow path must reject any declared encoding other than
+        // UTF-8 before XMLParser/libxml2 can re-decode ASCII bytes (e.g. UTF-7)
+        // past the literal `<!DOCTYPE` check.
+        expectMalformed("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><r/>")
+        expectMalformed("<?xml version=\"1.0\" encoding = 'ISO-8859-1'?><r/>")
+        expectMalformed("<?xml version=\"1.0\" encoding=\"UTF-7\"?><r/>")
+        expectMalformed(
+            "<?xml version=\"1.0\" encoding=\"UTF-7\"?>+ADw-+ACE-DOCTYPE r +AFs-+ADw-+ACE-ENTITY a +ACI-x+ACI-+AD4-+AF0-+AD4-+ADw-r+AD4-+ACY-a+ADs-+ADw-/r+AD4-"
+        )
+        expectMalformed("\u{FEFF}<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><r/>")
+        expectMalformed("<?xml\r\nversion=\"1.0\"\r\nencoding=\"UTF-7\"?><r/>")
+
+        // Valid UTF-8 declarations (including single quotes, BOM, and omitted
+        // encoding on the slow path via comments) must continue to parse.
+        #expect(try XML.parse(Data("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!--c--><r/>".utf8)).name == "r")
+        #expect(try XML.parse(Data("<?xml version=\"1.0\" encoding='utf-8' standalone='yes'?><!--c--><r/>".utf8)).name == "r")
+        #expect(try XML.parse(Data("\u{FEFF}<?xml version=\"1.0\" encoding=\"UTF-8\"?><!--c--><r/>".utf8)).name == "r")
+        #expect(try XML.parse(Data("<?xml version=\"1.0\"?><!--c--><r/>".utf8)).name == "r")
+    }
+
     // MARK: - Nesting depth
 
     /// `depth` nested `<a>` elements around a single text node.
