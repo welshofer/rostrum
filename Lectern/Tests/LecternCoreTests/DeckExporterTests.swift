@@ -74,9 +74,18 @@ import Rostrum
             try deck.serializedData().write(to: deckURL)
 
             let outcome = try DeckExporter.export(deckAt: deckURL, into: parent)
-            #expect(outcome.directory.standardizedFileURL.deletingLastPathComponent() == parent.standardizedFileURL)
+            #expect(outcome.directory.standardizedFileURL.deletingLastPathComponent().path == parent.standardizedFileURL.path)
             #expect(outcome.directory.lastPathComponent == "Deck")
             #expect(!FileManager.default.fileExists(atPath: root.appendingPathComponent("..md").path))
         }
+
+        // Callers such as CLI tools and tests often construct `parent` via
+        // `URL(fileURLWithPath:)` without `isDirectory: true` (no trailing slash).
+        let deckURL = root.appendingPathComponent("Plain.pptx")
+        try deck.serializedData().write(to: deckURL)
+        let plainParent = URL(fileURLWithPath: parent.path)
+        let plainOutcome = try DeckExporter.export(deckAt: deckURL, into: plainParent)
+        #expect(plainOutcome.directory.standardizedFileURL.deletingLastPathComponent().path == plainParent.standardizedFileURL.path)
+        #expect(plainOutcome.directory.lastPathComponent == "Plain")
     }
 }

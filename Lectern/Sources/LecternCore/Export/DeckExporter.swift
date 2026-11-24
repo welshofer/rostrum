@@ -68,8 +68,8 @@ public enum DeckExporter {
         let name = folderName(for: deck)
         let resolvedParent = parent.standardizedFileURL
         let directory = resolvedParent.appendingPathComponent(name, isDirectory: true).standardizedFileURL
-        guard directory.deletingLastPathComponent() == resolvedParent,
-              directory != resolvedParent else {
+        guard directory.deletingLastPathComponent().path == resolvedParent.path,
+              directory.path != resolvedParent.path else {
             throw CocoaError(.fileWriteInvalidFileName)
         }
         try Task.checkCancellation()
