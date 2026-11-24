@@ -30,13 +30,32 @@ public actor DeckCardIndex {
     /// this path opens whatever is sitting in the decks folder.
     static let readLimit = 1 << 30
 
+    private struct InFlightEntry {
+        let id: UInt64
+        let cacheGeneration: UInt64
+        let task: Task<DeckCard?, Never>
+        var waiters: Int
+    }
+
     private var memory: [String: DeckCard] = [:]
-    private var inFlight: [String: Task<DeckCard?, Never>] = [:]
+    private var inFlight: [String: InFlightEntry] = [:]
+    private var nextTaskID: UInt64 = 0
+    private var cacheGeneration: UInt64 = 0
     private let directory: URL
     private let fileManager: FileManager
+    private let buildCard: @Sendable (URL) async -> DeckCard?
 
     public init(directory: URL? = nil, fileManager: FileManager = .default) {
+        self.init(directory: directory, fileManager: fileManager) { url in
+            await Task.detached(priority: .utility) { Self.build(from: url) }.value
+        }
+    }
+
+    init(directory: URL? = nil,
+         fileManager: FileManager = .default,
+         build: @escaping @Sendable (URL) async -> DeckCard?) {
         self.fileManager = fileManager
+        self.buildCard = build
         if let directory {
             self.directory = directory
         } else {
@@ -54,29 +73,94 @@ public actor DeckCardIndex {
     public func card(for deck: DeckFile) async -> DeckCard? {
         let key = Self.key(for: deck)
         if let cached = memory[key] { return cached }
-        if let running = inFlight[key] { return await running.value }
+        if Task.isCancelled { return nil }
 
-        let directory = self.directory
-        let url = deck.url
-        // Reading a card means opening the whole package, and a real library
-        // holds ninety-megabyte decks. Twelve visible cards opening at once
-        // measured 183s and 2GB peak — eleven times *slower* than doing them
-        // one after another, because the machine spent the difference swapping.
-        // The gate is what keeps a grid from doing that to itself.
-        await acquire()
-        let task = Task<DeckCard?, Never>.detached(priority: .utility) {
-            if let onDisk = Self.read(key: key, in: directory) { return onDisk }
-            guard let built = Self.build(from: url) else { return nil }
-            Self.write(built, key: key, in: directory)
-            return built
+        let entry: InFlightEntry
+        if var existing = inFlight[key] {
+            existing.waiters += 1
+            inFlight[key] = existing
+            entry = existing
+        } else {
+            let taskID = nextTaskID
+            nextTaskID &+= 1
+            let gen = cacheGeneration
+            let directory = self.directory
+            let url = deck.url
+            let builder = self.buildCard
+            // Reading a card means opening the whole package, and a real library
+            // holds ninety-megabyte decks. Twelve visible cards opening at once
+            // measured 183s and 2GB peak — eleven times *slower* than doing them
+            // one after another, because the machine spent the difference swapping.
+            // Register the shared task *before* awaiting the parse gate so
+            // concurrent callers for the same deck coalesce even while both
+            // slots are busy.
+            let task = Task<DeckCard?, Never> {
+                guard await self.acquire() else {
+                    await self.abandonUnacquired(key: key, id: taskID)
+                    return nil
+                }
+                let loaded: (card: DeckCard, shouldWrite: Bool)?
+                if Task.isCancelled {
+                    loaded = nil
+                } else if let onDisk = await Task.detached(priority: .utility, operation: {
+                    Self.read(key: key, in: directory)
+                }).value {
+                    loaded = (onDisk, false)
+                } else if let built = await builder(url) {
+                    loaded = (built, true)
+                } else {
+                    loaded = nil
+                }
+                let card = loaded?.card
+                let shouldPersist = await self.finish(
+                    key: key, id: taskID, cacheGeneration: gen, value: card
+                )
+                if shouldPersist, loaded?.shouldWrite == true, let card {
+                    await Task.detached(priority: .utility) {
+                        Self.write(card, key: key, in: directory)
+                    }.value
+                }
+                return card
+            }
+            let created = InFlightEntry(id: taskID, cacheGeneration: gen, task: task, waiters: 1)
+            inFlight[key] = created
+            entry = created
         }
-        inFlight[key] = task
 
-        let value = await task.value
+        return await withTaskCancellationHandler {
+            await entry.task.value
+        } onCancel: {
+            Task { await self.detachWaiter(key: key, id: entry.id) }
+        }
+    }
+
+    private func detachWaiter(key: String, id: UInt64) {
+        guard var entry = inFlight[key], entry.id == id else { return }
+        entry.waiters -= 1
+        if entry.waiters <= 0 {
+            inFlight[key] = nil
+            entry.task.cancel()
+        } else {
+            inFlight[key] = entry
+        }
+    }
+
+    private func abandonUnacquired(key: String, id: UInt64) {
+        if inFlight[key]?.id == id {
+            inFlight[key] = nil
+        }
+    }
+
+    private func finish(key: String, id: UInt64, cacheGeneration gen: UInt64, value: DeckCard?) -> Bool {
         release()
-        inFlight[key] = nil
-        if let value { memory[key] = value }
-        return value
+        if inFlight[key]?.id == id {
+            inFlight[key] = nil
+        }
+        guard self.cacheGeneration == gen, !Task.isCancelled else { return false }
+        if let value {
+            memory[key] = value
+        }
+        return true
     }
 
     // MARK: - Parse gate
@@ -86,14 +170,48 @@ public actor DeckCardIndex {
     /// resident set is the bottleneck.
     private static let maxConcurrentParses = 2
     private var activeParses = 0
-    private var waiting: [CheckedContinuation<Void, Never>] = []
+    private var nextWaiterID: UInt64 = 0
+    private var pendingWaiters: Set<UInt64> = []
+    private var waiting: [(id: UInt64, continuation: CheckedContinuation<Bool, Never>)] = []
 
-    private func acquire() async {
+    private func acquire() async -> Bool {
+        if Task.isCancelled { return false }
         if activeParses < Self.maxConcurrentParses {
             activeParses += 1
+            return true
+        }
+        let waiterID = nextWaiterID
+        nextWaiterID &+= 1
+        pendingWaiters.insert(waiterID)
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                enqueueWaiter(id: waiterID, continuation: continuation)
+            }
+        } onCancel: {
+            Task { await self.cancelWaiter(id: waiterID) }
+        }
+    }
+
+    private func enqueueWaiter(id: UInt64, continuation: CheckedContinuation<Bool, Never>) {
+        let wasPending = pendingWaiters.remove(id) != nil
+        if !wasPending || Task.isCancelled {
+            continuation.resume(returning: false)
             return
         }
-        await withCheckedContinuation { waiting.append($0) }
+        if activeParses < Self.maxConcurrentParses {
+            activeParses += 1
+            continuation.resume(returning: true)
+            return
+        }
+        waiting.append((id, continuation))
+    }
+
+    private func cancelWaiter(id: UInt64) {
+        if pendingWaiters.remove(id) != nil { return }
+        if let index = waiting.firstIndex(where: { $0.id == id }) {
+            let waiter = waiting.remove(at: index)
+            waiter.continuation.resume(returning: false)
+        }
     }
 
     private func release() {
@@ -102,16 +220,22 @@ public actor DeckCardIndex {
         } else {
             // Hand the slot straight to the next waiter rather than releasing
             // and re-taking it, which would let a newcomer jump the queue.
-            waiting.removeFirst().resume()
+            waiting.removeFirst().continuation.resume(returning: true)
         }
     }
 
     /// Forget everything. Cards are derived data; dropping them costs a re-read
     /// and nothing else.
     public func removeAll() {
+        cacheGeneration &+= 1
         memory.removeAll()
-        inFlight.values.forEach { $0.cancel() }
+        let activeTasks = inFlight.values.map(\.task)
         inFlight.removeAll()
+        activeTasks.forEach { $0.cancel() }
+        pendingWaiters.removeAll()
+        let queued = waiting
+        waiting.removeAll()
+        queued.forEach { $0.continuation.resume(returning: false) }
         try? fileManager.removeItem(at: directory)
     }
 
