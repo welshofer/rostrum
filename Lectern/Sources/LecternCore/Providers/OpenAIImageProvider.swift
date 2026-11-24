@@ -67,6 +67,9 @@ public struct OpenAIImageProvider: ImageProvider {
         case 404:
             throw LecternError.providerError(status: 404, message: "\(model) isn't available to this OpenAI project.")
         case 429:
+            if let quota = HTTPRetry.openAIInsufficientQuotaMessage(in: data) {
+                throw LecternError.providerError(status: 429, message: quota)
+            }
             throw LecternError.rateLimited(afterSeconds: Int(http.value(forHTTPHeaderField: "Retry-After") ?? "") ?? 5)
         default:
             throw LecternError.providerError(status: http.statusCode, message: message(data))
@@ -131,6 +134,10 @@ public struct OpenAIImageProvider: ImageProvider {
                 return bytes
             case 401, 403:
                 throw LecternError.authFailed(provider: "OpenAI")
+            case 429 where HTTPRetry.openAIInsufficientQuotaMessage(in: data) != nil:
+                throw LecternError.providerError(
+                    status: 429,
+                    message: HTTPRetry.openAIInsufficientQuotaMessage(in: data) ?? message(data))
             case let status where HTTPRetry.isRetriable(status: status):
                 // This used to give up on the first 429 — the one status a burst of
                 // image requests is most likely to provoke — and the user read it

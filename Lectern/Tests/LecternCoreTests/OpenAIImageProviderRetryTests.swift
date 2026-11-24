@@ -162,4 +162,39 @@ import Testing
         #expect(offlineAttempts.count == 1)
         #expect(offlineWaits.count == 0)
     }
+
+    @Test func insufficientQuota429FailsImmediatelyWithoutRetry() async {
+        let quotaBody = Data(#"{"error":{"type":"insufficient_quota","code":"insufficient_quota","message":"You exceeded your current quota"}}"#.utf8)
+        let attempts = AttemptCounter()
+        let waits = AttemptCounter()
+
+        let provider = OpenAIImageProvider(
+            apiKey: "k",
+            wait: { _ in _ = waits.next() },
+            send: { _ in
+                _ = attempts.next()
+                return (quotaBody, Self.http(429, headers: ["Retry-After": "0"]))
+            }
+        )
+
+        await #expect(throws: LecternError.providerError(status: 429, message: "You exceeded your current quota")) {
+            _ = try await provider.image(prompt: "A bridge", style: nil, aspect: .wide, role: .background)
+        }
+        #expect(attempts.count == 1)
+        #expect(waits.count == 0)
+
+        let validateAttempts = AttemptCounter()
+        let validateProvider = OpenAIImageProvider(
+            apiKey: "k",
+            wait: { _ in },
+            send: { _ in
+                _ = validateAttempts.next()
+                return (quotaBody, Self.http(429, headers: ["Retry-After": "0"]))
+            }
+        )
+        await #expect(throws: LecternError.providerError(status: 429, message: "You exceeded your current quota")) {
+            try await validateProvider.validate()
+        }
+        #expect(validateAttempts.count == 1)
+    }
 }

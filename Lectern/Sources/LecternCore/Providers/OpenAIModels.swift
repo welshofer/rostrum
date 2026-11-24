@@ -48,6 +48,10 @@ public enum OpenAIModels {
                 return (obj?["data"] as? [[String: Any]])?.compactMap { $0["id"] as? String } ?? []
             case 401, 403:
                 throw LecternError.authFailed(provider: "OpenAI")
+            case 429 where HTTPRetry.openAIInsufficientQuotaMessage(in: data) != nil:
+                throw LecternError.providerError(
+                    status: 429,
+                    message: HTTPRetry.openAIInsufficientQuotaMessage(in: data) ?? "OpenAI API quota exceeded")
             case let status where HTTPRetry.isRetriable(status: status):
                 let retryAfter = HTTPRetry.retryAfterSeconds(http)
                 if attempt + 1 < HTTPRetry.maxAttempts {
