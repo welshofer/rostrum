@@ -116,17 +116,64 @@ public enum DeckLibrary {
             .appendingPathExtension(deck.url.pathExtension)
 
         // A case-only change is a move onto itself on a case-insensitive
-        // volume, which `fileExists` would call a collision.
-        let sameFile = destination.standardizedFileURL == deck.url.standardizedFileURL
+        // volume, which `fileExists` would call a collision. Verify underlying
+        // file identity so two distinct files that differ only in case on a
+        // case-sensitive volume are still treated as a collision.
+        let sameFile = isSameFile(deck.url, destination, fileManager: fileManager)
         if !sameFile, fileManager.fileExists(atPath: destination.path) {
             throw RenameProblem.nameTaken(name)
         }
 
-        try fileManager.moveItem(at: deck.url, to: destination)
+        if sameFile {
+            do {
+                try fileManager.moveItem(at: deck.url, to: destination)
+            } catch {
+                // Some case-insensitive filesystems refuse moving a path onto a
+                // case-variant of itself; bounce through a unique hidden sibling
+                // and restore the original if the second step fails.
+                let hop = deck.url.deletingLastPathComponent()
+                    .appendingPathComponent(".lectern-rename-\(UUID().uuidString)")
+                    .appendingPathExtension(deck.url.pathExtension)
+                try fileManager.moveItem(at: deck.url, to: hop)
+                do {
+                    try fileManager.moveItem(at: hop, to: destination)
+                } catch {
+                    try? fileManager.moveItem(at: hop, to: deck.url)
+                    throw error
+                }
+            }
+        } else {
+            try fileManager.moveItem(at: deck.url, to: destination)
+        }
         return DeckFile(url: destination,
                         name: name,
                         modified: deck.modified,
                         byteCount: deck.byteCount)
+    }
+
+    private static func isSameFile(_ source: URL, _ destination: URL, fileManager: FileManager) -> Bool {
+        if destination.standardizedFileURL == source.standardizedFileURL { return true }
+        guard source.deletingLastPathComponent().standardizedFileURL
+                == destination.deletingLastPathComponent().standardizedFileURL,
+              source.lastPathComponent.caseInsensitiveCompare(destination.lastPathComponent) == .orderedSame,
+              let srcAttrs = try? fileManager.attributesOfItem(atPath: source.path),
+              let dstAttrs = try? fileManager.attributesOfItem(atPath: destination.path),
+              let srcInode = numericAttribute(srcAttrs[.systemFileNumber]),
+              let dstInode = numericAttribute(dstAttrs[.systemFileNumber]),
+              let srcDev = numericAttribute(srcAttrs[.systemNumber]),
+              let dstDev = numericAttribute(dstAttrs[.systemNumber]) else {
+            return false
+        }
+        return srcInode == dstInode && srcDev == dstDev
+    }
+
+    private static func numericAttribute(_ value: Any?) -> UInt64? {
+        switch value {
+        case let n as NSNumber: n.uint64Value
+        case let u as UInt64: u
+        case let i as Int: i >= 0 ? UInt64(i) : nil
+        default: nil
+        }
     }
 
     /// Why a rename could not happen, in words a person can act on.
