@@ -166,4 +166,104 @@ import Testing
         #expect(renamed == deck)
         #expect(FileManager.default.fileExists(atPath: deck.url.path))
     }
+
+    @Test func caseOnlyRenameSucceedsOnCaseInsensitiveVolume() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let deck = try makeDeck("q3 review", in: dir)
+        let fm = CaseInsensitiveFileManager()
+
+        let renamed = try DeckLibrary.rename(deck, to: "Q3 Review", fileManager: fm)
+
+        #expect(renamed.name == "Q3 Review")
+        #expect(renamed.url.lastPathComponent == "Q3 Review.pptx")
+        #expect(FileManager.default.fileExists(atPath: renamed.url.path))
+        #expect(try Data(contentsOf: renamed.url) == Data("deck".utf8))
+    }
+
+    @Test func caseOnlyRenameFallsBackWhenDirectMoveRejectsSameTarget() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let deck = try makeDeck("q3 review", in: dir)
+        let fm = CaseInsensitiveFileManager(rejectDirectCaseOnlyMove: true)
+
+        let renamed = try DeckLibrary.rename(deck, to: "Q3 Review", fileManager: fm)
+
+        #expect(renamed.name == "Q3 Review")
+        #expect(renamed.url.lastPathComponent == "Q3 Review.pptx")
+        #expect(try Data(contentsOf: renamed.url) == Data("deck".utf8))
+    }
+
+    @Test func caseInsensitiveCollisionWithDistinctDeckStillThrowsNameTaken() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let existing = try makeDeck("keep me", in: dir)
+        let other = try makeDeck("rename me", in: dir)
+        let fm = CaseInsensitiveFileManager()
+
+        #expect(throws: DeckLibrary.RenameProblem.nameTaken("Keep Me")) {
+            try DeckLibrary.rename(other, to: "Keep Me", fileManager: fm)
+        }
+        #expect(FileManager.default.fileExists(atPath: existing.url.path))
+        #expect(FileManager.default.fileExists(atPath: other.url.path))
+    }
+
+    @Test func distinctCaseVariantFilesOnCaseSensitiveVolumeStillThrowNameTaken() throws {
+        let dir = try scratch()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let lower = try makeDeck("q3 review", in: dir)
+        let upperURL = dir.appendingPathComponent("Q3 Review.pptx")
+        try Data("other".utf8).write(to: upperURL)
+
+        let lowerData = try Data(contentsOf: lower.url)
+        let upperData = try Data(contentsOf: upperURL)
+        guard lowerData != upperData else { return } // Case-insensitive host volume overwrote the same file.
+
+        #expect(throws: DeckLibrary.RenameProblem.nameTaken("Q3 Review")) {
+            try DeckLibrary.rename(lower, to: "Q3 Review")
+        }
+        #expect(try Data(contentsOf: lower.url) == Data("deck".utf8))
+        #expect(try Data(contentsOf: upperURL) == Data("other".utf8))
+    }
+}
+
+/// Simulates a case-insensitive, case-preserving volume (like default macOS APFS)
+/// on case-sensitive Linux CI filesystems.
+private final class CaseInsensitiveFileManager: FileManager {
+    private let rejectDirectCaseOnlyMove: Bool
+
+    init(rejectDirectCaseOnlyMove: Bool = false) {
+        self.rejectDirectCaseOnlyMove = rejectDirectCaseOnlyMove
+        super.init()
+    }
+
+    private func resolve(_ path: String) -> String? {
+        if super.fileExists(atPath: path) { return path }
+        let url = URL(fileURLWithPath: path)
+        let parent = url.deletingLastPathComponent()
+        let target = url.lastPathComponent
+        guard let entries = try? super.contentsOfDirectory(atPath: parent.path),
+              let match = entries.first(where: { $0.caseInsensitiveCompare(target) == .orderedSame }) else {
+            return nil
+        }
+        return parent.appendingPathComponent(match).path
+    }
+
+    override func fileExists(atPath path: String) -> Bool {
+        resolve(path) != nil
+    }
+
+    override func attributesOfItem(atPath path: String) throws -> [FileAttributeKey: Any] {
+        try super.attributesOfItem(atPath: resolve(path) ?? path)
+    }
+
+    override func moveItem(at srcURL: URL, to dstURL: URL) throws {
+        if rejectDirectCaseOnlyMove,
+           srcURL.deletingLastPathComponent().standardizedFileURL == dstURL.deletingLastPathComponent().standardizedFileURL,
+           srcURL.lastPathComponent.caseInsensitiveCompare(dstURL.lastPathComponent) == .orderedSame,
+           srcURL.lastPathComponent != dstURL.lastPathComponent {
+            throw CocoaError(.fileWriteFileExists)
+        }
+        try super.moveItem(at: srcURL, to: dstURL)
+    }
 }
